@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Services\ImpersonationService;
 use App\Services\DataVisibilityService;
 use App\Services\RolePermissionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ImpersonationController extends Controller
 {
     public function start(
         Request $request,
         int $targetUserId,
+        ImpersonationService $impersonationService,
         RolePermissionService $rolePermissionService,
         DataVisibilityService $dataVisibilityService,
     ): RedirectResponse {
@@ -32,7 +32,7 @@ class ImpersonationController extends Controller
             return redirect()->back()->with('status', 'Cannot impersonate your own account.');
         }
 
-        $targetUser = User::query()->findOrFail($targetUserId);
+        $targetUser = $impersonationService->findTargetUserOrFail($targetUserId);
 
         if ($targetUser->status !== 'active') {
             return redirect()->back()->with('status', 'Cannot impersonate an inactive user.');
@@ -50,16 +50,13 @@ class ImpersonationController extends Controller
             }
         }
 
-        $auditId = DB::table('impersonation_audits')->insertGetId([
-            'impersonator_user_id' => $impersonator->id,
-            'impersonated_user_id' => $targetUser->id,
-            'reason' => trim((string) $request->input('reason')) ?: null,
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'started_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $auditId = $impersonationService->startAudit(
+            $impersonator->id,
+            $targetUser->id,
+            trim((string) $request->input('reason')) ?: null,
+            $request->ip(),
+            $request->userAgent(),
+        );
 
         $request->session()->put('impersonation.impersonator_id', $impersonator->id);
         $request->session()->put('impersonation.audit_id', $auditId);
@@ -70,7 +67,7 @@ class ImpersonationController extends Controller
             ->with('status', 'Impersonation started.');
     }
 
-    public function stop(Request $request): RedirectResponse
+    public function stop(Request $request, ImpersonationService $impersonationService): RedirectResponse
     {
         $impersonatorId = $request->session()->get('impersonation.impersonator_id');
         $auditId = $request->session()->get('impersonation.audit_id');
@@ -80,13 +77,7 @@ class ImpersonationController extends Controller
         }
 
         if ($auditId) {
-            DB::table('impersonation_audits')
-                ->where('id', $auditId)
-                ->whereNull('ended_at')
-                ->update([
-                    'ended_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            $impersonationService->closeAudit((int) $auditId);
         }
 
         $request->session()->forget('impersonation');

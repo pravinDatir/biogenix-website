@@ -36,6 +36,7 @@
                 @auth
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                     <a href="{{ route('proforma.index') }}">My PI</a>
+                    <a href="{{ route('support-tickets.index') }}">Support Tickets</a>
                     @if (app(\App\Services\RolePermissionService::class)->hasPermission(auth()->user(), 'users.manage'))
                         <a href="{{ route('admin.users.index') }}">Admin Console</a>
                     @endif

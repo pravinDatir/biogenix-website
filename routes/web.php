@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImpersonationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProformaInvoiceController;
+use App\Http\Controllers\SupportTicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -20,6 +21,11 @@ Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('pro
 Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->name('proforma.index');
+    Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
+    Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
+    Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
+    Route::post('/support-tickets/{ticketId}/comments', [SupportTicketController::class, 'addComment'])->name('support-tickets.comments.store');
+    Route::patch('/support-tickets/{ticketId}/status', [SupportTicketController::class, 'updateStatus'])->name('support-tickets.status.update');
 
     Route::post('/impersonation/stop', [ImpersonationController::class, 'stop'])->name('impersonation.stop');
 

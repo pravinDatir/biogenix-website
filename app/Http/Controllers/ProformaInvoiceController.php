@@ -3,46 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Services\DataVisibilityService;
+use App\Services\ProformaInvoiceService;
 use App\Services\RolePermissionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ProformaInvoiceController extends Controller
 {
-    public function create(Request $request, DataVisibilityService $dataVisibilityService): View
+    public function create(Request $request, ProformaInvoiceService $proformaInvoiceService): View
     {
-        $products = $dataVisibilityService->visibleProductQuery($request->user())
-            ->orderBy('products.name')
-            ->get();
-
-        $clientCompanies = collect();
-        $user = $request->user();
-
-        if ($user && $user->isB2b()) {
-            $companyIds = $dataVisibilityService->assignedClientCompanyIds($user);
-
-            if ($user->company_id) {
-                $companyIds[] = $user->company_id;
-            }
-
-            $clientCompanies = DB::table('companies')
-                ->whereIn('id', array_unique($companyIds))
-                ->orderBy('name')
-                ->get();
-        }
-
-        return view('proforma.create', [
-            'products' => $products,
-            'clientCompanies' => $clientCompanies,
-            'prefilledProductId' => $request->integer('product_id'),
-        ]);
+        return view('proforma.create', $proformaInvoiceService->createPageData(
+            $request->user(),
+            $request->integer('product_id'),
+        ));
     }
 
     public function store(
         Request $request,
         DataVisibilityService $dataVisibilityService,
+        ProformaInvoiceService $proformaInvoiceService,
         RolePermissionService $rolePermissionService,
     ): RedirectResponse {
         $validated = $request->validate([
@@ -58,9 +38,7 @@ class ProformaInvoiceController extends Controller
 
         $user = $request->user();
 
-        $visibleProduct = $dataVisibilityService->visibleProductQuery($user)
-            ->where('products.id', (int) $validated['product_id'])
-            ->first();
+        $visibleProduct = $proformaInvoiceService->findVisibleProduct($user, (int) $validated['product_id']);
 
         abort_if(! $visibleProduct, 403, 'The selected product is outside your visibility scope.');
 
@@ -91,48 +69,23 @@ class ProformaInvoiceController extends Controller
         $lineTotal = round($price['amount'] * $quantity, 2);
         $piNumber = $this->generatePiNumber();
 
-        DB::transaction(function () use ($validated, $user, $quantity, $lineTotal, $price, $visibleProduct, $request, $piNumber): void {
-            $piId = DB::table('proforma_invoices')->insertGetId([
-                'pi_number' => $piNumber,
-                'requester_type' => $user ? 'user' : 'guest',
-                'created_by_user_id' => $user?->id,
-                'owner_user_id' => $user?->id,
-                'owner_company_id' => $user?->company_id,
-                'target_type' => $validated['purpose'],
-                'target_name' => $validated['customer_name'],
-                'target_email' => $validated['customer_email'],
-                'target_phone' => $validated['customer_phone'] ?: null,
-                'target_company_id' => isset($validated['target_company_id']) ? (int) $validated['target_company_id'] : null,
-                'status' => 'draft',
-                'subtotal' => $lineTotal,
-                'total_amount' => $lineTotal,
-                'guest_session_id' => $user ? null : $request->session()->getId(),
-                'notes' => $validated['notes'] ?: null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            DB::table('proforma_invoice_items')->insert([
-                'proforma_invoice_id' => $piId,
-                'product_id' => (int) $validated['product_id'],
-                'product_name' => $visibleProduct->name,
-                'sku' => $visibleProduct->sku,
-                'quantity' => $quantity,
-                'unit_price' => $price['amount'],
-                'line_total' => $lineTotal,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        });
+        $proformaInvoiceService->createProformaWithItems(
+            $validated,
+            $user,
+            $visibleProduct,
+            $price,
+            $quantity,
+            $lineTotal,
+            $piNumber,
+            $request->session()->getId(),
+        );
 
         if (! $user) {
-            DB::table('guest_activity_logs')->insert([
-                'session_id' => $request->session()->getId(),
-                'activity_type' => 'pi_generated',
-                'path' => $request->path(),
-                'payload' => json_encode(['pi_number' => $piNumber]),
-                'created_at' => now(),
-            ]);
+            $proformaInvoiceService->logGuestPiGenerated(
+                $request->session()->getId(),
+                $request->path(),
+                $piNumber,
+            );
         }
 
         if ($user) {
@@ -146,12 +99,10 @@ class ProformaInvoiceController extends Controller
             ->with('status', "Guest PI {$piNumber} generated successfully.");
     }
 
-    public function index(Request $request, DataVisibilityService $dataVisibilityService): View
+    public function index(Request $request, ProformaInvoiceService $proformaInvoiceService): View
     {
         return view('proforma.index', [
-            'proformas' => $dataVisibilityService->visibleProformaQuery($request->user())
-                ->orderByDesc('pi.created_at')
-                ->paginate(15),
+            'proformas' => $proformaInvoiceService->listVisibleProformas($request->user()),
         ]);
     }
 

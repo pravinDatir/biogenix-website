@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\RolePermissionService;
+use App\Services\HomeService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class HomeController 
+class HomeController
 {
-    public function index(Request $request, RolePermissionService $rolePermissionService): View
+    public function index(Request $request, HomeService $homeService): View
     {
-        
-        return view('home', [
-            'roleSlugs' => $rolePermissionService->roleSlugsForUser($request->user()),
-        ]);
+        return view('home', $homeService->viewData($request->user()));
     }
 }
