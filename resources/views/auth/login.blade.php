@@ -1,37 +1,55 @@
 @extends('layouts.app')
 
+@section('title', 'Login')
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+@endpush
+
 @section('content')
-    <div class="card" style="max-width: 520px; margin: 0 auto;">
-        <h1>Login</h1>
+<div class="login-page">
+  <div class="login-card">
+    <h2>Login</h2>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+    <form id="loginForm" novalidate>
+      <!-- Email -->
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="Enter your email">
+        <span class="error"></span>
+      </div>
 
-            <div class="field">
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus>
-            </div>
+      <!-- Password -->
+      <div class="form-group">
+        <label>Password</label>
 
-            <div class="field">
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" required>
-            </div>
+        <div class="password-wrapper">
+          <input type="password" id="loginPassword" placeholder="Enter your password">
+          <button type="button" id="togglePassword" class="toggle-password">
+            <i class="bi bi-eye-slash"></i>
+          </button>
+        </div>
 
-            <div class="field">
-                <label for="remember">
-                    <input id="remember" name="remember" type="checkbox" value="1">
-                    Remember me
-                </label>
-            </div>
+        <span class="error"></span>
 
-            <button class="btn" type="submit">Login</button>
-        </form>
+        <!-- Forgot Password -->
+        <div class="forgot-password mt-2">
+          <a href="{{ route('forgot.password') }}">Forgot Password?</a>
+        </div>
+      </div>
 
-        <p class="muted" style="margin-top: 12px;">
-            New user? <a href="{{ route('register') }}">Register here</a>
-        </p>
-        <p class="muted">
-            <a href="{{ route('password.request') }}">Forgot password?</a>
-        </p>
-    </div>
+      <button type="submit" class="btn btn-primary w-100">
+        Login
+      </button>
+    </form>
+  </div>
+
+  <div class="signup-cta">
+    <p>Don’t have an account?</p>
+    <a href="{{ route('signup') }}" class="btn btn-outline">Sign Up</a>
+  </div>
+</div>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/login.js') }}"></script>
+@endpush

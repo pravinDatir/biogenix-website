@@ -22,7 +22,7 @@ class ProductController extends Controller
             ]);
         }
 
-        return view('products.index', [
+        return view('prelogin.products', [
             'products' => $products,
             'categories' => $productService->categories(),
         ]);

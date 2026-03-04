@@ -1,0 +1,8 @@
+/* Central place for colors, spacing, fonts, z-index, breakpoints. */
+
+:root{
+    --primary:#0b5ed7;
+    --secondary:#6c757d;
+    --dark:#0a0a0a;
+    --gray:#f5f6f8;
+}

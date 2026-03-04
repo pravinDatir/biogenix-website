@@ -10,6 +10,6 @@ class HomeController
 {
     public function index(Request $request, HomeService $homeService): View
     {
-        return view('home', $homeService->viewData($request->user()));
+        return view('prelogin.homepage', $homeService->viewData($request->user()));
     }
 }
