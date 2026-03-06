@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Illuminate\Support\Facades\Log;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -29,6 +30,13 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        $input['user_type'] = $input['user_type']
+            ?? (($input['accountType'] ?? null) === 'business' ? 'b2b' : 'b2c');
+        $input['name'] = $input['name']
+            ?? trim(((string) ($input['first_name'] ?? '')).' '.((string) ($input['last_name'] ?? '')));
+
+        Log::info('Creating new user with input: ' . json_encode($input));
+
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -44,6 +52,7 @@ class CreateNewUser implements CreatesNewUsers
                 'required_if:user_type,b2b',
                 Rule::in(['dealer', 'distributor', 'lab', 'hospital']),
             ],
+            
             'company_name' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:255'],
             'password' => $this->passwordRules(),
         ])->validate();
@@ -53,7 +62,7 @@ class CreateNewUser implements CreatesNewUsers
             $status = 'active';
             $approvedAt = now();
 
-            if ($input['user_type'] === 'b2b') {
+            if (($input['user_type'] ?? null) === 'b2b') {
                 $company = DB::table('companies')
                     ->where('name', $input['company_name'])
                     ->first();
@@ -75,7 +84,7 @@ class CreateNewUser implements CreatesNewUsers
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'user_type' => $input['user_type'],
-                'b2b_type' => $input['user_type'] === 'b2b' ? $input['b2b_type'] : null,
+                'b2b_type' => ($input['user_type'] ?? null) === 'b2b' ? $input['b2b_type'] : null,
                 'company_id' => $companyId,
                 'status' => $status,
                 'approved_at' => $approvedAt,

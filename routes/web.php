@@ -8,12 +8,19 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProformaInvoiceController;
 use App\Http\Controllers\SupportTicketController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.page');
 
  Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-// Route::get('/products/{productId}', [ProductController::class, 'show'])->name('products.show');
+ Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
+
+ Route::get('/products-crud', [ProductController::class, 'index1'])->name('products.crud.index');
+ Route::post('/products-crud', [ProductController::class, 'store1'])->name('products.crud.store');
+ Route::get('/products-crud/{productId}', [ProductController::class, 'show1'])->name('products.crud.show');
+ Route::put('/products-crud/{productId}', [ProductController::class, 'update1'])->name('products.crud.update');
+ Route::delete('/products-crud/{productId}', [ProductController::class, 'destroy1'])->name('products.crud.destroy');
 
 // Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 // Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
@@ -24,7 +31,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home.page');
    Route::view('/about', 'prelogin.about')->name('about');
    Route::view('/contact', 'prelogin.contact')->name('contact');
 
-   Route::view('/login', 'auth.login')->name('login');
+   //Route::view('/login', 'auth.login')->name('login');
    Route::view('/signup', 'auth.signup')->name('signup');
    Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password');
 
@@ -41,8 +48,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home.page');
    Route::view('/privacy', 'legal.privacy')->name('privacy');
    Route::view('/terms', 'legal.terms')->name('terms');
    Route::view('/faq', 'legal.faq')->name('faq');
-
-
+   
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->name('proforma.index');
     Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');

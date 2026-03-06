@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DataVisibilityService
 {
@@ -32,60 +33,85 @@ class DataVisibilityService
 
     public function visibleProductQuery(?User $user): Builder
     {
-        return DB::table('products')
+        $query = DB::table('products')
             ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+            ->leftJoin('subcategories', 'subcategories.id', '=', 'products.subcategory_id')
+            ->leftJoin('product_image', 'product_image.id', '=', 'products.product_image_id')
+            ->leftJoin('product_prices', 'product_prices.product_id', '=', 'products.id')
             ->select(
                 'products.id',
                 'products.sku',
                 'products.name',
+                'products.brand',
+                'products.slug',
                 'products.description',
+                'products.category_id',
+                'products.subcategory_id',
                 'products.visibility_scope',
+                'products.is_active',
+                'products.updated_at',
                 'categories.name as category_name',
+                'subcategories.name as subcategory_name',
+                'product_image.file_path as image_path',
+                'product_prices.amount as price_amount',
+                'product_prices.currency as price_currency',
+                'product_prices.price_type as price_type',
             )
             ->where('products.is_active', true)
-            ->whereIn('products.visibility_scope', $this->productScopes($user));
+            ->whereIn('products.visibility_scope', $this->productScopes($user))
+            ->whereIn('product_prices.price_type', $this->pricePriority($user));
+
+        if ($this->hasProductsColumn('is_published')) {
+            $query->where('products.is_published', true);
+        }
+
+        return $query;
     }
+
+    protected function hasProductsColumn(string $column): bool
+    {
+        static $cache = [];
+
+        if (! array_key_exists($column, $cache)) {
+            $cache[$column] = DB::getSchemaBuilder()->hasColumn('products', $column);
+        }
+
+        return $cache[$column];
+    }
+
 
     /**
      * @return array{amount: float, currency: string, price_type: string}|null
      */
     public function resolvePrice(int $productId, ?User $user): ?array
     {
-        if ($user && $user->company_id) {
-            $contractPrice = DB::table('product_prices')
-                ->where('product_id', $productId)
-                ->where('price_type', 'contract')
-                ->where('company_id', $user->company_id)
-                ->orderByDesc('id')
-                ->first();
+        $priority = $this->pricePriority($user);
+        $priorityRank = array_flip($priority);
 
-            if ($contractPrice) {
-                return [
-                    'amount' => (float) $contractPrice->amount,
-                    'currency' => $contractPrice->currency,
-                    'price_type' => $contractPrice->price_type,
-                ];
-            }
+        $price = DB::table('product_prices')
+            ->where('product_id', $productId)
+            ->whereIn('price_type', $priority)
+            ->get(['amount', 'currency', 'price_type'])
+            ->sortBy(fn ($row) => $priorityRank[$row->price_type] ?? PHP_INT_MAX)
+            ->first();
+
+        if (! $price) {
+            return null;
         }
 
-        foreach ($this->pricePriority($user) as $priceType) {
-            $price = DB::table('product_prices')
-                ->where('product_id', $productId)
-                ->where('price_type', $priceType)
-                ->whereNull('company_id')
-                ->orderByDesc('id')
-                ->first();
+        Log::info('Resolved product price', [
+            'product_id' => $productId,
+            'user_id' => $user?->id,
+            'amount' => (float) $price->amount,
+            'currency' => $price->currency,
+            'price_type' => $price->price_type,
+        ]);
 
-            if ($price) {
-                return [
-                    'amount' => (float) $price->amount,
-                    'currency' => $price->currency,
-                    'price_type' => $price->price_type,
-                ];
-            }
-        }
-
-        return null;
+        return [
+            'amount' => (float) $price->amount,
+            'currency' => $price->currency,
+            'price_type' => $price->price_type,
+        ];
     }
 
     public function canGeneratePiForOther(?User $user): bool
@@ -202,7 +228,7 @@ class DataVisibilityService
         }
 
         if ($this->isFullAdmin($user) || $this->isDelegatedAdmin($user)) {
-            return ['contract', 'dealer', 'institutional', 'retail', 'public'];
+            return [ 'dealer', 'institutional', 'retail', 'public'];
         }
 
         if ($user->isB2c()) {

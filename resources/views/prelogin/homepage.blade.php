@@ -107,7 +107,7 @@
 </section>
 
 
-    {{-- PRODUCT CATEGORIES --}}
+    <!-- {{-- PRODUCT CATEGORIES --}}
     <section class="products py-5 bg-light">
         <div class="container">
             <h2 class="text-center mb-5 fw-bold">Our Product Categories</h2>
@@ -164,8 +164,48 @@
 
             </div>
         </div>
-    </section>
+    </section> -->
 
+
+    {{-- PRODUCT CATEGORIES --}}
+<section class="products py-5 bg-light">
+    <div class="container">
+
+        <h2 class="text-center mb-5 fw-bold">Our Product Categories</h2>
+
+        <div class="row g-4">
+
+            @foreach($productCategories as $category)
+
+                <div class="col-md-3">
+                    <div class="card h-100 text-center shadow-sm">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                {{ $category->name }}
+                            </h5>
+
+                            <p class="text-muted">
+                                {{ $category->description }}
+                            </p>
+
+                            <a href="{{ route('products.index', ['category' => $category->slug]) }}"
+                               class="btn btn-primary btn-sm">
+                                View Products
+                            </a>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            @endforeach
+
+        </div>
+
+    </div>
+</section>
 
     {{-- B2B / B2C SECTION --}}
     <section class="segments py-5">

@@ -18,7 +18,14 @@
       <div class="step">Address</div>
     </div>
 
-    <form id="signupForm" novalidate>
+    <!-- <form id="signupForm" novalidate> -->
+       <form id="signupForm" method="POST" action="{{ route('register') }}">
+            @csrf
+      @if ($errors->any())
+        <div class="form-group">
+          <span class="error">{{ $errors->first() }}</span>
+        </div>
+      @endif
 
       <!-- ================= STEP 1 ================= -->
       <div class="form-step active" data-step="1">
@@ -41,13 +48,13 @@
 </div>
         <div class="form-group">
           <label>First Name</label>
-          <input type="text" id="firstName">
+          <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}">
           <span class="error"></span>
         </div>
 
         <div class="form-group">
           <label>Last Name</label>
-          <input type="text" id="lastName">
+          <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}">
           <span class="error"></span>
         </div>
 
@@ -56,19 +63,19 @@
 
           <div class="form-group">
             <label>Business Type</label>
-            <select id="businessType">
+            <select id="businessType" name="b2b_type">
               <option value="">Select Business Type</option>
-              <option>Dealer</option>
-              <option>Distributor</option>
-              <option>Labs</option>
-              <option>Hospital</option>
+              <option value="dealer">Dealer</option>
+              <option value="distributor">Distributor</option>
+              <option value="lab">Labs</option>
+              <option value="hospital">Hospital</option>
             </select>
             <span class="error"></span>
           </div>
 
           <div class="form-group">
             <label>Company Name</label>
-            <input type="text" id="companyName">
+            <input type="text" id="companyName" name="company_name" value="{{ old('company_name') }}">
             <span class="error"></span>
           </div>
 
@@ -76,14 +83,14 @@
 
         <div class="form-group">
           <label>Email</label>
-          <input type="email" id="signupEmail">
+          <input type="email" id="signupEmail" name="email" value="{{ old('email') }}">
           <span class="error"></span>
         </div>
 
         <div class="form-group">
           <label>Password</label>
           <div class="password-wrapper">
-            <input type="password" id="signupPassword">
+            <input type="password" id="signupPassword" name='password'>
             <button type="button" id="toggleSignupPassword" class="toggle-password">
               <i class="bi bi-eye-slash"></i>
             </button>
@@ -94,7 +101,7 @@
         <div class="form-group">
           <label>Confirm Password</label>
           <div class="password-wrapper">
-            <input type="password" id="confirmPassword">
+            <input type="password" id="confirmPassword" name='password_confirmation'>
             <button type="button" id="toggleConfirmPassword" class="toggle-password">
               <i class="bi bi-eye-slash"></i>
             </button>
@@ -108,8 +115,8 @@
           <span class="error"></span>
         </div>
 
-        <button type="button" class="btn btn-primary" id="nextBtn">
-          Next
+        <button type="submit" class="btn btn-primary" id="nextBtn">
+          Sign Up
         </button>
 
       </div>
@@ -167,6 +174,6 @@
 </div>
 @endsection
 
-@push('scripts')
+<!-- @push('scripts')
 <script src="{{ asset('js/signup.js') }}"></script>
-@endpush
+@endpush -->

@@ -105,9 +105,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!validateFields(fields)) return;
 
-    console.log("Signup success:", collectSignupData());
+    const accountType = document.querySelector('input[name="accountType"]:checked').value;
+    const businessTypeRaw = document.getElementById("businessType").value.trim().toLowerCase();
+    const businessTypeMap = {
+      dealer: "dealer",
+      distributor: "distributor",
+      labs: "lab",
+      lab: "lab",
+      hospital: "hospital",
+    };
 
-    window.location.href = "/login";
+    setHiddenField(form, "name", `${document.getElementById("firstName").value} ${document.getElementById("lastName").value}`.trim());
+    setHiddenField(form, "user_type", accountType === "business" ? "b2b" : "b2c");
+    setHiddenField(form, "company_name", document.getElementById("companyName").value.trim());
+    setHiddenField(form, "b2b_type", businessTypeMap[businessTypeRaw] || "");
+
+    form.submit();
   });
 
   /* ================= COLLECT DATA ================= */
@@ -158,5 +171,18 @@ document.addEventListener("DOMContentLoaded", () => {
     opt.value = opt.textContent = s;
     stateSelect.appendChild(opt);
   });
+
+  function setHiddenField(formEl, name, value) {
+    let hiddenField = formEl.querySelector(`input[name="${name}"]`);
+
+    if (!hiddenField) {
+      hiddenField = document.createElement("input");
+      hiddenField.type = "hidden";
+      hiddenField.name = name;
+      formEl.appendChild(hiddenField);
+    }
+
+    hiddenField.value = value;
+  }
 
 });

@@ -26,13 +26,19 @@
       <a href="{{ route('contact') }}">Contact Us</a>
 
       <!-- Login / Logout buttons -->
-      <a href="{{ route('login') }}" id="loginBtn" class="btn btn-primary">
-        Login
-      </a>
-
-      <button id="logoutBtn" class="btn btn-outline" style="display:none;">
-        Logout
-      </button>
+ 
+       <div class="links">
+                @auth
+                    <span>{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                        @csrf
+                              <button  type="submit" id="logoutBtn" class="btn btn-outline" > Logout </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" id="loginBtn" class="btn btn-primary">Login</a>
+                    <a href="{{ route('signup') }}" id="signupBtn" class="btn btn-outline">signup</a>
+                @endauth
+            </div>
 
     </nav>
 

@@ -68,15 +68,20 @@ class RolePermissionService
             ->where('p.slug', $permissionSlug)
             ->exists();
     }
-
+    // This method returns a list of permission slugs for a user after combining:
+    // permissions from the user’s roles
+    // if user is admin then all permissions are granted
+    // user-specific overrides
     public function permissionSlugsForUser(?User $user): array
     {
         if (! $user) {
             return [];
         }
 
+        // Get the user’s role slugs
         $roleSlugs = $this->roleSlugsForUser($user);
 
+        // Get permissions coming from roles
         $fromRoles = DB::table('permissions')
             ->join('permission_role', 'permission_role.permission_id', '=', 'permissions.id')
             ->join('roles', 'roles.id', '=', 'permission_role.role_id')
@@ -84,19 +89,23 @@ class RolePermissionService
             ->pluck('permissions.slug')
             ->all();
 
+        // Get user-specific permission overrides
         $overrides = DB::table('user_permissions as up')
             ->join('permissions as p', 'p.id', '=', 'up.permission_id')
             ->where('up.user_id', $user->id)
             ->pluck('up.grant_type', 'p.slug');
-
+        
+        // Convert role permissions into a lookup map
         $permissions = array_fill_keys($fromRoles, true);
 
+        // If user has admin role, grant all permissions
         if (in_array('admin', $roleSlugs, true)) {
             foreach (DB::table('permissions')->pluck('slug')->all() as $permissionSlug) {
                 $permissions[$permissionSlug] = true;
             }
         }
 
+        // Apply user-specific overrides
         foreach ($overrides as $permissionSlug => $grantType) {
             if ($grantType === 'deny') {
                 unset($permissions[$permissionSlug]);
@@ -106,6 +115,7 @@ class RolePermissionService
             $permissions[$permissionSlug] = true;
         }
 
+        // Convert back to a array
         $result = array_keys($permissions);
         sort($result);
 

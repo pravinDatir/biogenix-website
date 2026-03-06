@@ -11,7 +11,7 @@
 <div class="product-details-page container py-5">
 
   <div class="product-back mb-4">
-    <a href="{{ route('products') }}" class="btn btn-light">
+    <a href="{{ route('products.index') }}" class="btn btn-light">
       ← Back to Products
     </a>
   </div>

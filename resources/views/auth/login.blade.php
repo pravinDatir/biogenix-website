@@ -10,11 +10,13 @@
   <div class="login-card">
     <h2>Login</h2>
 
-    <form id="loginForm" novalidate>
+    <!-- <form id="loginForm" novalidate> -->
+    <form method="POST" action="{{ route('login') }}">
+            @csrf
       <!-- Email -->
       <div class="form-group">
         <label>Email</label>
-        <input type="email" id="loginEmail" placeholder="Enter your email">
+        <input type="email" name='email'id="loginEmail" placeholder="Enter your email">
         <span class="error"></span>
       </div>
 
@@ -23,7 +25,7 @@
         <label>Password</label>
 
         <div class="password-wrapper">
-          <input type="password" id="loginPassword" placeholder="Enter your password">
+          <input type="password" name="password" id="loginPassword" placeholder="Enter your password">
           <button type="button" id="togglePassword" class="toggle-password">
             <i class="bi bi-eye-slash"></i>
           </button>
@@ -50,6 +52,6 @@
 </div>
 @endsection
 
-@push('scripts')
+<!-- @push('scripts')
 <script src="{{ asset('js/login.js') }}"></script>
-@endpush
+@endpush -->
