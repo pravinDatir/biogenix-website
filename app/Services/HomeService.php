@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Models\Authorization\User;
+use App\Services\Authorization\RolePermissionService;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class HomeService
 {
@@ -11,13 +14,16 @@ class HomeService
     ) {
     }
 
-    /**
-     * @return array{roleSlugs: array<int, string>}
-     */
+    // This prepares the small amount of role data needed on the homepage.
     public function viewData(?User $user): array
     {
-        return [
-            'roleSlugs' => $this->rolePermissionService->roleSlugsForUser($user),
-        ];
+        try {
+            return [
+                'roleSlugs' => $this->rolePermissionService->roleSlugsForUser($user),
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to build homepage data.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
     }
 }

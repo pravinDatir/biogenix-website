@@ -3,7 +3,7 @@
 @section('content')
     <div class="card">
         <h1>Product CRUD</h1>
-        <p class="muted">Create, edit, and delete products with multiple images and variants.</p>
+        <p class="muted">Create, edit, and delete products with multiple images. Every product has one default variant, and you can add extra variants only if needed.</p>
     </div>
 
     <div class="card">
@@ -65,14 +65,69 @@
                 <input id="create_images" name="images[]" type="file" multiple accept="image/*">
             </div>
 
-            <h3>Variant (optional)</h3>
+            <h3>Default Variant</h3>
+            <p class="muted">This variant is created with the product.</p>
+            <input type="hidden" name="variant_id[]" value="">
             <div class="field">
                 <label for="create_variant_sku_0">SKU</label>
                 <input id="create_variant_sku_0" name="variant_sku[]" value="{{ old('variant_sku.0') }}">
             </div>
 
+            <input type="hidden" name="variant_name[]" value="{{ old('variant_name.0', 'Default Variant') }}">
+            <p><strong>Variant Name:</strong> Default Variant</p>
+
             <div class="field">
-                <label for="create_variant_price_0">Price</label>
+                <label for="create_variant_model_0">Model Number</label>
+                <input id="create_variant_model_0" name="variant_model_number[]" value="{{ old('variant_model_number.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_catalog_0">Catalog Number</label>
+                <input id="create_variant_catalog_0" name="variant_catalog_number[]" value="{{ old('variant_catalog_number.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_attr_json_0">Attributes JSON</label>
+                <input id="create_variant_attr_json_0" name="variant_attributes_json[]" value="{{ old('variant_attributes_json.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_min_order_0">Min Order Quantity</label>
+                <input id="create_variant_min_order_0" name="variant_min_order_quantity[]" type="number" min="1" value="{{ old('variant_min_order_quantity.0', 1) }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_max_order_0">Max Order Quantity</label>
+                <input id="create_variant_max_order_0" name="variant_max_order_quantity[]" type="number" min="1" value="{{ old('variant_max_order_quantity.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_retail_price_0">Retail Price</label>
+                <input id="create_variant_retail_price_0" name="variant_retail_price[]" type="number" step="0.01" min="0" value="{{ old('variant_retail_price.0', old('variant_price.0')) }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_public_price_0">Public Price</label>
+                <input id="create_variant_public_price_0" name="variant_public_price[]" type="number" step="0.01" min="0" value="{{ old('variant_public_price.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_logged_in_price_0">Logged-In Price</label>
+                <input id="create_variant_logged_in_price_0" name="variant_logged_in_price[]" type="number" step="0.01" min="0" value="{{ old('variant_logged_in_price.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_dealer_price_0">Dealer Price</label>
+                <input id="create_variant_dealer_price_0" name="variant_dealer_price[]" type="number" step="0.01" min="0" value="{{ old('variant_dealer_price.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_institutional_price_0">Institutional Price</label>
+                <input id="create_variant_institutional_price_0" name="variant_institutional_price[]" type="number" step="0.01" min="0" value="{{ old('variant_institutional_price.0') }}">
+            </div>
+
+            <div class="field">
+                <label for="create_variant_price_0">Legacy Price (retail fallback)</label>
                 <input id="create_variant_price_0" name="variant_price[]" type="number" step="0.01" min="0" value="{{ old('variant_price.0') }}">
             </div>
 
@@ -101,10 +156,44 @@
 
             <div class="field" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px;">
                 <p><strong>Additional Variant (optional)</strong></p>
+                <input type="hidden" name="variant_id[]" value="">
                 <label for="create_variant_sku_1">SKU</label>
                 <input id="create_variant_sku_1" name="variant_sku[]" value="{{ old('variant_sku.1') }}">
 
-                <label for="create_variant_price_1">Price</label>
+                <label for="create_variant_name_1">Variant Name</label>
+                <input id="create_variant_name_1" name="variant_name[]" value="{{ old('variant_name.1') }}">
+
+                <label for="create_variant_model_1">Model Number</label>
+                <input id="create_variant_model_1" name="variant_model_number[]" value="{{ old('variant_model_number.1') }}">
+
+                <label for="create_variant_catalog_1">Catalog Number</label>
+                <input id="create_variant_catalog_1" name="variant_catalog_number[]" value="{{ old('variant_catalog_number.1') }}">
+
+                <label for="create_variant_attr_json_1">Attributes JSON</label>
+                <input id="create_variant_attr_json_1" name="variant_attributes_json[]" value="{{ old('variant_attributes_json.1') }}">
+
+                <label for="create_variant_min_order_1">Min Order Quantity</label>
+                <input id="create_variant_min_order_1" name="variant_min_order_quantity[]" type="number" min="1" value="{{ old('variant_min_order_quantity.1', 1) }}">
+
+                <label for="create_variant_max_order_1">Max Order Quantity</label>
+                <input id="create_variant_max_order_1" name="variant_max_order_quantity[]" type="number" min="1" value="{{ old('variant_max_order_quantity.1') }}">
+
+                <label for="create_variant_retail_price_1">Retail Price</label>
+                <input id="create_variant_retail_price_1" name="variant_retail_price[]" type="number" step="0.01" min="0" value="{{ old('variant_retail_price.1', old('variant_price.1')) }}">
+
+                <label for="create_variant_public_price_1">Public Price</label>
+                <input id="create_variant_public_price_1" name="variant_public_price[]" type="number" step="0.01" min="0" value="{{ old('variant_public_price.1') }}">
+
+                <label for="create_variant_logged_in_price_1">Logged-In Price</label>
+                <input id="create_variant_logged_in_price_1" name="variant_logged_in_price[]" type="number" step="0.01" min="0" value="{{ old('variant_logged_in_price.1') }}">
+
+                <label for="create_variant_dealer_price_1">Dealer Price</label>
+                <input id="create_variant_dealer_price_1" name="variant_dealer_price[]" type="number" step="0.01" min="0" value="{{ old('variant_dealer_price.1') }}">
+
+                <label for="create_variant_institutional_price_1">Institutional Price</label>
+                <input id="create_variant_institutional_price_1" name="variant_institutional_price[]" type="number" step="0.01" min="0" value="{{ old('variant_institutional_price.1') }}">
+
+                <label for="create_variant_price_1">Legacy Price (retail fallback)</label>
                 <input id="create_variant_price_1" name="variant_price[]" type="number" step="0.01" min="0" value="{{ old('variant_price.1') }}">
 
                 <label for="create_variant_stock_1">Stock Quantity</label>
@@ -210,17 +299,71 @@
                 <h3>Variants</h3>
                 @php
                     $variantRows = $editingVariants->count() > 0
-                        ? $editingVariants->push((object) ['sku' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => ''])
-                        : collect([(object) ['sku' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => '']]);
+                        ? $editingVariants->push((object) ['id' => null, 'sku' => '', 'variant_name' => '', 'attributes_json' => '', 'min_order_quantity' => 1, 'max_order_quantity' => '', 'model_number' => '', 'catalog_number' => '', 'public_price' => '', 'logged_in_price' => '', 'retail_price' => '', 'dealer_price' => '', 'institutional_price' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => ''])
+                        : collect([(object) ['id' => null, 'sku' => '', 'variant_name' => '', 'attributes_json' => '', 'min_order_quantity' => 1, 'max_order_quantity' => '', 'model_number' => '', 'catalog_number' => '', 'public_price' => '', 'logged_in_price' => '', 'retail_price' => '', 'dealer_price' => '', 'institutional_price' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => '']]);
                 @endphp
 
                 @foreach ($variantRows as $index => $variant)
+                    @php
+                        $isDefaultVariant = $index === 0 && ! empty($variant->id);
+                    @endphp
                     <div class="field" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px;">
-                        <p><strong>Variant {{ $index + 1 }}</strong></p>
+                        <p><strong>{{ $isDefaultVariant ? 'Default Variant' : 'Variant '.($index + 1) }}</strong></p>
+                        <input type="hidden" name="variant_id[]" value="{{ old('variant_id.'.$index, $variant->id) }}">
+
+                        @if ($isDefaultVariant)
+                            <input type="hidden" name="variant_delete[]" value="0">
+                            <p class="muted">This variant stays with the product.</p>
+                        @else
+                            <label>Delete Variant</label>
+                            <select name="variant_delete[]">
+                                <option value="0" @selected((string) old('variant_delete.'.$index, '0') === '0')>No</option>
+                                <option value="1" @selected((string) old('variant_delete.'.$index, '0') === '1')>Yes</option>
+                            </select>
+                        @endif
+
                         <label>SKU</label>
                         <input name="variant_sku[]" value="{{ old('variant_sku.'.$index, $variant->sku) }}">
 
-                        <label>Price</label>
+                        @if ($isDefaultVariant)
+                            <input type="hidden" name="variant_name[]" value="{{ old('variant_name.'.$index, $variant->variant_name ?: 'Default Variant') }}">
+                            <p><strong>Variant Name:</strong> {{ old('variant_name.'.$index, $variant->variant_name ?: 'Default Variant') }}</p>
+                        @else
+                            <label>Variant Name</label>
+                            <input name="variant_name[]" value="{{ old('variant_name.'.$index, $variant->variant_name ?? '') }}">
+                        @endif
+
+                        <label>Model Number</label>
+                        <input name="variant_model_number[]" value="{{ old('variant_model_number.'.$index, $variant->model_number ?? '') }}">
+
+                        <label>Catalog Number</label>
+                        <input name="variant_catalog_number[]" value="{{ old('variant_catalog_number.'.$index, $variant->catalog_number ?? '') }}">
+
+                        <label>Attributes JSON</label>
+                        <input name="variant_attributes_json[]" value="{{ old('variant_attributes_json.'.$index, $variant->attributes_json ?? '') }}">
+
+                        <label>Min Order Quantity</label>
+                        <input name="variant_min_order_quantity[]" type="number" min="1" value="{{ old('variant_min_order_quantity.'.$index, $variant->min_order_quantity ?? 1) }}">
+
+                        <label>Max Order Quantity</label>
+                        <input name="variant_max_order_quantity[]" type="number" min="1" value="{{ old('variant_max_order_quantity.'.$index, $variant->max_order_quantity ?? '') }}">
+
+                        <label>Public Price</label>
+                        <input name="variant_public_price[]" type="number" step="0.01" min="0" value="{{ old('variant_public_price.'.$index, $variant->public_price ?? '') }}">
+
+                        <label>Logged-In Price</label>
+                        <input name="variant_logged_in_price[]" type="number" step="0.01" min="0" value="{{ old('variant_logged_in_price.'.$index, $variant->logged_in_price ?? '') }}">
+
+                        <label>Retail Price</label>
+                        <input name="variant_retail_price[]" type="number" step="0.01" min="0" value="{{ old('variant_retail_price.'.$index, $variant->retail_price ?? $variant->price) }}">
+
+                        <label>Dealer Price</label>
+                        <input name="variant_dealer_price[]" type="number" step="0.01" min="0" value="{{ old('variant_dealer_price.'.$index, $variant->dealer_price ?? '') }}">
+
+                        <label>Institutional Price</label>
+                        <input name="variant_institutional_price[]" type="number" step="0.01" min="0" value="{{ old('variant_institutional_price.'.$index, $variant->institutional_price ?? '') }}">
+
+                        <label>Legacy Price (retail fallback)</label>
                         <input name="variant_price[]" type="number" step="0.01" min="0" value="{{ old('variant_price.'.$index, $variant->price) }}">
 
                         <label>Stock Quantity</label>

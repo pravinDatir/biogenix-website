@@ -2,11 +2,13 @@
 
 namespace App\Actions\Fortify;
 
-use App\Models\User;
+use App\Models\Authorization\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\ResetsUserPasswords;
+use Throwable;
 
 class ResetUserPassword implements ResetsUserPasswords
 {
@@ -21,12 +23,19 @@ class ResetUserPassword implements ResetsUserPasswords
      */
     public function reset(User $user, array $input): void
     {
-        Validator::make($input, [
-            'password' => $this->passwordRules(),
-        ])->validate();
+        try {
+            // Step 1: validate the new password fields from the reset flow.
+            Validator::make($input, [
+                'password' => $this->passwordRules(),
+            ])->validate();
 
-        $user->forceFill([
-            'password' => Hash::make($input['password']),
-        ])->save();
+            // Step 2: save the new hashed password on the user record.
+            $user->forceFill([
+                'password' => Hash::make($input['password']),
+            ])->save();
+        } catch (Throwable $exception) {
+            Log::error('Failed to reset user password.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
     }
 }

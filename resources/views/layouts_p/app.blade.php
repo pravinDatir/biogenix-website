@@ -24,22 +24,22 @@
         .errors { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px; border-radius: 6px; margin-bottom: 12px; }
         .muted { color: #64748b; font-size: 14px; }
         ul { margin-top: 8px; }
+        .links .active-link { color: #fff; font-weight: 700; }
     </style>
 </head>
 <body>
     <nav class="nav">
         <div class="container">
             <div class="links">
-                <a href="{{ route('home') }}">Home</a>
+                <a href="{{ url('/AdminhomeView') }}" class="active-link">Home</a>
                 <a href="{{ route('products.index') }}">Products</a>
                 <a href="{{ route('proforma.create') }}">Generate PI</a>
                 @auth
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                     <a href="{{ route('proforma.index') }}">My PI</a>
                     <a href="{{ route('support-tickets.index') }}">Support Tickets</a>
-                    @if (app(\App\Services\RolePermissionService::class)->hasPermission(auth()->user(), 'users.manage'))
-                        <a href="{{ route('admin.users.index') }}">Admin Console</a>
-                    @endif
+                    <a href="{{ route('admin.users.index') }}">Admin Console</a>
+               
                 @endauth
             </div>
             <div class="links">

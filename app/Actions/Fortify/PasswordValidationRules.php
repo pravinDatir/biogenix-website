@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 trait PasswordValidationRules
 {
@@ -14,7 +15,12 @@ trait PasswordValidationRules
      */
     protected function passwordRules(): array
     {
-        Log::info('PasswordValidationRules.passwordRules  Generating password validation rules');
-        return ['required', 'string', Password::default(), 'confirmed'];
+        try {
+            Log::info('PasswordValidationRules.passwordRules  Generating password validation rules');
+            return ['required', 'string', Password::default(), 'confirmed'];
+        } catch (Throwable $exception) {
+            Log::error('Failed to build password validation rules.', ['error' => $exception->getMessage()]);
+            throw $exception;
+        }
     }
 }

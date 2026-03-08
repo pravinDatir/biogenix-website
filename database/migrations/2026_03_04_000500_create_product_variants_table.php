@@ -19,7 +19,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->string('sku')->unique();
-            $table->decimal('price', 12, 2)->default(0);
+            $table->string('variant_name')->default('Default Variant');
+            $table->json('attributes_json')->nullable();
+            $table->unsignedInteger('min_order_quantity')->default(1);
+            $table->unsignedInteger('max_order_quantity')->nullable();
+            $table->string('model_number')->nullable();
+            $table->string('catalog_number')->nullable();
             $table->unsignedInteger('stock_quantity')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

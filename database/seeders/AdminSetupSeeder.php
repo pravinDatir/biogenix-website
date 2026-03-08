@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Services\RolePermissionService;
+use App\Models\Authorization\User;
+use App\Services\Authorization\RolePermissionService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;

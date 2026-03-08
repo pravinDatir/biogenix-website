@@ -10,10 +10,11 @@ return new class extends Migration
     {
         if (! Schema::hasTable('categories')) {
             Schema::create('categories', function (Blueprint $table) {
-                $table->id();
+                $table->id()->primary();
                 $table->string('name');
                  $table->string('description')->nullable();
                 $table->string('slug')->unique();
+                $table->decimal('gst_rate', 5, 2)->default(18.00);
                 $table->unsignedInteger('sort_order')->default(0);
                 $table->timestamps();
             });
@@ -21,7 +22,7 @@ return new class extends Migration
 
         if (! Schema::hasTable('subcategories')) {
             Schema::create('subcategories', function (Blueprint $table) {
-                $table->id();
+                $table->id()->primary();
                 $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
                 $table->string('name');
                 $table->string('slug');
@@ -34,7 +35,7 @@ return new class extends Migration
 
          if (! Schema::hasTable('product_specifications')) {
             Schema::create('product_specifications', function (Blueprint $table) {
-                $table->id();
+                $table->id()->primary();
                 $table->json('specs')->nullable();
                 $table->timestamps();
             }); 
@@ -42,7 +43,7 @@ return new class extends Migration
 
         if (! Schema::hasTable('products')) {
             Schema::create('products', function (Blueprint $table) {
-                $table->id();
+                $table->id()->primary();
                 $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
                 $table->foreignId('subcategory_id')->nullable()->constrained('subcategories')->nullOnDelete();
                 $table->foreignId('product_specifications_id')->nullable()->constrained('product_specifications')->nullOnDelete();
@@ -54,6 +55,7 @@ return new class extends Migration
                 $table->string('name');
                 $table->string('brand')->nullable();
                 $table->text('description')->nullable();
+                $table->decimal('gst_rate', 5, 2)->nullable();
                 $table->string('visibility_scope', 20)->default('public');
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
@@ -62,14 +64,23 @@ return new class extends Migration
 
          if (! Schema::hasTable('product_prices')) {
             Schema::create('product_prices', function (Blueprint $table) {
-                $table->id();
-                $table->foreignId('product_id')->nullable()->constrained('products')->cascadeOnDelete();
+                $table->id()->primary();
+                // Pricing is now linked to variant.
+                $table->unsignedBigInteger('product_variant_id')->nullable();
                 $table->string('price_type', 30);
                 $table->foreignId('company_id')->nullable()->constrained('companies')->nullOnDelete();
                 $table->decimal('amount', 12, 2);
+                $table->decimal('gst_rate', 5, 2)->default(0);
+                $table->decimal('tax_amount', 12, 2)->default(0);
+                $table->decimal('price_after_gst', 12, 2)->default(0);
                 $table->string('currency', 3)->default('INR');
+                $table->unsignedInteger('min_order_quantity')->default(1);
+                $table->unsignedInteger('max_order_quantity')->nullable();
+                $table->unsignedInteger('lot_size')->default(1);
+                $table->unsignedInteger('quantity')->default(0);
+                $table->boolean('is_active')->default(true);
                 $table->timestamps();
-                $table->index(['product_id', 'price_type'], 'product_prices_product_price_type_index');
+                $table->index(['product_variant_id', 'price_type'], 'product_prices_variant_price_type_index');
             });
         }
 
@@ -90,7 +101,11 @@ return new class extends Migration
                 $table->string('target_phone')->nullable();
                 $table->foreignId('target_company_id')->nullable()->constrained('companies')->nullOnDelete();
                 $table->string('status', 30)->default('draft');
+                $table->string('currency', 3)->default('INR');
                 $table->decimal('subtotal', 12, 2)->default(0);
+                $table->decimal('tax_amount', 12, 2)->default(0);
+                $table->decimal('discount_amount', 12, 2)->default(0);
+                $table->decimal('price_after_gst', 12, 2)->default(0);
                 $table->decimal('total_amount', 12, 2)->default(0);
                 $table->string('guest_session_id')->nullable()->index();
                 $table->text('notes')->nullable();
@@ -105,19 +120,36 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('proforma_invoice_id')->constrained('proforma_invoices')->cascadeOnDelete();
                 $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+                $table->unsignedBigInteger('product_variant_id')->nullable();
                 $table->string('product_name');
                 $table->string('sku');
+                $table->string('variant_name')->nullable();
+                $table->string('price_type', 30)->nullable();
+                $table->string('currency', 3)->default('INR');
                 $table->unsignedInteger('quantity');
                 $table->decimal('unit_price', 12, 2);
+                $table->decimal('gst_rate', 5, 2)->default(0);
+                $table->decimal('unit_tax_amount', 12, 2)->default(0);
+                $table->decimal('unit_price_after_gst', 12, 2)->default(0);
+                $table->decimal('discount_percent', 5, 2)->default(0);
+                $table->decimal('unit_discount_amount', 12, 2)->default(0);
+                $table->decimal('line_subtotal', 12, 2)->default(0);
+                $table->decimal('line_tax_amount', 12, 2)->default(0);
+                $table->decimal('line_price_after_gst', 12, 2)->default(0);
+                $table->decimal('line_discount_amount', 12, 2)->default(0);
                 $table->decimal('line_total', 12, 2);
                 $table->timestamps();
             });
         }
 
-        if (! Schema::hasTable('guest_activity_logs')) {
-            Schema::create('guest_activity_logs', function (Blueprint $table) {
+        if (! Schema::hasTable('user_activity_logs')) {
+            Schema::create('user_activity_logs', function (Blueprint $table) {
                 $table->id();
                 $table->string('session_id')->index();
+                $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+                $table->string('user_type', 30)->default('guest');
+                $table->string('user_name')->nullable();
+                $table->string('user_email')->nullable();
                 $table->string('activity_type', 40);
                 $table->string('path')->nullable();
                 $table->json('payload')->nullable();
@@ -128,7 +160,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('guest_activity_logs');
+        Schema::dropIfExists('user_activity_logs');
         Schema::dropIfExists('proforma_invoice_items');
         Schema::dropIfExists('proforma_invoices');
         Schema::dropIfExists('product_specifications'); // ✅ ADDED

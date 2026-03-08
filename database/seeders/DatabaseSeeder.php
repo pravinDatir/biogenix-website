@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RbacSeeder::class,
+            CompaniesSeeder::class,
             AdminSetupSeeder::class,
             CatalogSeeder::class,
         ]);
