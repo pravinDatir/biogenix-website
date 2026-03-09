@@ -1,0 +1,123 @@
+.login-page {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 23.75rem;
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.625rem;
+  background: #fff;
+}
+
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.form-group input.error-border {
+  border-color: #dc2626;
+}
+
+/* Error text */
+.error {
+  display: block;
+  min-height: 0.875rem;
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+}
+
+/* Password */
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #475569;
+  font-size: 1rem;
+}
+
+#loginForm button[type="submit"] {
+  width: 100%;
+}
+
+/* CTA */
+.signup-cta {
+  margin-top: 1rem;
+  text-align: center;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem
+}
+
+/* ===============================
+   FORGOT PASSWORD
+=============================== */
+
+.forgot-password {
+  text-align: right;
+  margin-top: 0.25rem;
+}
+
+.forgot-password a {
+  font-size: 0.75rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-password a:hover {
+  color: #1e40af;
+  text-decoration: underline;
+}
+
+/* ===============================
+   FORGOT PASSWORD PAGE STATUS
+=============================== */
+
+.form-status {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+.form-status.success {
+  color: #16a34a;
+}
+
+.form-status.error {
+  color: #dc2626;
+}

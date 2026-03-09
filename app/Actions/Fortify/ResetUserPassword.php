@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Actions\Fortify;
+
+use App\Models\Authorization\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Contracts\ResetsUserPasswords;
+use Throwable;
+
+class ResetUserPassword implements ResetsUserPasswords
+{
+    use PasswordValidationRules;
+
+    /**
+     * Validate and reset the user's forgotten password.
+     *
+     * @param  array<string, string>  $input
+     *
+     * @throws ValidationException
+     */
+    public function reset(User $user, array $input): void
+    {
+        try {
+            // Step 1: validate the new password fields from the reset flow.
+            Validator::make($input, [
+                'password' => $this->passwordRules(),
+            ])->validate();
+
+            // Step 2: save the new hashed password on the user record.
+            $user->forceFill([
+                'password' => Hash::make($input['password']),
+            ])->save();
+        } catch (Throwable $exception) {
+            Log::error('Failed to reset user password.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+}
