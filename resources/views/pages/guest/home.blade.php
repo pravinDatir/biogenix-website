@@ -130,11 +130,17 @@
                     <x-badge variant="info">B2B Operations</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Distributor, Lab, and Hospital Enablement</h3>
                     <p class="mt-2 text-sm text-slate-600">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
+                    <div class="mt-5">
+                        <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])">B2B Login</x-ui.action-link>
+                    </div>
                 </article>
                 <article class="saas-card">
                     <x-badge variant="success">B2C Access</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Retail and Independent Care Buyers</h3>
                     <p class="mt-2 text-sm text-slate-600">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
+                    <div class="mt-5">
+                        <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])">B2C Login</x-ui.action-link>
+                    </div>
                 </article>
             </div>
         </div>
