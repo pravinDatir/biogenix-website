@@ -3,6 +3,7 @@
 @section('title', 'Role And Permission Management')
 
 @section('content')
+    <div class="page-shell !space-y-4 md:!space-y-6">
     <div class="card">
         <h1>Role And Permission Management</h1>
         <p class="muted">
@@ -66,37 +67,41 @@
         <h2>Existing Roles</h2>
 
         @if ($roles->count())
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Slug</th>
-                        <th>Users</th>
-                        <th>Permissions</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($roles as $role)
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ $role->name }}</td>
-                            <td>{{ $role->slug }}</td>
-                            <td>{{ $role->users_count }}</td>
-                            <td>{{ $role->permissions_count }}</td>
-                            <td>
-                                <a class="btn secondary" href="{{ route('admin.roles.show', $role->id) }}">Edit</a>
-                                <a class="btn secondary" href="{{ route('admin.roles.show', $role->id) }}">Manage Permissions</a>
-
-                                <form method="POST" action="{{ route('admin.roles.delete', $role->id) }}" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn secondary" type="submit">Delete</button>
-                                </form>
-                            </td>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Users</th>
+                            <th>Permissions</th>
+                            <th>Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($roles as $role)
+                            <tr>
+                                <td>{{ $role->name }}</td>
+                                <td>{{ $role->slug }}</td>
+                                <td>{{ $role->users_count }}</td>
+                                <td>{{ $role->permissions_count }}</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a class="btn secondary" href="{{ route('admin.roles.show', $role->id) }}">Edit</a>
+                                        <a class="btn secondary" href="{{ route('admin.roles.show', $role->id) }}">Manage Permissions</a>
+
+                                        <form method="POST" action="{{ route('admin.roles.delete', $role->id) }}" class="inline-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn secondary" type="submit">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @else
             <p>No roles found.</p>
         @endif
@@ -146,41 +151,45 @@
         <h2>Existing Permissions</h2>
 
         @if ($permissions->count())
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Slug</th>
-                        <th>Roles</th>
-                        <th>User Overrides</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($permissions as $permission)
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ $permission->name }}</td>
-                            <td>{{ $permission->slug }}</td>
-                            <td>{{ $permission->roles_count }}</td>
-                            <td>{{ $permission->user_overrides_count }}</td>
-                            <td>
-                                <a
-                                    class="btn secondary"
-                                    href="{{ $editingRole ? route('admin.roles.show', ['roleId' => $editingRole->id, 'edit_permission_id' => $permission->id]) : route('admin.roles.index', ['edit_permission_id' => $permission->id]) }}"
-                                >
-                                    Edit
-                                </a>
-
-                                <form method="POST" action="{{ route('admin.roles.permissions.delete', $permission->id) }}" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn secondary" type="submit">Delete</button>
-                                </form>
-                            </td>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Roles</th>
+                            <th>User Overrides</th>
+                            <th>Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($permissions as $permission)
+                            <tr>
+                                <td>{{ $permission->name }}</td>
+                                <td>{{ $permission->slug }}</td>
+                                <td>{{ $permission->roles_count }}</td>
+                                <td>{{ $permission->user_overrides_count }}</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a
+                                            class="btn secondary"
+                                            href="{{ $editingRole ? route('admin.roles.show', ['roleId' => $editingRole->id, 'edit_permission_id' => $permission->id]) : route('admin.roles.index', ['edit_permission_id' => $permission->id]) }}"
+                                        >
+                                            Edit
+                                        </a>
+
+                                        <form method="POST" action="{{ route('admin.roles.permissions.delete', $permission->id) }}" class="inline-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn secondary" type="submit">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @else
             <p>No permissions found.</p>
         @endif
@@ -219,5 +228,6 @@
         @else
             <p>Select a role from the role table to manage its permissions.</p>
         @endif
+    </div>
     </div>
 @endsection

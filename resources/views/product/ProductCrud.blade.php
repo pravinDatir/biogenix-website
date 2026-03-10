@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="page-shell !space-y-4 md:!space-y-6">
     <div class="card">
         <h1>Product CRUD</h1>
         <p class="muted">Create, edit, and delete products with multiple images. Every product has one default variant, and you can add extra variants only if needed.</p>
@@ -154,7 +155,7 @@
                 <input id="create_variant_attr_value_0" name="variant_attribute_value[]" value="{{ old('variant_attribute_value.0') }}">
             </div>
 
-            <div class="field" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px;">
+            <div class="field rounded-lg border border-slate-200 p-2">
                 <p><strong>Additional Variant (optional)</strong></p>
                 <input type="hidden" name="variant_id[]" value="">
                 <label for="create_variant_sku_1">SKU</label>
@@ -281,7 +282,7 @@
                 @if ($editingImages->isNotEmpty())
                     <h3>Existing Images</h3>
                     @foreach ($editingImages as $image)
-                        <div class="field" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px;">
+                        <div class="field rounded-lg border border-slate-200 p-2">
                             <p><strong>Path:</strong> {{ $image->file_path }}</p>
                             <label>
                                 <input type="radio" name="primary_image_id" value="{{ $image->id }}" @checked((int) old('primary_image_id', $editingProduct->product_image_id) === (int) $image->id)>
@@ -307,7 +308,7 @@
                     @php
                         $isDefaultVariant = $index === 0 && ! empty($variant->id);
                     @endphp
-                    <div class="field" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px;">
+                    <div class="field rounded-lg border border-slate-200 p-2">
                         <p><strong>{{ $isDefaultVariant ? 'Default Variant' : 'Variant '.($index + 1) }}</strong></p>
                         <input type="hidden" name="variant_id[]" value="{{ old('variant_id.'.$index, $variant->id) }}">
 
@@ -386,7 +387,7 @@
                 <button type="submit" class="btn">Update Product</button>
             </form>
 
-            <form method="POST" action="{{ url('/products-crud/'.$editingProduct->id) }}" style="margin-top: 10px;">
+            <form method="POST" action="{{ url('/products-crud/'.$editingProduct->id) }}" class="mt-3">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn secondary" onclick="return confirm('Delete this product?')">Delete Product</button>
@@ -396,48 +397,53 @@
 
     <div class="card">
         <h2>Products</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Slug</th>
-                    <th>Category</th>
-                    <th>Subcategory</th>
-                    <th>Published</th>
-                    <th>Primary Image</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($products as $product)
+        <div class="table-wrap">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $product->id }}</td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->slug }}</td>
-                        <td>{{ $product->category_name ?? '-' }}</td>
-                        <td>{{ $product->subcategory_name ?? '-' }}</td>
-                        <td>{{ (int) $product->is_published === 1 ? 'Yes' : 'No' }}</td>
-                        <td>{{ $product->primary_image_path ?? '-' }}</td>
-                        <td>
-                            <a class="btn secondary" href="{{ url('/products-crud?edit_product_id='.$product->id) }}">Edit</a>
-                            <form method="POST" action="{{ url('/products-crud/'.$product->id) }}" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn secondary" onclick="return confirm('Delete this product?')">Delete</button>
-                            </form>
-                        </td>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Published</th>
+                        <th>Primary Image</th>
+                        <th>Actions</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="8">No products found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($products as $product)
+                        <tr>
+                            <td>{{ $product->id }}</td>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->slug }}</td>
+                            <td>{{ $product->category_name ?? '-' }}</td>
+                            <td>{{ $product->subcategory_name ?? '-' }}</td>
+                            <td>{{ (int) $product->is_published === 1 ? 'Yes' : 'No' }}</td>
+                            <td>{{ $product->primary_image_path ?? '-' }}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a class="btn secondary" href="{{ url('/products-crud?edit_product_id='.$product->id) }}">Edit</a>
+                                    <form method="POST" action="{{ url('/products-crud/'.$product->id) }}" class="inline-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn secondary" onclick="return confirm('Delete this product?')">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8">No products found.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-        <div style="margin-top: 10px;">
+        <div class="pagination-wrap">
             {{ $products->links() }}
         </div>
+    </div>
     </div>
 @endsection

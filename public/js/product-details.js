@@ -35,8 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const brochureEl = document.getElementById("productBrochure");
             if (product.brochure) {
                 brochureEl.href = "/" + product.brochure;
+                brochureEl.classList.remove("hidden");
             } else {
-                brochureEl.style.display = "none";
+                brochureEl.classList.add("hidden");
             }
 
             // Login Logic
@@ -45,11 +46,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const orderBtn = document.getElementById("orderCTA");
 
             if (isLoggedIn) {
-                loginBtn.style.display = "none";
-                orderBtn.style.display = "inline-block";
+                loginBtn.classList.add("hidden");
+                orderBtn.classList.remove("hidden");
             } else {
-                loginBtn.style.display = "inline-block";
-                orderBtn.style.display = "none";
+                loginBtn.classList.remove("hidden");
+                orderBtn.classList.add("hidden");
             }
 
         })

@@ -13,7 +13,6 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('placed_by_user_id')->constrained('users');
                 $table->foreignId('company_id')->nullable()->constrained('companies')->nullOnDelete();
-                $table->foreignId('proforma_invoice_id')->nullable()->constrained('proforma_invoices')->nullOnDelete();
                 $table->string('status', 32)->default('draft');
                 $table->char('currency', 3)->default('INR');
                 $table->decimal('subtotal_amount', 19, 4)->default(0);
@@ -29,6 +28,7 @@ return new class extends Migration
                 $table->dateTime('approved_at')->nullable();
                 $table->dateTime('cancelled_at')->nullable();
                 $table->timestamps();
+                $table->softDeletes();
                 $table->index(['placed_by_user_id', 'status'], 'orders_user_status_index');
                 $table->index(['company_id', 'status'], 'orders_company_status_index');
                 $table->index(['status', 'created_at'], 'orders_status_created_index');

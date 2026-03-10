@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SupportTicket;
 
-use App\Services\SupportTicketService;
+use App\Http\Controllers\Controller;
+use App\Services\SupportTicket\SupportTicketService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;

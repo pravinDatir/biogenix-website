@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="page-shell !space-y-4 md:!space-y-6">
     <div class="card">
         <h1>Product Listing</h1>
         <form method="GET" action="{{ route('products.index') }}">
@@ -24,46 +25,49 @@
     </div>
 
     <div class="card">
-        <table>
-            <thead>
-                <tr>
-                    <th>SKU</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Visibility</th>
-                    <th>Visible Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($products as $product)
+        <div class="table-wrap">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $product->sku }}</td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->category_name ?? '-' }}</td>
-                        <td>{{ strtoupper($product->visibility_scope) }}</td>
-                        <td>
-                            @if ($product->visible_price !== null)
-                                {{ $product->visible_currency }} {{ number_format($product->visible_price, 2) }}
-                                <span class="muted">({{ $product->visible_price_type }})</span>
-                            @else
-                                Not available
-                            @endif
-                        </td>
-                        <td>
-                            <a class="btn secondary" href="{{ route('products.show', $product->id) }}">View</a>
-                        </td>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Visibility</th>
+                        <th>Visible Price</th>
+                        <th>Action</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6">No products are visible for this user context.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($products as $product)
+                        <tr>
+                            <td>{{ $product->sku }}</td>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->category_name ?? '-' }}</td>
+                            <td>{{ strtoupper($product->visibility_scope) }}</td>
+                            <td>
+                                @if ($product->visible_price !== null)
+                                    {{ $product->visible_currency }} {{ number_format($product->visible_price, 2) }}
+                                    <span class="muted">({{ $product->visible_price_type }})</span>
+                                @else
+                                    Not available
+                                @endif
+                            </td>
+                            <td>
+                                <a class="btn secondary" href="{{ route('products.show', $product->id) }}">View</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6">No products are visible for this user context.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-        <div style="margin-top: 10px;">
+        <div class="pagination-wrap">
             {{ $products->links() }}
         </div>
+    </div>
     </div>
 @endsection

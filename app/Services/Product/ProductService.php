@@ -3,6 +3,7 @@
 namespace App\Services\Product;
 
 use App\Models\Authorization\User;
+use App\Models\Order\OrderItem;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\Product\ProductImage;
@@ -163,6 +164,146 @@ class ProductService
                 ->get();
         } catch (Throwable $exception) {
             Log::error('Failed to load product categories.', ['error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This returns the top frequently bought together products for one product.
+    public function frequentlyBoughtTogetherProducts(int $productId, ?User $user): Collection
+    {
+        try {
+            // Step 1: read the configured top product limit and keep a safe minimum of one.
+            $limit = max(1, (int) config('common.frequently_bought_together_limit', 4));
+
+            // Step 2: load the current product because category and subcategory are used for fallback.
+            $currentProduct = Product::query()
+                ->select(['id', 'category_id', 'subcategory_id'])
+                ->find($productId);
+
+            // Step 3: return an empty collection when the current product does not exist.
+            if (! $currentProduct) {
+                return collect();
+            }
+
+            // Step 4: start one ordered list that will hold the final ranked related product ids.
+            $selectedProductIds = collect();
+
+            // Step 5: count the top related products directly in the database.
+            $topProductFrequencyMap = OrderItem::query()
+                ->selectRaw('order_items.product_id, COUNT(*) as frequency_count')
+                ->whereIn('order_items.order_id', function ($builder) use ($productId): void {
+                    $builder->select('order_items.order_id')
+                        ->from('order_items')
+                        ->join('orders', 'orders.id', '=', 'order_items.order_id')
+                        ->where('order_items.product_id', $productId)
+                        ->whereIn('orders.status', ['submitted', 'approved']);
+                })
+                ->whereNotNull('order_items.product_id')
+                ->where('order_items.product_id', '!=', $productId)
+                ->groupBy('order_items.product_id')
+                ->orderByDesc('frequency_count')
+                ->limit($limit)
+                ->pluck('frequency_count', 'order_items.product_id');
+
+            // Step 6: keep the ranked frequently-bought ids first in the final ordered list.
+            $selectedProductIds = $selectedProductIds->concat(
+                $topProductFrequencyMap
+                    ->keys()
+                    ->map(fn ($relatedProductId) => (int) $relatedProductId)
+                    ->values()
+            );
+
+            // Step 7: fill the remaining slots from the same subcategory when needed(in case desired no of frequently bought together products is not met).
+            if ($selectedProductIds->count() < $limit && $currentProduct->subcategory_id) {
+                $remainingCount = $limit - $selectedProductIds->count();
+
+                $sameSubcategoryProductIds = Product::query()
+                    ->where('subcategory_id', $currentProduct->subcategory_id)
+                    ->where('id', '!=', $productId)
+                    ->whereNotIn('id', $selectedProductIds->all())
+                    ->where('is_active', true)
+                    ->orderBy('name')
+                    ->limit($remainingCount)
+                    ->pluck('id')
+                    ->map(fn ($relatedProductId) => (int) $relatedProductId);
+
+                $selectedProductIds = $selectedProductIds->concat($sameSubcategoryProductIds);
+            }
+
+            // Step 8: fill the remaining slots from the same category when needed.
+            if ($selectedProductIds->count() < $limit && $currentProduct->category_id) {
+                $remainingCount = $limit - $selectedProductIds->count();
+
+                $sameCategoryProductIds = Product::query()
+                    ->where('category_id', $currentProduct->category_id)
+                    ->where('id', '!=', $productId)
+                    ->whereNotIn('id', $selectedProductIds->all())
+                    ->where('is_active', true)
+                    ->orderBy('name')
+                    ->limit($remainingCount)
+                    ->pluck('id')
+                    ->map(fn ($relatedProductId) => (int) $relatedProductId);
+
+                $selectedProductIds = $selectedProductIds->concat($sameCategoryProductIds);
+            }
+
+            // Step 9: keep the final ids unique and stop at the configured limit.
+            $topProductIds = $selectedProductIds
+                ->unique()
+                ->take($limit)
+                ->values();
+
+            // Step 10: return an empty collection when no related products remain after fallback.
+            if ($topProductIds->isEmpty()) {
+                return collect();
+            }
+
+            // Step 11: load the related product rows with common relations using Eloquent.
+            $products = Product::query()
+                ->with([
+                    'category:id,name',
+                    'subcategory:id,name',
+                    'primaryImage:id,file_path',
+                ])
+                ->whereIn('id', $topProductIds->all())
+                ->where('is_active', true)
+                ->get();
+
+            // Step 12: key the loaded products by id so ranked lookup stays simple.
+            $products = $products->keyBy('id');
+
+            // Step 13: rebuild the final list in ranked order and attach the current visible price fields.
+            return $topProductIds
+                ->map(function (int $relatedProductId) use ($products, $topProductFrequencyMap, $user) {
+                    $product = $products->get($relatedProductId);
+
+                    if (! $product) {
+                        return null;
+                    }
+
+                    $price = $this->dataVisibilityService->resolvePrice($relatedProductId, $user);
+
+                    if (! $price) {
+                        return null;
+                    }
+
+                    $product->frequency_count = (int) ($topProductFrequencyMap[$relatedProductId] ?? 0);
+                    $product->visible_price = $price['amount'] ?? null;
+                    $product->gst_rate = $price['gst_rate'] ?? 0;
+                    $product->tax_amount = $price['tax_amount'] ?? null;
+                    $product->price_with_gst = $price['price_after_gst'] ?? null;
+                    $product->visible_currency = $price['currency'] ?? null;
+                    $product->visible_price_type = $price['price_type'] ?? null;
+                    $product->visible_variant_id = $price['product_variant_id'] ?? null;
+                    $product->visible_variant_sku = $price['variant_sku'] ?? null;
+                    $product->visible_variant_name = $price['variant_name'] ?? null;
+
+                    return $product;
+                })
+                ->filter()
+                ->values();
+        } catch (Throwable $exception) {
+            Log::error('Failed to load frequently bought together products.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }

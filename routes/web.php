@@ -1,13 +1,15 @@
 <?php
 
 use App\Http\Controllers\Authorization\AdminUserManagementController;
+use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Authorization\ImpersonationController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
 use App\Http\Controllers\Invoice\ProformaInvoiceController;
+use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Product\ProductController;
-use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\SupportTicket\SupportTicketController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -27,6 +29,22 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
 
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
+
+Route::middleware('auth')->prefix('orders')->name('orders.')->group(function (): void {
+    Route::get('/', [OrderController::class, 'showOrderCrud'])->name('index');
+    Route::post('/', [OrderController::class, 'createOrder'])->name('store');
+    Route::get('/{orderId}', [OrderController::class, 'getOrderById'])->name('show');
+    Route::put('/{orderId}', [OrderController::class, 'editOrderById'])->name('update');
+    Route::delete('/{orderId}', [OrderController::class, 'softDeleteOrderById'])->name('destroy');
+});
+
+Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): void {
+    Route::get('/', [CartController::class, 'showCart'])->name('show');
+    Route::post('/items', [CartController::class, 'addToCart'])->name('items.store');
+    Route::patch('/items/{cartItemId}', [CartController::class, 'updateCartItem'])->name('items.update');
+    Route::delete('/items/{cartItemId}', [CartController::class, 'removeCartItem'])->name('items.delete');
+    Route::post('/checkout', [CartController::class, 'checkoutCart'])->name('checkout');
+});
 
 // Route::middleware(['auth', 'active'])->group(function (): void {
 

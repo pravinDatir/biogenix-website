@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="page-shell !space-y-4 md:!space-y-6">
     <div class="card">
         <h1>{{ $product->name }}</h1>
         <p><strong>SKU:</strong> {{ $product->sku }}</p>
@@ -20,5 +21,6 @@
 
         <a class="btn" href="{{ route('proforma.create', ['product_id' => $product->id]) }}">Generate PI</a>
         <a class="btn secondary" href="{{ route('products.index') }}">Back to Products</a>
+    </div>
     </div>
 @endsection

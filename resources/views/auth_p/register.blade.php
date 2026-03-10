@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card" style="max-width: 620px; margin: 0 auto;">
+    <div class="card center-card-wide">
         <h1>Register</h1>
         <p class="muted">Use this form for B2C and B2B users. B2B accounts require Admin approval before login.</p>
 

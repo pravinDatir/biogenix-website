@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="page-shell !space-y-4 md:!space-y-6">
     <div class="card">
         <h1>User Dashboard</h1>
         <p><strong>Name:</strong> {{ $user->name }}</p>
@@ -34,5 +35,6 @@
         @else
             <p>No permissions are currently mapped.</p>
         @endif
+    </div>
     </div>
 @endsection

@@ -132,6 +132,66 @@ class DataVisibilityService
         }
     }
 
+    // This resolves the first visible price for one exact product variant.
+    public function resolveVariantPrice(int $productVariantId, ?User $user): ?array
+    {
+        try {
+            // Step 1: build the base price query for the exact selected variant.
+            $baseQuery = ProductPrice::query()
+                ->join('product_variants', 'product_variants.id', '=', 'product_prices.product_variant_id')
+                ->where('product_variants.id', $productVariantId)
+                ->where('product_variants.is_active', true)
+                ->where('product_prices.is_active', true)
+                ->select([
+                    'product_prices.amount',
+                    'product_prices.gst_rate',
+                    'product_prices.tax_amount',
+                    'product_prices.price_after_gst',
+                    'product_prices.currency',
+                    'product_prices.min_order_quantity',
+                    'product_prices.max_order_quantity',
+                    'product_prices.lot_size',
+                    'product_prices.price_type',
+                    'product_variants.product_id',
+                    'product_variants.id as product_variant_id',
+                    'product_variants.sku as variant_sku',
+                    'product_variants.variant_name',
+                ]);
+
+            // Step 2: check company-specific contract price first for B2B users.
+            if ($user && $user->isB2b() && $user->company_id) {
+                $contractPrice = (clone $baseQuery)
+                    ->where('product_prices.price_type', 'contract')
+                    ->where('product_prices.company_id', $user->company_id)
+                    ->orderBy('product_prices.id')
+                    ->first();
+
+                if ($contractPrice) {
+                    return $this->formatResolvedPrice($contractPrice, (int) $contractPrice->product_id, $user);
+                }
+            }
+
+            // Step 3: resolve the first matching non-contract price by current price priority.
+            foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'contract')) as $priceType) {
+                $price = (clone $baseQuery)
+                    ->where('product_prices.price_type', $priceType)
+                    ->whereNull('product_prices.company_id')
+                    ->orderBy('product_prices.id')
+                    ->first();
+
+                if ($price) {
+                    return $this->formatResolvedPrice($price, (int) $price->product_id, $user);
+                }
+            }
+
+            // Step 4: return null when no visible price exists for the variant.
+            return null;
+        } catch (Throwable $exception) {
+            Log::error('Failed to resolve variant price.', ['product_variant_id' => $productVariantId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
     // This checks whether the user can generate PI for other customers.
     public function canGeneratePiForOther(?User $user): bool
     {

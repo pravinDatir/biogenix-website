@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="page-shell !space-y-4 md:!space-y-6">
     <div class="card">
         <h1>Support Tickets</h1>
         <p class="muted">Create and track support tickets. Internal support users can manage ticket lifecycle.</p>
@@ -55,47 +56,49 @@
 
     <div class="card">
         <h2>Visible Tickets</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Ticket</th>
-                    <th>Owner</th>
-                    <th>Category</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Comments</th>
-                    <th>Updated</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($tickets as $ticket)
+        <div class="table-wrap">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $ticket->ticket_number }}</td>
-                        <td>
-                            {{ $ticket->owner_name ?? 'Unknown' }}
-                            @if ($ticket->owner_company_name)
-                                <div class="muted">{{ $ticket->owner_company_name }}</div>
-                            @endif
-                        </td>
-                        <td>{{ ucwords(str_replace('_', ' ', $ticket->category)) }}</td>
-                        <td>{{ strtoupper($ticket->priority) }}</td>
-                        <td>{{ strtoupper(str_replace('_', ' ', $ticket->status)) }}</td>
-                        <td>{{ $ticket->comments_count }}</td>
-                        <td>{{ $ticket->last_activity_at ?? $ticket->updated_at ?? $ticket->created_at }}</td>
-                        <td>
-                            <a class="btn secondary" href="{{ route('support-tickets.show', $ticket->id) }}">View</a>
-                        </td>
+                        <th>Ticket</th>
+                        <th>Owner</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Comments</th>
+                        <th>Updated</th>
+                        <th>Action</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="8">No support tickets visible for your scope.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($tickets as $ticket)
+                        <tr>
+                            <td>{{ $ticket->ticket_number }}</td>
+                            <td>
+                                {{ $ticket->owner_name ?? 'Unknown' }}
+                                @if ($ticket->owner_company_name)
+                                    <div class="muted">{{ $ticket->owner_company_name }}</div>
+                                @endif
+                            </td>
+                            <td>{{ ucwords(str_replace('_', ' ', $ticket->category)) }}</td>
+                            <td>{{ strtoupper($ticket->priority) }}</td>
+                            <td>{{ strtoupper(str_replace('_', ' ', $ticket->status)) }}</td>
+                            <td>{{ $ticket->comments_count }}</td>
+                            <td>{{ $ticket->last_activity_at ?? $ticket->updated_at ?? $ticket->created_at }}</td>
+                            <td>
+                                <a class="btn secondary" href="{{ route('support-tickets.show', $ticket->id) }}">View</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8">No support tickets visible for your scope.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-        <div style="margin-top: 10px;">
+        <div class="pagination-wrap">
             {{ $tickets->links() }}
         </div>
     </div>
@@ -153,8 +156,9 @@
 
         <div class="card">
             <h2>Comments</h2>
+            <div class="section-list">
             @forelse ($ticketComments as $comment)
-                <div style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                <div class="section-list-item">
                     <p><strong>{{ $comment->commenter_name ?? 'System' }}</strong> ({{ $comment->created_at }})</p>
                     <p>{{ $comment->comment }}</p>
 
@@ -173,9 +177,10 @@
             @empty
                 <p class="muted">No comments yet.</p>
             @endforelse
+            </div>
 
             @if ($canAddComment)
-                <form method="POST" action="{{ route('support-tickets.comments.store', $selectedTicket->id) }}" enctype="multipart/form-data" style="margin-top: 10px;">
+                <form method="POST" action="{{ route('support-tickets.comments.store', $selectedTicket->id) }}" enctype="multipart/form-data" class="mt-3">
                     @csrf
 
                     <div class="field">
@@ -197,8 +202,9 @@
 
         <div class="card">
             <h2>Ticket History</h2>
+            <div class="section-list">
             @forelse ($ticketHistory as $history)
-                <div style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                <div class="section-list-item">
                     <p>
                         <strong>{{ strtoupper(str_replace('_', ' ', $history->event_type)) }}</strong>
                         by {{ $history->actor_name ?? 'System' }} at {{ $history->created_at }}
@@ -223,6 +229,8 @@
             @empty
                 <p class="muted">No history available.</p>
             @endforelse
+            </div>
         </div>
     @endif
+    </div>
 @endsection

@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="dashboard-wrapper container py-5">
+<div class="dashboard-wrapper py-5">
 
   <div class="dashboard-header mb-4">
     <h2>Welcome to Customer Dashboard</h2>

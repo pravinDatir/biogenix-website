@@ -178,13 +178,20 @@ function setupPasswordToggle(inputId, toggleId) {
 
     if (input.type === "password") {
       input.type = "text";
-      icon.classList.replace("bi-eye-slash", "bi-eye");
+      if (icon) {
+        icon.classList.replace("bi-eye-slash", "bi-eye");
+      } else {
+        toggleBtn.textContent = "Hide";
+      }
     } else {
       input.type = "password";
-      icon.classList.replace("bi-eye", "bi-eye-slash");
+      if (icon) {
+        icon.classList.replace("bi-eye", "bi-eye-slash");
+      } else {
+        toggleBtn.textContent = "Show";
+      }
     }
   });
 }
-
 
 

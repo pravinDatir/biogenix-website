@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\SupportTicket;
 
 use App\Models\Authorization\User;
-use App\Models\Support\SupportTicket;
-use App\Models\Support\SupportTicketAttachment;
-use App\Models\Support\SupportTicketComment;
-use App\Models\Support\SupportTicketHistory;
+use App\Models\SupportTicket\SupportTicket;
+use App\Models\SupportTicket\SupportTicketAttachment;
+use App\Models\SupportTicket\SupportTicketComment;
+use App\Models\SupportTicket\SupportTicketHistory;
 use App\Services\Authorization\RolePermissionService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\UploadedFile;

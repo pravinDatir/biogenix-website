@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card" style="max-width: 520px; margin: 0 auto;">
+    <div class="card center-card">
         <h1>Login</h1>
 
         <form method="POST" action="{{ route('login') }}">
@@ -27,7 +27,7 @@
             <button class="btn" type="submit">Login</button>
         </form>
 
-        <p class="muted" style="margin-top: 12px;">
+        <p class="muted mt-3">
             New user? <a href="{{ route('register') }}">Register here</a>
         </p>
         <p class="muted">

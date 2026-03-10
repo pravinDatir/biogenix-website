@@ -3,65 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'Biogenix') }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fa; color: #1f2937; }
-        .container { max-width: 980px; margin: 0 auto; padding: 20px; }
-        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-        .nav { background: #0f172a; color: #fff; }
-        .nav .container { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
-        .links a { color: #e2e8f0; text-decoration: none; margin-right: 12px; }
-        .links a:hover { color: #fff; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; }
-        th { background: #f1f5f9; }
-        .btn { display: inline-block; border: 1px solid #1d4ed8; background: #1d4ed8; color: #fff; padding: 8px 12px; border-radius: 6px; text-decoration: none; cursor: pointer; }
-        .btn.secondary { background: #fff; color: #1d4ed8; }
-        .field { margin-bottom: 10px; }
-        .field label { display: block; font-size: 14px; margin-bottom: 4px; }
-        .field input, .field select, .field textarea { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
-        .status { background: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 10px; border-radius: 6px; margin-bottom: 12px; }
-        .errors { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px; border-radius: 6px; margin-bottom: 12px; }
-        .muted { color: #64748b; font-size: 14px; }
-        ul { margin-top: 8px; }
-        .links .active-link { color: #fff; font-weight: 700; }
-    </style>
+    <title>@yield('title', 'Biogenix')</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}?v=20260309">
+    <link rel="shortcut icon" href="{{ asset('images/logo.jpg') }}?v=20260309">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.jpg') }}?v=20260309">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <nav class="nav">
-        <div class="container">
-            <div class="links">
-                <a href="{{ url('/AdminhomeView') }}" class="active-link">Home</a>
-                <a href="{{ route('products.index') }}">Products</a>
-                <a href="{{ route('proforma.create') }}">Generate PI</a>
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+    <nav class="border-b border-slate-800 bg-slate-900 text-slate-100">
+        <div class="container flex flex-wrap items-center justify-between gap-3 py-3">
+            <div class="flex flex-wrap items-center gap-3 text-sm">
+                <a href="{{ url('/AdminhomeView') }}" class="rounded px-2 py-1 font-semibold text-white hover:bg-slate-800">Home</a>
+                <a href="{{ route('products.index') }}" class="rounded px-2 py-1 hover:bg-slate-800">Products</a>
+                <a href="{{ route('proforma.create') }}" class="rounded px-2 py-1 hover:bg-slate-800">Generate PI</a>
                 @auth
-                    <a href="{{ route('dashboard') }}">Dashboard</a>
-                    <a href="{{ route('proforma.index') }}">My PI</a>
-                    <a href="{{ route('support-tickets.index') }}">Support Tickets</a>
-                    <a href="{{ route('admin.users.index') }}">Admin Console</a>
-               
+                    <a href="{{ route('dashboard') }}" class="rounded px-2 py-1 hover:bg-slate-800">Dashboard</a>
+                    <a href="{{ route('proforma.index') }}" class="rounded px-2 py-1 hover:bg-slate-800">My PI</a>
+                    <a href="{{ route('support-tickets.index') }}" class="rounded px-2 py-1 hover:bg-slate-800">Support Tickets</a>
+                    <a href="{{ route('admin.users.index') }}" class="rounded px-2 py-1 hover:bg-slate-800">Admin Console</a>
                 @endauth
             </div>
-            <div class="links">
+
+            <div class="flex items-center gap-2 text-sm">
                 @auth
                     <span>{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
-                    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                    <form method="POST" action="{{ route('logout') }}" class="inline-block">
                         @csrf
                         <button type="submit" class="btn secondary">Logout</button>
                     </form>
                 @else
-                    <a href="{{ route('login') }}">Login</a>
-                    <a href="{{ route('register') }}">Register</a>
+                    <a href="{{ route('login') }}" class="btn">Login</a>
+                    <a href="{{ route('register') }}" class="btn secondary">Register</a>
                 @endauth
             </div>
         </div>
     </nav>
 
-    <main class="container">
+    <main class="main-shell py-6">
         @if (session()->has('impersonation.impersonator_id'))
-            <div class="status">
+            <div class="status mb-4">
                 You are currently impersonating another user.
-                <form method="POST" action="{{ route('impersonation.stop') }}" style="display:inline;">
+                <form method="POST" action="{{ route('impersonation.stop') }}" class="inline-block">
                     @csrf
                     <button type="submit" class="btn secondary">Stop Impersonation</button>
                 </form>
@@ -69,21 +52,35 @@
         @endif
 
         @if (session('status'))
-            <div class="status">{{ session('status') }}</div>
+            <x-alert type="info" class="mb-4">{{ session('status') }}</x-alert>
+        @endif
+
+        @if (session('success'))
+            <x-alert type="success" class="mb-4">{{ session('success') }}</x-alert>
+        @endif
+
+        @if (session('error'))
+            <x-alert type="error" class="mb-4">{{ session('error') }}</x-alert>
         @endif
 
         @if ($errors->any())
-            <div class="errors">
+            <x-alert type="error" class="mb-4">
                 <strong>Validation failed:</strong>
-                <ul>
+                <ul class="mt-2 list-disc pl-5">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert>
         @endif
 
         @yield('content')
     </main>
+
+    @include('partials.footer')
+
+    <script src="{{ asset('js/validation.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    @stack('scripts')
 </body>
 </html>

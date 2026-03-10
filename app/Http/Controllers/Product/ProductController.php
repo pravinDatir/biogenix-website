@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Product;
 use Throwable;
 
 class ProductController extends Controller
@@ -78,13 +79,11 @@ class ProductController extends Controller
 
             abort_if(! $product, 404);
 
-            // Step 2: track product view activity for guest and logged-in users.
-            $productService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_view', [
-                'product_id' => $productId,
-            ]);
+            // Step 2: track user product view activity.
+            $productService->logUserActivity($user,$request->session()->getId(), $request->path(), 'product_view', [
+                    'product_id' => $productId ]);
 
             Log::info('productController.productDetails Product details:', [$product]);
-
             return view('prelogin.product-details', [
                 'id' => $productId,
                 'product' => $product,
@@ -95,27 +94,7 @@ class ProductController extends Controller
         } catch (Throwable $exception) {
             Log::error('Failed to load product details.', ['product_id' => $productId, 'error' => $exception->getMessage()]);
 
-            return $this->viewWithError('prelogin.product-details', [
-                'id' => $productId,
-                'product' => (object) [
-                    'id' => $productId,
-                    'name' => null,
-                    'description' => null,
-                    'image_path' => null,
-                    'visible_price' => null,
-                    'visible_currency' => null,
-                    'visible_price_type' => null,
-                    'visible_variant_id' => null,
-                    'visible_variant_sku' => null,
-                    'visible_variant_name' => null,
-                    'gst_rate' => 0,
-                    'tax_amount' => null,
-                    'price_with_gst' => null,
-                ],
-                'gst_rate' => 0,
-                'tax_amount' => null,
-                'price_with_gst' => null,
-            ], $exception, 'Unable to load product details.');
+            return $this->viewWithError('prelogin.product-details', [ 'id' => $productId ], $exception, 'Unable to load product details.');
         }
     }
 

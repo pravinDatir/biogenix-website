@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="card" style="max-width: 520px; margin: 0 auto;">
+    <div class="card center-card">
         <h1>Forgot Password</h1>
         <p class="muted">Enter your email and we will send a reset link.</p>
 

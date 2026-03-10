@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Support;
+namespace App\Models\SupportTicket;
 
 use App\Models\Authorization\User;
 use Illuminate\Database\Eloquent\Model;

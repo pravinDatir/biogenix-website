@@ -3,7 +3,7 @@
 namespace App\Models\Authorization;
 
 use App\Models\Invoice\ProformaInvoice;
-use App\Models\Support\SupportTicket;
+use App\Models\SupportTicket\SupportTicket;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

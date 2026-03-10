@@ -46,13 +46,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const addressLabel = document.getElementById("addressLabel");
 
     if (selected === "business") {
-      businessFields.style.display = "block";
+      businessFields.classList.remove("hidden");
       addressLabel.textContent = "Office / Building";
     } else {
-      businessFields.style.display = "none";
+      businessFields.classList.add("hidden");
       addressLabel.textContent = "Flat / House / Building";
     }
   }
+
+  handleAccountTypeChange();
 
   /* ================= STEP 1 VALIDATION ================= */
 

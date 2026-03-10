@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="page-shell !space-y-4 md:!space-y-6">
     <div class="card">
         <h1>Admin Access Control Console</h1>
         <p class="muted">
@@ -12,39 +13,43 @@
     <div class="card">
         <h2>Pending B2B Approvals</h2>
         @if ($pendingB2bUsers->count())
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>B2B Type</th>
-                        <th>Company</th>
-                        <th>Requested At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($pendingB2bUsers as $pending)
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ $pending->name }}</td>
-                            <td>{{ $pending->email }}</td>
-                            <td>{{ strtoupper($pending->b2b_type ?? '-') }}</td>
-                            <td>{{ $pending->company_name ?? '-' }}</td>
-                            <td>{{ $pending->created_at }}</td>
-                            <td>
-                                <form method="POST" action="{{ route('admin.users.b2b.approve', $pending->id) }}" style="display:inline;">
-                                    @csrf
-                                    <button class="btn" type="submit">Approve</button>
-                                </form>
-                                <form method="POST" action="{{ route('admin.users.b2b.reject', $pending->id) }}" style="display:inline;">
-                                    @csrf
-                                    <button class="btn secondary" type="submit">Reject</button>
-                                </form>
-                            </td>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>B2B Type</th>
+                            <th>Company</th>
+                            <th>Requested At</th>
+                            <th>Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($pendingB2bUsers as $pending)
+                            <tr>
+                                <td>{{ $pending->name }}</td>
+                                <td>{{ $pending->email }}</td>
+                                <td>{{ strtoupper($pending->b2b_type ?? '-') }}</td>
+                                <td>{{ $pending->company_name ?? '-' }}</td>
+                                <td>{{ $pending->created_at }}</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <form method="POST" action="{{ route('admin.users.b2b.approve', $pending->id) }}" class="inline-form">
+                                            @csrf
+                                            <button class="btn" type="submit">Approve</button>
+                                        </form>
+                                        <form method="POST" action="{{ route('admin.users.b2b.reject', $pending->id) }}" class="inline-form">
+                                            @csrf
+                                            <button class="btn secondary" type="submit">Reject</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @else
             <p>No pending B2B approvals.</p>
         @endif
@@ -148,36 +153,38 @@
 
         <h3>Existing Overrides</h3>
         @if ($userOverrides->count())
-            <table>
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Permission</th>
-                        <th>Type</th>
-                        <th>Granted By</th>
-                        <th>Updated At</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($userOverrides as $override)
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ $override->user_name }}<div class="muted">{{ $override->user_email }}</div></td>
-                            <td>{{ $override->permission_slug }}</td>
-                            <td>{{ strtoupper($override->grant_type) }}</td>
-                            <td>{{ $override->granted_by_name ?? '-' }}</td>
-                            <td>{{ $override->updated_at }}</td>
-                            <td>
-                                <form method="POST" action="{{ route('admin.users.permissions.delete', $override->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn secondary" type="submit">Remove</button>
-                                </form>
-                            </td>
+                            <th>User</th>
+                            <th>Permission</th>
+                            <th>Type</th>
+                            <th>Granted By</th>
+                            <th>Updated At</th>
+                            <th>Action</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($userOverrides as $override)
+                            <tr>
+                                <td>{{ $override->user_name }}<div class="muted">{{ $override->user_email }}</div></td>
+                                <td>{{ $override->permission_slug }}</td>
+                                <td>{{ strtoupper($override->grant_type) }}</td>
+                                <td>{{ $override->granted_by_name ?? '-' }}</td>
+                                <td>{{ $override->updated_at }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('admin.users.permissions.delete', $override->id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn secondary" type="submit">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @else
             <p>No user-level overrides yet.</p>
         @endif
@@ -210,34 +217,36 @@
 
         <h3>Existing Delegated Scopes</h3>
         @if ($delegatedScopes->count())
-            <table>
-                <thead>
-                    <tr>
-                        <th>Delegated Admin</th>
-                        <th>Scope</th>
-                        <th>Assigned By</th>
-                        <th>Updated At</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($delegatedScopes as $scope)
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ $scope->delegated_name }}<div class="muted">{{ $scope->delegated_email }}</div></td>
-                            <td>{{ strtoupper($scope->scope_type) }}: {{ $scope->company_name ?? $scope->scope_value }}</td>
-                            <td>{{ $scope->assigned_by_name ?? '-' }}</td>
-                            <td>{{ $scope->updated_at }}</td>
-                            <td>
-                                <form method="POST" action="{{ route('admin.users.scopes.delete', $scope->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn secondary" type="submit">Remove</button>
-                                </form>
-                            </td>
+                            <th>Delegated Admin</th>
+                            <th>Scope</th>
+                            <th>Assigned By</th>
+                            <th>Updated At</th>
+                            <th>Action</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($delegatedScopes as $scope)
+                            <tr>
+                                <td>{{ $scope->delegated_name }}<div class="muted">{{ $scope->delegated_email }}</div></td>
+                                <td>{{ strtoupper($scope->scope_type) }}: {{ $scope->company_name ?? $scope->scope_value }}</td>
+                                <td>{{ $scope->assigned_by_name ?? '-' }}</td>
+                                <td>{{ $scope->updated_at }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('admin.users.scopes.delete', $scope->id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn secondary" type="submit">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @else
             <p>No delegated scopes configured.</p>
         @endif
@@ -246,34 +255,36 @@
     <div class="card">
         <h2>Impersonate User (Audited)</h2>
         <p class="muted">Only use for support/debug; all sessions are logged with start/end timestamps.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>User Type</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
+        <div class="table-wrap">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ strtoupper($user->user_type) }}</td>
-                        <td>{{ strtoupper($user->status) }}</td>
-                        <td>
-                            <form method="POST" action="{{ route('admin.impersonation.start', $user->id) }}">
-                                @csrf
-                                <input type="hidden" name="reason" value="Support troubleshooting">
-                                <button class="btn secondary" type="submit">Impersonate</button>
-                            </form>
-                        </td>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>User Type</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($users as $user)
+                        <tr>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ strtoupper($user->user_type) }}</td>
+                            <td>{{ strtoupper($user->status) }}</td>
+                            <td>
+                                <form method="POST" action="{{ route('admin.impersonation.start', $user->id) }}">
+                                    @csrf
+                                    <input type="hidden" name="reason" value="Support troubleshooting">
+                                    <button class="btn secondary" type="submit">Impersonate</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -292,4 +303,5 @@
             scopeForm.action = `${adminUsersBase}/${selectedUserId || '0'}/scopes/company`;
         });
     </script>
+    </div>
 @endsection
