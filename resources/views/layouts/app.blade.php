@@ -11,45 +11,48 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+@php($suppressShellAlerts = request()->routeIs('login', 'forgot.password'))
 
 <div class="flex min-h-screen flex-col">
     @include('partials.header')
 
     <main class="flex-1 py-6 md:py-8">
-        <div class="container space-y-4">
-            @if (session()->has('impersonation.impersonator_id'))
-                <div class="status">
-                    You are currently impersonating another user.
-                    <form method="POST" action="{{ route('impersonation.stop') }}" class="inline-block">
-                        @csrf
-                        <button type="submit" class="btn secondary">Stop Impersonation</button>
-                    </form>
-                </div>
-            @endif
+        @unless ($suppressShellAlerts)
+            <div class="container space-y-4">
+                @if (session()->has('impersonation.impersonator_id'))
+                    <div class="status">
+                        You are currently impersonating another user.
+                        <form method="POST" action="{{ route('impersonation.stop') }}" class="inline-block">
+                            @csrf
+                            <button type="submit" class="btn secondary">Stop Impersonation</button>
+                        </form>
+                    </div>
+                @endif
 
-            @if (session('status'))
-                <x-alert type="info">{{ session('status') }}</x-alert>
-            @endif
+                @if (session('status'))
+                    <x-alert type="info">{{ session('status') }}</x-alert>
+                @endif
 
-            @if (session('success'))
-                <x-alert type="success">{{ session('success') }}</x-alert>
-            @endif
+                @if (session('success'))
+                    <x-alert type="success">{{ session('success') }}</x-alert>
+                @endif
 
-            @if (session('error'))
-                <x-alert type="error">{{ session('error') }}</x-alert>
-            @endif
+                @if (session('error'))
+                    <x-alert type="error">{{ session('error') }}</x-alert>
+                @endif
 
-            @if ($errors->any())
-                <x-alert type="error">
-                    <strong>Validation failed:</strong>
-                    <ul class="mt-2 list-disc pl-5">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </x-alert>
-            @endif
-        </div>
+                @if ($errors->any())
+                    <x-alert type="error">
+                        <strong>Validation failed:</strong>
+                        <ul class="mt-2 list-disc pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </x-alert>
+                @endif
+            </div>
+        @endunless
 
         <div class="main-shell">
             @yield('content')

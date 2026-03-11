@@ -30,6 +30,9 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
 
+Route::view('/cart', 'pages.guest.cart')->name('cart.page');
+Route::view('/checkout', 'pages.guest.checkout')->name('checkout.page');
+
 Route::middleware('auth')->prefix('orders')->name('orders.')->group(function (): void {
     Route::get('/', [OrderController::class, 'showOrderCrud'])->name('index');
     Route::post('/', [OrderController::class, 'createOrder'])->name('store');
@@ -39,7 +42,7 @@ Route::middleware('auth')->prefix('orders')->name('orders.')->group(function ():
 });
 
 Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): void {
-    Route::get('/', [CartController::class, 'showCart'])->name('show');
+    Route::get('/data', [CartController::class, 'showCart'])->name('show');
     Route::post('/items', [CartController::class, 'addToCart'])->name('items.store');
     Route::patch('/items/{cartItemId}', [CartController::class, 'updateCartItem'])->name('items.update');
     Route::delete('/items/{cartItemId}', [CartController::class, 'removeCartItem'])->name('items.delete');

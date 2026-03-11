@@ -1,223 +1,176 @@
 @php
-    $requestedType = request('user_type', request('portal'));
-    $portal = $requestedType === 'b2b' ? 'b2b' : 'b2c';
-
-    $views = [
-        'b2c' => [
-            'panelBadge' => 'BIOGENIX ACCESS',
-            'panelTitle' => 'Secure diagnostic commerce for modern healthcare teams.',
-            'panelCopy' => 'Sign in to continue with catalog access, quotation workflows, and account-level operations based on your role.',
-            'detailBadge' => 'B2C Access',
-            'detailTitle' => 'Retail Buyer Login',
-            'detailCopy' => 'Use your customer account to browse catalog, generate PI for self, and manage your own orders and support history.',
-            'detailCard' => 'border border-emerald-400/30 bg-emerald-900/40 backdrop-blur-md',
-            'detailBadgeClass' => 'bg-emerald-500/20 text-emerald-100 border border-emerald-400/30',
-            'detailDotClass' => 'bg-emerald-400',
-            'detailItems' => [
-                'Retail context with personal scope',
-                'Manage own orders and shipments',
-                'Generate Proforma Invoices instantly',
-            ],
-            'detailNote' => null,
-            'submitLabel' => 'Login to B2C Account',
-            'bgGradient' => 'from-emerald-900 via-slate-900 to-slate-950',
-            'activeButtonClass' => 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 border-emerald-500',
-        ],
-        'b2b' => [
-            'panelBadge' => 'BIOGENIX ACCESS',
-            'panelTitle' => 'Secure diagnostic commerce for modern healthcare teams.',
-            'panelCopy' => 'Sign in to continue with catalog access, quotation workflows, and account-level operations based on your role.',
-            'detailBadge' => 'B2B Access',
-            'detailTitle' => 'Business Account Login',
-            'detailCopy' => 'Use your distributor, lab, hospital, or institutional account for customer-specific pricing and business workflows.',
-            'detailCard' => 'border border-blue-400/30 bg-blue-900/40 backdrop-blur-md',
-            'detailBadgeClass' => 'bg-blue-500/20 text-blue-100 border border-blue-400/30',
-            'detailDotClass' => 'bg-blue-400',
-            'detailItems' => [
-                'Customer-specific business pricing',
-                'Approval-aware ordering pipelines',
-                'Access limited to assigned company visibility',
-            ],
-            'detailNote' => 'New B2B registrations require admin approval before first login.',
-            'submitLabel' => 'Login to B2B Workspace',
-            'bgGradient' => 'from-blue-900 via-slate-900 to-slate-950',
-            'activeButtonClass' => 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 border-blue-500',
-        ],
-    ];
-
-    $view = $views[$portal];
+    $successMessage = session('success') ?: session('status');
+    $errorMessage = session('error') ?: ($errors->first('email') ?: $errors->first('password'));
 @endphp
 
-<div class="min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12">
-    <section class="w-full max-w-6xl">
-        <div class="rounded-[2.5rem] bg-white shadow-2xl overflow-hidden grid grid-cols-1 xl:grid-cols-[1fr_1.1fr] border border-slate-100">
-            
-            <!-- Left Panel (Dynamic Gradient) -->
-            <aside class="relative overflow-hidden bg-gradient-to-br {{ $view['bgGradient'] }} p-10 lg:p-14 text-white flex flex-col justify-between hidden xl:flex">
-                <!-- Abstract decorations -->
-                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white/5 blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-black/20 blur-3xl"></div>
-                
-                <div class="relative z-10">
-                    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider border border-white/20 bg-white/10 backdrop-blur-md text-white mb-6">
-                        {{ $view['panelBadge'] }}
-                    </span>
+<div class="mx-auto w-full max-w-[64rem] py-2 md:py-4">
+    <section class="overflow-hidden rounded-[2rem] border border-slate-200/90 bg-white shadow-[0_28px_80px_rgba(15,23,42,0.12)]">
+        <div class="grid min-h-[40rem] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)]">
+            <aside class="relative hidden overflow-hidden lg:flex lg:items-end lg:p-9">
+                <img
+                    src="{{ asset('images/home2.jpg') }}"
+                    alt="Biogenix laboratory"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                >
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,52,87,0.18)_0%,rgba(5,62,120,0.62)_48%,rgba(17,111,221,0.88)_100%)]"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_62%_18%,rgba(122,217,255,0.42),transparent_28%)]"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_24%_12%,rgba(255,255,255,0.2),transparent_22%)]"></div>
+                <div class="absolute left-7 top-5 h-[1.05rem] w-[18rem] rounded-full bg-[linear-gradient(180deg,rgba(239,248,255,0.96)_0%,rgba(191,225,255,0.72)_100%)] shadow-[0_0_0_6px_rgba(255,255,255,0.08),0_16px_45px_rgba(120,203,255,0.35)]"></div>
+                <div class="absolute left-[3.2rem] top-0 h-6 w-[2px] bg-white/25"></div>
+                <div class="absolute left-[18.8rem] top-0 h-6 w-[2px] bg-white/25"></div>
 
-                    <h1 class="text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight mb-6">
-                        {{ $view['panelTitle'] }}
-                    </h1>
+                <div class="relative z-10 max-w-[24rem]">
+                    <div class="flex items-center gap-3">
+                        <svg class="h-8 w-8 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M7 3h10"></path>
+                            <path d="M10 3v3"></path>
+                            <path d="M14 3v3"></path>
+                            <path d="M7 6h10l-1 2.5v4.5a5 5 0 0 1-4 4.9V21"></path>
+                            <path d="M17 6l1 2.5"></path>
+                            <path d="M7 6 6 8.5"></path>
+                            <path d="M8.5 13h7"></path>
+                            <path d="M9 21h6"></path>
+                            <path d="M6 21h12"></path>
+                        </svg>
+                        <p class="text-[2.2rem] font-extrabold leading-none tracking-[-0.04em] text-white">Biogenix</p>
+                    </div>
 
-                    <p class="text-lg text-slate-300 max-w-lg leading-relaxed">
-                        {{ $view['panelCopy'] }}
+                    <p class="mt-6 text-[1.15rem] font-semibold leading-9 text-white/95">
+                        Advancing human health through precision biotechnology and collaborative research.
                     </p>
-                </div>
-
-                <!-- Detail Glass Card -->
-                <div class="relative z-10 mt-12 rounded-[2rem] p-8 {{ $view['detailCard'] }} shadow-2xl">
-                    <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide {{ $view['detailBadgeClass'] }} mb-4">
-                        {{ $view['detailBadge'] }}
-                    </span>
-
-                    <h2 class="text-2xl font-bold text-white mb-3">
-                        {{ $view['detailTitle'] }}
-                    </h2>
-
-                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
-                        {{ $view['detailCopy'] }}
-                    </p>
-
-                    <ul class="space-y-3 text-sm text-slate-200">
-                        @foreach ($view['detailItems'] as $item)
-                            <li class="flex items-start">
-                                <span class="mt-1.5 mr-3 h-2 w-2 shrink-0 rounded-full {{ $view['detailDotClass'] }}"></span>
-                                <span class="leading-relaxed">{{ $item }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-
-                    @if ($view['detailNote'])
-                        <div class="mt-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm font-medium text-amber-200 backdrop-blur-sm flex items-start">
-                            <svg class="h-5 w-5 mr-2 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                            {{ $view['detailNote'] }}
-                        </div>
-                    @endif
                 </div>
             </aside>
 
-            <!-- Right Panel (Form) -->
-            <div class="p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-white relative">
-                 <!-- Mobile Only Header -->
-                 <div class="xl:hidden mb-8">
-                    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wider border border-blue-200 bg-blue-50 text-blue-700 mb-4">
-                        {{ $view['panelBadge'] }}
-                    </span>
-                    <h1 class="text-3xl font-bold text-slate-900 mb-2">{{ $view['panelTitle'] }}</h1>
-                    <p class="text-sm text-slate-600">{{ $view['panelCopy'] }}</p>
-                </div>
-
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Welcome back</h2>
-                    <p class="mt-2 text-slate-500">Choose your access type and login with your registered account.</p>
-                </div>
-
-                <!-- Portal Switcher -->
-                <div class="flex rounded-xl bg-slate-100 p-1.5 mb-8 border border-slate-200">
-                    <a
-                        href="{{ route('login', ['user_type' => 'b2c']) }}"
-                        class="flex-1 text-center py-2.5 rounded-lg text-sm font-bold transition-all duration-200 {{ $portal === 'b2c' ? $views['b2c']['activeButtonClass'] : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 border border-transparent' }}"
-                    >
-                        B2C Retail Login
-                    </a>
-                    <a
-                        href="{{ route('login', ['user_type' => 'b2b']) }}"
-                        class="flex-1 text-center py-2.5 rounded-lg text-sm font-bold transition-all duration-200 {{ $portal === 'b2b' ? $views['b2b']['activeButtonClass'] : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 border border-transparent' }}"
-                    >
-                        B2B Business Login
-                    </a>
-                </div>
-
-                @if (session('success'))
-                    <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700 flex items-start">
-                        <svg class="h-5 w-5 mr-2 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 flex items-start">
-                        <svg class="h-5 w-5 mr-2 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                <form id="loginForm" method="POST" action="{{ route('login') }}" class="space-y-6" novalidate>
-                    @csrf
-                    <input type="hidden" name="user_type" value="{{ $portal }}">
-
+            <div class="flex items-center bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] px-5 py-8 sm:px-7 lg:px-10">
+                <div class="mx-auto w-full max-w-[25.5rem]">
                     <div>
-                        <label for="loginEmail" class="block text-sm font-semibold text-slate-700 mb-2">Email Address or ID</label>
-                        <input
-                            type="email"
-                            name="email"
-                            id="loginEmail"
-                            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-slate-900 transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 hover:border-blue-400 @error('email') border-red-500 ring-2 ring-red-200 @enderror"
-                            placeholder="you@company.com"
-                            value="{{ old('email') }}"
-                            autocomplete="email"
-                            required
-                        >
-                        @error('email')
-                            <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
-                        @enderror
+                        <h1 class="text-[2rem] font-extrabold leading-[1.08] tracking-[-0.04em] text-slate-950 sm:text-[2.2rem]">
+                            Login Page
+                        </h1>
+                        <p class="mt-3 text-[1rem] leading-8 text-slate-500">
+                            Please enter your credentials to access your account.
+                        </p>
                     </div>
 
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label for="loginPassword" class="block text-sm font-semibold text-slate-700">Password</label>
-                            <a href="{{ route('forgot.password') }}" class="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors">Forgot Password?</a>
+                    @if ($errorMessage)
+                        <div class="mt-8 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-[0.95rem] font-medium leading-6 text-red-700" role="alert">
+                            <svg class="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M12 8v5"></path>
+                                <path d="M12 16h.01"></path>
+                            </svg>
+                            <span>{{ $errorMessage }}</span>
                         </div>
-                        <div class="relative">
+                    @elseif ($successMessage)
+                        <div class="mt-8 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-[0.95rem] font-medium leading-6 text-emerald-700" role="status">
+                            <svg class="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>{{ $successMessage }}</span>
+                        </div>
+                    @endif
+
+                    <form id="loginForm" method="POST" action="{{ route('login') }}" class="mt-8 grid gap-5" novalidate>
+                        @csrf
+
+                        <div>
+                            <label for="loginEmail" class="mb-3 block text-[0.95rem] font-bold text-slate-700">Email Address</label>
+                            <div class="relative">
+                                <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="loginEmail"
+                                    class="h-[3.55rem] w-full rounded-2xl border border-slate-300 bg-white px-12 text-[0.98rem] font-medium text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.02)] transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#2f83ec] focus:outline-none focus:ring-4 focus:ring-[#2f83ec]/10 @error('email') border-red-300 focus:border-red-400 focus:ring-red-200/70 @enderror"
+                                    placeholder="researcher@biogenix.com"
+                                    value="{{ old('email') }}"
+                                    autocomplete="email"
+                                    required
+                                >
+                            </div>
+                            @error('email')
+                                <p class="mt-2 text-[0.82rem] font-semibold text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <div class="mb-3 flex items-center justify-between gap-3">
+                                <label for="loginPassword" class="block text-[0.95rem] font-bold text-slate-700">Password</label>
+                                <a href="{{ route('forgot.password') }}" class="text-[0.9rem] font-bold text-[#2f83ec] no-underline hover:text-[#1769d2]">
+                                    Forgot Password?
+                                </a>
+                            </div>
+                            <div class="relative">
+                                <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                                    <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                                </svg>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="loginPassword"
+                                    class="h-[3.55rem] w-full rounded-2xl border border-slate-300 bg-white px-12 pr-12 text-[0.98rem] font-medium text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.02)] transition placeholder:text-slate-400 hover:border-slate-300 focus:border-[#2f83ec] focus:outline-none focus:ring-4 focus:ring-[#2f83ec]/10 @error('password') border-red-300 focus:border-red-400 focus:ring-red-200/70 @enderror"
+                                    placeholder="Enter your password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                                <button type="button" id="togglePassword" class="absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-600" aria-label="Toggle password visibility">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                            @error('password')
+                                <p class="mt-2 text-[0.82rem] font-semibold text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center gap-3">
                             <input
-                                type="password"
-                                name="password"
-                                id="loginPassword"
-                                class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 pr-12 text-slate-900 transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 hover:border-blue-400 @error('password') border-red-500 ring-2 ring-red-200 @enderror"
-                                placeholder="Enter your password"
-                                autocomplete="current-password"
-                                required
+                                type="checkbox"
+                                name="remember"
+                                id="rememberCheck"
+                                value="1"
+                                class="h-4 w-4 rounded border-slate-300 text-[#2f83ec] focus:ring-[#2f83ec]"
+                                @checked(old('remember'))
                             >
-                            <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors outline-none focus:ring-2 focus:ring-blue-500/50">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                            </button>
+                            <label for="rememberCheck" class="text-[0.96rem] font-medium text-slate-600">Keep me signed in</label>
                         </div>
-                        @error('password')
-                            <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
-                        @enderror
-                    </div>
 
-                    <div class="flex items-center">
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            id="rememberCheck"
-                            value="1"
-                            class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 transition-colors cursor-pointer"
-                            @checked(old('remember'))
+                        <button
+                            type="submit"
+                            id="loginSubmitBtn"
+                            class="inline-flex h-[3.6rem] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#2f8fff] to-[#1d72d8] text-[1rem] font-extrabold text-white shadow-[0_18px_36px_rgba(35,131,235,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(35,131,235,0.28)]"
                         >
-                        <label for="rememberCheck" class="ml-3 block text-sm text-slate-600 cursor-pointer select-none">
-                            Remember me on this device
-                        </label>
+                            Login to Portal
+                        </button>
+                    </form>
+
+                    <p class="mt-6 text-center text-[0.96rem] font-medium leading-7 text-slate-500">
+                        Need assistance?
+                        <a href="{{ route('contact') }}" class="font-bold text-[#2f83ec] no-underline">Contact Support</a>
+                    </p>
+
+                    <p class="mt-3 text-center text-[0.96rem] font-medium leading-7 text-slate-500">
+                        New here?
+                        <a href="{{ route('signup') }}" class="font-bold text-[#2f83ec] no-underline">Create an account</a>
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5 text-[0.72rem] font-bold uppercase tracking-[0.18em] text-slate-400">
+                        <span>&copy; 2026 Biogenix Corp.</span>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="{{ route('privacy') }}" class="text-inherit no-underline">Privacy</a>
+                            <a href="{{ route('terms') }}" class="text-inherit no-underline">Terms</a>
+                            <a href="{{ route('contact') }}" class="text-inherit no-underline">Security</a>
+                        </div>
                     </div>
-
-                    <button type="submit" id="loginSubmitBtn" class="flex w-full items-center justify-center rounded-xl py-4 pt-4 px-6 font-bold text-white shadow-lg transition-all border {{ $portal === 'b2c' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30 hover:shadow-emerald-500/40 border-emerald-500 flex' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30 hover:shadow-blue-500/40 border-blue-500' }}">
-                        {{ $view['submitLabel'] }}
-                    </button>
-                </form>
-
-                <p class="mt-8 text-center text-slate-600">
-                    New here?
-                    <a href="{{ $portal === 'b2b' ? route('b2b.signup') : route('signup') }}" class="font-bold text-blue-600 hover:text-blue-800 transition-colors underline decoration-blue-200 underline-offset-4 hover:decoration-blue-600">Create an account</a>
-                </p>
+                </div>
             </div>
         </div>
     </section>
