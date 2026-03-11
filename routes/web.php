@@ -54,7 +54,9 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 
    //Route::view('/login', 'auth.login')->name('login');
    Route::view('/signup', 'auth.signup')->name('signup');
+   Route::view('/b2b-signup', 'auth.signup-b2b')->name('b2b.signup');
    Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password');
+   Route::view('/book-meeting', 'prelogin.book-meeting')->name('book-meeting');
 
 // Route::view('/dashboard/customer', 'dashboard.customer')->name('customer.dashboard');
 // Route::view('/dashboard/admin', 'dashboard.admin')->name('admin.dashboard');

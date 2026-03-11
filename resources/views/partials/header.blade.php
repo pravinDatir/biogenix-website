@@ -30,7 +30,7 @@
             <a href="{{ route('about') }}">About Us</a>
             <a href="{{ route('faq') }}">FAQ</a>
             <a href="{{ route('contact') }}">Contact Us</a>
-            <a href="{{ route('contact') }}#book-meeting">Book Meeting</a>
+            <a href="{{ route('book-meeting') }}">Book Meeting</a>
 
             <div class="links auth-links">
                 @auth

@@ -44,7 +44,7 @@
 
                                 <div class="mt-8 flex flex-wrap items-center gap-3">
                                     <x-ui.action-link :href="route('proforma.create')" class="!px-5 !py-3">Generate Quote</x-ui.action-link>
-                                    <x-ui.action-link :href="route('contact') . '#book-meeting'" variant="secondary" class="!border-white/60 !bg-white/10 !px-5 !py-3 !text-white hover:!bg-white/20">Book Meeting</x-ui.action-link>
+                                    <x-ui.action-link :href="route('book-meeting')" variant="secondary" class="!border-white/60 !bg-white/10 !px-5 !py-3 !text-white hover:!bg-white/20">Book Meeting</x-ui.action-link>
                                 </div>
                             </div>
 
@@ -81,23 +81,7 @@
         </div>
     </section>
 
-    <section class="bg-white py-12 md:py-16">
-        <div class="container">
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                @foreach ([
-                    ['tag' => 'Smart Workflow', 'title' => 'Precision products. Faster decisions.', 'copy' => 'Integrated catalog, quotation, and support workflows for teams.'],
-                    ['tag' => 'Operations Scale', 'title' => 'Enterprise-ready support model', 'copy' => 'Structured onboarding, compliant processes, and transparent execution.'],
-                    ['tag' => 'Lucknow Hub', 'title' => 'Same-day logistics support', 'copy' => 'Faster medical diagnostics fulfillment for selected regions.'],
-                ] as $item)
-                    <article class="saas-card">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-blue-700">{{ $item['tag'] }}</p>
-                        <h3 class="mt-2 text-lg font-semibold text-slate-900">{{ $item['title'] }}</h3>
-                        <p class="mt-2 text-sm text-slate-600">{{ $item['copy'] }}</p>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </section>
+
 
     <section class="bg-slate-50 py-12 md:py-16">
         <div class="container">
@@ -226,7 +210,7 @@
             </p>
             <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <x-ui.action-link :href="route('proforma.create')" class="!px-5 !py-3">Generate Quote</x-ui.action-link>
-                <x-ui.action-link :href="route('contact') . '#book-meeting'" variant="secondary" class="!border-white/70 !bg-white/10 !px-5 !py-3 !text-white hover:!bg-white/20">Book a Meeting</x-ui.action-link>
+                <x-ui.action-link :href="route('book-meeting')" variant="secondary" class="!border-white/70 !bg-white/10 !px-5 !py-3 !text-white hover:!bg-white/20">Book a Meeting</x-ui.action-link>
             </div>
         </div>
     </section>

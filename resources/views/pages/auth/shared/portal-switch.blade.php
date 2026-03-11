@@ -14,12 +14,12 @@
         ],
         [
             'label' => 'B2C Sign Up',
-            'href' => route('signup', ['portal' => 'b2c']),
+            'href' => route('signup'),
             'active' => $mode === 'signup' && $portal === 'b2c',
         ],
         [
             'label' => 'B2B Sign Up',
-            'href' => route('signup', ['portal' => 'b2b']),
+            'href' => route('b2b.signup'),
             'active' => $mode === 'signup' && $portal === 'b2b',
         ],
     ];
