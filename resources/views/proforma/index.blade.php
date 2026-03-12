@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="page-shell !space-y-4 md:!space-y-6">
+    <div class="mx-auto w-full max-w-none space-y-4 px-4 py-6 sm:px-6 lg:px-8 xl:px-10 md:space-y-6">
     <div class="card">
         <h1>Visible Proforma Invoices</h1>
         <p class="muted">Results are filtered by your role and data visibility scope.</p>
@@ -45,17 +45,17 @@
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="7">No PI records are visible for your current scope.</td>
-                        </tr>
+                        <x-ui.table-empty-row
+                            colspan="7"
+                            title="No PI records visible"
+                            description="There are no proforma invoices available for your current scope."
+                        />
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="pagination-wrap">
-            {{ $proformas->links() }}
-        </div>
+        <x-ui.pagination :paginator="$proformas" />
     </div>
     </div>
 @endsection

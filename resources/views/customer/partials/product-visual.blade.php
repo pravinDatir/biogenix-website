@@ -3,19 +3,56 @@
     'class' => '',
 ])
 
-<div {{ $attributes->merge(['class' => "relative overflow-hidden rounded-[22px] bg-gradient-to-br from-[#0d4c58] via-[#0a3f4f] to-[#111827] ".$class]) }}>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(125,211,252,0.35),transparent_42%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(255,255,255,0.12),transparent_25%)]"></div>
+@php
+    $resolvedClass = str_replace(
+        ['product-visual-stage-lg', 'product-visual-stage-sm', 'product-visual-stage'],
+        ['h-80 sm:h-96 xl:h-[32rem]', 'h-20 sm:h-24', 'h-56'],
+        $class
+    );
 
+    $wrapperClass = trim('relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 before:absolute before:inset-0 before:z-0 before:content-[\'\'] before:bg-[radial-gradient(circle_at_30%_20%,rgba(37,99,235,0.28),transparent_42%)] after:absolute after:inset-0 after:z-0 after:content-[\'\'] after:bg-[radial-gradient(circle_at_72%_28%,rgba(255,255,255,0.12),transparent_25%)] [&>*]:relative [&>*]:z-10 ' . $resolvedClass);
+
+    $vialOffsets = ['left-[16%]', 'left-[24%]', 'left-[32%]', 'left-[40%]', 'left-[48%]'];
+    $trayOffsets = ['left-[52%]', 'left-[56%]', 'left-[60%]', 'left-[64%]', 'left-[68%]', 'left-[72%]'];
+    $petriOffsets = [
+        'left-[28%] top-[34%]',
+        'left-[30.2%] top-[35.8%]',
+        'left-[32.4%] top-[37.6%]',
+        'left-[34.6%] top-[39.4%]',
+        'left-[36.8%] top-[41.2%]',
+        'left-[39%] top-[43%]',
+        'left-[41.2%] top-[44.8%]',
+        'left-[43.4%] top-[46.6%]',
+        'left-[45.6%] top-[48.4%]',
+        'left-[47.8%] top-[50.2%]',
+        'left-[50%] top-[52%]',
+        'left-[52.2%] top-[53.8%]',
+        'left-[54.4%] top-[55.6%]',
+        'left-[56.6%] top-[57.4%]',
+        'left-[58.8%] top-[35.2%]',
+        'left-[61%] top-[37%]',
+        'left-[63.2%] top-[38.8%]',
+        'left-[65.4%] top-[40.6%]',
+        'left-[29.6%] top-[42.4%]',
+        'left-[31.8%] top-[44.2%]',
+    ];
+    $pipetteOffsets = [
+        ['left-[22%]', 'left-[26%]'],
+        ['left-[42%]', 'left-[46%]'],
+        ['left-[62%]', 'left-[66%]'],
+    ];
+@endphp
+
+<div {{ $attributes->merge(['class' => $wrapperClass]) }}>
     @switch($variant)
         @case('vials')
             <div class="absolute bottom-10 left-8 right-8 h-7 rounded-xl bg-white/15"></div>
-            @for ($i = 0; $i < 5; $i++)
-                <div class="absolute bottom-16 h-20 w-7 rounded-md bg-white/90 shadow-[0_10px_30px_rgba(255,255,255,0.18)]" style="left: {{ 16 + ($i * 8) }}%;">
+            @foreach ($vialOffsets as $offsetClass)
+                <div class="{{ $offsetClass }} absolute bottom-16 h-20 w-7 rounded-md bg-white/90 shadow-[0_10px_30px_rgba(255,255,255,0.18)]">
                     <div class="h-4 rounded-t-md bg-slate-300"></div>
                     <div class="mx-1 mt-5 h-8 rounded-sm bg-amber-300/80"></div>
                 </div>
-            @endfor
+            @endforeach
             <div class="absolute bottom-12 right-10 h-28 w-24 rounded-2xl bg-white/90 shadow-2xl">
                 <div class="mx-auto mt-5 h-5 w-14 rounded-md bg-slate-300"></div>
                 <div class="mx-auto mt-5 h-10 w-16 rounded-xl bg-slate-100"></div>
@@ -41,12 +78,12 @@
         @case('tray')
             <div class="absolute bottom-10 left-10 right-10 h-12 rounded-2xl bg-white/90 shadow-2xl"></div>
             <div class="absolute bottom-20 left-1/2 h-24 w-20 -translate-x-1/2 rounded-[16px] bg-white/85"></div>
-            @for ($i = 0; $i < 6; $i++)
-                <div class="absolute bottom-20 h-24 w-4 rounded-full bg-white/95" style="left: {{ 52 + ($i * 4) }}%;">
+            @foreach ($trayOffsets as $offsetClass)
+                <div class="{{ $offsetClass }} absolute bottom-20 h-24 w-4 rounded-full bg-white/95">
                     <div class="h-3 rounded-t-full bg-slate-400"></div>
                     <div class="mx-auto mt-8 h-8 w-2 rounded-full bg-amber-400/90"></div>
                 </div>
-            @endfor
+            @endforeach
             @break
 
         @case('microscope')
@@ -60,10 +97,10 @@
             @break
 
         @case('petri')
-            <div class="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-teal-300 bg-[#f2e6b8] shadow-2xl"></div>
-            @for ($i = 0; $i < 20; $i++)
-                <span class="absolute h-2.5 w-2.5 rounded-full bg-emerald-500/80" style="left: {{ 28 + ($i * 2.2) % 38 }}%; top: {{ 34 + ($i * 1.8) % 24 }}%;"></span>
-            @endfor
+            <div class="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-primary-100 bg-amber-100 shadow-2xl"></div>
+            @foreach ($petriOffsets as $offsetClass)
+                <span class="{{ $offsetClass }} absolute h-2.5 w-2.5 rounded-full bg-emerald-500/80"></span>
+            @endforeach
             @break
 
         @case('centrifuge')
@@ -76,21 +113,21 @@
             @break
 
         @case('pipette')
-            @for ($i = 0; $i < 3; $i++)
-                <div class="absolute top-[20%] h-44 w-8 rounded-t-full bg-[#d8f0ff] rotate-[18deg] shadow-lg" style="left: {{ 22 + ($i * 20) }}%;"></div>
-                <div class="absolute top-[48%] h-20 w-4 rounded-b-full bg-white rotate-[18deg]" style="left: {{ 26 + ($i * 20) }}%;"></div>
-            @endfor
-            <div class="absolute bottom-8 left-1/2 h-16 w-28 -translate-x-1/2 rounded-[2rem] bg-[#caa779] shadow-xl"></div>
+            @foreach ($pipetteOffsets as [$tubeLeftClass, $tipLeftClass])
+                <div class="{{ $tubeLeftClass }} absolute top-[20%] h-44 w-8 rounded-t-full bg-primary-100 rotate-[18deg] shadow-lg"></div>
+                <div class="{{ $tipLeftClass }} absolute top-[48%] h-20 w-4 rounded-b-full bg-white rotate-[18deg]"></div>
+            @endforeach
+            <div class="absolute bottom-8 left-1/2 h-16 w-28 -translate-x-1/2 rounded-[2rem] bg-amber-500 shadow-xl"></div>
             @break
 
         @case('vortex')
             <div class="absolute bottom-10 left-1/2 h-44 w-36 -translate-x-1/2 rounded-[2rem] bg-slate-100 shadow-2xl"></div>
-            <div class="absolute bottom-32 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-sky-400"></div>
+            <div class="absolute bottom-32 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-primary-600/80"></div>
             <div class="absolute bottom-48 left-1/2 h-12 w-16 -translate-x-1/2 rounded-full bg-slate-500"></div>
             @break
 
         @case('rack')
-            <div class="absolute left-1/2 top-1/2 h-56 w-44 -translate-x-1/2 -translate-y-1/2 rounded-md border-[6px] border-[#b68a49] bg-white/80 shadow-2xl"></div>
+            <div class="absolute left-1/2 top-1/2 h-56 w-44 -translate-x-1/2 -translate-y-1/2 rounded-md border-[6px] border-amber-500 bg-white/80 shadow-2xl"></div>
             @break
     @endswitch
 

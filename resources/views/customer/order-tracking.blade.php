@@ -14,7 +14,7 @@
     <x-ui.surface-card title="Shipment Progress" subtitle="Status bar prototype for packed, dispatched, in transit, and delivered stages.">
         <div class="grid gap-4 md:grid-cols-4">
             @foreach (['Packed', 'Dispatched', 'In Transit', 'Delivered'] as $index => $step)
-                <div class="{{ $index < 3 ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-400' }} rounded-2xl border px-4 py-4 text-center">
+                <div class="{{ $index < 3 ? 'border-primary-100 bg-primary-50 text-primary-700' : 'border-slate-200 bg-slate-50 text-slate-400' }} rounded-2xl border px-4 py-4 text-center">
                     <p class="text-sm font-semibold">{{ $step }}</p>
                 </div>
             @endforeach

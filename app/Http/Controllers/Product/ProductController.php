@@ -31,40 +31,55 @@ class ProductController extends Controller
 
             Log::info('Product search initiated', ['search' => $search]);
 
-            // Step 2: read category and subcategory filters.
-            $categoryFilter = $request->input('category_id', $request->input('category'));
-            $subcategoryFilter = $request->input('subcategory_id', $request->input('subcategory'));
+            // Step 2: normalize the current storefront catalog filters.
+            $catalogFilters = $request->query();
+            $catalogFilters['search'] = $search;
 
-            Log::info('Product filters', ['category_id' => $categoryFilter, 'subcategory_id' => $subcategoryFilter]);
-
-            if (is_string($categoryFilter)) {
-                $categoryFilter = trim($categoryFilter);
-                $categoryFilter = $categoryFilter === '' ? null : $categoryFilter;
-            }
-
-            if (is_string($subcategoryFilter)) {
-                $subcategoryFilter = trim($subcategoryFilter);
-                $subcategoryFilter = $subcategoryFilter === '' ? null : $subcategoryFilter;
-            }
-
-            // Step 3: load visible products for the current user.
-            $user = $request->user();
-            $products = $productService->listVisibleProducts($user, $search, $categoryFilter, $subcategoryFilter);
-
-            // Step 4: track User browsing activity.
-
-            $productService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_browse', [
-                'search' => $search,
-                'category' => $categoryFilter,
-                'subcategory' => $subcategoryFilter,
+            Log::info('Product filters', [
+                'category_name' => $request->input('category_name'),
+                'application_name' => $request->input('application_name', $request->input('subcategory_name')),
+                'brand_name' => $request->input('brand_name'),
+                'category' => $request->input('category', $request->input('category_id')),
+                'subcategory' => $request->input('subcategory', $request->input('subcategory_id')),
+                'max_price' => $request->input('max_price'),
+                'sort' => $request->input('sort'),
             ]);
 
-            Log::info('productController.index Product search results Is:', [$products]);
-            return view('prelogin.products', [ 'products' => $products, ]);
+            // Step 3: load the catalog products and sidebar options for the current user.
+            $user = $request->user();
+            $catalogData = $productService->catalogListingData($user, $catalogFilters);
+
+            // Step 4: track user browsing activity.
+            $productService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_browse', [
+                'search' => $search,
+                'filters' => [
+                    'category_name' => $request->input('category_name', []),
+                    'application_name' => $request->input('application_name', $request->input('subcategory_name', [])),
+                    'brand_name' => $request->input('brand_name', []),
+                    'category' => $request->input('category', $request->input('category_id')),
+                    'subcategory' => $request->input('subcategory', $request->input('subcategory_id')),
+                    'max_price' => $request->input('max_price'),
+                    'sort' => $request->input('sort', 'relevant'),
+                ],
+            ]);
+
+            Log::info('productController.index Product search results Is:', [$catalogData['products']]);
+            return view('prelogin.products', [
+                'products' => $catalogData['products'],
+                'catalogOptions' => $catalogData['catalogOptions'],
+            ]);
         } catch (Throwable $exception) {
            
             Log::error('Failed to load product index.', ['error' => $exception->getMessage()]);
-            return $this->viewWithError('prelogin.products', [ 'products' => new LengthAwarePaginator([], 0, 15),
+            return $this->viewWithError('prelogin.products', [
+                'products' => new LengthAwarePaginator([], 0, 15),
+                'catalogOptions' => [
+                    'categoryOptions' => collect(),
+                    'applicationOptions' => collect(),
+                    'brandOptions' => collect(),
+                    'minPrice' => 150,
+                    'maxPrice' => 2500,
+                ],
             ], $exception, 'Unable to load products right now.');
         }
     }

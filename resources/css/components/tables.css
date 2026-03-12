@@ -1,0 +1,82 @@
+@layer components {
+table {
+    @apply w-full border-collapse overflow-hidden rounded-xl border border-slate-200 bg-white;
+}
+
+.table-wrap {
+    @apply w-full overflow-x-auto;
+}
+
+.table-wrap table {
+    min-width: 40rem;
+}
+
+thead {
+    @apply bg-slate-100;
+}
+
+th,
+td {
+    @apply border-b border-slate-200 px-3 py-2 text-left align-top text-sm;
+}
+
+th {
+    @apply font-semibold text-slate-700;
+}
+
+tr:last-child td {
+    @apply border-b-0;
+}
+
+tbody tr {
+    @apply transition-colors duration-150;
+}
+
+tbody tr:hover {
+    @apply bg-primary-50/50;
+}
+
+tbody tr:nth-child(even) {
+    @apply bg-slate-50/50;
+}
+
+tbody tr:nth-child(even):hover {
+    @apply bg-primary-50/50;
+}
+
+.table-actions {
+    @apply flex flex-wrap items-center gap-2;
+}
+
+.inline-form {
+    @apply inline-flex;
+}
+
+.pagination-wrap {
+    @apply mt-3 overflow-x-auto;
+}
+
+.section-list {
+    @apply divide-y divide-slate-200;
+}
+
+.section-list-item {
+    @apply py-2;
+}
+
+.pi-item-row {
+    @apply mb-3 rounded-xl border border-slate-200 bg-slate-50 p-3;
+}
+
+.pi-product-preview {
+    @apply rounded-lg border border-slate-200 bg-white p-3;
+}
+
+.table-container {
+    @apply w-full overflow-x-auto;
+}
+
+.table-container table {
+    min-width: 42rem;
+}
+}

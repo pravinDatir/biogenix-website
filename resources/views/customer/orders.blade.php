@@ -64,10 +64,21 @@
                 <tbody>
                     @foreach ($orders as $order)
                         <tr>
-                            <td>{{ $order['id'] }}</td>
+                            <td class="font-semibold text-primary-700">{{ $order['id'] }}</td>
                             <td>{{ $order['scope'] }}</td>
-                            <td>{{ $order['status'] }}</td>
-                            <td>{{ $order['amount'] }}</td>
+                            <td>
+                                @php
+                                    $orderStatusClass = match($order['status']) {
+                                        'Delivered' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                        'In Transit', 'Partially Shipped' => 'bg-sky-50 text-sky-700 border-sky-200',
+                                        'Awaiting Dispatch' => 'bg-amber-50 text-amber-700 border-amber-200',
+                                        'Cancelled' => 'bg-rose-50 text-rose-700 border-rose-200',
+                                        default => 'bg-slate-50 text-slate-700 border-slate-200',
+                                    };
+                                @endphp
+                                <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold {{ $orderStatusClass }}">{{ $order['status'] }}</span>
+                            </td>
+                            <td class="font-semibold text-slate-900">{{ $order['amount'] }}</td>
                             <td>
                                 <div class="table-actions">
                                     <button class="btn btn-sm" type="button">Track</button>

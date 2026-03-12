@@ -22,7 +22,7 @@
                 <div class="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-700">
                     Order ORD-20260311-0047 has been confirmed and dispatched from Lucknow.
                 </div>
-                <div class="rounded-2xl bg-blue-600 px-4 py-3 text-sm text-white">
+                <div class="rounded-2xl bg-primary-600 px-4 py-3 text-sm text-white">
                     Thanks. Share the delivery ETA and invoice copy.
                 </div>
                 <div class="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-700">

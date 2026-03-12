@@ -10,7 +10,7 @@ return new class extends Migration
     {
         if (! Schema::hasTable('categories')) {
             Schema::create('categories', function (Blueprint $table) {
-                $table->id()->primary();
+                $table->id();
                 $table->string('name');
                  $table->string('description')->nullable();
                 $table->string('slug')->unique();
@@ -22,7 +22,7 @@ return new class extends Migration
 
         if (! Schema::hasTable('subcategories')) {
             Schema::create('subcategories', function (Blueprint $table) {
-                $table->id()->primary();
+                $table->id();
                 $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
                 $table->string('name');
                 $table->string('slug');
@@ -35,7 +35,7 @@ return new class extends Migration
 
          if (! Schema::hasTable('product_specifications')) {
             Schema::create('product_specifications', function (Blueprint $table) {
-                $table->id()->primary();
+                $table->id();
                 $table->json('specs')->nullable();
                 $table->timestamps();
             }); 
@@ -43,7 +43,7 @@ return new class extends Migration
 
         if (! Schema::hasTable('products')) {
             Schema::create('products', function (Blueprint $table) {
-                $table->id()->primary();
+                $table->id();
                 $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
                 $table->foreignId('subcategory_id')->nullable()->constrained('subcategories')->nullOnDelete();
                 $table->foreignId('product_specifications_id')->nullable()->constrained('product_specifications')->nullOnDelete();
@@ -64,7 +64,7 @@ return new class extends Migration
 
          if (! Schema::hasTable('product_prices')) {
             Schema::create('product_prices', function (Blueprint $table) {
-                $table->id()->primary();
+                $table->id();
                 // Pricing is now linked to variant.
                 $table->unsignedBigInteger('product_variant_id')->nullable();
                 $table->string('price_type', 30);

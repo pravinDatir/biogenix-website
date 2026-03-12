@@ -3,7 +3,7 @@
     'subtitle' => null,
 ])
 
-<div {{ $attributes->class(['saas-card']) }}>
+<div {{ $attributes->class(['rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6']) }}>
     @if ($title)
         <h3 class="text-lg font-semibold text-slate-900">{{ $title }}</h3>
     @endif

@@ -6,16 +6,16 @@
 
     $stats = $portal === 'b2b'
         ? [
-            ['label' => 'Active Orders', 'value' => '28', 'hint' => '6 waiting for dispatch'],
-            ['label' => 'Client PIs', 'value' => '14', 'hint' => '4 require approval'],
-            ['label' => 'Credit Utilization', 'value' => '62%', 'hint' => 'INR 6.2L of 10L'],
-            ['label' => 'Open Tickets', 'value' => '3', 'hint' => '1 at supplier escalation'],
+            ['label' => 'Active Orders', 'value' => '28', 'hint' => '6 waiting for dispatch', 'trend' => '+12%', 'trend_up' => true],
+            ['label' => 'Client PIs', 'value' => '14', 'hint' => '4 require approval', 'trend' => '+5%', 'trend_up' => true],
+            ['label' => 'Credit Utilization', 'value' => '62%', 'hint' => 'INR 6.2L of 10L', 'trend' => '-2.4%', 'trend_up' => false],
+            ['label' => 'Open Tickets', 'value' => '3', 'hint' => '1 at supplier escalation', 'trend' => 'Stable', 'trend_up' => null],
         ]
         : [
-            ['label' => 'Recent Orders', 'value' => '9', 'hint' => '2 currently in transit'],
-            ['label' => 'Saved Cart Items', 'value' => '6', 'hint' => '1 is same-day eligible'],
-            ['label' => 'Self PIs', 'value' => '5', 'hint' => 'Latest PI expires in 2 days'],
-            ['label' => 'Reward Status', 'value' => 'Gold', 'hint' => 'Next discount unlock at 12 reviews'],
+            ['label' => 'Recent Orders', 'value' => '9', 'hint' => '2 currently in transit', 'trend' => '+18%', 'trend_up' => true],
+            ['label' => 'Saved Cart Items', 'value' => '6', 'hint' => '1 is same-day eligible', 'trend' => '+2', 'trend_up' => true],
+            ['label' => 'Self PIs', 'value' => '5', 'hint' => 'Latest PI expires in 2 days', 'trend' => 'Normal', 'trend_up' => null],
+            ['label' => 'Reward Status', 'value' => 'Gold', 'hint' => 'Next discount unlock at 12 reviews', 'trend' => 'Level 3', 'trend_up' => true],
         ];
 
     $activity = $portal === 'b2b'
@@ -59,7 +59,28 @@
     <div class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         @foreach ($stats as $stat)
             <div class="stat-card">
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">{{ $stat['label'] }}</p>
+                <div class="flex items-start justify-between">
+                    <p class="eyebrow text-slate-400">{{ $stat['label'] }}</p>
+                    @if (isset($stat['trend']))
+                        <div @class([
+                            'flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase transition-transform group-hover:scale-110',
+                            'bg-emerald-50 text-emerald-600' => $stat['trend_up'] === true,
+                            'bg-rose-50 text-rose-600' => $stat['trend_up'] === false,
+                            'bg-slate-100 text-slate-500' => $stat['trend_up'] === null,
+                        ])>
+                            @if ($stat['trend_up'] === true)
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                                </svg>
+                            @elseif ($stat['trend_up'] === false)
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            @endif
+                            {{ $stat['trend'] }}
+                        </div>
+                    @endif
+                </div>
                 <p class="mt-3 text-3xl font-semibold text-slate-900">{{ $stat['value'] }}</p>
                 <p class="mt-2 text-sm text-slate-500">{{ $stat['hint'] }}</p>
             </div>

@@ -13,6 +13,7 @@ use App\Models\Product\Subcategory;
 use App\Models\Product\UserActivityLog;
 use App\Models\Product\VariantAttribute;
 use App\Services\Authorization\DataVisibilityService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -37,77 +38,113 @@ class ProductService
             // Step 1: start with the visibility-safe product query.
             $query = $this->dataVisibilityService->visibleProductQuery($user);
 
-            // Step 2: apply search filters when the user searches by text.
-            if ($search !== null && trim($search) !== '') {
-                $search = trim($search);
-                $query->where(function ($builder) use ($search): void {
-                    $builder->where('products.name', 'like', '%'.$search.'%')
-                        ->orWhere('products.sku', 'like', '%'.$search.'%')
-                        ->orWhere('products.description', 'like', '%'.$search.'%')
-                        ->orWhere('categories.name', 'like', '%'.$search.'%')
-                        ->orWhere('subcategories.name', 'like', '%'.$search.'%');
-                });
-            }
+            // Step 2: apply search plus the legacy category and subcategory filters.
+            $this->applyCatalogSearchFilter($query, $search);
+            $this->applyNamedOrIdFilter($query, 'products.category_id', 'categories.slug', 'categories.name', $categoryFilter);
+            $this->applyNamedOrIdFilter($query, 'products.subcategory_id', 'subcategories.slug', 'subcategories.name', $subcategoryFilter);
 
-            // Step 3: apply category filter by id or slug/name.
-            if ($categoryFilter !== null && $categoryFilter !== '') {
-                if (is_numeric($categoryFilter) && (int) $categoryFilter > 0) {
-                    $query->where('products.category_id', (int) $categoryFilter);
-                } elseif (is_string($categoryFilter)) {
-                    $categoryValue = trim($categoryFilter);
-
-                    if ($categoryValue !== '') {
-                        $query->where(function ($builder) use ($categoryValue): void {
-                            $builder->where('categories.slug', $categoryValue)
-                                ->orWhere('categories.name', $categoryValue);
-                        });
-                    }
-                }
-            }
-
-            // Step 4: apply subcategory filter by id or slug/name.
-            if ($subcategoryFilter !== null && $subcategoryFilter !== '') {
-                if (is_numeric($subcategoryFilter) && (int) $subcategoryFilter > 0) {
-                    $query->where('products.subcategory_id', (int) $subcategoryFilter);
-                } elseif (is_string($subcategoryFilter)) {
-                    $subcategoryValue = trim($subcategoryFilter);
-
-                    if ($subcategoryValue !== '') {
-                        $query->where(function ($builder) use ($subcategoryValue): void {
-                            $builder->where('subcategories.slug', $subcategoryValue)
-                                ->orWhere('subcategories.name', $subcategoryValue);
-                        });
-                    }
-                }
-            }
-
-            // Step 5: paginate first, then attach one resolved price per product.
+            // Step 3: paginate first, then attach one resolved price per product.
             $products = $query
                 ->orderBy('products.name')
                 ->paginate(15)
                 ->withQueryString();
 
-            $products->setCollection(
-                $products->getCollection()->map(function ($product) use ($user) {
-                    $price = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
-
-                    $product->visible_price = $price['amount'] ?? null;
-                    $product->gst_rate = $price['gst_rate'] ?? 0;
-                    $product->tax_amount = $price['tax_amount'] ?? null;
-                    $product->price_with_gst = $price['price_after_gst'] ?? null;
-                    $product->visible_currency = $price['currency'] ?? null;
-                    $product->visible_price_type = $price['price_type'] ?? null;
-                    $product->visible_variant_id = $price['product_variant_id'] ?? null;
-                    $product->visible_variant_sku = $price['variant_sku'] ?? null;
-                    $product->visible_variant_name = $price['variant_name'] ?? null;
-
-                    return $product;
-                }),
-            );
+            $products->setCollection($this->attachResolvedVisiblePrices($products->getCollection(), $user));
 
             return $products;
         } catch (Throwable $exception) {
             Log::error('Failed to list visible products.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     * @return array{products: LengthAwarePaginator, catalogOptions: array<string, mixed>}
+     */
+    public function catalogListingData(?User $user, array $filters = []): array
+    {
+        try {
+            // Step 1: normalize the current catalog filter inputs.
+            $search = trim((string) ($filters['search'] ?? ''));
+            $sort = trim((string) ($filters['sort'] ?? 'relevant'));
+            $maxPriceFilter = isset($filters['max_price']) && is_numeric($filters['max_price'])
+                ? (float) $filters['max_price']
+                : null;
+
+            $selectedCategories = $this->normalizeCatalogFilterValues($filters['category_name'] ?? []);
+            $selectedApplications = $this->normalizeCatalogFilterValues(
+                $filters['application_name'] ?? ($filters['subcategory_name'] ?? [])
+            );
+            $selectedBrands = $this->normalizeCatalogFilterValues($filters['brand_name'] ?? []);
+
+            // Step 2: load all visible products for the current search and legacy filters.
+            $query = $this->dataVisibilityService->visibleProductQuery($user);
+            $this->applyCatalogSearchFilter($query, $search);
+            $this->applyNamedOrIdFilter(
+                $query,
+                'products.category_id',
+                'categories.slug',
+                'categories.name',
+                $filters['category_id'] ?? ($filters['category'] ?? null),
+            );
+            $this->applyNamedOrIdFilter(
+                $query,
+                'products.subcategory_id',
+                'subcategories.slug',
+                'subcategories.name',
+                $filters['subcategory_id'] ?? ($filters['subcategory'] ?? null),
+            );
+
+            $visibleProducts = $this->attachResolvedVisiblePrices(
+                $query->orderBy('products.name')->get(),
+                $user,
+            );
+
+            // Step 3: build the available catalog options before current facet filters are applied.
+            $catalogOptions = $this->buildCatalogOptions($visibleProducts);
+            [$selectedCategories, $selectedApplications] = $this->promoteSelectedApplications(
+                $selectedCategories,
+                $selectedApplications,
+                $catalogOptions['categoryOptions'],
+                $catalogOptions['applicationOptions'],
+            );
+
+            // Step 4: filter the catalog collection using the active facet selections.
+            $filteredProducts = $this->filterCatalogCollection(
+                $visibleProducts,
+                $selectedCategories,
+                $selectedApplications,
+                $selectedBrands,
+            );
+
+            // Step 5: derive the price slider range from the already-filtered product pool.
+            $priceRangeSource = $filteredProducts->isNotEmpty() ? $filteredProducts : $visibleProducts;
+            [$minPrice, $maxPrice] = $this->resolveCatalogPriceRange($priceRangeSource);
+            $catalogOptions['minPrice'] = $minPrice;
+            $catalogOptions['maxPrice'] = $maxPrice;
+
+            if ($maxPriceFilter !== null) {
+                $maxPriceFilter = max((float) $minPrice, min((float) $maxPrice, $maxPriceFilter));
+                $filteredProducts = $filteredProducts
+                    ->filter(function ($product) use ($maxPriceFilter): bool {
+                        $price = $this->catalogProductPrice($product);
+
+                        return $price !== null && $price <= $maxPriceFilter;
+                    })
+                    ->values();
+            }
+
+            // Step 6: sort and paginate the final result set.
+            $sortedProducts = $this->sortCatalogProducts($filteredProducts, $sort);
+            $products = $this->paginateCatalogCollection($sortedProducts);
+
+            return [
+                'products' => $products,
+                'catalogOptions' => $catalogOptions,
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to build catalog listing data.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }
@@ -166,6 +203,259 @@ class ProductService
             Log::error('Failed to load product categories.', ['error' => $exception->getMessage()]);
             throw $exception;
         }
+    }
+
+    // This applies the catalog search text across product and taxonomy fields.
+    protected function applyCatalogSearchFilter(Builder $query, ?string $search): void
+    {
+        $search = trim((string) $search);
+
+        if ($search === '') {
+            return;
+        }
+
+        $query->where(function (Builder $builder) use ($search): void {
+            $builder->where('products.name', 'like', '%'.$search.'%')
+                ->orWhere('products.sku', 'like', '%'.$search.'%')
+                ->orWhere('products.description', 'like', '%'.$search.'%')
+                ->orWhere('products.brand', 'like', '%'.$search.'%')
+                ->orWhere('categories.name', 'like', '%'.$search.'%')
+                ->orWhere('subcategories.name', 'like', '%'.$search.'%');
+        });
+    }
+
+    // This applies one legacy category or subcategory filter by id, slug, or display name.
+    protected function applyNamedOrIdFilter(
+        Builder $query,
+        string $idColumn,
+        string $slugColumn,
+        string $nameColumn,
+        mixed $filter,
+    ): void {
+        $values = $this->normalizeCatalogFilterValues($filter);
+
+        if ($values->isEmpty()) {
+            return;
+        }
+
+        $numericValues = $values
+            ->filter(fn ($value) => is_numeric($value) && (int) $value > 0)
+            ->map(fn ($value) => (int) $value)
+            ->unique()
+            ->values();
+
+        $textValues = $values
+            ->reject(fn ($value) => is_numeric($value) && (int) $value > 0)
+            ->unique()
+            ->values();
+
+        $query->where(function (Builder $builder) use ($idColumn, $slugColumn, $nameColumn, $numericValues, $textValues): void {
+            if ($numericValues->isNotEmpty()) {
+                $builder->whereIn($idColumn, $numericValues->all());
+            }
+
+            if ($textValues->isNotEmpty()) {
+                $method = $numericValues->isNotEmpty() ? 'orWhere' : 'where';
+
+                $builder->{$method}(function (Builder $textBuilder) use ($slugColumn, $nameColumn, $textValues): void {
+                    $textBuilder->whereIn($slugColumn, $textValues->all())
+                        ->orWhereIn($nameColumn, $textValues->all());
+                });
+            }
+        });
+    }
+
+    // This attaches the resolved visible price fields expected by the storefront views.
+    protected function attachResolvedVisiblePrices(Collection $products, ?User $user): Collection
+    {
+        return $products->map(function ($product) use ($user) {
+            $price = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
+
+            $product->visible_price = $price['amount'] ?? null;
+            $product->gst_rate = $price['gst_rate'] ?? 0;
+            $product->tax_amount = $price['tax_amount'] ?? null;
+            $product->price_with_gst = $price['price_after_gst'] ?? null;
+            $product->visible_currency = $price['currency'] ?? null;
+            $product->visible_price_type = $price['price_type'] ?? null;
+            $product->visible_variant_id = $price['product_variant_id'] ?? null;
+            $product->visible_variant_sku = $price['variant_sku'] ?? null;
+            $product->visible_variant_name = $price['variant_name'] ?? null;
+
+            return $product;
+        })->values();
+    }
+
+    // This normalizes query filter values into one trimmed collection of labels.
+    protected function normalizeCatalogFilterValues(mixed $values): Collection
+    {
+        return collect(is_array($values) ? $values : [$values])
+            ->map(fn ($value) => trim((string) $value))
+            ->filter()
+            ->values();
+    }
+
+    /**
+     * @return array{categoryOptions: Collection, applicationOptions: Collection, brandOptions: Collection}
+     */
+    // This builds the available category, application, and brand options for the catalog sidebar.
+    protected function buildCatalogOptions(Collection $products): array
+    {
+        return [
+            'categoryOptions' => $this->countCatalogLabels($products, fn ($product) => $product->category_name ?? null),
+            'applicationOptions' => $this->countCatalogLabels($products, fn ($product) => $product->subcategory_name ?? null),
+            'brandOptions' => $this->countCatalogLabels($products, fn ($product) => $product->brand ?? null),
+        ];
+    }
+
+    // This counts one label field across a product collection for sidebar filter totals.
+    protected function countCatalogLabels(Collection $products, callable $resolver): Collection
+    {
+        return $products
+            ->map(function ($product) use ($resolver): string {
+                return trim((string) $resolver($product));
+            })
+            ->filter()
+            ->countBy()
+            ->sortKeys()
+            ->map(fn ($count) => (int) $count);
+    }
+
+    /**
+     * @return array{0: Collection, 1: Collection}
+     */
+    // This promotes mis-routed category labels into the application drawer when needed.
+    protected function promoteSelectedApplications(
+        Collection $selectedCategories,
+        Collection $selectedApplications,
+        Collection $categoryOptions,
+        Collection $applicationOptions,
+    ): array {
+        $promotedApplications = $selectedCategories
+            ->filter(fn ($value) => ! $categoryOptions->has($value) && $applicationOptions->has($value))
+            ->values();
+
+        if ($promotedApplications->isEmpty()) {
+            return [$selectedCategories, $selectedApplications];
+        }
+
+        return [
+            $selectedCategories
+                ->reject(fn ($value) => $promotedApplications->contains($value))
+                ->values(),
+            $selectedApplications
+                ->merge($promotedApplications)
+                ->unique()
+                ->values(),
+        ];
+    }
+
+    // This applies the selected category, application, and brand filters to the visible products.
+    protected function filterCatalogCollection(
+        Collection $products,
+        Collection $selectedCategories,
+        Collection $selectedApplications,
+        Collection $selectedBrands,
+    ): Collection {
+        $categoryLookup = $selectedCategories
+            ->mapWithKeys(fn ($value) => [Str::lower($value) => true]);
+        $applicationLookup = $selectedApplications
+            ->mapWithKeys(fn ($value) => [Str::lower($value) => true]);
+        $brandLookup = $selectedBrands
+            ->mapWithKeys(fn ($value) => [Str::lower($value) => true]);
+
+        return $products
+            ->filter(function ($product) use ($categoryLookup, $applicationLookup, $brandLookup): bool {
+                $categoryLabel = Str::lower(trim((string) ($product->category_name ?? '')));
+                $applicationLabel = Str::lower(trim((string) ($product->subcategory_name ?? '')));
+                $brandLabel = Str::lower(trim((string) ($product->brand ?? '')));
+
+                if ($categoryLookup->isNotEmpty() && ! $categoryLookup->has($categoryLabel)) {
+                    return false;
+                }
+
+                if ($applicationLookup->isNotEmpty() && ! $applicationLookup->has($applicationLabel)) {
+                    return false;
+                }
+
+                if ($brandLookup->isNotEmpty() && ! $brandLookup->has($brandLabel)) {
+                    return false;
+                }
+
+                return true;
+            })
+            ->values();
+    }
+
+    /**
+     * @return array{0: int, 1: int}
+     */
+    // This resolves the minimum and maximum visible prices used by the catalog price slider.
+    protected function resolveCatalogPriceRange(Collection $products): array
+    {
+        $prices = $products
+            ->map(fn ($product) => $this->catalogProductPrice($product))
+            ->filter(fn ($price) => $price !== null)
+            ->values();
+
+        if ($prices->isEmpty()) {
+            return [150, 2500];
+        }
+
+        $minPrice = (int) floor((float) $prices->min());
+        $maxPrice = (int) ceil((float) $prices->max());
+
+        if ($minPrice === $maxPrice) {
+            if ($minPrice > 0) {
+                $minPrice = max(0, $minPrice - 1);
+                $maxPrice++;
+            } else {
+                $maxPrice = 1;
+            }
+        }
+
+        return [$minPrice, $maxPrice];
+    }
+
+    // This returns the comparable visible product price for sorting and range filtering.
+    protected function catalogProductPrice(object $product): ?float
+    {
+        return $product->visible_price === null ? null : (float) $product->visible_price;
+    }
+
+    // This sorts the filtered catalog collection using the selected storefront sort option.
+    protected function sortCatalogProducts(Collection $products, string $sort): Collection
+    {
+        $sort = Str::lower(trim($sort));
+
+        return match ($sort) {
+            'price_low' => $products
+                ->sortBy(fn ($product) => $this->catalogProductPrice($product) ?? PHP_FLOAT_MAX, SORT_NUMERIC)
+                ->values(),
+            'price_high' => $products
+                ->sortByDesc(fn ($product) => $this->catalogProductPrice($product) ?? -1, SORT_NUMERIC)
+                ->values(),
+            default => $products
+                ->sortBy(fn ($product) => Str::lower(trim((string) ($product->name ?? ''))))
+                ->values(),
+        };
+    }
+
+    // This paginates the final catalog collection while preserving the current query string.
+    protected function paginateCatalogCollection(Collection $products, int $perPage = 15): LengthAwarePaginator
+    {
+        $currentPage = max(1, (int) LengthAwarePaginator::resolveCurrentPage());
+        $pageItems = $products->forPage($currentPage, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $pageItems,
+            $products->count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'query' => request()->query(),
+            ],
+        );
     }
 
     // This returns the top frequently bought together products for one product.

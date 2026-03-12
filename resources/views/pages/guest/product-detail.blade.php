@@ -5,15 +5,16 @@
 @endphp
 
 @if (! $productExists)
-    <div class="relative left-1/2 w-screen -translate-x-1/2 bg-[#f4f6f8] py-8 [font-family:Inter,system-ui,sans-serif] md:py-10">
-        <div class="mx-auto max-w-[1700px] px-4 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-2xl rounded-[28px] border border-white/70 bg-white px-8 py-14 text-center shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
-                <h1 class="text-[36px] font-bold tracking-[-0.04em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">Product unavailable</h1>
-                <p class="mt-3 text-[14px] leading-7 text-slate-500">This product detail page could not be loaded right now. Return to the catalog and try again.</p>
-                <a href="{{ route('products.index') }}" class="mt-8 inline-flex h-12 items-center justify-center rounded-[14px] bg-gradient-to-r from-[#2f8fff] to-[#1d72d8] px-6 text-[14px] font-semibold text-white no-underline shadow-[0_16px_30px_rgba(35,131,235,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(35,131,235,0.28)]">
-                    Back to Catalog
-                </a>
-            </div>
+    <div class="page-frame py-8 md:py-10">
+        <div class="page-frame__inner">
+            <x-ui.empty-state
+                icon="product"
+                title="Product unavailable"
+                description="This product detail page could not be loaded right now. Return to the catalog and try again."
+                :action-href="route('products.index')"
+                action-label="Back to Catalog"
+                class="mx-auto max-w-2xl rounded-[28px] border border-slate-200 bg-white px-8 py-14 shadow-sm"
+            />
         </div>
     </div>
 @else
@@ -35,7 +36,7 @@
                 $integerPart = $remaining . ',' . $lastThree;
             }
 
-            return ($negative ? '-' : '') . 'Rs. ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+            return ($negative ? '-' : '') . '<span class="currency-symbol">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
         };
 
         $resolveImageUrl = function ($item): string {
@@ -82,6 +83,13 @@
         $quoteUrl = route('proforma.create', ['product_id' => $product->id]);
         $cartVariantId = $product->visible_variant_id ?? null;
         $loginUrl = route('login');
+        $previousUrl = url()->previous();
+        $currentUrl = url()->current();
+        $currentHost = parse_url(url()->to('/'), PHP_URL_HOST);
+        $previousHost = $previousUrl ? parse_url($previousUrl, PHP_URL_HOST) : null;
+        $backUrl = filled($previousUrl) && $previousUrl !== $currentUrl && (! $previousHost || $previousHost === $currentHost)
+            ? $previousUrl
+            : route('products.index');
         $shippingHighlights = ['Ships in 24-48 hours', 'Validated packaging', 'Priority support available'];
         $trustSignals = ['Secure enterprise checkout', 'GST-ready commercial invoice', 'Cold-chain dispatch support'];
         $overviewPoints = array_values(array_filter([
@@ -111,12 +119,32 @@
             ['label' => '6+ Units', 'discount' => '12% Off', 'price' => $currentPrice !== null ? round($currentPrice * 0.88, 2) : null, 'min' => 6, 'max' => null, 'discount_value' => 12],
         ];
         $relatedProducts = collect($related_products ?? [])->filter();
+        $compactCardClass = 'rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm md:p-5';
+        $sectionCardClass = 'rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm md:p-6';
+        $purchaseCardClass = 'rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.1),transparent_36%),linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(248,250,252,0.96)_100%)] p-5 shadow-sm md:p-6 xl:sticky xl:top-6';
+        $featurePanelClass = 'mt-3 rounded-3xl bg-[linear-gradient(135deg,rgba(248,251,255,1)_0%,rgba(238,244,255,1)_100%)] p-4 md:p-5';
+        $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700';
+        $primaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700';
+        $secondaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50';
+        $qtyPickerClass = 'inline-flex h-12 w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-1';
+        $qtyButtonClass = 'inline-flex h-8 w-8 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition hover:bg-white hover:text-primary-700';
+        $estimateClass = 'rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3';
+        $actionsClass = 'grid gap-3 sm:grid-cols-2';
+        $inlineChipClass = 'inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600';
+        $sectionHeadingClass = 'text-xl font-semibold text-slate-950';
     @endphp
 
-    <div class="relative left-1/2 w-screen -translate-x-1/2 -mt-6 bg-[#f4f6f8] py-5 [font-family:Inter,system-ui,sans-serif] md:-mt-8 md:py-7">
+    <div class="page-frame product-detail-shell -mt-6 py-4 md:-mt-8 md:py-6">
         <div id="uiToastHost" class="ui-toast-host" aria-live="polite" aria-atomic="true"></div>
-        <div class="mx-auto max-w-[1700px] px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-wrap items-center gap-2 text-[12px] font-medium text-slate-400">
+        <div class="page-frame__inner">
+            <a href="{{ $backUrl }}" class="page-back-link mb-4">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span>Back</span>
+            </a>
+
+            <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
                 <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-slate-700">Home</a>
                 <span>/</span>
                 <a href="{{ route('products.index') }}" class="text-inherit no-underline hover:text-slate-700">Catalog</a>
@@ -128,12 +156,12 @@
                 <span class="text-slate-700">{{ $productTitle }}</span>
             </div>
 
-            <section class="mt-5 grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:items-start">
-                <div class="space-y-4 self-start">
-                    <div class="rounded-[32px] border border-white/70 bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
-                        <div class="group relative overflow-hidden rounded-[26px] bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_40%),linear-gradient(135deg,#ffffff_0%,#eef4ff_100%)]">
-                            <img id="catalogProductMainImage" src="{{ $galleryImages->first()['src'] }}" alt="{{ $productTitle }}" class="h-[320px] w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-[1.04] sm:h-[420px] lg:h-[560px]" loading="lazy" decoding="async">
-                            <button id="productImageZoomBtn" type="button" class="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-[0_14px_30px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5 hover:text-[#2383eb]" aria-label="Zoom image">
+            <section class="product-detail-stage">
+                <div class="product-detail-media-column">
+                    <div class="{{ $compactCardClass }}">
+                        <div class="product-gallery-panel group">
+                            <img id="catalogProductMainImage" src="{{ $galleryImages->first()['src'] }}" alt="{{ $productTitle }}" class="product-visual-stage-lg w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-[1.04]" loading="lazy" decoding="async">
+                            <button id="productImageZoomBtn" type="button" class="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-primary-700" aria-label="Zoom image">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="11" cy="11" r="7"></circle>
                                     <path d="m20 20-3.5-3.5"></path>
@@ -146,30 +174,30 @@
 
                     <div class="grid grid-cols-4 gap-3">
                         @foreach ($galleryImages as $galleryImage)
-                            <button type="button" class="catalog-gallery-thumb {{ $loop->first ? 'border-[#2383eb] bg-white ring-2 ring-[#2383eb]/20 shadow-[0_16px_34px_rgba(35,131,235,0.14)]' : 'border-slate-200 bg-white' }} rounded-[18px] border p-2 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-[#2383eb] hover:shadow-[0_16px_34px_rgba(15,23,42,0.10)]" data-image="{{ $galleryImage['src'] }}" data-alt="{{ $productTitle . ' ' . $galleryImage['label'] }}">
-                                <img src="{{ $galleryImage['src'] }}" alt="{{ $galleryImage['label'] }}" class="h-20 w-full rounded-[12px] object-cover sm:h-24" loading="lazy" decoding="async">
-                                <span class="mt-2 block px-1 text-left text-[11px] font-medium text-slate-400">{{ $galleryImage['label'] }}</span>
+                            <button type="button" class="catalog-gallery-thumb {{ $loop->first ? 'border-primary-600 bg-white ring-2 ring-primary-600/20 shadow-lg' : 'border-slate-200 bg-white' }} rounded-2xl border p-2 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary-600 hover:shadow-md" data-image="{{ $galleryImage['src'] }}" data-alt="{{ $productTitle . ' ' . $galleryImage['label'] }}">
+                                <img src="{{ $galleryImage['src'] }}" alt="{{ $galleryImage['label'] }}" class="h-20 w-full rounded-xl object-cover sm:h-24" loading="lazy" decoding="async">
+                                <span class="mt-2 block px-1 text-left text-xs font-medium text-slate-400">{{ $galleryImage['label'] }}</span>
                             </button>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="space-y-5 self-start">
-                    <div class="space-y-4">
+                <div class="product-detail-content">
+                    <div class="space-y-3.5">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2383eb]">{{ $primaryBadge }}</span>
-                            <span class="inline-flex rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">{{ $secondaryBadge }}</span>
+                            <x-ui.status-badge type="product" :value="$primaryBadge" :label="$primaryBadge" />
+                            <x-ui.status-badge type="product" :value="$secondaryBadge" :label="$secondaryBadge" />
                         </div>
 
                         <div class="space-y-3">
-                            <h1 class="text-[36px] font-bold leading-[1.08] tracking-[-0.04em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">{{ $productTitle }}</h1>
-                            <div class="space-y-1 text-[13px] font-medium text-slate-500">
+                            <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">{{ $productTitle }}</h1>
+                            <div class="space-y-1 text-sm font-medium text-slate-500">
                                 <p>Model No: {{ $modelLabel }} | Professional Grade Biotech System</p>
                             </div>
-                            <p class="text-[14px] leading-7 text-slate-600">{{ $product->description ?: 'Professional scientific product engineered for institutional procurement and precision workflows.' }}</p>
+                            <p class="text-sm leading-7 text-slate-600 md:text-base">{{ $product->description ?: 'Professional scientific product engineered for institutional procurement and precision workflows.' }}</p>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-4 text-[13px] font-medium text-slate-500">
+                        <div class="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
                             <div class="flex items-center gap-1 text-amber-400">
                                 @for ($star = 0; $star < 5; $star++)
                                     <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z"></path></svg>
@@ -178,82 +206,82 @@
                             <span>{{ $ratingValue }}</span>
                             <span class="text-slate-300">|</span>
                             <span>{{ $reviewCount }} Customer Reviews</span>
-                            <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-emerald-700"><span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>{{ $stockText }}</span>
+                            <x-ui.status-badge type="product" :value="$stockText" :label="$stockText" dot />
                         </div>
 
                         <div class="flex flex-wrap gap-2">
                             @foreach ($shippingHighlights as $highlight)
-                                <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[13px] font-medium text-slate-600 shadow-sm"><span class="h-1.5 w-1.5 rounded-full bg-[#2383eb]"></span>{{ $highlight }}</span>
+                                <x-ui.status-badge type="cart" :value="$highlight" :label="$highlight" dot />
                             @endforeach
                         </div>
                     </div>
 
-                    <div class="rounded-[32px] border border-white/70 bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)] md:p-6 xl:sticky xl:top-6">
+                    <div class="{{ $purchaseCardClass }}">
                         <div class="flex flex-wrap items-start justify-between gap-4">
                             <div>
-                                <p class="text-[13px] font-medium uppercase tracking-[0.14em] text-slate-400">Market Retail Price (MRP)</p>
-                                <div class="mt-3 flex flex-wrap items-end gap-3">
-                                    <span class="text-[32px] font-bold tracking-[-0.04em] text-slate-950">{{ $formatInr($currentPrice) }}</span>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Market Retail Price (MRP)</p>
+                                <div class="mt-3 flex flex-wrap items-baseline gap-3">
+                                    <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($currentPrice) !!}</span>
                                     @if ($listPrice !== null)
-                                        <span class="pb-1 text-[16px] font-medium text-slate-400 line-through">{{ $formatInr($listPrice) }}</span>
+                                        <span class="text-sm font-medium text-slate-400 line-through">{!! $formatInr($listPrice) !!}</span>
                                     @endif
                                 </div>
-                                <p class="mt-2 text-[13px] font-medium text-slate-500">Inclusive of enterprise-grade packaging and compliance-ready dispatch.</p>
+                                <p class="mt-2 text-sm font-medium text-slate-500">Inclusive of enterprise-grade packaging and compliance-ready dispatch.</p>
                             </div>
 
-                            <div class="rounded-[18px] border border-blue-100 bg-blue-50 px-4 py-3">
-                                <p class="text-[12px] font-medium text-blue-700">Secure checkout</p>
-                                <p class="mt-1 text-[13px] font-semibold text-slate-900">SSL protected ordering</p>
+                            <div class="rounded-2xl border border-primary-100 bg-primary-50 px-4 py-3">
+                                <p class="text-xs font-medium text-primary-700">Secure checkout</p>
+                                <p class="mt-1 text-sm font-semibold text-slate-900">SSL protected ordering</p>
                             </div>
                         </div>
 
-                        <div class="mt-4 rounded-[22px] bg-[linear-gradient(135deg,#f8fbff_0%,#eef4ff_100%)] p-4 md:p-5">
+                        <div class="{{ $featurePanelClass }}">
                             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                 <div class="flex items-start gap-3">
-                                    <span class="mt-0.5 flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-100 text-[#2383eb]">
+                                    <span class="{{ $iconTilePrimaryClass }} mt-0.5">
                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <rect x="6" y="10" width="12" height="10" rx="2"></rect>
                                             <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
                                         </svg>
                                     </span>
                                     <div class="space-y-1">
-                                        <p class="text-[16px] font-medium text-slate-900">{{ auth()->check() ? 'Account-aware pricing controls are active' : 'Unlock wholesale pricing and bulk contract rates' }}</p>
-                                        <p class="text-[13px] leading-6 text-slate-500">{{ auth()->check() ? 'This product follows your current account visibility and quotation rules.' : 'Login reveals B2B price ladders, contract terms, and customer-specific discounts.' }}</p>
+                                        <p class="text-base font-medium text-slate-900">{{ auth()->check() ? 'Account-aware pricing controls are active' : 'Unlock wholesale pricing and bulk contract rates' }}</p>
+                                        <p class="text-sm leading-6 text-slate-500">{{ auth()->check() ? 'This product follows your current account visibility and quotation rules.' : 'Login reveals B2B price ladders, contract terms, and customer-specific discounts.' }}</p>
                                     </div>
                                 </div>
-
+                                
                                 @guest
-                                    <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-[12px] bg-gradient-to-r from-[#2f8fff] to-[#1d72d8] px-5 text-[14px] font-semibold text-white no-underline shadow-[0_16px_30px_rgba(35,131,235,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(35,131,235,0.28)]">
+                                    <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">
                                         Login to See B2B Price
                                     </a>
                                 @endguest
                             </div>
                         </div>
 
-                        <div class="mt-5 space-y-4">
-                            <div class="max-w-[180px] space-y-3">
-                                <p class="text-[13px] font-medium uppercase tracking-[0.14em] text-slate-400">Quantity</p>
-                                <div class="flex h-12 items-center justify-between rounded-[14px] border border-slate-200 bg-white px-4 shadow-sm">
-                                    <button type="button" class="catalog-qty-btn inline-flex h-8 w-8 items-center justify-center rounded-full text-[18px] text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" data-direction="-1">-</button>
-                                    <span id="catalogQuantityValue" class="text-[16px] font-medium text-slate-900 transition duration-150">1</span>
-                                    <button type="button" class="catalog-qty-btn inline-flex h-8 w-8 items-center justify-center rounded-full text-[18px] text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" data-direction="1">+</button>
+                        <div class="mt-4 space-y-3">
+                            <div class="max-w-48 space-y-3">
+                                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Quantity</p>
+                                <div class="{{ $qtyPickerClass }}">
+                                    <button type="button" class="catalog-qty-btn {{ $qtyButtonClass }}" data-direction="-1">-</button>
+                                    <span id="catalogQuantityValue" class="text-base font-medium text-slate-900 transition duration-150">1</span>
+                                    <button type="button" class="catalog-qty-btn {{ $qtyButtonClass }}" data-direction="1">+</button>
                                 </div>
                             </div>
 
-                            <div class="rounded-[18px] border border-slate-200 bg-[#fbfcfd] px-4 py-3">
-                                <div class="flex items-center justify-between gap-3 text-[13px] font-medium text-slate-600">
+                            <div class="{{ $estimateClass }}">
+                                <div class="flex items-center justify-between gap-3 text-sm font-medium text-slate-600">
                                     <span>Estimated total</span>
                                     <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{{ $formatInr($currentPrice) }}</span>
                                 </div>
-                                <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-[13px] font-medium text-slate-500">
+                                <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
                                     <span id="detailTierLabel">Tier: {{ $bulkTierRows[0]['label'] }}</span>
                                     <span id="detailTierDiscount">{{ $bulkTierRows[0]['discount'] }}</span>
                                 </div>
                             </div>
 
-                            <div class="product-detail-actions">
+                            <div class="{{ $actionsClass }}">
                                 @guest
-                                    <a href="{{ $loginUrl }}" class="product-detail-action product-detail-action--primary js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
+                                    <a href="{{ $loginUrl }}" class="{{ $primaryButtonClass }} js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="9" cy="20" r="1"></circle>
                                             <circle cx="18" cy="20" r="1"></circle>
@@ -262,7 +290,7 @@
                                         <span>Add to Cart</span>
                                     </a>
                                 @else
-                                    <button type="button" class="product-detail-action product-detail-action--primary js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
+                                    <button type="button" class="{{ $primaryButtonClass }} js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="9" cy="20" r="1"></circle>
                                             <circle cx="18" cy="20" r="1"></circle>
@@ -271,7 +299,7 @@
                                         <span>Add to Cart</span>
                                     </button>
                                 @endguest
-                                <a href="{{ $quoteUrl }}" class="product-detail-action product-detail-action--secondary">
+                                <a href="{{ $quoteUrl }}" class="{{ $secondaryButtonClass }}">
                                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M3 5h18"></path>
                                         <path d="M7 3v4"></path>
@@ -284,13 +312,13 @@
                             </div>
                         </div>
 
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            @foreach ($trustSignals as $signal)
-                                <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-[13px] font-medium text-slate-600"><span class="h-1.5 w-1.5 rounded-full bg-[#2383eb]"></span>{{ $signal }}</span>
-                            @endforeach
-                        </div>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                @foreach ($trustSignals as $signal)
+                                    <span class="{{ $inlineChipClass }}"><span class="h-1.5 w-1.5 rounded-full bg-primary-600"></span>{{ $signal }}</span>
+                                @endforeach
+                            </div>
 
-                        <a href="{{ $brochureUrl ?: '#' }}" @if ($brochureUrl) target="_blank" rel="noopener" @endif data-download-label="Full Brochure" class="js-download-resource mt-4 inline-flex h-12 w-full items-center justify-center rounded-[14px] border border-slate-200 bg-[#f8fafc] px-4 text-[14px] font-medium text-slate-700 no-underline transition duration-200 hover:border-[#2383eb] hover:bg-blue-50 hover:text-[#2383eb]">
+                        <a href="{{ $brochureUrl ?: '#' }}" @if ($brochureUrl) target="_blank" rel="noopener" @endif data-download-label="Full Brochure" class="{{ $secondaryButtonClass }} js-download-resource mt-4 w-full">
                             Download Full Brochure
                         </a>
                     </div>
@@ -298,21 +326,22 @@
                 </div>
             </section>
 
-            <section class="mt-6">
-                <div class="rounded-[32px] border border-white/70 bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)] md:p-6">
+            <section class="mt-5">
+                <div class="{{ $sectionCardClass }}">
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-[22px] font-semibold tracking-[-0.03em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">Bulk Tier Pricing</h2>
-                        <span id="bulkTierHint" class="rounded-full bg-emerald-50 px-3 py-1 text-[12px] font-medium text-emerald-700">Best value on 6+ units</span>
+                        <h2 class="{{ $sectionHeadingClass }}">Bulk Tier Pricing</h2>
+                        <x-ui.status-badge id="bulkTierHint" type="cart" value="best_value_on_6_units" label="Best value on 6+ units" />
                     </div>
-                    <div class="mt-5 overflow-hidden rounded-[18px] border border-slate-200">
-                        <div class="grid grid-cols-3 bg-slate-50 px-5 py-3 text-[12px] font-medium uppercase tracking-[0.08em] text-slate-500">
+                    <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200">
+                        <div class="grid grid-cols-3 bg-slate-50 px-5 py-3 table-label">
                             <span>Quantity</span>
                             <span>Discount</span>
                             <span class="text-right">Price/Unit</span>
                         </div>
                         @foreach ($bulkTierRows as $tier)
                             <div
-                                class="bulk-tier-row {{ $loop->last ? 'bg-blue-50/70' : ($loop->odd ? 'bg-white' : 'bg-slate-50/60') }} grid grid-cols-3 border-t border-slate-200 px-5 py-4 text-[14px] text-slate-700"
+                                class="{{ $loop->last ? 'bg-primary-50/70' : ($loop->odd ? 'bg-white' : 'bg-slate-50/60') }} grid cursor-pointer grid-cols-3 border-t border-slate-200 px-5 py-4 text-sm text-slate-700 transition"
+                                data-bulk-tier-row
                                 data-min="{{ (int) ($tier['min'] ?? 1) }}"
                                 @if ($tier['max'] !== null) data-max="{{ (int) $tier['max'] }}" @endif
                                 data-price="{{ $tier['price'] !== null ? (float) $tier['price'] : '' }}"
@@ -328,16 +357,16 @@
                 </div>
             </section>
 
-            <section class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-                <div class="rounded-[30px] border border-white/70 bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)] md:p-7">
-                    <h2 class="text-[22px] font-semibold tracking-[-0.03em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">Product Overview</h2>
-                    <div class="mt-5 space-y-5 text-[14px] leading-7 text-slate-600">
+            <section class="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+                <div class="{{ $sectionCardClass }}">
+                    <h2 class="{{ $sectionHeadingClass }}">Product Overview</h2>
+                    <div class="mt-5 space-y-5 text-sm leading-7 text-slate-600 md:text-base">
                         <p>{{ $product->description ?: 'This product is presented for scientific buyers who need reliable performance, clear documentation, and a polished procurement experience.' }}</p>
                         <p>The detail flow keeps pricing, technical references, and quotation actions together so users can move from evaluation to purchase without losing context.</p>
                         <ul class="space-y-3">
                             @foreach ($overviewPoints as $point)
                                 <li class="flex items-start gap-3">
-                                    <span class="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 text-[#2383eb]">
+                                    <span class="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary-50 text-primary-700">
                                         <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.5 7.563a1 1 0 0 1-1.421 0l-3-3.025a1 1 0 1 1 1.42-1.408l2.29 2.31 6.79-6.854a1 1 0 0 1 1.415 0Z" clip-rule="evenodd"></path></svg>
                                     </span>
                                     <span>{{ $point }}</span>
@@ -345,35 +374,35 @@
                             @endforeach
                         </ul>
 
-                        <div class="rounded-[22px] border border-slate-200 bg-[#fbfcfd] px-5 py-5">
+                        <div class="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-5">
                             <div class="flex flex-wrap items-center justify-between gap-3">
-                                <p class="text-[16px] font-medium text-slate-900">Customer reviews snapshot</p>
-                                <span class="text-[13px] font-semibold text-slate-600">{{ $ratingValue }} / 5 • {{ $reviewCount }} reviews</span>
+                                <p class="text-base font-medium text-slate-900">Customer reviews snapshot</p>
+                                <span class="text-sm font-semibold text-slate-600">{{ $ratingValue }} / 5 • {{ $reviewCount }} reviews</span>
                             </div>
                             <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                                <div class="rounded-[18px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
-                                    <p class="text-[13px] font-medium leading-6 text-slate-900">Fast dispatch and excellent documentation pack for procurement approvals.</p>
-                                    <p class="mt-2 text-[13px] font-medium text-slate-500">Institutional buyer • Verified order</p>
+                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+                                    <p class="text-sm font-medium leading-6 text-slate-900">Fast dispatch and excellent documentation pack for procurement approvals.</p>
+                                    <p class="mt-2 text-sm font-medium text-slate-500">Institutional buyer • Verified order</p>
                                 </div>
-                                <div class="rounded-[18px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
-                                    <p class="text-[13px] font-medium leading-6 text-slate-900">Stable performance in routine workflows with clear setup guidance.</p>
-                                    <p class="mt-2 text-[13px] font-medium text-slate-500">Lab manager • Repeat purchase</p>
+                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+                                    <p class="text-sm font-medium leading-6 text-slate-900">Stable performance in routine workflows with clear setup guidance.</p>
+                                    <p class="mt-2 text-sm font-medium text-slate-500">Lab manager • Repeat purchase</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="rounded-[30px] border border-white/70 bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)] md:p-6">
+                <div class="{{ $sectionCardClass }}">
                     <div class="flex items-center justify-between gap-3">
-                        <h3 class="text-[22px] font-semibold tracking-[-0.03em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">Technical Resources</h3>
-                        <span class="rounded-full bg-slate-100 px-3 py-1 text-[12px] font-medium text-slate-500">{{ count($resourceCards) }} files</span>
+                        <h3 class="{{ $sectionHeadingClass }}">Technical Resources</h3>
+                        <x-ui.status-badge type="product" value="resource_count" :label="count($resourceCards) . ' files'" />
                     </div>
                     <div class="mt-5 space-y-3">
                         @foreach ($resourceCards as $resource)
-                            <a href="{{ $resource['href'] }}" @if ($resource['href'] !== '#') target="_blank" rel="noopener" @endif data-download-label="{{ e((string) $resource['title']) }}" class="js-download-resource group flex items-center justify-between rounded-[18px] border border-slate-200 bg-[#f8fafc] px-4 py-4 no-underline transition duration-200 hover:-translate-y-0.5 hover:border-[#2383eb]/30 hover:bg-white hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)]">
+                            <a href="{{ $resource['href'] }}" @if ($resource['href'] !== '#') target="_blank" rel="noopener" @endif data-download-label="{{ e((string) $resource['title']) }}" class="js-download-resource group flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 no-underline transition duration-200 hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:shadow-md">
                                 <div class="flex items-start gap-3">
-                                    <span class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-[#2383eb] shadow-sm">
+                                    <span class="{{ $iconTilePrimaryClass }} mt-0.5 bg-white">
                                         @if ($resource['icon'] === 'clipboard')
                                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="3" width="6" height="4" rx="1"></rect><path d="M9 5H7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg>
                                         @elseif ($resource['icon'] === 'shield')
@@ -385,56 +414,56 @@
                                         @endif
                                     </span>
                                     <div>
-                                        <p class="text-[14px] font-medium text-slate-900">{{ $resource['title'] }}</p>
-                                        <p class="mt-1 text-[13px] font-medium text-slate-500">{{ $resource['meta'] }}</p>
+                                        <p class="text-sm font-medium text-slate-900">{{ $resource['title'] }}</p>
+                                        <p class="mt-1 text-sm font-medium text-slate-500">{{ $resource['meta'] }}</p>
                                     </div>
                                 </div>
-                                <svg class="h-4 w-4 text-slate-400 transition group-hover:text-[#2383eb]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
+                                <svg class="h-4 w-4 text-slate-400 transition group-hover:text-primary-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
                             </a>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="rounded-[30px] border border-white/70 bg-white p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)] md:p-7">
+                <div class="{{ $sectionCardClass }}">
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-[22px] font-semibold tracking-[-0.03em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">Technical Specifications</h2>
-                        <span class="rounded-full bg-slate-100 px-3 py-1 text-[12px] font-medium text-slate-500">Validated configuration</span>
+                        <h2 class="{{ $sectionHeadingClass }}">Technical Specifications</h2>
+                        <x-ui.status-badge type="product" value="validated_configuration" label="Validated configuration" />
                     </div>
                     <div class="mt-6 grid gap-4 sm:grid-cols-2">
                         @foreach ($specRows as $row)
-                            <div class="rounded-[18px] border border-slate-200 bg-[#fbfcfe] px-5 py-4">
-                                <p class="text-[13px] font-medium uppercase tracking-[0.12em] text-slate-400">{{ $row[0] }}</p>
-                                <p class="mt-3 text-[16px] font-medium leading-7 text-slate-900">{{ $row[1] }}</p>
+                            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{{ $row[0] }}</p>
+                                <p class="mt-3 text-base font-medium leading-7 text-slate-900">{{ $row[1] }}</p>
                             </div>
                         @endforeach
                     </div>
                 </div>
 
-                <div class="rounded-[30px] border border-blue-100 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] p-5 shadow-[0_24px_60px_rgba(15,23,42,0.08)] md:p-6">
-                    <h3 class="text-[22px] font-semibold tracking-[-0.03em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">Need a Custom Setup?</h3>
-                    <p class="mt-3 text-[14px] leading-7 text-slate-600">Our specialists can help configure this product for your workflow, budget, and institutional procurement needs.</p>
-                    <p class="mt-5 text-[13px] font-medium text-slate-500">Suggested with installation guidance, documentation packs, and compliance support.</p>
-                    <a href="{{ route('contact') }}" class="mt-6 inline-flex h-12 w-full items-center justify-center rounded-[14px] bg-gradient-to-r from-[#2f8fff] to-[#1d72d8] text-[14px] font-semibold text-white no-underline shadow-[0_16px_30px_rgba(35,131,235,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(35,131,235,0.28)]">
+                <div class="rounded-3xl border border-primary-100 bg-primary-50 p-5 shadow-sm md:p-6">
+                    <h3 class="{{ $sectionHeadingClass }}">Need a Custom Setup?</h3>
+                    <p class="mt-3 text-sm leading-7 text-slate-600 md:text-base">Our specialists can help configure this product for your workflow, budget, and institutional procurement needs.</p>
+                    <p class="mt-5 text-sm font-medium text-slate-500">Suggested with installation guidance, documentation packs, and compliance support.</p>
+                    <a href="{{ route('contact') }}" class="{{ $primaryButtonClass }} mt-6 w-full">
                         Consult an Expert
                     </a>
                 </div>
             </section>
 
-            <section class="mt-8 pb-2">
+            <section class="mt-6 pb-2">
                 <div class="flex flex-wrap items-center justify-between gap-4">
-                    <h2 class="text-[22px] font-semibold tracking-[-0.03em] text-slate-950 [font-family:Inter,system-ui,sans-serif]">Frequently Bought Together</h2>
-                    <a href="{{ route('products.index') }}" class="text-[13px] font-semibold text-[#2383eb] no-underline hover:text-[#1570c9]">View All Related Products</a>
+                    <h2 class="{{ $sectionHeadingClass }}">Frequently Bought Together</h2>
+                    <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-700 transition hover:text-primary-800">View All Related Products</a>
                 </div>
 
                 @if ($relatedProducts->isNotEmpty())
-                    <div class="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                    <div class="product-detail-related-grid">
                         @foreach ($relatedProducts as $relatedProduct)
                             @php
                                 $relatedImage = $resolveImageUrl($relatedProduct);
                                 $relatedPrice = $relatedProduct->visible_price !== null ? (float) $relatedProduct->visible_price : null;
                                 $relatedReviews = 38 + (((int) ($relatedProduct->id ?? 1)) * 3);
                             @endphp
-                            <article class="group overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-[0_22px_46px_rgba(15,23,42,0.10)]">
+                            <article class="product-detail-related-card group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl">
                                 <div class="overflow-hidden">
                                     <img src="{{ $relatedImage }}" alt="{{ $relatedProduct->name }}" class="h-[220px] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                 </div>
@@ -443,21 +472,21 @@
                                         @for ($star = 0; $star < 5; $star++)
                                             <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z"></path></svg>
                                         @endfor
-                                        <span class="ml-1 text-[12px] font-medium text-slate-500">{{ $relatedReviews }} reviews</span>
+                                        <span class="ml-1 text-xs font-medium text-slate-500">{{ $relatedReviews }} reviews</span>
                                     </div>
-                                    <h3 class="text-[16px] font-semibold leading-[1.4] text-slate-950 [font-family:Inter,system-ui,sans-serif]">{{ Str::limit((string) ($relatedProduct->name ?? 'Related Product'), 52) }}</h3>
-                                    <p class="text-[13px] leading-6 text-slate-500">{{ $relatedProduct->brand ?? 'Biogenix' }}</p>
+                                    <h3 class="text-base font-semibold leading-6 text-slate-950">{{ Str::limit((string) ($relatedProduct->name ?? 'Related Product'), 52) }}</h3>
+                                    <p class="text-sm leading-6 text-slate-500">{{ $relatedProduct->brand ?? 'Biogenix' }}</p>
                                     <div class="flex items-center justify-between gap-3">
-                                        <p class="text-[22px] font-bold tracking-[-0.03em] text-[#2383eb]">{{ $formatInr($relatedPrice) }}</p>
-                                        <a href="{{ route('products.productDetails', $relatedProduct->id) }}" class="inline-flex h-10 items-center justify-center rounded-[12px] border border-slate-200 bg-white px-4 text-[13px] font-semibold text-slate-700 no-underline transition hover:border-[#2383eb] hover:text-[#2383eb]">Quick Add</a>
+                                        <p class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($relatedPrice) !!}</p>
+                                        <a href="{{ route('products.productDetails', $relatedProduct->id) }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Quick Add</a>
                                     </div>
                                 </div>
                             </article>
                         @endforeach
                     </div>
                 @else
-                    <div class="mt-6 rounded-[24px] border border-dashed border-slate-200 bg-white px-6 py-12 text-center shadow-sm">
-                        <p class="text-[16px] font-medium text-slate-700">Related products will appear here as order history and category matching data becomes available.</p>
+                    <div class="mt-6 rounded-[28px] border border-dashed border-slate-300 bg-white px-6 py-12 text-center shadow-sm">
+                        <p class="text-base font-medium text-slate-700">Related products will appear here as order history and category matching data becomes available.</p>
                     </div>
                 @endif
             </section>
@@ -488,7 +517,7 @@
                 const estimatedTotal = document.getElementById('detailEstimatedTotal');
                 const tierLabel = document.getElementById('detailTierLabel');
                 const tierDiscount = document.getElementById('detailTierDiscount');
-                const bulkTierRows = Array.from(document.querySelectorAll('.bulk-tier-row'));
+                const bulkTierRows = Array.from(document.querySelectorAll('[data-bulk-tier-row]'));
                 const bulkTierHint = document.getElementById('bulkTierHint');
                 let quantity = 1;
 
@@ -654,7 +683,11 @@
                     const activeRow = resolveActiveTierRow(quantity);
 
                     bulkTierRows.forEach(function (row) {
-                        row.classList.toggle('is-active', row === activeRow);
+                        if (row === activeRow) {
+                            row.classList.add('bg-primary-50/80', 'ring-2', 'ring-inset', 'ring-primary-600/20');
+                        } else {
+                            row.classList.remove('bg-primary-50/80', 'ring-2', 'ring-inset', 'ring-primary-600/20');
+                        }
                     });
 
                     if (!activeRow) {
@@ -693,7 +726,6 @@
                 syncTierPricing();
 
                 bulkTierRows.forEach(function (row) {
-                    row.style.cursor = 'pointer';
                     row.addEventListener('click', function () {
                         const min = Math.max(1, Number(row.dataset.min || 1));
                         quantity = min;
@@ -772,12 +804,12 @@
                         }, 140);
 
                         thumbs.forEach(function (item) {
-                            item.classList.remove('border-[#2383eb]', 'ring-2', 'ring-[#2383eb]/20', 'shadow-[0_16px_34px_rgba(35,131,235,0.14)]');
+                            item.classList.remove('border-primary-600', 'ring-2', 'ring-primary-600/20', 'shadow-lg');
                             item.classList.add('border-slate-200');
                         });
 
                         thumb.classList.remove('border-slate-200');
-                        thumb.classList.add('border-[#2383eb]', 'ring-2', 'ring-[#2383eb]/20', 'shadow-[0_16px_34px_rgba(35,131,235,0.14)]');
+                        thumb.classList.add('border-primary-600', 'ring-2', 'ring-primary-600/20', 'shadow-lg');
                     });
                 });
 

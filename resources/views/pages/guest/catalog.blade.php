@@ -1,4 +1,4 @@
-﻿@php
+@php
     use Illuminate\Support\Str;
 
     $productCollection = collect($products->items());
@@ -134,7 +134,7 @@
             $integerPart = $remaining . ',' . $lastThree;
         }
 
-        return ($negative ? '-' : '') . 'Rs. ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+        return ($negative ? '-' : '') . '<span class="currency-symbol">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
     };
 
     $resolveImageUrl = function ($product): ?string {
@@ -182,33 +182,25 @@
         ['Institutional Fav', null],
         ['Legacy Support', null],
     ];
-    $badgeStyles = [
-        ['bg-[#215eaa] text-white', 'bg-[#177a6b] text-white'],
-        ['bg-[#2f8fff] text-white', null],
-        ['bg-[#4f86dc] text-white', null],
-        ['bg-slate-900 text-white', null],
-        ['bg-indigo-500 text-white', null],
-        ['bg-white/90 text-slate-700', null],
-    ];
 @endphp
 
-<div class="full-bleed -mt-6 bg-[#f4f6f8] [font-family:Inter,system-ui,sans-serif] md:-mt-8">
+<div class="mx-auto w-full max-w-none px-4 md:-mt-8 md:px-6 xl:px-10">
     <div class="catalog-premium-stage">
         <div id="catalogMobileBackdrop" class="catalog-mobile-backdrop" aria-hidden="true"></div>
         <div id="catalogLoadingOverlay" class="catalog-loading-overlay" aria-hidden="true">
             <div class="catalog-loading-card">
                 <div class="catalog-spinner-row">
                     <span class="catalog-spinner" aria-hidden="true"></span>
-                    <p class="text-[14px] font-semibold text-slate-900">Updating results</p>
+                    <p class="text-sm font-semibold text-slate-900">Updating results</p>
                 </div>
-                <p class="mt-3 text-[13px] leading-6 text-slate-500">Applying filters and refreshing product availability. This takes a moment.</p>
+                <p class="mt-3 text-sm leading-6 text-slate-500">Applying filters and refreshing product availability. This takes a moment.</p>
             </div>
         </div>
         <div id="uiToastHost" class="ui-toast-host" aria-live="polite" aria-atomic="true"></div>
-        <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="space-y-5 md:space-y-6">
+        <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="catalog-premium-form">
             <section class="catalog-premium-section pt-2 md:pt-3">
                 <div class="catalog-premium-hero">
-                    <div class="flex flex-wrap items-center gap-2 text-[12px] font-medium text-slate-400">
+                    <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
                         <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-slate-700">Home</a>
                         <span>/</span>
                         <span>Catalog</span>
@@ -218,8 +210,8 @@
 
                     <div class="catalog-premium-toolbar mt-4">
                         <div class="catalog-premium-heading">
-                            <h1 class="text-[36px] font-bold tracking-[-0.04em] text-slate-950">Product Catalog</h1>
-                            <p class="mt-2 max-w-[760px] text-[14px] leading-7 text-slate-500">
+                            <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Product Catalog</h1>
+                            <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">
                                 Explore our comprehensive range of high-performance biotech reagents, IVD kits, and life science research tools engineered for precision.
                             </p>
                         </div>
@@ -241,8 +233,8 @@
                             </label>
 
                             <div class="catalog-premium-sort">
-                                <span class="text-[13px] font-medium text-slate-400">Sort by:</span>
-                                <select id="catalogSort" name="sort" class="border-0 bg-transparent pr-6 text-[13px] font-semibold text-slate-800 outline-none">
+                                <span class="text-sm font-medium text-slate-400">Sort by:</span>
+                                <select id="catalogSort" name="sort" class="border-0 bg-transparent pr-6 text-sm font-semibold text-slate-800 outline-none">
                                     <option value="relevant" @selected($sort === 'relevant')>Most Relevant</option>
                                     <option value="name_az" @selected($sort === 'name_az')>Name A-Z</option>
                                     <option value="price_low" @selected($sort === 'price_low')>Price Low to High</option>
@@ -254,14 +246,14 @@
                 </div>
             </section>
 
-            <section class="catalog-premium-layout pb-5 md:pb-7">
-                <aside class="catalog-premium-sidebar space-y-7 rounded-[28px] border border-white/70 bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+            <section class="catalog-premium-layout pb-4 md:pb-5">
+                <aside id="catalogSidebar" class="min-w-0 space-y-5 rounded-[32px] border border-slate-200 bg-white p-4 shadow-sm md:p-5 xl:sticky xl:top-6">
                     <div class="flex items-center justify-between gap-3 xl:hidden">
                         <div>
-                            <p class="text-[14px] font-semibold text-slate-900">Filters</p>
-                            <p class="mt-1 text-[12px] font-medium text-slate-500">Select multiple filters, then apply.</p>
+                            <p class="text-sm font-semibold text-slate-900">Filters</p>
+                            <p class="mt-1 text-sm font-medium text-slate-500">Select multiple filters, then apply.</p>
                         </div>
-                        <button type="button" id="catalogFiltersClose" class="catalog-toolbar-btn" aria-label="Close filters">
+                        <button type="button" id="catalogFiltersClose" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-700" aria-label="Close filters">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M18 6 6 18"></path>
                                 <path d="M6 6l12 12"></path>
@@ -271,9 +263,9 @@
                     </div>
 
                     @if ($activeFilterCount > 0)
-                        <div class="flex items-center justify-between rounded-2xl bg-blue-50 px-4 py-3">
-                            <span class="text-[13px] font-medium text-blue-700">{{ $activeFilterCount }} filters applied</span>
-                            <a href="{{ route('products.index') }}" class="text-[13px] font-semibold text-[#2383eb] no-underline hover:text-[#1570c9]">Clear</a>
+                        <div class="flex items-center justify-between rounded-2xl bg-primary-50 px-4 py-3">
+                            <span class="text-sm font-medium text-primary-700">{{ $activeFilterCount }} filters applied</span>
+                            <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-700 no-underline hover:text-primary-600">Clear</a>
                         </div>
                     @endif
 
@@ -288,15 +280,17 @@
                             </span>
                         </summary>
                         <div class="mt-4 space-y-3">
-                            @foreach ($categoryOptions as $label => $count)
-                                <label class="flex items-center justify-between gap-3 text-[14px] text-slate-800">
+                            @forelse ($categoryOptions as $label => $count)
+                                <label class="flex items-center justify-between gap-3 text-sm text-slate-800">
                                     <span class="flex items-center gap-3">
-                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-[#2383eb]" type="checkbox" name="category_name[]" value="{{ $label }}" @checked($selectedCategories->contains($label))>
+                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-primary-600" type="checkbox" name="category_name[]" value="{{ $label }}" @checked($selectedCategories->contains($label))>
                                         <span>{{ $label }}</span>
                                     </span>
-                                    <span class="text-[11px] text-slate-400">{{ $count }}</span>
+                                    <span class="text-xs text-slate-400">{{ $count }}</span>
                                 </label>
-                            @endforeach
+                            @empty
+                                <p class="text-sm leading-6 text-slate-400">No categories available for the current catalog view.</p>
+                            @endforelse
                         </div>
                     </details>
 
@@ -311,15 +305,17 @@
                             </span>
                         </summary>
                         <div class="mt-4 space-y-3">
-                            @foreach ($applicationOptions as $label => $count)
-                                <label class="flex items-center justify-between gap-3 text-[14px] text-slate-800">
+                            @forelse ($applicationOptions as $label => $count)
+                                <label class="flex items-center justify-between gap-3 text-sm text-slate-800">
                                     <span class="flex items-center gap-3">
-                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-[#2383eb]" type="checkbox" name="application_name[]" value="{{ $label }}" @checked($selectedApplications->contains($label))>
+                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-primary-600" type="checkbox" name="application_name[]" value="{{ $label }}" @checked($selectedApplications->contains($label))>
                                         <span>{{ $label }}</span>
                                     </span>
-                                    <span class="text-[11px] text-slate-400">{{ $count }}</span>
+                                    <span class="text-xs text-slate-400">{{ $count }}</span>
                                 </label>
-                            @endforeach
+                            @empty
+                                <p class="text-sm leading-6 text-slate-400">No applications available for the current catalog view.</p>
+                            @endforelse
                         </div>
                     </details>
 
@@ -334,15 +330,17 @@
                             </span>
                         </summary>
                         <div class="mt-4 space-y-3">
-                            @foreach ($brandOptions as $label => $count)
-                                <label class="flex items-center justify-between gap-3 text-[14px] text-slate-800">
+                            @forelse ($brandOptions as $label => $count)
+                                <label class="flex items-center justify-between gap-3 text-sm text-slate-800">
                                     <span class="flex items-center gap-3">
-                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-[#2383eb]" type="checkbox" name="brand_name[]" value="{{ $label }}" @checked($selectedBrands->contains($label))>
+                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-primary-600" type="checkbox" name="brand_name[]" value="{{ $label }}" @checked($selectedBrands->contains($label))>
                                         <span>{{ $label }}</span>
                                     </span>
-                                    <span class="text-[11px] text-slate-400">{{ $count }}</span>
+                                    <span class="text-xs text-slate-400">{{ $count }}</span>
                                 </label>
-                            @endforeach
+                            @empty
+                                <p class="text-sm leading-6 text-slate-400">No brands available for the current catalog view.</p>
+                            @endforelse
                         </div>
                     </details>
 
@@ -350,7 +348,7 @@
                         <summary class="catalog-filter-summary">
                             <span class="catalog-filter-summary-title">Price Range</span>
                             <span class="catalog-filter-summary-actions">
-                                <span id="catalogPriceLabel" class="text-[12px] font-semibold text-[#2383eb]">{{ $formatInr($selectedMaxPrice, 0) }}</span>
+                                <span id="catalogPriceLabel" class="text-xs font-semibold text-primary-700">{{ $formatInr($selectedMaxPrice, 0) }}</span>
                                 @if ($selectedMaxPrice < $maxPrice)
                                     <a href="{{ $dropQueryKey('max_price') }}" class="catalog-filter-clear">Clear</a>
                                 @endif
@@ -366,9 +364,9 @@
                                 max="{{ $maxPrice }}"
                                 step="1"
                                 value="{{ $selectedMaxPrice }}"
-                                class="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-300 accent-[#2383eb]"
+                                class="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-300 accent-primary-600"
                             >
-                            <div class="mt-4 flex items-center justify-between text-[12px] font-semibold text-slate-700">
+                            <div class="mt-4 flex items-center justify-between text-xs font-semibold text-slate-700">
                                 <span>{{ $formatInr($minPrice, 0) }}</span>
                                 <span>{{ $formatInr($maxPrice, 0) }}</span>
                             </div>
@@ -381,26 +379,26 @@
                     </div>
                 </aside>
 
-                <div class="catalog-premium-results space-y-6">
+                <div class="catalog-premium-results">
                     <div class="catalog-premium-results-header">
                         <div class="flex flex-wrap items-center gap-3">
-                            <div class="rounded-2xl border border-white/70 bg-white px-4 py-3 shadow-sm">
-                                <p class="text-[13px] font-medium text-slate-500">{{ $products->total() }} products available</p>
+                            <div class="catalog-premium-metric">
+                                <p class="text-sm font-medium text-slate-500">{{ $products->total() }} products available</p>
                             </div>
                             @if ($search !== '')
-                                <div class="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 shadow-sm">
-                                    <p class="text-[13px] font-medium text-blue-700">Search: <span class="font-semibold">{{ $search }}</span></p>
+                                <div class="catalog-premium-metric border-primary-100 bg-primary-50">
+                                    <p class="text-sm font-medium text-primary-700">Search: <span class="font-semibold">{{ $search }}</span></p>
                                 </div>
                             @endif
                             @if ($activeFilterCount > 0)
-                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                                    <p class="text-[13px] font-medium text-slate-500">{{ $activeFilterCount }} active filters</p>
+                                <div class="catalog-premium-metric">
+                                    <p class="text-sm font-medium text-slate-500">{{ $activeFilterCount }} active filters</p>
                                 </div>
                             @endif
                         </div>
 
                         <div class="catalog-toolbar-actions">
-                            <button type="button" id="catalogFiltersOpen" class="catalog-toolbar-btn xl:hidden" aria-label="Open filters">
+                            <button type="button" id="catalogFiltersOpen" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-700 xl:hidden" aria-label="Open filters">
                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M4 6h16"></path>
                                     <path d="M7 12h10"></path>
@@ -410,7 +408,7 @@
                             </button>
 
                             @if ($search !== '' || $activeFilterCount > 0)
-                                <a href="{{ route('products.index') }}" class="inline-flex h-11 items-center justify-center rounded-[14px] border border-slate-200 bg-white px-4 text-[13px] font-semibold text-slate-700 no-underline shadow-sm transition hover:border-[#2383eb] hover:text-[#2383eb]">
+                                <a href="{{ route('products.index') }}" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
                                     Reset Catalog
                                 </a>
                             @endif
@@ -462,19 +460,19 @@
                     @endif
 
                     @if ($productCollection->isEmpty())
-                        <div class="rounded-[28px] border border-slate-200 bg-white px-6 py-20 text-center shadow-sm">
-                            <h2 class="text-[26px] font-bold tracking-[-0.03em] text-slate-950">No products matched these filters</h2>
-                            <p class="mt-3 text-[15px] leading-7 text-slate-500">Remove one or more filters to see more catalog items.</p>
-                            <a href="{{ route('products.index') }}" class="mt-8 inline-flex h-12 items-center justify-center rounded-[14px] bg-gradient-to-r from-[#2f8fff] to-[#1d72d8] px-6 text-[14px] font-semibold text-white no-underline shadow-[0_16px_30px_rgba(35,131,235,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(35,131,235,0.28)]">
-                                Clear Filters
-                            </a>
-                        </div>
+                        <x-ui.empty-state
+                            icon="product"
+                            title="No products matched these filters"
+                            description="Remove one or more filters to see more catalog items."
+                            :action-href="route('products.index')"
+                            action-label="Clear Filters"
+                            class="rounded-[28px] border border-slate-200 bg-white px-6 py-16 shadow-sm"
+                        />
                     @else
                         <div class="catalog-premium-grid">
                             @foreach ($productCollection as $product)
                                 @php
                                     $badgeRow = $badgeSets[$loop->index % count($badgeSets)];
-                                    $badgeStyleRow = $badgeStyles[$loop->index % count($badgeStyles)];
                                     $price = $product->visible_price !== null ? (float) $product->visible_price : null;
                                     $listPrice = $price !== null ? round($price * 1.16, 2) : null;
                                 $detailUrl = route('products.productDetails', $product->id);
@@ -486,32 +484,30 @@
                                     $inStock = (bool) ($product->is_active ?? true);
                                     $stockText = $inStock ? 'In Stock' : 'Limited Availability';
                                 @endphp
-                                <article class="group flex h-full flex-col overflow-hidden rounded-[22px] border border-white/80 bg-white shadow-[0_18px_42px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_52px_rgba(15,23,42,0.12)]">
-                                    <div class="relative px-4 pt-4">
-                                        <div class="overflow-hidden rounded-[16px]">
+                                <article class="catalog-premium-card group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                                    <div class="catalog-premium-card__media">
+                                        <div class="overflow-hidden rounded-2xl">
                                             @if ($imageUrl)
-                                                <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[220px] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
+                                                <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="catalog-premium-card__visual w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                             @else
-                                                @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-[220px] rounded-[16px] transition duration-300 group-hover:scale-[1.04]'])
+                                                @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'catalog-premium-card__visual rounded-2xl transition duration-300 group-hover:scale-[1.04]'])
                                             @endif
                                         </div>
                                         <div class="absolute left-6 top-6 flex flex-col gap-2">
                                             @foreach ($badgeRow as $badgeIndex => $badgeLabel)
                                                 @if ($badgeLabel)
-                                                    <span class="{{ $badgeStyleRow[$badgeIndex] }} rounded-[6px] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] shadow-sm">
-                                                        {{ $badgeLabel }}
-                                                    </span>
+                                                    <x-ui.status-badge type="product" :value="$badgeLabel" :label="$badgeLabel" class="shadow-sm" />
                                                 @endif
                                             @endforeach
                                         </div>
                                     </div>
 
-                                    <div class="flex flex-1 flex-col space-y-4 px-4 pb-4 pt-5">
-                                        <div class="space-y-1.5">
-                                            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
-                                            <h3 class="catalog-card-title text-[16px] font-semibold leading-[1.38] text-slate-950">{{ Str::limit((string) $product->name, 58) }}</h3>
-                                            <p class="text-[12px] text-slate-400">SKU: {{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}</p>
-                                            <div class="flex items-center gap-2 pt-1 text-[13px] font-medium text-slate-500">
+                                    <div class="catalog-premium-card__body">
+                                        <div class="catalog-premium-card__header">
+                                            <p class="page-kicker text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
+                                            <h3 class="catalog-card-title text-base font-semibold leading-6 text-slate-950">{{ Str::limit((string) $product->name, 58) }}</h3>
+                                            <p class="text-xs text-slate-400">SKU: {{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}</p>
+                                            <div class="flex items-center gap-2 pt-1 text-sm font-medium text-slate-500">
                                                 <span class="flex items-center gap-1 text-amber-400">
                                                     @for ($star = 0; $star < 5; $star++)
                                                         <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.54 5.14 5.68.83-4.11 4 1 5.66L10 14.44 4.89 17.13l.98-5.66-4.1-4 5.67-.83L10 1.5Z"></path></svg>
@@ -523,18 +519,18 @@
                                             </div>
                                         </div>
 
-                                        <div class="catalog-card-price rounded-[14px] bg-[#fbfcfd] px-3 py-3">
-                                            <div class="flex items-center justify-between text-[11px] text-slate-400">
-                                                <span class="uppercase tracking-[0.08em]">List MRP:</span>
-                                                <span class="font-medium line-through">{{ $listPrice !== null ? $formatInr($listPrice) : 'N/A' }}</span>
+                                        <div class="catalog-card-price rounded-2xl bg-slate-50 px-3 py-3">
+                                            <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                                <span>List MRP</span>
+                                                <span class="line-through">{!! $listPrice !== null ? $formatInr($listPrice) : 'N/A' !!}</span>
                                             </div>
-                                            <div class="mt-2 flex items-end justify-between gap-3">
-                                                <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#2383eb]">Your Price:</span>
-                                                <span class="text-[18px] font-extrabold tracking-[-0.03em] text-[#2383eb]">{{ $formatInr($price) }}</span>
+                                            <div class="mt-1.5 flex items-baseline justify-between gap-2">
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-primary-600/70">Your Price</span>
+                                                <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price) !!}</span>
                                             </div>
                                         </div>
 
-                                        <div class="flex items-center gap-2 text-[12px] text-slate-700">
+                                        <div class="catalog-premium-card__meta text-slate-700">
                                             <svg class="h-3.5 w-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M7 8h10M7 12h10M7 16h6"></path>
                                                 <path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8l-5 0V6a2 2 0 0 1 2-2Z"></path>
@@ -542,19 +538,16 @@
                                             <span>MOQ: {{ $product->visible_variant_name ?? ($product->brand ? '1 Unit' : '5 Units') }}</span>
                                         </div>
 
-                                        <div class="flex flex-wrap items-center gap-2 text-[12px] font-medium text-slate-600">
-                                            <span class="catalog-stock {{ $inStock ? 'catalog-stock--in' : 'catalog-stock--limited' }}">
-                                                <span class="catalog-stock-dot {{ $inStock ? 'catalog-stock-dot--in' : 'catalog-stock-dot--limited' }}"></span>
-                                                {{ $stockText }}
-                                            </span>
+                                        <div class="catalog-premium-card__signals font-medium text-slate-600">
+                                            <x-ui.status-badge type="product" :value="$stockText" :label="$stockText" dot />
                                             <span class="catalog-ships">
                                                 Ships 24-48h
                                             </span>
                                         </div>
 
-                                        <div class="catalog-card-discount rounded-[14px] border border-slate-200 bg-[#fbfcfd] px-3 py-3">
-                                            <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#2383eb]">Bulk Discounts Available</p>
-                                            <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-500">
+                                        <div class="catalog-card-discount rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+                                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Bulk Discounts Available</p>
+                                            <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
                                                 <span>5+ units: 5% off</span>
                                                 <span>10+ units: 12% off</span>
                                             </div>
@@ -594,17 +587,7 @@
                         </div>
                     @endif
 
-                    @if ($products->hasPages())
-                        <div class="flex items-center justify-center gap-2 pt-4">
-                            <a href="{{ $products->previousPageUrl() ?: '#' }}" class="flex h-10 w-10 items-center justify-center rounded-[10px] border border-slate-200 bg-white text-slate-600 no-underline {{ $products->onFirstPage() ? 'pointer-events-none opacity-40' : 'hover:bg-slate-50' }}">&lt;</a>
-                            @foreach ($products->getUrlRange(1, $products->lastPage()) as $pageNumber => $pageUrl)
-                                <a href="{{ $pageUrl }}" class="flex h-10 min-w-10 items-center justify-center rounded-[10px] px-3 text-[14px] font-semibold no-underline {{ $pageNumber === $products->currentPage() ? 'bg-[#2383eb] text-white shadow-sm' : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50' }}">
-                                    {{ $pageNumber }}
-                                </a>
-                            @endforeach
-                            <a href="{{ $products->nextPageUrl() ?: '#' }}" class="flex h-10 w-10 items-center justify-center rounded-[10px] border border-slate-200 bg-white text-slate-600 no-underline {{ $products->hasMorePages() ? 'hover:bg-slate-50' : 'pointer-events-none opacity-40' }}">&gt;</a>
-                        </div>
-                    @endif
+                    <x-ui.pagination :paginator="$products" class="pt-4" />
                 </div>
             </section>
         </form>
@@ -891,4 +874,3 @@
         });
     </script>
 @endpush
-

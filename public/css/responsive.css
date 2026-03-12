@@ -1,8 +1,0 @@
-/* Handle mobile / tablet / desktop differences cleanly. */
-
-@media(max-width:768px){
-    .nav
-    {
-        display:none;
-    }
-}

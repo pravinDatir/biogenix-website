@@ -1,74 +1,79 @@
-<div class="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50/50">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="text-center mb-8">
-            <a href="/" class="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-blue-600 shadow-lg text-white mb-6">
-                <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            </a>
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Set New Password</h1>
-            <p class="mt-2 text-sm text-slate-600">Create a strong password for your account.</p>
-        </div>
-
-        <div class="bg-white py-8 px-4 shadow-xl sm:rounded-2xl sm:px-10 border border-slate-100">
-            <form id="resetPasswordForm" method="POST" action="{{ route('password.update') }}" class="space-y-5" novalidate>
-                @csrf
-                <input type="hidden" name="token" value="{{ $request->route('token') }}">
-
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                    <input 
-                        id="email" 
-                        name="email" 
-                        type="email" 
-                        class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 hover:border-blue-400 @error('email') border-red-500 ring-2 ring-red-200 @enderror" 
-                        value="{{ old('email', $request->email) }}" 
-                        required
-                    >
-                    @error('email')
-                        <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
-                    @enderror
-                    <span class="error"></span>
+<div class="auth-shell">
+    <section class="auth-stage mx-auto max-w-xl">
+        <div class="auth-panel px-5 py-7 sm:px-6 sm:py-8">
+            <div class="mx-auto w-full max-w-md">
+                <div class="text-center">
+                    <div class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary-50 text-primary-700 shadow-sm">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <p class="page-kicker mt-5">Account Recovery</p>
+                    <h1 class="auth-title mt-3">Set a new password</h1>
+                    <p class="auth-copy mx-auto max-w-sm text-center">
+                        Create a strong password for your account and use it for future sign-ins.
+                    </p>
                 </div>
 
-                <div>
-                    <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">New Password</label>
-                    <input 
-                        id="password" 
-                        name="password" 
-                        type="password" 
-                        class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 hover:border-blue-400 @error('password') border-red-500 ring-2 ring-red-200 @enderror" 
-                        placeholder="Min. 8 characters"
-                        required
-                    >
-                    @error('password')
-                        <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
-                    @enderror
-                    <span class="error"></span>
-                </div>
+                <form id="resetPasswordForm" method="POST" action="{{ route('password.update') }}" class="auth-form mt-6" novalidate>
+                    @csrf
+                    <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-                <div>
-                    <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-2">Confirm Password</label>
-                    <input 
-                        id="password_confirmation" 
-                        name="password_confirmation" 
-                        type="password" 
-                        class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 transition focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 hover:border-blue-400 @error('password_confirmation') border-red-500 ring-2 ring-red-200 @enderror" 
-                        placeholder="Re-enter password"
-                        required
-                    >
-                    @error('password_confirmation')
-                        <p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>
-                    @enderror
-                    <span class="error"></span>
-                </div>
+                    <div class="auth-field">
+                        <label for="email" class="auth-label">Email Address</label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            class="auth-input @error('email') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                            value="{{ old('email', $request->email) }}"
+                            autocomplete="email"
+                            required
+                        >
+                        @error('email')
+                            <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                <div class="pt-2">
-                    <button id="resetPasswordSubmitBtn" class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-blue-500/30 hover:shadow-blue-500/40 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" type="submit">
+                    <div class="auth-field">
+                        <label for="password" class="auth-label">New Password</label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            class="auth-input @error('password') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                            placeholder="Minimum 8 characters"
+                            autocomplete="new-password"
+                            required
+                        >
+                        @error('password')
+                            <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="auth-field">
+                        <label for="password_confirmation" class="auth-label">Confirm Password</label>
+                        <input
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            type="password"
+                            class="auth-input @error('password_confirmation') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                            placeholder="Re-enter password"
+                            autocomplete="new-password"
+                            required
+                        >
+                        @error('password_confirmation')
+                            <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button id="resetPasswordSubmitBtn" class="auth-submit" type="submit">
                         Reset Password
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
+    </section>
 </div>
 
 @push('scripts')
@@ -80,7 +85,7 @@
 
         form.addEventListener('submit', function () {
             submitBtn.disabled = true;
-            submitBtn.classList.add('is-loading');
+            submitBtn.classList.add('cursor-not-allowed', 'opacity-70');
             submitBtn.setAttribute('aria-disabled', 'true');
         });
     });

@@ -3,71 +3,96 @@
 @section('title', 'Cart')
 
 @section('content')
-    <div class="relative left-1/2 w-screen -translate-x-1/2 bg-[#f4f6f8] py-6 lg:py-8" style="font-family: Inter, system-ui, sans-serif;">
-        <div class="mx-auto max-w-[1700px] px-4 sm:px-6 lg:px-8">
-            <section class="overflow-hidden rounded-[32px] border border-white/70 bg-[linear-gradient(120deg,#ffffff_0%,#f8fbff_58%,#edf5ff_100%)] p-6 shadow-[0_30px_70px_rgba(15,23,42,0.08)] lg:p-8">
+    @php
+        $previousUrl = url()->previous();
+        $currentUrl = url()->current();
+        $currentHost = parse_url(url()->to('/'), PHP_URL_HOST);
+        $previousHost = $previousUrl ? parse_url($previousUrl, PHP_URL_HOST) : null;
+        $backUrl = filled($previousUrl) && $previousUrl !== $currentUrl && (! $previousHost || $previousHost === $currentHost)
+            ? $previousUrl
+            : route('products.index');
+        $pageWrapClass = 'mx-auto w-full max-w-none px-4 py-6 sm:px-6 lg:px-8 xl:px-10';
+        $backLinkClass = 'mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-900';
+        $heroClass = 'rounded-[32px] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f4f7fb_58%,#dbeafe_100%)] p-6 shadow-sm md:p-8';
+        $eyebrowClass = 'text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400';
+        $titleClass = 'mt-3 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl';
+        $leadClass = 'mt-3 text-sm leading-7 text-slate-600 md:text-base';
+        $chipSuccessClass = 'inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700';
+        $buttonSecondaryClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50';
+        $buttonPrimaryClass = 'inline-flex h-14 items-center justify-center rounded-2xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700';
+        $layoutGridClass = 'mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]';
+        $cardClass = 'rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
+        $summaryCardClass = 'rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8 xl:sticky xl:top-6';
+        $sectionTitleClass = 'text-xl font-semibold text-slate-950';
+        $sectionCopyClass = 'mt-1 text-sm leading-6 text-slate-500';
+        $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700';
+        $iconTileSuccessClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700';
+        $helpCardClass = 'rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm';
+    @endphp
+
+    <div class="{{ $pageWrapClass }}">
+        <div>
+            <a href="{{ $backUrl }}" class="{{ $backLinkClass }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span>Back</span>
+            </a>
+
+            <section class="{{ $heroClass }}">
                 <div class="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-                    <div class="max-w-[760px] space-y-3">
-                        <p class="text-[13px] font-semibold uppercase tracking-[0.32em] text-[#7f92b8]">Cart overview</p>
-                        <div class="space-y-2">
-                            <h1 class="text-[34px] font-bold leading-tight text-slate-950 lg:text-[40px]">Review your scientific procurement cart</h1>
-                            <p class="max-w-[640px] text-[15px] leading-7 text-slate-600">
-                                Validate quantities, compare line totals, and continue to checkout using the same premium workflow as the product pages.
-                            </p>
-                        </div>
+                    <div class="max-w-3xl">
+                        <p class="{{ $eyebrowClass }}">Cart Overview</p>
+                        <h1 class="{{ $titleClass }}">Review your scientific procurement cart</h1>
+                        <p class="{{ $leadClass }}">
+                            Validate quantities, compare line totals, and continue to checkout using the same shared design system as the catalog and product detail flows.
+                        </p>
                     </div>
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                        <div class="inline-flex items-center gap-2 rounded-full border border-[#dce9fb] bg-white/90 px-4 py-2 text-[13px] font-medium text-slate-600 shadow-sm">
+                        <div class="{{ $chipSuccessClass }}">
                             <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
                             Secure cart sync across pages
                         </div>
-                        <a href="{{ route('products.index') }}" class="inline-flex h-12 items-center justify-center rounded-[16px] border border-slate-200 bg-white px-5 text-[14px] font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-[#2383eb] hover:text-[#2383eb]">
+                        <a href="{{ route('products.index') }}" class="{{ $buttonSecondaryClass }}">
                             Continue Shopping
                         </a>
                     </div>
                 </div>
             </section>
 
-            <div class="mt-6 grid gap-6 lg:grid-cols-12 lg:items-start">
-                <section class="rounded-[32px] border border-white/70 bg-white p-5 shadow-[0_28px_70px_rgba(15,23,42,0.08)] lg:col-span-8 lg:p-6">
+            <div class="{{ $layoutGridClass }}">
+                <section class="{{ $cardClass }}">
                     <div class="flex flex-col gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h2 class="text-[22px] font-semibold text-slate-950">Cart Items</h2>
-                            <p class="mt-1 text-[14px] text-slate-500">All quantities stay editable before you continue to checkout.</p>
+                            <h2 class="{{ $sectionTitleClass }}">Cart Items</h2>
+                            <p class="{{ $sectionCopyClass }}">All quantities stay editable before you continue to checkout.</p>
                         </div>
-                        <div class="inline-flex items-center gap-2 rounded-full border border-[#dbe7f8] bg-[#f6faff] px-4 py-2 text-[13px] font-semibold text-[#1d72d8]">
+                        <div class="inline-flex items-center rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-700">
                             <span id="cartItemCount">0 items</span>
                         </div>
                     </div>
 
-                    <div id="cartItemsList" class="mt-5 space-y-4"></div>
+                    <div id="cartItemsList" class="mt-4 space-y-3"></div>
 
-                    <div id="cartEmptyState" class="hidden flex-col items-center justify-center rounded-[28px] border border-dashed border-slate-200 bg-[#f8fafc] px-6 py-14 text-center shadow-sm">
-                        <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#e8f2ff] text-[#2383eb] shadow-sm">
-                            <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                <circle cx="9" cy="21" r="1.4"></circle>
-                                <circle cx="17" cy="21" r="1.4"></circle>
-                                <path d="M5 6h2l1.4 8h12.1l1.5-6H8"></path>
-                            </svg>
-                        </div>
-                        <h3 class="mt-5 text-[22px] font-semibold text-slate-950">Your cart is empty</h3>
-                        <p class="mt-2 max-w-[420px] text-[14px] leading-7 text-slate-500">
-                            Add products from the catalog or product detail page to build your procurement order.
-                        </p>
-                        <a href="{{ route('products.index') }}" class="mt-6 inline-flex h-12 items-center justify-center rounded-[16px] bg-gradient-to-r from-[#2f8fff] to-[#1d72d8] px-6 text-[14px] font-semibold text-white shadow-[0_18px_34px_rgba(35,131,235,0.22)] transition hover:-translate-y-0.5">
-                            Continue Shopping
-                        </a>
-                    </div>
+                    <x-ui.empty-state
+                        id="cartEmptyState"
+                        compact
+                        icon="order"
+                        title="Your cart is empty"
+                        description="Add products from the catalog or product detail page to build your procurement order."
+                        :action-href="route('products.index')"
+                        action-label="Continue Shopping"
+                    />
                 </section>
 
-                <div class="space-y-5 lg:col-span-4">
-                    <section class="sticky top-6 rounded-[32px] border border-white/70 bg-white p-6 shadow-[0_28px_70px_rgba(15,23,42,0.08)]">
+                <div class="space-y-5">
+                    <section class="{{ $summaryCardClass }}">
                         <div class="flex items-center justify-between gap-3">
                             <div>
-                                <h3 class="text-[22px] font-semibold text-slate-950">Order Summary</h3>
-                                <p class="mt-1 text-[13px] text-slate-500">Mirrors the purchase card on the product detail page.</p>
+                                <h3 class="{{ $sectionTitleClass }}">Order Summary</h3>
+                                <p class="{{ $sectionCopyClass }}">Mirrors the purchase summary used across the storefront.</p>
                             </div>
-                            <div class="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#eef5ff] text-[#2383eb] shadow-sm">
+                            <div class="{{ $iconTilePrimaryClass }}">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
                                     <path d="M3 7h18"></path>
                                     <path d="M7 3v4"></path>
@@ -79,9 +104,9 @@
                             </div>
                         </div>
 
-                        <div id="cartSummaryItems" class="mt-5 space-y-3"></div>
+                        <div id="cartSummaryItems" class="mt-4 space-y-2.5"></div>
 
-                        <div class="mt-5 space-y-3 border-t border-slate-100 pt-5 text-[14px] text-slate-600">
+                        <div class="mt-4 space-y-3 border-t border-slate-100 pt-4 text-sm text-slate-600">
                             <div class="flex items-center justify-between">
                                 <span>Subtotal</span>
                                 <span id="cartSummarySubtotal" class="font-medium text-slate-900">Rs. 0.00</span>
@@ -94,13 +119,13 @@
                                 <span>GST (18%)</span>
                                 <span id="cartSummaryTax" class="font-medium text-slate-900">Rs. 0.00</span>
                             </div>
-                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-[18px] font-semibold text-slate-950">
+                            <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-semibold text-slate-950">
                                 <span>Total</span>
-                                <span id="cartSummaryTotal" class="text-[#2383eb]">Rs. 0.00</span>
+                                <span id="cartSummaryTotal">Rs. 0.00</span>
                             </div>
                         </div>
 
-                        <a id="cartCheckoutButton" href="{{ route('checkout.page') }}" class="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-[18px] px-5 text-[15px] font-semibold text-white no-underline shadow-[0_18px_38px_rgba(35,131,235,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_42px_rgba(35,131,235,0.28)]" style="background: linear-gradient(135deg, #2f8fff 0%, #1d72d8 100%);">
+                        <a id="cartCheckoutButton" href="{{ route('checkout.page') }}" class="{{ $buttonPrimaryClass }} mt-5 flex w-full gap-2">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M5 12h14"></path>
                                 <path d="m12 5 7 7-7 7"></path>
@@ -108,26 +133,26 @@
                             Proceed to Checkout
                         </a>
 
-                        <p class="mt-3 text-[12px] leading-6 text-slate-500">Continue to shipping, address selection, and payment review.</p>
+                        <p class="mt-3 text-xs leading-6 text-slate-500">Continue to shipping, address selection, and payment review.</p>
 
                         <div class="mt-4 flex flex-wrap gap-2">
-                            <span class="rounded-full bg-[#f4f7fb] px-3 py-2 text-[12px] font-medium text-slate-600">Secure enterprise checkout</span>
-                            <span class="rounded-full bg-[#f4f7fb] px-3 py-2 text-[12px] font-medium text-slate-600">GST-ready invoices</span>
-                            <span class="rounded-full bg-[#f4f7fb] px-3 py-2 text-[12px] font-medium text-slate-600">Cold-chain dispatch support</span>
+                            <x-ui.status-badge type="cart" value="secure_enterprise_checkout" label="Secure enterprise checkout" />
+                            <x-ui.status-badge type="cart" value="gst_ready_invoices" label="GST-ready invoices" />
+                            <x-ui.status-badge type="cart" value="cold_chain_dispatch_support" label="Cold-chain dispatch support" />
                         </div>
                     </section>
 
-                    <section class="rounded-[28px] border border-white/70 bg-white p-5 shadow-[0_24px_50px_rgba(15,23,42,0.06)]">
+                    <section class="{{ $helpCardClass }}">
                         <div class="flex items-start gap-3">
-                            <div class="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#ecf8ef] text-emerald-600">
+                            <div class="{{ $iconTileSuccessClass }}">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
                                     <path d="M22 12h-4l-3 8-5-16-3 8H2"></path>
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="text-[16px] font-semibold text-slate-950">Need help with your order?</h4>
-                                <p class="mt-1 text-[13px] leading-6 text-slate-500">Contact our bioscience support team for procurement assistance and delivery scheduling.</p>
-                                <p class="mt-3 text-[13px] font-semibold text-[#2383eb]">1800-BIO-GENIX</p>
+                                <h4 class="text-base font-semibold text-slate-950">Need help with your order?</h4>
+                                <p class="mt-1 text-sm leading-6 text-slate-500">Contact our bioscience support team for procurement assistance and delivery scheduling.</p>
+                                <p class="mt-3 text-sm font-semibold text-primary-700">1800-BIO-GENIX</p>
                             </div>
                         </div>
                     </section>
@@ -155,10 +180,10 @@
                 const formatInr = function (value) {
                     const numeric = Number(value);
                     if (!Number.isFinite(numeric)) {
-                        return 'Rs. 0.00';
+                        return '<span class="currency-symbol">Rs.</span> 0.00';
                     }
 
-                    return 'Rs. ' + numeric.toLocaleString('en-IN', {
+                    return '<span class="currency-symbol">Rs.</span> ' + numeric.toLocaleString('en-IN', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                     });
@@ -175,34 +200,34 @@
                     const variantId = item.variantId === null || item.variantId === undefined ? '' : String(item.variantId);
 
                     return `
-                        <article class="rounded-[26px] border border-slate-200/80 bg-[#fbfdff] p-5 shadow-[0_18px_40px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_46px_rgba(15,23,42,0.08)]">
-                            <div class="flex flex-col gap-5 lg:flex-row lg:items-start">
-                                <div class="h-28 w-28 shrink-0 overflow-hidden rounded-[22px] bg-slate-100 shadow-sm">
+                        <article class="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+                            <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
+                                <div class="h-28 w-28 shrink-0 overflow-hidden rounded-3xl bg-slate-100">
                                     <img src="${image}" alt="${name}" class="h-full w-full object-cover">
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                    <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                         <div class="min-w-0">
-                                            <p class="text-[12px] font-semibold uppercase tracking-[0.28em] text-[#7f92b8]">Biogenix</p>
-                                            <h3 class="mt-2 text-[22px] font-semibold leading-tight text-slate-950">${name}</h3>
-                                            <p class="mt-2 text-[13px] font-medium text-slate-500">Model No: ${model}</p>
-                                            <div class="mt-4 flex flex-wrap gap-2">
-                                                <span class="rounded-full bg-[#eef5ff] px-3 py-1.5 text-[12px] font-medium text-[#1d72d8]">Dispatch 24-48h</span>
-                                                <span class="rounded-full bg-[#edf8f1] px-3 py-1.5 text-[12px] font-medium text-emerald-700">Procurement ready</span>
+                                            <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">Biogenix</p>
+                                            <h3 class="mt-1 text-xl font-semibold leading-tight text-slate-950">${name}</h3>
+                                            <p class="mt-1.5 text-sm font-medium text-slate-500">Model No: ${model}</p>
+                                            <div class="mt-3 flex flex-wrap gap-2">
+                                                <span class="inline-flex items-center rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">Dispatch 24-48h</span>
+                                                <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Procurement ready</span>
                                             </div>
                                         </div>
-                                        <div class="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-right shadow-sm lg:min-w-[190px]">
-                                            <p class="text-[12px] font-medium uppercase tracking-[0.22em] text-slate-400">Item subtotal</p>
-                                            <p class="mt-2 text-[28px] font-bold leading-none text-[#2383eb]">${formatInr(subtotal)}</p>
-                                            <p class="mt-2 text-[13px] text-slate-500">Unit price ${formatInr(unitPrice)}</p>
+                                        <div class="text-right">
+                                            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Item Subtotal</p>
+                                            <p class="mt-2 text-2xl font-bold leading-none text-primary-700">${formatInr(subtotal)}</p>
+                                            <p class="mt-2 text-sm text-slate-500">Unit price ${formatInr(unitPrice)}</p>
                                         </div>
                                     </div>
 
-                                    <div class="mt-5 flex flex-col gap-4 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                                        <div class="inline-flex w-fit items-center rounded-[16px] border border-slate-200 bg-white p-1 shadow-sm">
+                                    <div class="mt-5 flex flex-col gap-4 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                                        <div class="inline-flex items-center rounded-2xl border border-slate-200 bg-slate-50 p-1">
                                             <button
                                                 type="button"
-                                                class="inline-flex h-10 w-10 items-center justify-center rounded-[12px] text-[20px] font-medium text-slate-500 transition hover:bg-slate-100"
+                                                class="inline-flex h-9 w-9 items-center justify-center rounded-xl text-lg font-semibold text-slate-700 transition hover:bg-white hover:text-primary-700"
                                                 data-quantity-button
                                                 data-direction="-1"
                                                 data-product-id="${productId}"
@@ -211,10 +236,10 @@
                                             >
                                                 -
                                             </button>
-                                            <span class="inline-flex min-w-[44px] items-center justify-center px-3 text-[16px] font-semibold text-slate-900">${quantity}</span>
+                                            <span class="inline-flex min-w-[44px] items-center justify-center px-3 text-base font-semibold text-slate-900">${quantity}</span>
                                             <button
                                                 type="button"
-                                                class="inline-flex h-10 w-10 items-center justify-center rounded-[12px] text-[20px] font-medium text-slate-500 transition hover:bg-slate-100"
+                                                class="inline-flex h-9 w-9 items-center justify-center rounded-xl text-lg font-semibold text-slate-700 transition hover:bg-white hover:text-primary-700"
                                                 data-quantity-button
                                                 data-direction="1"
                                                 data-product-id="${productId}"
@@ -226,10 +251,10 @@
                                         </div>
 
                                         <div class="flex flex-wrap items-center gap-3">
-                                            <span class="text-[14px] font-semibold text-slate-900">${formatInr(unitPrice)}</span>
+                                            <span class="text-base font-semibold text-slate-900">${formatInr(unitPrice)}</span>
                                             <button
                                                 type="button"
-                                                class="inline-flex h-11 items-center justify-center rounded-[14px] border border-slate-200 bg-white px-4 text-[13px] font-semibold text-slate-600 shadow-sm transition hover:border-[#ef4444] hover:text-[#ef4444]"
+                                                class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                                                 data-remove-button
                                                 data-product-id="${productId}"
                                                 data-variant-id="${variantId}"
@@ -251,15 +276,15 @@
                     const name = String(item.name || 'Product');
 
                     return `
-                        <div class="flex items-center gap-3 rounded-[20px] border border-slate-100 bg-[#fbfdff] px-3 py-3 shadow-sm">
-                            <div class="h-14 w-14 shrink-0 overflow-hidden rounded-[16px] bg-slate-100">
+                        <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+                            <div class="h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
                                 <img src="${image}" alt="${name}" class="h-full w-full object-cover">
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="truncate text-[13px] font-semibold text-slate-900">${name}</p>
-                                <p class="mt-1 text-[12px] text-slate-500">Qty: ${quantity}</p>
+                                <p class="truncate text-sm font-semibold text-slate-900">${name}</p>
+                                <p class="mt-1 text-xs text-slate-500">Qty: ${quantity}</p>
                             </div>
-                            <span class="text-[13px] font-semibold text-[#2383eb]">${formatInr(total)}</span>
+                            <span class="text-sm font-semibold text-primary-700">${formatInr(total)}</span>
                         </div>
                     `;
                 };
@@ -311,9 +336,9 @@
                         emptyState.classList.remove('hidden');
                         emptyState.classList.add('flex');
                         itemCount.textContent = '0 items';
-                        subtotalEl.textContent = 'Rs. 0.00';
-                        taxEl.textContent = 'Rs. 0.00';
-                        totalEl.textContent = 'Rs. 0.00';
+                        subtotalEl.innerHTML = '<span class="currency-symbol">Rs.</span> 0.00';
+                        taxEl.innerHTML = '<span class="currency-symbol">Rs.</span> 0.00';
+                        totalEl.innerHTML = '<span class="currency-symbol">Rs.</span> 0.00';
                         if (checkoutButton) {
                             checkoutButton.classList.add('opacity-70');
                         }
@@ -338,9 +363,9 @@
 
                     const tax = subtotal * 0.18;
                     itemCount.textContent = totalUnits + (totalUnits === 1 ? ' item' : ' items');
-                    subtotalEl.textContent = formatInr(subtotal);
-                    taxEl.textContent = formatInr(tax);
-                    totalEl.textContent = formatInr(subtotal + tax);
+                    subtotalEl.innerHTML = formatInr(subtotal);
+                    taxEl.innerHTML = formatInr(tax);
+                    totalEl.innerHTML = formatInr(subtotal + tax);
 
                     bindActions();
                 };

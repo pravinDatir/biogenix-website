@@ -21,6 +21,10 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
  Route::get('/products', [ProductController::class, 'index'])->name('products.index');
  Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
 
+ // Preview-only customer workspace pages (UI shells)
+ Route::view('/customer/profile', 'customer.profile')->name('customer.profile.preview');
+ Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
+
  Route::get('/products-crud', [ProductController::class, 'showCrudProduct'])->name('products.crud.index');
  Route::post('/products-crud', [ProductController::class, 'addProduct'])->name('products.crud.store');
  Route::get('/products-crud/{productId}', [ProductController::class, 'getProductById'])->name('products.crud.show');
