@@ -1,61 +1,147 @@
 @php
-    $panelClass = 'space-y-6 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
-    $inputClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500/40';
+    $panelClass = 'rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
+    $inputClass = 'h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-2 focus:ring-primary-500/20';
+    $labelClass = 'text-sm font-semibold text-slate-700';
 @endphp
 
+{{-- Avatar & Quick Stats --}}
 <div class="{{ $panelClass }}">
-    <div class="flex items-center gap-2 text-sm font-semibold text-slate-900">
-        <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M10 14h10M10 18h10M4 14h2m-2 4h2" /></svg>
-        Company Information
-    </div>
-    <div class="grid gap-4 md:grid-cols-2">
-        <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Company Name</label>
-            <input class="{{ $inputClass }}" value="Biogenix Solutions Pvt Ltd">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-center gap-5">
+            <div class="relative">
+                <div class="h-20 w-20 overflow-hidden rounded-2xl border-2 border-primary-100 bg-primary-50 shadow-md">
+                    <img src="{{ asset('images/logo.jpg') }}" alt="Company avatar" class="h-full w-full object-cover">
+                </div>
+                <button type="button" class="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-xl border-2 border-white bg-primary-600 text-white shadow-sm transition hover:bg-primary-700">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+                </button>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Biogenix Solutions Pvt Ltd</h3>
+                <p class="mt-0.5 text-sm text-slate-500">prakhar@biogenix.com</p>
+                <div class="mt-2 flex flex-wrap gap-2">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                        GST Verified
+                    </span>
+                    <span class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-1 text-xs font-semibold text-primary-700">B2B Enterprise</span>
+                </div>
+            </div>
         </div>
-        <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Legal Business Name</label>
-            <input class="{{ $inputClass }}" value="Biogenix Life Sciences Solutions">
-        </div>
-        <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Registration Number</label>
-            <input class="{{ $inputClass }}" value="U12345DL2023PTC123456">
-        </div>
-        <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">GST Number</label>
-            <input class="{{ $inputClass }}" value="07AAAAA0000A1Z5">
-        </div>
-        <div class="space-y-2 md:col-span-2">
-            <label class="text-sm font-semibold text-slate-700">PAN Number</label>
-            <input class="{{ $inputClass }} max-w-xl" value="ABCDE1234F">
+        <div class="flex divide-x divide-slate-200 rounded-2xl border border-slate-200 bg-slate-50">
+            <div class="px-5 py-3 text-center">
+                <p class="text-lg font-bold text-slate-900">47</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Orders</p>
+            </div>
+            <div class="px-5 py-3 text-center">
+                <p class="text-lg font-bold text-slate-900">5</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tickets</p>
+            </div>
+            <div class="px-5 py-3 text-center">
+                <p class="text-lg font-bold text-emerald-600">Active</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Status</p>
+            </div>
         </div>
     </div>
 </div>
 
+{{-- Company Information --}}
 <div class="{{ $panelClass }}">
-    <div class="flex items-center gap-2 text-sm font-semibold text-slate-900">
-        <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M9 6v12m6-12v12M4 12h16" /></svg>
-        Contact Person Information
+    <div class="flex items-center gap-3 border-b border-slate-100 pb-5">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold text-slate-900">Company Information</h3>
+            <p class="text-sm text-slate-500">Your registered business details for invoicing and compliance.</p>
+        </div>
     </div>
-    <div class="grid gap-4 md:grid-cols-2">
+
+    <div class="mt-6 grid gap-5 md:grid-cols-2">
         <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Contact Person Name</label>
-            <input class="{{ $inputClass }}" value="Prakhar Kapoor">
+            <label class="{{ $labelClass }}">Company Name</label>
+            <input class="{{ $inputClass }}" value="Biogenix Solutions Pvt Ltd" placeholder="Company name">
         </div>
         <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Designation</label>
-            <input class="{{ $inputClass }}" value="Supply Chain Manager">
+            <label class="{{ $labelClass }}">Legal Business Name</label>
+            <input class="{{ $inputClass }}" value="Biogenix Life Sciences Solutions" placeholder="Legal name">
         </div>
         <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Email Address</label>
-            <input class="{{ $inputClass }}" value="prakhar@biogenix.com">
+            <label class="{{ $labelClass }}">Registration Number (CIN)</label>
+            <input class="{{ $inputClass }}" value="U12345DL2023PTC123456" placeholder="CIN number">
         </div>
         <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700">Mobile Number</label>
+            <label class="{{ $labelClass }}">GSTIN</label>
             <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">+91</span>
-                <input class="{{ $inputClass }} pl-12" value="+91 98765 43210">
+                <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <input class="{{ $inputClass }} pl-11" value="07AAAAA0000A1Z5" placeholder="GST number">
             </div>
         </div>
+        <div class="space-y-2 md:col-span-2">
+            <label class="{{ $labelClass }}">PAN Number</label>
+            <input class="{{ $inputClass }} max-w-xl" value="ABCDE1234F" placeholder="PAN number">
+        </div>
+    </div>
+</div>
+
+{{-- Contact Person --}}
+<div class="{{ $panelClass }}">
+    <div class="flex items-center gap-3 border-b border-slate-100 pb-5">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold text-slate-900">Contact Person</h3>
+            <p class="text-sm text-slate-500">Primary point of contact for your organization.</p>
+        </div>
+    </div>
+
+    <div class="mt-6 grid gap-5 md:grid-cols-2">
+        <div class="space-y-2">
+            <label class="{{ $labelClass }}">Contact Person Name</label>
+            <input class="{{ $inputClass }}" value="Prakhar Kapoor" placeholder="Full name">
+        </div>
+        <div class="space-y-2">
+            <label class="{{ $labelClass }}">Designation</label>
+            <input class="{{ $inputClass }}" value="Supply Chain Manager" placeholder="Job title">
+        </div>
+        <div class="space-y-2">
+            <label class="{{ $labelClass }}">Email Address</label>
+            <div class="relative">
+                <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <input class="{{ $inputClass }} pl-11" value="prakhar@biogenix.com" placeholder="Email">
+            </div>
+        </div>
+        <div class="space-y-2">
+            <label class="{{ $labelClass }}">Mobile Number</label>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center rounded-l-xl border-r border-slate-200 bg-slate-100 px-3 text-sm font-medium text-slate-500">+91</span>
+                <input class="{{ $inputClass }} pl-16" value="98765 43210" placeholder="Mobile number">
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Security section --}}
+<div class="{{ $panelClass }}">
+    <div class="flex items-center gap-3 border-b border-slate-100 pb-5">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold text-slate-900">Security & Access</h3>
+            <p class="text-sm text-slate-500">Manage your account security settings.</p>
+        </div>
+    </div>
+
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <p class="text-sm font-semibold text-slate-700">Password</p>
+            <p class="mt-1 text-sm text-slate-500">Last changed 15 days ago</p>
+        </div>
+        <button type="button" class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
+            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            Change Password
+        </button>
     </div>
 </div>

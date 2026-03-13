@@ -30,6 +30,7 @@
             <ul class="mt-4 space-y-3 text-sm text-slate-300">
                 <li><a href="{{ route('privacy') }}" class="no-underline hover:text-white">Privacy Policy</a></li>
                 <li><a href="{{ route('terms') }}" class="no-underline hover:text-white">Terms of Use</a></li>
+                <li><a href="{{ route('refund-policy') }}" class="no-underline hover:text-white">Refund & Cancellation</a></li>
                 <li><a href="{{ route('faq') }}" class="no-underline hover:text-white">FAQ</a></li>
             </ul>
         </div>

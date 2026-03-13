@@ -59,6 +59,10 @@
                 <a href="{{ route('cart.page') }}" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
                     View Cart
                 </a>
+                <a href="{{ route('customer.profile.preview') }}" class="inline-flex h-11 items-center gap-2 justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 21a8 8 0 10-16 0M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>
+                    My Profile
+                </a>
             </div>
         </nav>
 
@@ -94,6 +98,21 @@
                     >0</span>
                 </span>
                 <span class="text-sm font-bold leading-none text-slate-900">Cart</span>
+            </a>
+
+            {{-- Profile icon --}}
+            <a
+                href="{{ route('customer.profile.preview') }}"
+                class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-slate-900 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20"
+                aria-label="My Profile"
+            >
+                <span class="inline-flex h-7 w-7 items-center justify-center text-slate-900">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M5.5 21a7.5 7.5 0 0113 0"></path>
+                    </svg>
+                </span>
+                <span class="text-sm font-bold leading-none text-slate-900">Profile</span>
             </a>
         </div>
     </div>

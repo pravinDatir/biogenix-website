@@ -24,6 +24,7 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
  // Preview-only customer workspace pages (UI shells)
  Route::view('/customer/profile', 'customer.profile')->name('customer.profile.preview');
  Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
+ Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
 
  Route::get('/products-crud', [ProductController::class, 'showCrudProduct'])->name('products.crud.index');
  Route::post('/products-crud', [ProductController::class, 'addProduct'])->name('products.crud.store');
@@ -77,7 +78,10 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 
    Route::view('/privacy', 'legal.privacy')->name('privacy');
    Route::view('/terms', 'legal.terms')->name('terms');
+   Route::view('/refund-policy', 'legal.refund')->name('refund-policy');
    Route::view('/faq', 'legal.faq')->name('faq');
+   Route::view('/order-confirmation', 'order.confirmation')->name('order.confirmation');
+   Route::view('/maintenance', 'errors.503')->name('maintenance');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->middleware('auth')->name('proforma.index');
