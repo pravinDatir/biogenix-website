@@ -11,8 +11,8 @@
 @section('customer_active', 'reviews')
 
 @section('customer_actions')
-    <x-ui.action-link href="#">Leave Review</x-ui.action-link>
-    <x-ui.action-link href="#" variant="secondary">Upload Proof</x-ui.action-link>
+    <x-ui.action-link :href="route('contact')">Share Feedback</x-ui.action-link>
+    <x-ui.action-link :href="route('faq')" variant="secondary">Review Help</x-ui.action-link>
 @endsection
 
 @section('customer_content')
@@ -44,4 +44,3 @@
         </x-ui.surface-card>
     </div>
 @endsection
-

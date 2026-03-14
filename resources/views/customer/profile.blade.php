@@ -16,6 +16,7 @@
         active="profile"
         :back-url="$backUrl"
         back-label="Back"
+        framed
         :title="$portal === 'b2b' ? 'Business Profile' : 'Personal Profile'"
         :description="$portal === 'b2b'
             ? 'Update your company details and contact information for the Biogenix platform.'

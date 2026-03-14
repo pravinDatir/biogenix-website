@@ -1,5 +1,5 @@
 @props([
-    'href' => '#',
+    'href' => null,
     'variant' => 'primary',
 ])
 
@@ -13,12 +13,23 @@
     };
 @endphp
 
-<a
-    href="{{ $href }}"
-    {{ $attributes->class([
-        'inline-flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold no-underline shadow-sm transition focus-visible:outline-none focus-visible:ring-2',
-        $style,
-    ]) }}
->
-    {{ $slot }}
-</a>
+@if ($href)
+    <a
+        href="{{ $href }}"
+        {{ $attributes->class([
+            'inline-flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold no-underline shadow-sm transition focus-visible:outline-none focus-visible:ring-2',
+            $style,
+        ]) }}
+    >
+        {{ $slot }}
+    </a>
+@else
+    <span
+        {{ $attributes->class([
+            'inline-flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold shadow-sm transition',
+            $style,
+        ]) }}
+    >
+        {{ $slot }}
+    </span>
+@endif

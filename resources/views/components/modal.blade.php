@@ -14,9 +14,15 @@
     <div class="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-5 shadow-xl md:p-6">
         <div class="mb-4 flex items-center justify-between gap-4">
             @if($title)
-                <h2 id="{{ $id }}-title" class="ui-section-title">{{ $title }}</h2>
+                <h2 id="{{ $id }}-title" class="text-xl font-semibold tracking-tight text-slate-950">{{ $title }}</h2>
             @endif
-            <button type="button" class="btn secondary modal-close" data-modal-close="{{ $id }}">Close</button>
+            <button
+                type="button"
+                class="modal-close inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                data-modal-close="{{ $id }}"
+            >
+                Close
+            </button>
         </div>
         {{ $slot }}
     </div>

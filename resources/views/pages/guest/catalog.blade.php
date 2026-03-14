@@ -348,7 +348,7 @@
                         <summary class="catalog-filter-summary">
                             <span class="catalog-filter-summary-title">Price Range</span>
                             <span class="catalog-filter-summary-actions">
-                                <span id="catalogPriceLabel" class="text-xs font-semibold text-primary-700">{{ $formatInr($selectedMaxPrice, 0) }}</span>
+                                <span id="catalogPriceLabel" class="text-xs font-semibold text-primary-700">{!! $formatInr($selectedMaxPrice, 0) !!}</span>
                                 @if ($selectedMaxPrice < $maxPrice)
                                     <a href="{{ $dropQueryKey('max_price') }}" class="catalog-filter-clear">Clear</a>
                                 @endif
@@ -367,8 +367,8 @@
                                 class="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-300 accent-primary-600"
                             >
                             <div class="mt-4 flex items-center justify-between text-xs font-semibold text-slate-700">
-                                <span>{{ $formatInr($minPrice, 0) }}</span>
-                                <span>{{ $formatInr($maxPrice, 0) }}</span>
+                                <span>{!! $formatInr($minPrice, 0) !!}</span>
+                                <span>{!! $formatInr($maxPrice, 0) !!}</span>
                             </div>
                         </div>
                     </details>
@@ -426,7 +426,7 @@
 
                             @if ($selectedMaxPrice < $maxPrice)
                                 <a href="{{ $dropQueryKey('max_price') }}" class="catalog-chip" title="Remove price filter">
-                                    <strong>Up to</strong> {{ $formatInr($selectedMaxPrice, 0) }}
+                                    <strong>Up to</strong> {!! $formatInr($selectedMaxPrice, 0) !!}
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
                                 </a>
                             @endif

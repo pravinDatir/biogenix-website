@@ -9,6 +9,12 @@
     $submittedCount = $orderItems->where('status', 'submitted')->count();
     $cancelledCount = $orderItems->where('status', 'cancelled')->count();
     $totalValue = $orderItems->sum(fn ($order) => (float) $order->total_amount);
+    $companyOptions = $orderItems
+        ->map(fn ($order) => $order->company?->name ?? 'Self')
+        ->filter()
+        ->unique()
+        ->sort()
+        ->values();
     $productIds = old('product_id', $editingItems->pluck('product_id')->all());
     $quantities = old('quantity', $editingItems->pluck('quantity')->all());
     $lineCount = max(3, count($productIds), count($quantities));
@@ -145,19 +151,61 @@
         <div class="{{ $panelClass }}">
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h2 class="text-lg font-semibold text-slate-900">Existing Orders</h2>
-                    <p class="mt-1 text-sm text-slate-500">Live orders visible for the current user scope.</p>
+                    <h2 class="text-lg font-semibold text-slate-900">My Orders</h2>
+                    <p class="mt-1 text-sm text-slate-500">Search, narrow, review, and reorder from the currently visible order list.</p>
                 </div>
                 <div class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                     {{ $orders->total() }} total orders
                 </div>
             </div>
 
-            <div class="space-y-4">
+            <div class="mt-6 grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.7fr)_minmax(0,0.7fr)_auto]">
+                <div>
+                    <label for="ordersFilterSearch" class="mb-2 block text-sm font-semibold text-slate-700">Search Orders</label>
+                    <input id="ordersFilterSearch" type="search" placeholder="Search by order ID or company" class="{{ $inputClass }}">
+                </div>
+                <div>
+                    <label for="ordersFilterStatus" class="mb-2 block text-sm font-semibold text-slate-700">Status</label>
+                    <select id="ordersFilterStatus" class="{{ $inputClass }}">
+                        <option value="all">All statuses</option>
+                        <option value="draft">Draft</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="ordersFilterCompany" class="mb-2 block text-sm font-semibold text-slate-700">{{ $portal === 'b2b' ? 'Company' : 'Scope' }}</label>
+                    <select id="ordersFilterCompany" class="{{ $inputClass }}">
+                        <option value="all">All {{ $portal === 'b2b' ? 'companies' : 'scopes' }}</option>
+                        @foreach ($companyOptions as $companyOption)
+                            <option value="{{ strtolower($companyOption) }}">{{ $companyOption }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button id="ordersFilterReset" type="button" class="{{ $buttonSecondary }} w-full">Reset Filters</button>
+                </div>
+            </div>
+
+            <div class="mt-4 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+                <p>Filters work on the orders visible in the current page.</p>
+                <p class="font-semibold text-slate-900"><span id="ordersVisibleCount">{{ $orderItems->count() }}</span> shown</p>
+            </div>
+
+            <div id="ordersList" class="mt-6 space-y-4">
                 @forelse ($orders as $order)
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        @php
+                            $companyName = $order->company?->name ?? 'Self';
+                        @endphp
                         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                            <div class="space-y-3">
+                            <div
+                                class="space-y-3"
+                                data-order-card
+                                data-order-id="{{ $order->id }}"
+                                data-order-status="{{ strtolower((string) $order->status) }}"
+                                data-order-company="{{ strtolower($companyName) }}"
+                            >
                                 <div class="flex flex-wrap items-center gap-3">
                                     <h3 class="text-lg font-semibold text-slate-900">Order #{{ $order->id }}</h3>
                                     <x-ui.status-badge type="status" :value="$order->status" :label="ucfirst($order->status)" />
@@ -165,7 +213,7 @@
                                 <div class="grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
                                     <div>
                                         <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Company</p>
-                                        <p class="mt-1 font-medium text-slate-900">{{ $order->company?->name ?? 'Self' }}</p>
+                                        <p class="mt-1 font-medium text-slate-900">{{ $companyName }}</p>
                                     </div>
                                     <div>
                                         <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Created</p>
@@ -181,6 +229,7 @@
                             <div class="flex flex-wrap gap-3">
                                 <a href="{{ route('orders.show', $order->id) }}" class="{{ $buttonSecondary }}">View</a>
                                 <a href="{{ route('orders.index', ['edit_order_id' => $order->id]) }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-primary-200 bg-primary-50 px-4 text-sm font-semibold text-primary-700 transition hover:bg-primary-100">Edit</a>
+                                <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100" data-reorder-order-id="{{ $order->id }}">Reorder</button>
                                 <form method="POST" action="{{ route('orders.destroy', $order->id) }}">
                                     @csrf
                                     @method('DELETE')
@@ -197,7 +246,86 @@
                 @endforelse
             </div>
 
+            @if ($orderItems->count())
+                <div id="ordersFilterEmpty" class="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-8 text-center">
+                    <p class="text-base font-semibold text-slate-900">No matching orders</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">Try a different search term or reset the filters to view the full list again.</p>
+                </div>
+            @endif
+
             <x-ui.pagination :paginator="$orders" />
         </div>
     </x-account.workspace>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('ordersFilterSearch');
+            const statusSelect = document.getElementById('ordersFilterStatus');
+            const companySelect = document.getElementById('ordersFilterCompany');
+            const resetButton = document.getElementById('ordersFilterReset');
+            const visibleCount = document.getElementById('ordersVisibleCount');
+            const emptyState = document.getElementById('ordersFilterEmpty');
+            const cards = Array.from(document.querySelectorAll('[data-order-card]')).map(function (content) {
+                return content.closest('article');
+            }).filter(Boolean);
+
+            if (cards.length && searchInput && statusSelect && companySelect && resetButton && visibleCount) {
+                const applyFilters = function () {
+                    const searchValue = searchInput.value.trim().toLowerCase();
+                    const statusValue = statusSelect.value;
+                    const companyValue = companySelect.value;
+                    let shown = 0;
+
+                    cards.forEach(function (card) {
+                        const content = card.querySelector('[data-order-card]');
+                        if (!content) {
+                            return;
+                        }
+
+                        const orderId = String(content.dataset.orderId || '').toLowerCase();
+                        const orderStatus = String(content.dataset.orderStatus || '').toLowerCase();
+                        const orderCompany = String(content.dataset.orderCompany || '').toLowerCase();
+
+                        const matchesSearch = searchValue === '' || orderId.includes(searchValue) || orderCompany.includes(searchValue);
+                        const matchesStatus = statusValue === 'all' || orderStatus === statusValue;
+                        const matchesCompany = companyValue === 'all' || orderCompany === companyValue;
+                        const isVisible = matchesSearch && matchesStatus && matchesCompany;
+
+                        card.classList.toggle('hidden', !isVisible);
+                        if (isVisible) {
+                            shown += 1;
+                        }
+                    });
+
+                    visibleCount.textContent = String(shown);
+                    if (emptyState) {
+                        emptyState.classList.toggle('hidden', shown !== 0);
+                    }
+                };
+
+                searchInput.addEventListener('input', applyFilters);
+                statusSelect.addEventListener('change', applyFilters);
+                companySelect.addEventListener('change', applyFilters);
+                resetButton.addEventListener('click', function () {
+                    searchInput.value = '';
+                    statusSelect.value = 'all';
+                    companySelect.value = 'all';
+                    applyFilters();
+                });
+
+                applyFilters();
+            }
+
+            document.querySelectorAll('[data-reorder-order-id]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const orderId = button.getAttribute('data-reorder-order-id');
+                    if (window.BiogenixToast && typeof window.BiogenixToast.show === 'function') {
+                        window.BiogenixToast.show('Reorder preview started for order #' + orderId + '.', 'success', 3500);
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

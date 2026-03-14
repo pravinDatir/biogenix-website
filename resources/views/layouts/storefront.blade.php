@@ -4,14 +4,25 @@
     $authUser = auth()->user();
     $portal = $authUser?->user_type ?? request('user_type', request('portal', 'b2b'));
     $portal = $portal === 'b2c' ? 'b2c' : 'b2b';
-    $displayName = $authUser?->name ?? 'Dr. Sarah Chen';
-    $accountLabel = $authUser
-        ? ($portal === 'b2b' ? 'Institutional Account' : 'Retail Account')
-        : 'Institutional Account';
     $searchValue = trim((string) $__env->yieldContent('storefront_search', request('search_text', request('search', ''))));
     $searchValue = $searchValue !== '' ? $searchValue : 'Search by SKU, Product Name, or Application...';
     $navLinkBaseClass = 'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900';
     $navLinkActiveClass = 'bg-slate-900 text-white hover:bg-slate-900 hover:text-white';
+    $profileHref = $authUser
+        ? route('customer.profile.preview', ['user_type' => $portal])
+        : route('customer.profile.preview', ['user_type' => $portal]);
+    $companyLinks = [
+        ['label' => 'About Us', 'href' => route('about')],
+        ['label' => 'Book Meeting', 'href' => route('book-meeting')],
+        ['label' => 'Catalog', 'href' => route('products.index')],
+        ['label' => 'Contact', 'href' => route('contact')],
+    ];
+    $resourceLinks = [
+        ['label' => 'Technical Support', 'href' => route('contact')],
+        ['label' => 'FAQ', 'href' => route('faq')],
+        ['label' => 'Generate Quote', 'href' => route('proforma.create')],
+        ['label' => 'Privacy', 'href' => route('privacy')],
+    ];
 @endphp
 <head>
     <meta charset="UTF-8">
@@ -69,7 +80,7 @@
                     @endforeach
                 </nav>
 
-                <a href="{{ $authUser ? '#' : route('login') }}" class="relative hidden h-10 w-10 items-center justify-center rounded-full text-slate-700 no-underline lg:inline-flex">
+                <a href="{{ route('cart.page') }}" class="relative hidden h-10 w-10 items-center justify-center rounded-full text-slate-700 no-underline lg:inline-flex">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="20" r="1"></circle>
                         <circle cx="18" cy="20" r="1"></circle>
@@ -78,12 +89,8 @@
                     <span id="storefrontCartBadge" class="absolute -right-0.5 -top-0.5 hidden h-4 w-4 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold text-white">0</span>
                 </a>
 
-                <a href="{{ $authUser ? '#' : route('login') }}" class="hidden items-center gap-3 rounded-full border border-slate-200 bg-white py-2 pl-4 pr-3 no-underline lg:flex">
-                    <div class="text-right leading-tight">
-                        <p class="text-sm font-semibold text-slate-900">{{ $displayName }}</p>
-                        <p class="mt-0.5 text-xs font-medium text-slate-400">{{ $accountLabel }}</p>
-                    </div>
-                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                <a href="{{ $profileHref }}" class="hidden h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-700 hover:shadow-md lg:inline-flex" aria-label="{{ $authUser ? 'Open profile' : 'Open profile preview' }}">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-current">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21a8 8 0 1 0-16 0"></path>
                             <circle cx="12" cy="7" r="4"></circle>
@@ -115,20 +122,18 @@
                 <div>
                     <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-800">Company</h3>
                     <ul class="mt-5 space-y-3 text-sm text-slate-500">
-                        <li><a href="{{ route('about') }}" class="text-inherit no-underline hover:text-slate-800">About Us</a></li>
-                        <li><a href="#" class="text-inherit no-underline hover:text-slate-800">Careers</a></li>
-                        <li><a href="#" class="text-inherit no-underline hover:text-slate-800">Global Network</a></li>
-                        <li><a href="#" class="text-inherit no-underline hover:text-slate-800">Newsroom</a></li>
+                        @foreach ($companyLinks as $link)
+                            <li><a href="{{ $link['href'] }}" class="text-inherit no-underline hover:text-slate-800">{{ $link['label'] }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
 
                 <div>
                     <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-800">Resources</h3>
                     <ul class="mt-5 space-y-3 text-sm text-slate-500">
-                        <li><a href="{{ route('contact') }}" class="text-inherit no-underline hover:text-slate-800">Technical Support</a></li>
-                        <li><a href="#" class="text-inherit no-underline hover:text-slate-800">Safety Data Sheets (SDS)</a></li>
-                        <li><a href="#" class="text-inherit no-underline hover:text-slate-800">Whitepapers</a></li>
-                        <li><a href="#" class="text-inherit no-underline hover:text-slate-800">Webinars</a></li>
+                        @foreach ($resourceLinks as $link)
+                            <li><a href="{{ $link['href'] }}" class="text-inherit no-underline hover:text-slate-800">{{ $link['label'] }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
 

@@ -3,6 +3,46 @@
 @php
     $portal = auth()->user()?->user_type ?? request('user_type', request('portal', 'b2c'));
     $portal = $portal === 'b2b' ? 'b2b' : 'b2c';
+    $statusColors = [
+        'open' => 'text-primary-600',
+        'in_progress' => 'text-amber-600',
+        'closed' => 'text-emerald-600',
+        'awaiting_response' => 'text-sky-600',
+    ];
+    $statusDots = [
+        'open' => 'bg-primary-500',
+        'in_progress' => 'bg-amber-500',
+        'closed' => 'bg-emerald-500',
+        'awaiting_response' => 'bg-sky-500',
+    ];
+    $categoryBg = [
+        'security' => 'bg-slate-100 text-slate-700',
+        'logistics' => 'bg-slate-100 text-slate-700',
+        'technical' => 'bg-slate-100 text-slate-700',
+        'returns' => 'bg-slate-100 text-slate-700',
+        'billing' => 'bg-slate-100 text-slate-700',
+        'product_inquiry' => 'bg-slate-100 text-slate-700',
+    ];
+    $previewTickets = isset($tickets) && $tickets->count()
+        ? collect($tickets->items())->map(function ($ticket) use ($statusColors, $statusDots, $categoryBg) {
+            return [
+                'id' => $ticket->ticket_number,
+                'date' => \Illuminate\Support\Carbon::parse($ticket->created_at)->format('M d, Y'),
+                'subject' => \Illuminate\Support\Str::limit($ticket->description, 40),
+                'category' => ucfirst(str_replace('_', ' ', $ticket->category)),
+                'catClass' => $categoryBg[$ticket->category] ?? 'bg-slate-100 text-slate-700',
+                'status' => ucfirst(str_replace('_', ' ', $ticket->status)),
+                'statusColor' => $statusColors[$ticket->status] ?? 'text-slate-600',
+                'dotColor' => $statusDots[$ticket->status] ?? 'bg-slate-400',
+                'href' => route('support-tickets.show', $ticket->id),
+            ];
+        })->values()
+        : collect([
+            ['id' => '#TK-8955', 'date' => 'Nov 02, 2023', 'subject' => 'Account Access Issue', 'category' => 'Security', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'Open', 'statusColor' => 'text-primary-600', 'dotColor' => 'bg-primary-500', 'href' => null],
+            ['id' => '#TK-8902', 'date' => 'Oct 24, 2023', 'subject' => 'Shipping Delay Inquiry', 'category' => 'Logistics', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'In Progress', 'statusColor' => 'text-amber-600', 'dotColor' => 'bg-amber-500', 'href' => null],
+            ['id' => '#TK-8841', 'date' => 'Oct 12, 2023', 'subject' => 'Product Storage Guidelines', 'category' => 'Technical', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'Resolved', 'statusColor' => 'text-emerald-600', 'dotColor' => 'bg-emerald-500', 'href' => null],
+            ['id' => '#TK-8712', 'date' => 'Sep 28, 2023', 'subject' => 'Damaged Packaging', 'category' => 'Returns', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'Resolved', 'statusColor' => 'text-emerald-600', 'dotColor' => 'bg-emerald-500', 'href' => null],
+        ]);
 @endphp
 
 @section('title', 'Support Tickets')
@@ -10,10 +50,12 @@
 @section('customer_minimal', 'minimal')
 
 @section('customer_content')
-<div class="mx-auto grid w-full max-w-none gap-8 px-4 pb-12 sm:px-6 lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:px-8 xl:px-10">
-    @include('customer.partials.account-sidebar', ['portal' => $portal, 'active' => 'support'])
+<div class="mx-auto w-full max-w-[1120px] pb-12">
+    <div class="rounded-[34px] border border-slate-200 bg-white/70 p-4 shadow-sm sm:p-5">
+        <div class="grid w-full gap-8 lg:grid-cols-[15.5rem_minmax(0,1fr)]">
+            @include('customer.partials.account-sidebar', ['portal' => $portal, 'active' => 'support'])
 
-    <div class="space-y-6 lg:border-l lg:border-slate-200 lg:pl-10">
+            <div class="space-y-6 lg:border-l lg:border-slate-200 lg:pl-10">
         {{-- Page header --}}
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -52,20 +94,58 @@
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <h2 class="text-lg font-bold text-slate-900">Ticket History</h2>
-                <div class="flex items-center gap-3">
-                    <div class="relative">
+                <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+                    <div class="relative w-full sm:w-56">
                         <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-                        <input type="text" placeholder="Search tickets..." id="ticketSearchInput" class="h-10 w-56 rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20" oninput="filterTickets(this.value)">
+                        <input type="text" placeholder="Search tickets..." id="ticketSearchInput" class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20" oninput="filterTickets(this.value)">
                     </div>
-                    <button type="button" class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-400 transition hover:bg-slate-50">
+                    <button type="button" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-400 transition hover:bg-slate-50">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                     </button>
                 </div>
             </div>
 
+            <div class="space-y-3 md:hidden">
+                @foreach ($previewTickets as $ticket)
+                    <article class="ticket-item rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                        <div class="flex flex-col gap-4">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-sm font-semibold text-primary-600">{{ $ticket['id'] }}</p>
+                                    <p class="mt-1 text-sm font-medium text-slate-900">{{ $ticket['subject'] }}</p>
+                                </div>
+                                <span class="inline-flex items-center gap-1.5 {{ $ticket['statusColor'] }}">
+                                    <span class="h-2 w-2 rounded-full {{ $ticket['dotColor'] }}"></span>
+                                    <span class="text-sm font-medium">{{ $ticket['status'] }}</span>
+                                </span>
+                            </div>
+                            <div class="grid gap-3 sm:grid-cols-2">
+                                <div>
+                                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Date</p>
+                                    <p class="mt-1 text-sm text-slate-700">{{ $ticket['date'] }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Category</p>
+                                    <span class="mt-1 inline-flex rounded-full {{ $ticket['catClass'] }} px-3 py-1 text-xs font-medium">{{ $ticket['category'] }}</span>
+                                </div>
+                            </div>
+                            @if ($ticket['href'])
+                                <a href="{{ $ticket['href'] }}" class="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline transition hover:bg-slate-50 hover:text-slate-900">
+                                    View Details
+                                </a>
+                            @else
+                                <span class="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-primary-600">
+                                    View Details
+                                </span>
+                            @endif
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+
             {{-- Table --}}
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm" id="ticketsTable">
+            <div class="hidden overflow-x-auto md:block">
+                <table class="w-full min-w-[42rem] text-left text-sm" id="ticketsTable">
                     <thead>
                         <tr class="border-b border-slate-100">
                             <th class="pb-3 pr-4 text-xs font-semibold uppercase tracking-wide text-slate-400">Ticket ID</th>
@@ -77,82 +157,35 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100" id="ticketsBody">
-                        @if (isset($tickets) && $tickets->count())
-                            @foreach ($tickets as $ticket)
-                                @php
-                                    $statusColors = [
-                                        'open' => 'text-primary-600',
-                                        'in_progress' => 'text-amber-600',
-                                        'closed' => 'text-emerald-600',
-                                        'awaiting_response' => 'text-sky-600',
-                                    ];
-                                    $statusDots = [
-                                        'open' => 'bg-primary-500',
-                                        'in_progress' => 'bg-amber-500',
-                                        'closed' => 'bg-emerald-500',
-                                        'awaiting_response' => 'bg-sky-500',
-                                    ];
-                                    $categoryBg = [
-                                        'security' => 'bg-slate-100 text-slate-700',
-                                        'logistics' => 'bg-slate-100 text-slate-700',
-                                        'technical' => 'bg-slate-100 text-slate-700',
-                                        'returns' => 'bg-slate-100 text-slate-700',
-                                        'billing' => 'bg-slate-100 text-slate-700',
-                                        'product_inquiry' => 'bg-slate-100 text-slate-700',
-                                    ];
-                                @endphp
-                                <tr class="ticket-row">
+                        @foreach ($previewTickets as $ticket)
+                                <tr class="ticket-item">
                                     <td class="py-4 pr-4">
-                                        <a href="{{ route('support-tickets.show', $ticket->id) }}" class="font-semibold text-primary-600 no-underline hover:text-primary-700">{{ $ticket->ticket_number }}</a>
+                                        @if ($ticket['href'])
+                                            <a href="{{ $ticket['href'] }}" class="font-semibold text-primary-600 no-underline hover:text-primary-700">{{ $ticket['id'] }}</a>
+                                        @else
+                                            <span class="font-semibold text-primary-600">{{ $ticket['id'] }}</span>
+                                        @endif
                                     </td>
-                                    <td class="py-4 pr-4 text-slate-600">{{ \Illuminate\Support\Carbon::parse($ticket->created_at)->format('M d, Y') }}</td>
-                                    <td class="py-4 pr-4 font-medium text-slate-900">{{ \Illuminate\Support\Str::limit($ticket->description, 40) }}</td>
+                                    <td class="py-4 pr-4 text-slate-600">{{ $ticket['date'] }}</td>
+                                    <td class="py-4 pr-4 font-medium text-slate-900">{{ $ticket['subject'] }}</td>
                                     <td class="py-4 pr-4">
-                                        <span class="rounded-full {{ $categoryBg[$ticket->category] ?? 'bg-slate-100 text-slate-700' }} px-3 py-1 text-xs font-medium">{{ ucfirst(str_replace('_', ' ', $ticket->category)) }}</span>
+                                        <span class="rounded-full {{ $ticket['catClass'] }} px-3 py-1 text-xs font-medium">{{ $ticket['category'] }}</span>
                                     </td>
                                     <td class="py-4 pr-4">
-                                        <span class="flex items-center gap-1.5 {{ $statusColors[$ticket->status] ?? 'text-slate-600' }}">
-                                            <span class="h-2 w-2 rounded-full {{ $statusDots[$ticket->status] ?? 'bg-slate-400' }}"></span>
-                                            {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
+                                        <span class="flex items-center gap-1.5 {{ $ticket['statusColor'] }}">
+                                            <span class="h-2 w-2 rounded-full {{ $ticket['dotColor'] }}"></span>
+                                            {{ $ticket['status'] }}
                                         </span>
                                     </td>
                                     <td class="py-4">
-                                        <a href="{{ route('support-tickets.show', $ticket->id) }}" class="text-sm font-semibold text-primary-600 no-underline hover:text-primary-700">View Details</a>
+                                        @if ($ticket['href'])
+                                            <a href="{{ $ticket['href'] }}" class="text-sm font-semibold text-primary-600 no-underline hover:text-primary-700">View Details</a>
+                                        @else
+                                            <span class="text-sm font-semibold text-primary-600">View Details</span>
+                                        @endif
                                     </td>
                                 </tr>
-                            @endforeach
-                        @else
-                            {{-- Preview/demo data when no live tickets --}}
-                            @php
-                                $demoTickets = [
-                                    ['id' => '#TK-8955', 'date' => 'Nov 02, 2023', 'subject' => 'Account Access Issue', 'category' => 'Security', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'Open', 'statusColor' => 'text-primary-600', 'dotColor' => 'bg-primary-500'],
-                                    ['id' => '#TK-8902', 'date' => 'Oct 24, 2023', 'subject' => 'Shipping Delay Inquiry', 'category' => 'Logistics', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'In Progress', 'statusColor' => 'text-amber-600', 'dotColor' => 'bg-amber-500'],
-                                    ['id' => '#TK-8841', 'date' => 'Oct 12, 2023', 'subject' => 'Product Storage Guidelines', 'category' => 'Technical', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'Resolved', 'statusColor' => 'text-emerald-600', 'dotColor' => 'bg-emerald-500'],
-                                    ['id' => '#TK-8712', 'date' => 'Sep 28, 2023', 'subject' => 'Damaged Packaging', 'category' => 'Returns', 'catClass' => 'bg-slate-100 text-slate-700', 'status' => 'Resolved', 'statusColor' => 'text-emerald-600', 'dotColor' => 'bg-emerald-500'],
-                                ];
-                            @endphp
-                            @foreach ($demoTickets as $demo)
-                                <tr class="ticket-row">
-                                    <td class="py-4 pr-4">
-                                        <span class="font-semibold text-primary-600">{{ $demo['id'] }}</span>
-                                    </td>
-                                    <td class="py-4 pr-4 text-slate-600">{{ $demo['date'] }}</td>
-                                    <td class="py-4 pr-4 font-medium text-slate-900">{{ $demo['subject'] }}</td>
-                                    <td class="py-4 pr-4">
-                                        <span class="rounded-full {{ $demo['catClass'] }} px-3 py-1 text-xs font-medium">{{ $demo['category'] }}</span>
-                                    </td>
-                                    <td class="py-4 pr-4">
-                                        <span class="flex items-center gap-1.5 {{ $demo['statusColor'] }}">
-                                            <span class="h-2 w-2 rounded-full {{ $demo['dotColor'] }}"></span>
-                                            {{ $demo['status'] }}
-                                        </span>
-                                    </td>
-                                    <td class="py-4">
-                                        <span class="text-sm font-semibold text-primary-600">View Details</span>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -200,6 +233,8 @@
                         <p class="text-sm font-bold text-slate-900">24/7 Chat</p>
                     </div>
                 </div>
+            </div>
+        </div>
             </div>
         </div>
     </div>
@@ -269,7 +304,7 @@
 @push('scripts')
 <script>
 function filterTickets(query) {
-    var rows = document.querySelectorAll('.ticket-row');
+    var rows = document.querySelectorAll('.ticket-item');
     var lowerQuery = query.toLowerCase();
     rows.forEach(function(row) {
         var text = row.textContent.toLowerCase();

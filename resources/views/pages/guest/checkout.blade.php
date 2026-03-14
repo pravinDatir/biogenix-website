@@ -11,24 +11,24 @@
         $backUrl = filled($previousUrl) && $previousUrl !== $currentUrl && (! $previousHost || $previousHost === $currentHost)
             ? $previousUrl
             : route('cart.page');
-        $pageWrapClass = 'mx-auto w-full max-w-none px-4 py-6 sm:px-6 lg:px-8 xl:px-10';
-        $backLinkClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50';
-        $heroClass = 'rounded-[32px] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f4f7fb_58%,#dbeafe_100%)] p-6 shadow-sm md:p-8';
+        $pageWrapClass = 'mx-auto w-full max-w-none px-3 py-4 sm:px-6 sm:py-6 lg:px-8 xl:px-10';
+        $backLinkClass = 'inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto';
+        $heroClass = 'rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f4f7fb_58%,#dbeafe_100%)] p-4 shadow-sm sm:p-6 md:rounded-[32px] md:p-8';
         $eyebrowClass = 'text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400';
-        $titleClass = 'mt-3 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl';
+        $titleClass = 'mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl md:text-4xl';
         $leadClass = 'mt-3 text-sm leading-7 text-slate-600 md:text-base';
-        $layoutGridClass = 'mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]';
+        $layoutGridClass = 'mt-6 grid gap-5 xl:mt-8 xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-6';
         $mainColumnClass = 'space-y-6';
-        $sectionCardClass = 'rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
-        $summaryCardClass = 'rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8 xl:sticky xl:top-6';
-        $helpCardClass = 'rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm';
+        $sectionCardClass = 'rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:rounded-[28px] md:p-8';
+        $summaryCardClass = 'rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:rounded-[28px] md:p-8 xl:sticky xl:top-6';
+        $helpCardClass = 'rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5 md:rounded-[28px]';
         $stepClass = 'inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-sm font-semibold text-white shadow-sm';
         $sectionTitleClass = 'text-xl font-semibold text-slate-950';
         $sectionCopyClass = 'mt-1 text-sm leading-6 text-slate-500';
-        $selectionCardBaseClass = 'relative flex min-h-[220px] flex-col gap-4 rounded-[28px] border p-5 text-left shadow-sm transition duration-200';
+        $selectionCardBaseClass = 'relative flex min-h-[180px] flex-col gap-4 rounded-[24px] border p-4 text-left shadow-sm transition duration-200 sm:min-h-[220px] sm:rounded-[28px] sm:p-5';
         $selectionCardActiveClass = 'border-primary-200 bg-primary-50';
         $selectionCardInactiveClass = 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md';
-        $paymentCardBaseClass = 'flex items-start gap-4 rounded-[28px] border p-5 shadow-sm transition duration-200';
+        $paymentCardBaseClass = 'flex flex-col gap-3 rounded-[24px] border p-4 shadow-sm transition duration-200 sm:flex-row sm:items-start sm:gap-4 sm:rounded-[28px] sm:p-5';
         $paymentCardActiveClass = 'border-primary-200 bg-primary-50';
         $paymentCardInactiveClass = 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md';
         $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700';
@@ -56,7 +56,7 @@
                             Review shipping, delivery, payment method, and your final order summary in the same shared design system used across the storefront.
                         </p>
                     </div>
-                    <a href="{{ route('cart.page') }}" class="{{ $buttonSecondaryClass }}">
+                    <a href="{{ route('cart.page') }}" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">
                         Back to Cart
                     </a>
                 </div>
@@ -73,7 +73,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-5 grid gap-4 lg:grid-cols-3">
+                        <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                             <button
                                 type="button"
                                 class="{{ $selectionCardBaseClass }} {{ $selectionCardActiveClass }}"

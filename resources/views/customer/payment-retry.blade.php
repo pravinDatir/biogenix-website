@@ -1,13 +1,13 @@
 @extends('customer.layout')
 
-@section('title', 'Payment Retry Prototype')
-@section('customer_title', 'Payment Retry Prototype')
-@section('customer_description', 'A retry-state page for alternate method selection and order continuity.')
+@section('title', 'Retry Payment')
+@section('customer_title', 'Retry Payment')
+@section('customer_description', 'Continue the order with another payment method without losing checkout context.')
 @section('customer_active', 'checkout')
 
 @section('customer_actions')
-    <x-ui.action-link href="#">Try Alternate Method</x-ui.action-link>
-    <x-ui.action-link href="#" variant="secondary">Return to Checkout</x-ui.action-link>
+    <x-ui.action-link :href="route('checkout.page')">Return to Checkout</x-ui.action-link>
+    <x-ui.action-link :href="route('payment.failed')" variant="secondary">View Failed State</x-ui.action-link>
 @endsection
 
 @section('customer_content')

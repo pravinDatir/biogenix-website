@@ -3,6 +3,8 @@
 @php
     $portal = auth()->user()?->user_type ?? request('user_type', request('portal', 'b2c'));
     $portal = $portal === 'b2b' ? 'b2b' : 'b2c';
+    $actionPrimaryClass = 'inline-flex h-9 items-center justify-center rounded-lg bg-primary-600 px-3.5 text-xs font-semibold text-white shadow-sm transition hover:bg-primary-700';
+    $actionSecondaryClass = 'inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50';
 
     $quotes = $portal === 'b2b'
         ? [
@@ -23,8 +25,8 @@
 @section('customer_active', 'quotations')
 
 @section('customer_actions')
-    <x-ui.action-link href="#">Generate New PI</x-ui.action-link>
-    <x-ui.action-link href="#" variant="secondary">Download Recent PDF</x-ui.action-link>
+    <x-ui.action-link :href="route('proforma.create')">Generate New PI</x-ui.action-link>
+    <x-ui.action-link :href="route('proforma.index')" variant="secondary">View PI Library</x-ui.action-link>
 @endsection
 
 @section('customer_content')
@@ -46,28 +48,30 @@
     </x-ui.surface-card>
 
     <x-ui.surface-card title="PI List" subtitle="This table can later be wired to live proforma data.">
-        <div class="table-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th>PI ID</th>
-                        <th>Recipient</th>
-                        <th>Status</th>
-                        <th>Amount</th>
-                        <th>Actions</th>
+        <div class="overflow-hidden rounded-2xl border border-slate-200">
+            <table class="min-w-full divide-y divide-slate-200 bg-white text-sm">
+                <thead class="bg-slate-50">
+                    <tr class="text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        <th class="px-4 py-3">PI ID</th>
+                        <th class="px-4 py-3">Recipient</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Amount</th>
+                        <th class="px-4 py-3">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-slate-100">
                     @foreach ($quotes as $quote)
                         <tr>
-                            <td>{{ $quote['id'] }}</td>
-                            <td>{{ $quote['recipient'] }}</td>
-                            <td>{{ $quote['status'] }}</td>
-                            <td>{{ $quote['amount'] }}</td>
-                            <td>
-                                <div class="table-actions">
-                                    <button class="btn btn-sm" type="button">Download</button>
-                                    <button class="btn secondary btn-sm" type="button">Convert</button>
+                            <td class="px-4 py-4 font-semibold text-primary-700">{{ $quote['id'] }}</td>
+                            <td class="px-4 py-4 text-slate-700">{{ $quote['recipient'] }}</td>
+                            <td class="px-4 py-4">
+                                <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700">{{ $quote['status'] }}</span>
+                            </td>
+                            <td class="px-4 py-4 font-semibold text-slate-900">{{ $quote['amount'] }}</td>
+                            <td class="px-4 py-4">
+                                <div class="flex flex-wrap gap-2">
+                                    <a href="{{ route('proforma.index') }}" class="{{ $actionPrimaryClass }}">View PDFs</a>
+                                    <a href="{{ route('proforma.create') }}" class="{{ $actionSecondaryClass }}">Open Creator</a>
                                 </div>
                             </td>
                         </tr>
@@ -77,4 +81,3 @@
         </div>
     </x-ui.surface-card>
 @endsection
-

@@ -4,12 +4,16 @@
     $portal = auth()->user()?->user_type ?? request('user_type', request('portal', 'b2c'));
     $portal = $portal === 'b2b' ? 'b2b' : 'b2c';
     $authUser = auth()->user();
-    $displayName = $authUser?->name ?? ($portal === 'b2b' ? 'Dr. Sarah Chen' : 'Sarah Chen');
-    $accountLabel = $authUser
-        ? ($portal === 'b2b' ? 'Institutional Account' : 'Retail Account')
-        : 'Guest Access';
     $navLinkBaseClass = 'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900';
     $navLinkActiveClass = 'bg-slate-900 text-white hover:bg-slate-900 hover:text-white';
+    $profileHref = $authUser
+        ? route('customer.profile.preview', ['user_type' => $portal])
+        : route('customer.profile.preview', ['user_type' => $portal]);
+    $storefrontNav = [
+        ['label' => 'Products', 'href' => route('products.index')],
+        ['label' => 'Solutions', 'href' => route('about')],
+        ['label' => 'Support', 'href' => route('contact')],
+    ];
 @endphp
 <head>
     <meta charset="UTF-8">
@@ -48,9 +52,9 @@
                 </div>
 
                 <nav class="hidden items-center gap-1 lg:flex">
-                    @foreach (['Products', 'Solutions', 'Support'] as $item)
-                        <a href="#" class="{{ $navLinkBaseClass }} {{ $item === trim($__env->yieldContent('storefront_nav', 'Products')) ? $navLinkActiveClass : '' }}">
-                            {{ $item }}
+                    @foreach ($storefrontNav as $item)
+                        <a href="{{ $item['href'] }}" class="{{ $navLinkBaseClass }} {{ $item['label'] === trim($__env->yieldContent('storefront_nav', 'Products')) ? $navLinkActiveClass : '' }}">
+                            {{ $item['label'] }}
                         </a>
                     @endforeach
                 </nav>
@@ -65,25 +69,19 @@
                         <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary-600 text-xs font-semibold text-white">3</span>
                     </button>
 
-                    @if ($authUser)
-                        <div class="hidden items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 shadow-sm lg:flex">
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-slate-900">{{ $displayName }}</p>
-                                <p class="text-xs text-slate-500">{{ $accountLabel }}</p>
-                            </div>
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20 21a8 8 0 1 0-16 0"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                            </div>
-                        </div>
-                    @else
+                    @if (! $authUser)
                         <div class="hidden items-center gap-2 lg:flex">
                             <a href="{{ route('login') }}" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Login</a>
                             <a href="{{ route('signup') }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Register</a>
                         </div>
                     @endif
+
+                    <a href="{{ $profileHref }}" class="hidden h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-700 hover:shadow-md lg:inline-flex" aria-label="{{ $authUser ? 'Open profile' : 'Open profile preview' }}">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21a8 8 0 1 0-16 0"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </header>
@@ -110,20 +108,20 @@
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-800">Company</p>
                     <ul class="mt-4 space-y-3 text-sm text-slate-600">
-                        <li>About Us</li>
-                        <li>Careers</li>
-                        <li>Global Network</li>
-                        <li>Newsroom</li>
+                        <li><a href="{{ route('about') }}" class="text-inherit no-underline hover:text-slate-900">About Us</a></li>
+                        <li><a href="{{ route('products.index') }}" class="text-inherit no-underline hover:text-slate-900">Catalog</a></li>
+                        <li><a href="{{ route('book-meeting') }}" class="text-inherit no-underline hover:text-slate-900">Book Meeting</a></li>
+                        <li><a href="{{ route('contact') }}" class="text-inherit no-underline hover:text-slate-900">Contact</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-800">Resources</p>
                     <ul class="mt-4 space-y-3 text-sm text-slate-600">
-                        <li>Technical Support</li>
-                        <li>Safety Data Sheets (SDS)</li>
-                        <li>Whitepapers</li>
-                        <li>Webinars</li>
+                        <li><a href="{{ route('contact') }}" class="text-inherit no-underline hover:text-slate-900">Technical Support</a></li>
+                        <li><a href="{{ route('faq') }}" class="text-inherit no-underline hover:text-slate-900">FAQ</a></li>
+                        <li><a href="{{ route('proforma.create') }}" class="text-inherit no-underline hover:text-slate-900">Generate Quote</a></li>
+                        <li><a href="{{ route('privacy') }}" class="text-inherit no-underline hover:text-slate-900">Privacy</a></li>
                     </ul>
                 </div>
 

@@ -5,15 +5,17 @@
     $displayName = $user?->name ?? 'Prakhar Kapoor';
     $displayEmail = $user?->email ?? ($portal === 'b2b' ? 'prakhar@biogenix.com' : 'prakhar@example.com');
     $accountLabel = $portal === 'b2b' ? 'Admin Account' : 'Customer Account';
+    $ordersHref = $user ? route('orders.index') : route('login');
+    $supportHref = $user ? route('support-tickets.index') : route('customer.support.preview');
     $navLinks = [
         ['key' => 'profile', 'label' => 'My Profile', 'href' => route('customer.profile.preview', ['user_type' => $portal]), 'icon' => 'user'],
         ['key' => 'addresses', 'label' => 'Addresses', 'href' => route('customer.addresses.preview', ['user_type' => $portal]), 'icon' => 'map'],
-        ['key' => 'orders', 'label' => 'Orders', 'href' => route('orders.index'), 'icon' => 'clipboard'],
-        ['key' => 'support', 'label' => 'Support Tickets', 'href' => route('support-tickets.index'), 'icon' => 'lifebuoy'],
+        ['key' => 'orders', 'label' => 'Orders', 'href' => $ordersHref, 'icon' => 'clipboard'],
+        ['key' => 'support', 'label' => 'Support Tickets', 'href' => $supportHref, 'icon' => 'lifebuoy'],
     ];
 @endphp
 
-<aside class="flex flex-col lg:min-h-[32rem]">
+<aside class="lg:sticky lg:top-24 lg:self-start">
     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         {{-- User avatar section --}}
         <div class="relative border-b border-slate-100 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 px-4 py-5">
@@ -65,23 +67,21 @@
                 </a>
             @endforeach
         </nav>
+        <div class="border-t border-slate-100 p-2">
+            @auth
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 hover:text-rose-700">
+                        <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-10V5a2 2 0 114 0v1" /></svg>
+                        <span>Sign Out</span>
+                    </button>
+                </form>
+            @else
+                <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-primary-700 no-underline transition hover:bg-primary-50 hover:text-primary-800" href="{{ route('login') }}">
+                    <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-10V5a2 2 0 114 0v1" /></svg>
+                    <span>Sign In</span>
+                </a>
+            @endauth
+        </div>
     </div>
-
-    <div class="flex-1"></div>
-
-    {{-- Sign out --}}
-    @auth
-        <form method="POST" action="{{ route('logout') }}" class="mt-4">
-            @csrf
-            <button type="submit" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 hover:text-rose-700">
-                <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-10V5a2 2 0 114 0v1" /></svg>
-                Sign Out
-            </button>
-        </form>
-    @else
-        <a class="mt-4 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-rose-600 no-underline transition hover:bg-rose-50 hover:text-rose-700" href="#">
-            <svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-10V5a2 2 0 114 0v1" /></svg>
-            Sign Out
-        </a>
-    @endauth
 </aside>
