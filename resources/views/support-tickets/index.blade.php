@@ -26,11 +26,12 @@
         active="support"
         :back-url="$backUrl"
         back-label="Back"
+        framed
         title="Support Tickets"
         description="Create, track, and collaborate on support issues without leaving the main customer workspace."
     >
         <x-slot:metrics>
-            <div class="grid gap-4 md:grid-cols-4">
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <div class="{{ $metricCardClass }}">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Open</p>
                     <p class="mt-3 text-2xl font-bold text-slate-900">{{ $openCount }}</p>
@@ -97,7 +98,7 @@
                         />
 
                         <div class="flex justify-end">
-                            <button type="submit" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Create Ticket</button>
+                            <button type="submit" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Create Ticket</button>
                         </div>
                     </form>
                 @else
@@ -151,7 +152,7 @@
                                     />
                                     <x-ui.status-badge type="priority" :value="$ticket->priority" :label="strtoupper($ticket->priority)" uppercase />
                                 </div>
-                                <div class="grid gap-3 text-sm text-slate-600 sm:grid-cols-4">
+                                <div class="grid gap-3 text-sm text-slate-600 sm:grid-cols-2 xl:grid-cols-4">
                                     <div>
                                         <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Owner</p>
                                         <p class="mt-1 font-medium text-slate-900">{{ $ticket->owner_name ?? 'Unknown' }}</p>
@@ -172,7 +173,7 @@
                                 <p class="text-sm text-slate-500">Last activity: {{ $activityAt ? \Illuminate\Support\Carbon::parse($activityAt)->format('d M Y, h:i A') : 'N/A' }}</p>
                             </div>
 
-                            <a class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="{{ route('support-tickets.show', $ticket->id) }}">View Ticket</a>
+                            <a class="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto" href="{{ route('support-tickets.show', $ticket->id) }}">View Ticket</a>
                         </div>
                     </article>
                 @empty
@@ -200,7 +201,7 @@
                         <p class="mt-1 text-sm text-slate-500">Work through the current issue, collaborate with comments, and review all related history.</p>
                     </div>
 
-                    <div class="grid gap-4 md:grid-cols-3">
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                         <div class="rounded-2xl bg-slate-50 px-4 py-4">
                             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</p>
                             <div class="mt-2">
@@ -243,11 +244,11 @@
                                     </div>
                                     <p class="mt-3 text-sm leading-7 text-slate-700">{{ $comment->comment }}</p>
                                     @if ($commentAttachments->isNotEmpty())
-                                        <div class="mt-3 flex flex-wrap gap-2">
-                                            @foreach ($commentAttachments as $attachment)
-                                                <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">{{ $attachment->original_file_name }}</span>
-                                            @endforeach
-                                        </div>
+                                            <div class="mt-3 flex flex-wrap gap-2">
+                                                @foreach ($commentAttachments as $attachment)
+                                                    <span class="break-all rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">{{ $attachment->original_file_name }}</span>
+                                                @endforeach
+                                            </div>
                                     @endif
                                 </article>
                             @empty
@@ -275,7 +276,7 @@
                                     error-key="comment_attachments"
                                 />
                                 <div class="flex justify-end">
-                                    <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Add Comment</button>
+                                    <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Add Comment</button>
                                 </div>
                             </form>
                         @else
@@ -299,7 +300,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Update Status</button>
+                                <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Update Status</button>
                             </form>
                         @elseif ($canHandleTickets)
                             <p class="rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500">Your current permissions do not allow status updates.</p>
@@ -319,7 +320,7 @@
                         @else
                             <div class="space-y-2">
                                 @foreach ($ticketLevelAttachments as $attachment)
-                                    <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                                    <div class="break-all rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
                                         {{ $attachment->original_file_name }} ({{ $attachment->mime_type ?? 'unknown' }}, {{ $attachment->file_size }} bytes)
                                     </div>
                                 @endforeach

@@ -190,15 +190,17 @@
             <x-ui.section-heading title="Insights & Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
             <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 @foreach ([
-                    ['title' => 'Scaling Diagnostic Labs in Tier-2 Cities', 'tag' => 'Operations', 'copy' => 'How regional labs can improve turnaround time with better procurement and support.'],
-                    ['title' => 'Choosing the Right Reagent Mix', 'tag' => 'Product Guide', 'copy' => 'A practical framework for balancing consistency, throughput, and budget.'],
-                    ['title' => 'Checklist for New Instrument Rollouts', 'tag' => 'Implementation', 'copy' => 'Deployment, training, and support essentials for successful onboarding.'],
+                    ['title' => 'Scaling Diagnostic Labs in Tier-2 Cities', 'tag' => 'Operations', 'copy' => 'How regional labs can improve turnaround time with better procurement and support.', 'href' => route('about'), 'action' => 'Explore Story'],
+                    ['title' => 'Choosing the Right Reagent Mix', 'tag' => 'Product Guide', 'copy' => 'A practical framework for balancing consistency, throughput, and budget.', 'href' => route('products.index'), 'action' => 'Browse Products'],
+                    ['title' => 'Checklist for New Instrument Rollouts', 'tag' => 'Implementation', 'copy' => 'Deployment, training, and support essentials for successful onboarding.', 'href' => route('contact'), 'action' => 'Talk to Team'],
                 ] as $insight)
                     <article class="{{ $darkCardClass }}">
                         <x-badge variant="default">{{ $insight['tag'] }}</x-badge>
                         <h3 class="mt-3 text-lg font-semibold text-slate-900">{{ $insight['title'] }}</h3>
                         <p class="mt-2 text-sm text-slate-600">{{ $insight['copy'] }}</p>
-                        <x-ui.action-link href="#" variant="secondary" class="mt-4">Read More</x-ui.action-link>
+                        <x-ui.action-link :href="$insight['href']" variant="secondary" class="mt-4">
+                            {{ $insight['action'] }}
+                        </x-ui.action-link>
                     </article>
                 @endforeach
             </div>

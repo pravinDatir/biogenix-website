@@ -144,6 +144,150 @@ class ProductService
         }
     }
 
+    // This attaches the resolved storefront price fields used by the catalog and detail pages.
+    protected function attachResolvedPriceData(object $product, ?User $user): object
+    {
+        $price = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
+
+        $product->visible_price = $price['amount'] ?? null;
+        $product->gst_rate = $price['gst_rate'] ?? 0;
+        $product->tax_amount = $price['tax_amount'] ?? null;
+        $product->price_with_gst = $price['price_after_gst'] ?? null;
+        $product->visible_currency = $price['currency'] ?? null;
+        $product->visible_price_type = $price['price_type'] ?? null;
+        $product->visible_variant_id = $price['product_variant_id'] ?? null;
+        $product->visible_variant_sku = $price['variant_sku'] ?? null;
+        $product->visible_variant_name = $price['variant_name'] ?? null;
+
+        return $product;
+    }
+
+    // This keeps catalog array-style filters normalized and trimmed.
+    protected function normalizeCatalogFilterValues(mixed $value): Collection
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        return collect($values)
+            ->map(fn ($item): string => trim((string) $item))
+            ->filter()
+            ->values();
+    }
+
+    // This returns only products matching the free-text catalog search.
+    protected function filterCatalogProductsBySearch(Collection $products, string $search): Collection
+    {
+        $needle = Str::lower(trim($search));
+
+        if ($needle === '') {
+            return $products->values();
+        }
+
+        return $products
+            ->filter(function ($product) use ($needle): bool {
+                $haystack = Str::lower(implode(' ', array_filter([
+                    $product->name ?? null,
+                    $product->sku ?? null,
+                    $product->description ?? null,
+                    $product->brand ?? null,
+                    $product->category_name ?? null,
+                    $product->subcategory_name ?? null,
+                    $product->visible_variant_sku ?? null,
+                ])));
+
+                return Str::contains($haystack, $needle);
+            })
+            ->values();
+    }
+
+    // This builds the sidebar filter counts and price bounds for the catalog page.
+    protected function buildCatalogOptions(Collection $products): array
+    {
+        [$minPrice, $maxPrice] = $this->catalogPriceBounds($products);
+
+        return [
+            'categoryOptions' => $this->countCatalogLabels($products, 'category_name'),
+            'applicationOptions' => $this->countCatalogLabels($products, 'subcategory_name'),
+            'brandOptions' => $this->countCatalogLabels($products, 'brand'),
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
+        ];
+    }
+
+    // This counts visible product labels for catalog sidebar filters.
+    protected function countCatalogLabels(Collection $products, string $field): Collection
+    {
+        return $products
+            ->map(fn ($product): string => trim((string) data_get($product, $field)))
+            ->filter()
+            ->countBy()
+            ->sortKeys();
+    }
+
+    // This computes safe price-range bounds for the catalog slider.
+    protected function catalogPriceBounds(Collection $products): array
+    {
+        $prices = $products
+            ->pluck('visible_price')
+            ->filter(fn ($price) => $price !== null)
+            ->map(fn ($price): float => (float) $price)
+            ->values();
+
+        if ($prices->isEmpty()) {
+            return [0, 1000];
+        }
+
+        return [
+            (int) floor($prices->min()),
+            (int) ceil($prices->max()),
+        ];
+    }
+
+    // This checks whether one product matches a selected sidebar filter.
+    protected function catalogProductMatchesFilter(object $product, array $candidates, Collection $selectedValues): bool
+    {
+        $selectedLookup = $selectedValues
+            ->map(fn ($value): string => Str::lower(trim((string) $value)))
+            ->values();
+
+        return collect($candidates)
+            ->map(fn ($value): string => Str::lower(trim((string) $value)))
+            ->filter()
+            ->intersect($selectedLookup)
+            ->isNotEmpty();
+    }
+
+    // This sorts catalog products according to the selected storefront option.
+    protected function sortCatalogProducts(Collection $products, string $sort): Collection
+    {
+        return match ($sort) {
+            'name_az' => $products->sortBy(fn ($product) => Str::lower((string) ($product->name ?? '')), SORT_NATURAL),
+            'price_low' => $products->sortBy(fn ($product) => $product->visible_price ?? PHP_FLOAT_MAX),
+            'price_high' => $products->sortByDesc(fn ($product) => $product->visible_price ?? -1),
+            default => $products->sortBy(fn ($product) => Str::lower((string) ($product->name ?? '')), SORT_NATURAL),
+        };
+    }
+
+    // This paginates an in-memory product collection while preserving the query string.
+    protected function paginateCatalogProducts(Collection $products, int $perPage): LengthAwarePaginator
+    {
+        $currentPage = max(1, (int) LengthAwarePaginator::resolveCurrentPage('page'));
+        $items = $products->forPage($currentPage, $perPage)->values();
+        $paginator = new LengthAwarePaginator(
+            $items,
+            $products->count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => request()->url(),
+                'pageName' => 'page',
+            ],
+        );
+
+        $paginator->appends(request()->query());
+
+        return $paginator;
+    }
+
     // This forwards price resolution to the visibility service.
     public function resolvePrice(int $productId, ?User $user): ?array
     {

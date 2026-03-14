@@ -11,8 +11,8 @@
 @section('customer_active', 'whatsapp')
 
 @section('customer_actions')
-    <x-ui.action-link href="#">Continue in Portal</x-ui.action-link>
-    <x-ui.action-link href="#" variant="secondary">Open Order History</x-ui.action-link>
+    <x-ui.action-link :href="route('orders.index')">Continue in Portal</x-ui.action-link>
+    <x-ui.action-link :href="route('support-tickets.index')" variant="secondary">Open Support Desk</x-ui.action-link>
 @endsection
 
 @section('customer_content')

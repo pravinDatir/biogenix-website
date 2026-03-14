@@ -271,7 +271,7 @@
                             <div class="{{ $estimateClass }}">
                                 <div class="flex items-center justify-between gap-3 text-sm font-medium text-slate-600">
                                     <span>Estimated total</span>
-                                    <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{{ $formatInr($currentPrice) }}</span>
+                                    <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{!! $formatInr($currentPrice) !!}</span>
                                 </div>
                                 <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
                                     <span id="detailTierLabel">Tier: {{ $bulkTierRows[0]['label'] }}</span>
@@ -350,7 +350,7 @@
                             >
                                 <span class="{{ $loop->last ? 'font-semibold text-slate-900' : '' }}">{{ $tier['label'] }}</span>
                                 <span class="{{ $loop->last ? 'font-semibold text-emerald-700' : 'text-slate-600' }}">{{ $tier['discount'] }}</span>
-                                <span class="text-right font-semibold text-slate-900">{{ $formatInr($tier['price']) }}</span>
+                                <span class="text-right font-semibold text-slate-900">{!! $formatInr($tier['price']) !!}</span>
                             </div>
                         @endforeach
                     </div>

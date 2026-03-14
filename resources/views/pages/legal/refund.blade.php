@@ -204,7 +204,7 @@
             <nav class="flex flex-wrap gap-6">
                 <a href="{{ route('terms') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Terms of Service</a>
                 <a href="{{ route('privacy') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Privacy Policy</a>
-                <a href="#" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Compliance</a>
+                <a href="{{ route('contact') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Compliance</a>
             </nav>
         </div>
     </div>
