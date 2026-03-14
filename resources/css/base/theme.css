@@ -1,0 +1,24 @@
+@theme {
+    --font-sans: 'Manrope', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Sora', 'Manrope', ui-sans-serif, system-ui, sans-serif;
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --ui-page-bg: #f8fafc;
+    --ui-surface: #ffffff;
+    --ui-surface-muted: #f8fafc;
+    --ui-surface-subtle: #f1f5f9;
+    --ui-border: #e2e8f0;
+    --ui-text: #0f172a;
+    --ui-text-muted: #64748b;
+    --ui-radius-card: 1.5rem;
+    --ui-radius-field: 0.875rem;
+    --ui-radius-button: 0.875rem;
+    --ui-shadow-soft: 0 12px 28px rgba(15, 23, 42, 0.06);
+    --ui-shadow-card: 0 18px 42px rgba(15, 23, 42, 0.08);
+    --ui-shadow-panel: 0 28px 70px rgba(15, 23, 42, 0.1);
+    --ui-container-max: 100%;
+}

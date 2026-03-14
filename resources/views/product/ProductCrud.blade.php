@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="page-shell !space-y-4 md:!space-y-6">
+    <div class="mx-auto w-full max-w-none space-y-4 px-4 py-6 sm:px-6 lg:px-8 xl:px-10 md:space-y-6">
     <div class="card">
         <h1>Product CRUD</h1>
         <p class="muted">Create, edit, and delete products with multiple images. Every product has one default variant, and you can add extra variants only if needed.</p>
@@ -433,17 +433,17 @@
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="8">No products found.</td>
-                        </tr>
+                        <x-ui.table-empty-row
+                            colspan="8"
+                            title="No products found"
+                            description="Add a new product or adjust filters to see results here."
+                        />
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="pagination-wrap">
-            {{ $products->links() }}
-        </div>
+        <x-ui.pagination :paginator="$products" />
     </div>
     </div>
 @endsection

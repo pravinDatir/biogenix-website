@@ -4,12 +4,21 @@
 ])
 
 @php
-    $base = 'inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition';
-    $style = $variant === 'secondary'
-        ? 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
-        : 'bg-blue-600 text-white hover:bg-blue-700';
+    $style = match ($variant) {
+        'secondary' => 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-primary-500/30',
+        'contrast' => 'border border-slate-900 bg-slate-900 text-white hover:bg-slate-800 focus-visible:ring-slate-900/20',
+        'inverse' => 'border border-white/30 bg-white/10 text-white hover:bg-white/20 focus-visible:ring-white/30',
+        'dark' => 'border border-slate-950 bg-slate-950 text-white hover:bg-slate-800 focus-visible:ring-slate-950/20',
+        default => 'border border-primary-600 bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500/30',
+    };
 @endphp
 
-<a href="{{ $href }}" {{ $attributes->class(['ui-action-link', $base, $style]) }}>
+<a
+    href="{{ $href }}"
+    {{ $attributes->class([
+        'inline-flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold no-underline shadow-sm transition focus-visible:outline-none focus-visible:ring-2',
+        $style,
+    ]) }}
+>
     {{ $slot }}
 </a>

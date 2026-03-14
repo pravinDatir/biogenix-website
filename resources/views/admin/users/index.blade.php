@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="page-shell !space-y-4 md:!space-y-6">
+    <div class="mx-auto w-full max-w-none space-y-4 px-4 py-6 sm:px-6 lg:px-8 xl:px-10 md:space-y-6">
     <div class="card">
         <h1>Admin Access Control Console</h1>
         <p class="muted">

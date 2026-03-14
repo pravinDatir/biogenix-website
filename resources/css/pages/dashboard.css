@@ -1,0 +1,60 @@
+@layer components {
+.dashboard-wrapper {
+    @apply container py-6;
+}
+
+.dashboard-card {
+    @apply h-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md;
+}
+
+.dashboard-card p {
+    @apply mt-2 text-sm text-slate-600;
+}
+
+.hero-wrap {
+    @apply relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 px-5 py-10 text-white shadow-xl md:px-10 md:py-14;
+}
+
+.hero-wrap--transparent {
+    background: transparent;
+}
+
+.hero-wrap::before {
+    content: "";
+    @apply pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary-600/30 blur-3xl;
+}
+
+.hero-wrap::after {
+    content: "";
+    @apply pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-primary-100/70 blur-3xl;
+}
+
+.hero-kicker {
+    @apply inline-flex rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white;
+}
+
+.hero-metric-card {
+    @apply rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm;
+}
+
+.nav-pill {
+    @apply inline-flex rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm;
+}
+
+.nav-pill.is-active {
+    @apply border-primary-100 bg-primary-50 text-primary-700;
+}
+
+.hero-actions {
+    @apply mt-6 flex flex-wrap items-center gap-3;
+}
+
+.dashboard-header h2 {
+    font-size: 1.875rem;
+    line-height: 1.2;
+}
+
+.dashboard-header p {
+    margin-top: 0.5rem;
+}
+}

@@ -1,198 +1,170 @@
 @php
-    $requestedType = request('user_type', request('portal'));
-    $portal = $requestedType === 'b2b' ? 'b2b' : 'b2c';
-
-    $views = [
-        'b2c' => [
-            'panelBadge' => 'BIOGENIX ACCESS',
-            'panelTitle' => 'Secure diagnostic commerce for modern healthcare teams.',
-            'panelCopy' => 'Sign in to continue with catalog access, quotation workflows, and account-level operations based on your role.',
-            'detailBadge' => 'B2C Access',
-            'detailTitle' => 'Retail Buyer Login',
-            'detailCopy' => 'Use your customer account to browse catalog, generate PI for self, and manage your own orders and support history.',
-            'detailCard' => 'border border-emerald-200/60 bg-[#d9e7e2]',
-            'detailBadgeClass' => 'border border-emerald-200 bg-emerald-50 text-emerald-700',
-            'detailDotClass' => 'bg-emerald-500',
-            'detailItems' => [
-                'Retail / MRP context with your personal account scope',
-                'Own orders, own shipments, own support tickets only',
-                'PI generation for self',
-            ],
-            'detailNote' => null,
-            'submitLabel' => 'Login to B2C Account',
-        ],
-        'b2b' => [
-            'panelBadge' => 'BIOGENIX ACCESS',
-            'panelTitle' => 'Secure diagnostic commerce for modern healthcare teams.',
-            'panelCopy' => 'Sign in to continue with catalog access, quotation workflows, and account-level operations based on your role.',
-            'detailBadge' => 'B2B Access',
-            'detailTitle' => 'Business Account Login',
-            'detailCopy' => 'Use your distributor, lab, hospital, or institutional account for customer-specific pricing and business workflows.',
-            'detailCard' => 'border border-blue-200/70 bg-[#dbe4f2]',
-            'detailBadgeClass' => 'border border-blue-200 bg-blue-50 text-blue-700',
-            'detailDotClass' => 'bg-blue-500',
-            'detailItems' => [
-                'Customer-specific business pricing and approval-aware ordering',
-                'PI for self and assigned client scope when permitted',
-                'Access is limited to your company and assigned client visibility',
-            ],
-            'detailNote' => 'New B2B registrations require admin approval before first login.',
-            'submitLabel' => 'Login to B2B Workspace',
-        ],
-    ];
-
-    $view = $views[$portal];
+    $successMessage = session('success') ?: session('status');
+    $errorMessage = session('error') ?: ($errors->first('email') ?: $errors->first('password'));
 @endphp
 
-<div class="page-shell">
-    <section class="mx-auto w-full max-w-6xl py-6 md:py-10">
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-            <aside class="overflow-hidden rounded-[2rem] bg-[linear-gradient(180deg,#020b3a_0%,#172a67_58%,#0e617f_100%)] p-8 text-white shadow-[0_24px_60px_rgba(15,23,42,0.20)]">
-                <span class="auth-kicker border border-white/20 bg-white/10 text-white">
-                    {{ $view['panelBadge'] }}
-                </span>
+<div class="auth-shell">
+    <section class="auth-stage">
+        <div class="auth-grid">
+            <aside class="auth-media">
+                <img
+                    src="{{ asset('images/home2.jpg') }}"
+                    alt="Biogenix laboratory"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                >
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,42,0.24)_0%,rgba(15,23,42,0.72)_46%,rgba(37,99,235,0.84)_100%)]"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_62%_18%,rgba(255,255,255,0.22),transparent_28%)]"></div>
+                <div class="absolute left-7 top-5 h-4 w-72 rounded-full bg-white/75 shadow-lg"></div>
+                <div class="absolute left-[3.2rem] top-0 h-6 w-px bg-white/25"></div>
+                <div class="absolute left-[18.8rem] top-0 h-6 w-px bg-white/25"></div>
 
-                <h1 class="auth-panel-title text-white">
-                    {{ $view['panelTitle'] }}
-                </h1>
+                <div class="relative z-10 max-w-sm">
+                    <div class="flex items-center gap-3">
+                        <svg class="h-8 w-8 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M7 3h10"></path>
+                            <path d="M10 3v3"></path>
+                            <path d="M14 3v3"></path>
+                            <path d="M7 6h10l-1 2.5v4.5a5 5 0 0 1-4 4.9V21"></path>
+                            <path d="M17 6l1 2.5"></path>
+                            <path d="M7 6 6 8.5"></path>
+                            <path d="M8.5 13h7"></path>
+                            <path d="M9 21h6"></path>
+                            <path d="M6 21h12"></path>
+                        </svg>
+                        <p class="text-4xl font-bold tracking-tight text-white">Biogenix</p>
+                    </div>
 
-                <p class="auth-copy max-w-lg text-blue-50">
-                    {{ $view['panelCopy'] }}
-                </p>
-
-                <div class="mt-9 rounded-[1.6rem] p-5 {{ $view['detailCard'] }}">
-                    <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold {{ $view['detailBadgeClass'] }}">
-                        {{ $view['detailBadge'] }}
-                    </span>
-
-                    <h2 class="auth-section-title text-slate-950">
-                        {{ $view['detailTitle'] }}
-                    </h2>
-
-                    <p class="auth-copy text-slate-700">
-                        {{ $view['detailCopy'] }}
+                    <p class="mt-6 text-lg font-semibold leading-9 text-white/95">
+                        Sign in to manage catalog access, quotations, and procurement workflows from one consistent portal.
                     </p>
-
-                    <ul class="auth-detail-list text-slate-800">
-                        @foreach ($view['detailItems'] as $item)
-                            <li class="flex items-start gap-3">
-                                <span class="mt-3 h-2.5 w-2.5 shrink-0 rounded-full {{ $view['detailDotClass'] }}"></span>
-                                <span>{{ $item }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-
-                    @if ($view['detailNote'])
-                        <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
-                            {{ $view['detailNote'] }}
-                        </div>
-                    @endif
                 </div>
             </aside>
 
-            <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-[0_18px_40px_rgba(15,23,42,0.08)] md:p-10">
-                <h2 class="auth-page-title">Welcome back</h2>
-                <p class="auth-page-subtitle">Choose your access type and login with your registered account.</p>
-
-                <div class="mt-8 grid grid-cols-2 gap-3">
-                    <a
-                        href="{{ route('login', ['user_type' => 'b2c']) }}"
-                        @class([
-                            'auth-switch-link',
-                            'border-emerald-300 bg-emerald-50 text-emerald-700' => $portal === 'b2c',
-                            'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:text-slate-900' => $portal !== 'b2c',
-                        ])
-                    >
-                        B2C Login
-                    </a>
-                    <a
-                        href="{{ route('login', ['user_type' => 'b2b']) }}"
-                        @class([
-                            'auth-switch-link',
-                            'border-blue-300 bg-blue-50 text-blue-700' => $portal === 'b2b',
-                            'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:text-slate-900' => $portal !== 'b2b',
-                        ])
-                    >
-                        B2B Login
-                    </a>
-                </div>
-
-                @if (session('success'))
-                    <div class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                <form id="loginForm" method="POST" action="{{ route('login') }}" class="mt-10 space-y-5 [&_.form-group]:mb-0">
-                    @csrf
-
-                    <div class="form-group">
-                        <label for="loginEmail">Email / ID</label>
-                        <input
-                            type="email"
-                            name="email"
-                            id="loginEmail"
-                            class="form-control h-12 @error('email') border-red-500 ring-1 ring-red-100 @enderror"
-                            placeholder="you@company.com"
-                            value="{{ old('email') }}"
-                            autocomplete="email"
-                            required
-                        >
-                        @error('email')
-                            <p class="text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        <span class="error"></span>
+            <div class="auth-panel">
+                <div class="auth-panel-inner">
+                    <div>
+                        <p class="page-kicker">Secure Access</p>
+                        <h1 class="auth-title mt-3">Sign in to your account</h1>
+                        <p class="auth-copy">
+                            Enter your credentials to continue with product discovery, order review, and account-specific pricing.
+                        </p>
                     </div>
 
-                    <div class="form-group">
-                        <div class="mb-2 flex items-center justify-between gap-3">
-                            <label for="loginPassword" class="mb-0">Password</label>
-                            <a href="{{ route('forgot.password') }}" class="text-sm font-semibold text-blue-700 hover:underline">Forgot Password?</a>
+                    @if ($errorMessage)
+                        <div class="auth-alert auth-alert--error" role="alert">
+                            <svg class="mt-0.5 h-4.5 w-4.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M12 8v5"></path>
+                                <path d="M12 16h.01"></path>
+                            </svg>
+                            <span>{{ $errorMessage }}</span>
                         </div>
-                        <div class="password-wrapper">
+                    @elseif ($successMessage)
+                        <div class="auth-alert auth-alert--success" role="status">
+                            <svg class="mt-0.5 h-4.5 w-4.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>{{ $successMessage }}</span>
+                        </div>
+                    @endif
+
+                    <form id="loginForm" method="POST" action="{{ route('login') }}" class="auth-form" novalidate>
+                        @csrf
+
+                        <div class="auth-field">
+                            <label for="loginEmail" class="auth-label">Email Address</label>
+                            <div class="relative">
+                                <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="loginEmail"
+                                    class="auth-input auth-input--icon @error('email') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                                    placeholder="researcher@biogenix.com"
+                                    value="{{ old('email') }}"
+                                    autocomplete="email"
+                                    required
+                                >
+                            </div>
+                            @error('email')
+                                <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="auth-field">
+                            <div class="flex items-center justify-between gap-3">
+                                <label for="loginPassword" class="auth-label">Password</label>
+                                <a href="{{ route('forgot.password') }}" class="auth-link text-sm">Forgot Password?</a>
+                            </div>
+                            <div class="relative">
+                                <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                                    <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                                </svg>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="loginPassword"
+                                    class="auth-input auth-input--icon pr-12 @error('password') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                                    placeholder="Enter your password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                                <button type="button" id="togglePassword" class="absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-600" aria-label="Toggle password visibility">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                            @error('password')
+                                <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <label for="rememberCheck" class="inline-flex items-center gap-3 text-sm text-slate-600">
                             <input
-                                type="password"
-                                name="password"
-                                id="loginPassword"
-                                class="form-control h-12 pr-16 @error('password') border-red-500 ring-1 ring-red-100 @enderror"
-                                placeholder="Enter password"
-                                autocomplete="current-password"
-                                required
+                                type="checkbox"
+                                name="remember"
+                                id="rememberCheck"
+                                value="1"
+                                class="auth-checkbox"
+                                @checked(old('remember'))
                             >
-                            <button type="button" id="togglePassword" class="toggle-password">Show</button>
+                            <span>Keep me signed in</span>
+                        </label>
+
+                        <button type="submit" id="loginSubmitBtn" class="auth-submit">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p class="auth-footer-meta">
+                            Need assistance?
+                            <a href="{{ route('contact') }}" class="auth-link">Contact Support</a>
+                        </p>
+
+                        <p class="auth-footer-meta mt-3">
+                            New here?
+                            <a href="{{ route('signup') }}" class="auth-link">Create an account</a>
+                        </p>
+
+                        <div class="auth-footer-links">
+                            <span>&copy; 2026 Biogenix Corp.</span>
+                            <div class="flex flex-wrap gap-4">
+                                <a href="{{ route('privacy') }}" class="text-inherit no-underline">Privacy</a>
+                                <a href="{{ route('terms') }}" class="text-inherit no-underline">Terms</a>
+                                <a href="{{ route('contact') }}" class="text-inherit no-underline">Security</a>
+                            </div>
                         </div>
-                        @error('password')
-                            <p class="text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        <span class="error"></span>
                     </div>
-
-                    <label class="auth-check-label">
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            value="1"
-                            class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                            @checked(old('remember'))
-                        >
-                        Remember me on this device
-                    </label>
-
-                    <button type="submit" id="loginSubmitBtn" class="btn btn-primary mt-2 w-full !py-3.5 text-base">
-                        {{ $view['submitLabel'] }}
-                    </button>
-                </form>
-
-                <p class="auth-footer-copy">
-                    New here?
-                    <a href="{{ route('signup', ['user_type' => $portal]) }}" class="font-semibold text-blue-700 hover:underline">Create account</a>
-                </p>
+                </div>
             </div>
         </div>
     </section>
@@ -211,7 +183,7 @@
         if (loginForm && loginSubmitBtn) {
             loginForm.addEventListener('submit', function () {
                 loginSubmitBtn.disabled = true;
-                loginSubmitBtn.classList.add('is-loading');
+                loginSubmitBtn.classList.add('cursor-not-allowed', 'opacity-70');
                 loginSubmitBtn.setAttribute('aria-disabled', 'true');
             });
         }

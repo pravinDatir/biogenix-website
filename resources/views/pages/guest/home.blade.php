@@ -19,9 +19,14 @@
             'image' => asset('images/hema1.jpg'),
         ],
     ];
+
+    $cardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md';
+    $darkCardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm';
+    $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
+    $primaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
 @endphp
 
-<div class="full-bleed">
+<div>
     <section class="relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
             <div id="heroTrack" class="flex h-full w-full transition-transform duration-700 ease-out">
@@ -38,19 +43,19 @@
 
                         <div class="container relative z-10 grid min-h-[calc(100vh-88px)] grid-cols-1 gap-8 py-10 pb-24 md:py-14 lg:grid-cols-12">
                             <div class="flex flex-col justify-center lg:col-span-7">
-                                <x-badge variant="info" class="w-fit !border-white/25 !bg-white/10 !text-blue-100">{{ $slide['tag'] }}</x-badge>
-                                <h1 class="mt-5 max-w-3xl text-3xl font-semibold leading-tight text-white sm:text-4xl md:text-6xl">{{ $slide['title'] }}</h1>
-                                <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-100 sm:text-base md:mt-5 md:text-lg">{{ $slide['copy'] }}</p>
+                                <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
+                                <h1 class="mt-5 max-w-3xl text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
+                                <p class="mt-6 max-w-2xl text-base leading-8 text-slate-100 md:text-xl">{{ $slide['copy'] }}</p>
 
                                 <div class="mt-8 flex flex-wrap items-center gap-3">
-                                    <x-ui.action-link :href="route('proforma.create')" class="!px-5 !py-3">Generate Quote</x-ui.action-link>
-                                    <x-ui.action-link :href="route('contact') . '#book-meeting'" variant="secondary" class="!border-white/60 !bg-white/10 !px-5 !py-3 !text-white hover:!bg-white/20">Book Meeting</x-ui.action-link>
+                                    <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                                    <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book Meeting</x-ui.action-link>
                                 </div>
                             </div>
 
                             <div class="flex items-end lg:col-span-5">
                                 <div class="w-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur">
-                                    <p class="text-xs font-semibold uppercase tracking-wide text-blue-100">Featured Focus</p>
+                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Featured Focus</p>
                                     <h2 class="mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
                                     <p class="mt-3 text-sm text-slate-100">Biogenix combines category expertise with enterprise-ready support to improve continuity across procurement and delivery operations.</p>
                                 </div>
@@ -67,7 +72,8 @@
                     @foreach ($heroSlides as $slide)
                         <button
                             type="button"
-                            class="hero-dot h-2.5 w-8 rounded-full bg-white/40 transition hover:bg-white/80"
+                            class="h-2.5 w-8 rounded-full bg-white/40 transition hover:bg-white/80"
+                            data-hero-dot
                             data-slide-index="{{ $loop->index }}"
                             aria-label="Go to slide {{ $loop->iteration }}"
                         ></button>
@@ -77,24 +83,6 @@
                     <button id="heroPrev" type="button" class="inline-flex h-9 min-w-[3.75rem] items-center justify-center rounded-full border border-white/50 bg-white/10 px-3 text-xs font-semibold text-white transition hover:bg-white/20">Prev</button>
                     <button id="heroNext" type="button" class="inline-flex h-9 min-w-[3.75rem] items-center justify-center rounded-full border border-white/50 bg-white/10 px-3 text-xs font-semibold text-white transition hover:bg-white/20">Next</button>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-white py-12 md:py-16">
-        <div class="container">
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                @foreach ([
-                    ['tag' => 'Smart Workflow', 'title' => 'Precision products. Faster decisions.', 'copy' => 'Integrated catalog, quotation, and support workflows for teams.'],
-                    ['tag' => 'Operations Scale', 'title' => 'Enterprise-ready support model', 'copy' => 'Structured onboarding, compliant processes, and transparent execution.'],
-                    ['tag' => 'Lucknow Hub', 'title' => 'Same-day logistics support', 'copy' => 'Faster medical diagnostics fulfillment for selected regions.'],
-                ] as $item)
-                    <article class="saas-card">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-blue-700">{{ $item['tag'] }}</p>
-                        <h3 class="mt-2 text-lg font-semibold text-slate-900">{{ $item['title'] }}</h3>
-                        <p class="mt-2 text-sm text-slate-600">{{ $item['copy'] }}</p>
-                    </article>
-                @endforeach
             </div>
         </div>
     </section>
@@ -109,9 +97,9 @@
                     ['name' => 'Instruments', 'copy' => 'High-throughput systems for clinical teams.', 'image' => asset('images/image2.jpg')],
                     ['name' => 'Consumables', 'copy' => 'Lab essentials engineered for consistency.', 'image' => asset('images/home3.jpg')],
                 ] as $item)
-                    <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
-                        <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-40 w-full object-cover" loading="lazy" decoding="async">
-                        <div class="space-y-2 p-4">
+                    <article class="{{ $cardClass }}">
+                        <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-40 w-full rounded-2xl object-cover" loading="lazy" decoding="async">
+                        <div class="space-y-2 pt-4">
                             <h3 class="text-lg font-semibold text-slate-900">{{ $item['name'] }}</h3>
                             <p class="text-sm text-slate-600">{{ $item['copy'] }}</p>
                             <x-ui.action-link :href="route('products.index')" variant="secondary">Explore</x-ui.action-link>
@@ -126,7 +114,7 @@
         <div class="container">
             <x-ui.section-heading title="Clinical & Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <article class="saas-card">
+                <article class="{{ $darkCardClass }}">
                     <x-badge variant="info">B2B Operations</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Distributor, Lab, and Hospital Enablement</h3>
                     <p class="mt-2 text-sm text-slate-600">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
@@ -134,7 +122,7 @@
                         <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])">B2B Login</x-ui.action-link>
                     </div>
                 </article>
-                <article class="saas-card">
+                <article class="{{ $darkCardClass }}">
                     <x-badge variant="success">B2C Access</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Retail and Independent Care Buyers</h3>
                     <p class="mt-2 text-sm text-slate-600">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
@@ -148,26 +136,25 @@
 
     <section class="bg-slate-50 py-12 md:py-16">
         <div class="container grid grid-cols-1 gap-5 xl:grid-cols-12">
-            <article class="saas-card bg-gradient-to-r from-blue-600 to-cyan-600 text-white xl:col-span-7">
+            <article class="rounded-3xl bg-gradient-to-r from-primary-600 to-primary-700 p-6 text-white shadow-sm xl:col-span-7 md:p-8">
                 <h2 class="text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
-                <p class="mt-3 max-w-2xl text-sm text-blue-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
+                <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
                 <div class="mt-5 flex flex-wrap gap-3">
-                    <x-ui.action-link :href="route('proforma.create')" class="!bg-white !text-blue-700 hover:!bg-blue-50">Generate Quote</x-ui.action-link>
-                    <x-ui.action-link :href="route('contact')" variant="secondary" class="!border-white/70 !bg-white/10 !text-white hover:!bg-white/20">Talk to Support</x-ui.action-link>
+                    <x-ui.action-link :href="route('proforma.create')" variant="contrast" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                    <x-ui.action-link :href="route('contact')" variant="inverse" class="min-h-11 px-5">Talk to Support</x-ui.action-link>
                 </div>
             </article>
 
-            <article class="saas-card xl:col-span-5">
+            <article class="{{ $darkCardClass }} xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
                 <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
-                    <div class="form-group mb-0">
-                        <label for="newsletterEmail">Work Email</label>
-                        <input id="newsletterEmail" type="email" class="form-control" placeholder="you@organization.com" required>
-                        <span class="error"></span>
+                    <div>
+                        <label for="newsletterEmail" class="mb-2 block text-sm font-semibold text-slate-700">Work Email</label>
+                        <input id="newsletterEmail" type="email" class="{{ $inputClass }}" placeholder="you@organization.com" required>
                     </div>
-                    <button type="submit" id="newsletterSubmitBtn" class="btn btn-primary w-full">Subscribe</button>
-                    <p id="newsletterStatus" class="form-status"></p>
+                    <button type="submit" id="newsletterSubmitBtn" class="{{ $primaryButtonClass }} w-full">Subscribe</button>
+                    <p id="newsletterStatus" class="min-h-[1.25rem] text-sm font-medium text-slate-600"></p>
                 </form>
             </article>
         </div>
@@ -188,7 +175,7 @@
                         ['title' => 'Compliance-Ready', 'copy' => 'Quality-first processes aligned to regulated healthcare operations.'],
                         ['title' => 'Consultative Service', 'copy' => 'Pre-sale and post-sale support for clinical and procurement teams.'],
                     ] as $value)
-                        <article class="saas-card">
+                        <article class="{{ $darkCardClass }}">
                             <h3 class="text-base font-semibold text-slate-900">{{ $value['title'] }}</h3>
                             <p class="mt-2 text-sm text-slate-600">{{ $value['copy'] }}</p>
                         </article>
@@ -207,8 +194,8 @@
                     ['title' => 'Choosing the Right Reagent Mix', 'tag' => 'Product Guide', 'copy' => 'A practical framework for balancing consistency, throughput, and budget.'],
                     ['title' => 'Checklist for New Instrument Rollouts', 'tag' => 'Implementation', 'copy' => 'Deployment, training, and support essentials for successful onboarding.'],
                 ] as $insight)
-                    <article class="saas-card">
-                        <x-badge variant="secondary">{{ $insight['tag'] }}</x-badge>
+                    <article class="{{ $darkCardClass }}">
+                        <x-badge variant="default">{{ $insight['tag'] }}</x-badge>
                         <h3 class="mt-3 text-lg font-semibold text-slate-900">{{ $insight['title'] }}</h3>
                         <p class="mt-2 text-sm text-slate-600">{{ $insight['copy'] }}</p>
                         <x-ui.action-link href="#" variant="secondary" class="mt-4">Read More</x-ui.action-link>
@@ -225,8 +212,8 @@
                 Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
             </p>
             <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <x-ui.action-link :href="route('proforma.create')" class="!px-5 !py-3">Generate Quote</x-ui.action-link>
-                <x-ui.action-link :href="route('contact') . '#book-meeting'" variant="secondary" class="!border-white/70 !bg-white/10 !px-5 !py-3 !text-white hover:!bg-white/20">Book a Meeting</x-ui.action-link>
+                <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book a Meeting</x-ui.action-link>
             </div>
         </div>
     </section>
@@ -236,7 +223,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const track = document.getElementById('heroTrack');
-        const dots = Array.from(document.querySelectorAll('.hero-dot'));
+        const dots = Array.from(document.querySelectorAll('[data-hero-dot]'));
         const nextBtn = document.getElementById('heroNext');
         const prevBtn = document.getElementById('heroPrev');
         const carousel = document.getElementById('heroCarousel');
@@ -247,8 +234,9 @@
         function paintDots() {
             dots.forEach(function (dot, dotIndex) {
                 const active = dotIndex === index;
-                dot.classList.toggle('!bg-white', active);
+                dot.classList.toggle('bg-white', active);
                 dot.classList.toggle('w-10', active);
+                dot.classList.toggle('bg-white/40', !active);
             });
         }
 
@@ -307,33 +295,35 @@
         const newsletterForm = document.getElementById('newsletterForm');
         const newsletterBtn = document.getElementById('newsletterSubmitBtn');
         const newsletterStatus = document.getElementById('newsletterStatus');
+        const newsletterEmail = document.getElementById('newsletterEmail');
 
-        if (newsletterForm && newsletterBtn && newsletterStatus) {
+        if (newsletterForm && newsletterBtn && newsletterStatus && newsletterEmail) {
             newsletterForm.addEventListener('submit', function (event) {
                 event.preventDefault();
 
-                if (typeof validateFields === 'function') {
-                    const valid = validateFields([{ id: 'newsletterEmail', rules: ['required', 'email'] }]);
-                    if (!valid) {
-                        newsletterStatus.textContent = 'Please enter a valid email.';
-                        newsletterStatus.classList.add('error');
-                        newsletterStatus.classList.remove('success');
-                        return;
-                    }
+                const email = newsletterEmail.value.trim();
+                newsletterEmail.classList.remove('border-rose-400', 'ring-4', 'ring-rose-500/10');
+
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    newsletterEmail.classList.add('border-rose-400', 'ring-4', 'ring-rose-500/10');
+                    newsletterStatus.textContent = 'Please enter a valid email.';
+                    newsletterStatus.classList.add('text-rose-600');
+                    newsletterStatus.classList.remove('text-emerald-600');
+                    return;
                 }
 
                 newsletterBtn.disabled = true;
-                newsletterBtn.classList.add('is-loading');
+                newsletterBtn.classList.add('cursor-not-allowed', 'opacity-70');
                 newsletterBtn.setAttribute('aria-disabled', 'true');
 
                 newsletterStatus.textContent = 'You are subscribed. Thank you.';
-                newsletterStatus.classList.remove('error');
-                newsletterStatus.classList.add('success');
+                newsletterStatus.classList.remove('text-rose-600');
+                newsletterStatus.classList.add('text-emerald-600');
 
                 newsletterForm.reset();
                 setTimeout(function () {
                     newsletterBtn.disabled = false;
-                    newsletterBtn.classList.remove('is-loading');
+                    newsletterBtn.classList.remove('cursor-not-allowed', 'opacity-70');
                     newsletterBtn.setAttribute('aria-disabled', 'false');
                 }, 500);
             });

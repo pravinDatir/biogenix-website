@@ -21,6 +21,11 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
  Route::get('/products', [ProductController::class, 'index'])->name('products.index');
  Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
 
+ // Preview-only customer workspace pages (UI shells)
+ Route::view('/customer/profile', 'customer.profile')->name('customer.profile.preview');
+ Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
+ Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
+
  Route::get('/products-crud', [ProductController::class, 'showCrudProduct'])->name('products.crud.index');
  Route::post('/products-crud', [ProductController::class, 'addProduct'])->name('products.crud.store');
  Route::get('/products-crud/{productId}', [ProductController::class, 'getProductById'])->name('products.crud.show');
@@ -29,6 +34,9 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
 
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
+
+Route::view('/cart', 'pages.guest.cart')->name('cart.page');
+Route::view('/checkout', 'pages.guest.checkout')->name('checkout.page');
 
 Route::middleware('auth')->prefix('orders')->name('orders.')->group(function (): void {
     Route::get('/', [OrderController::class, 'showOrderCrud'])->name('index');
@@ -39,7 +47,7 @@ Route::middleware('auth')->prefix('orders')->name('orders.')->group(function ():
 });
 
 Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): void {
-    Route::get('/', [CartController::class, 'showCart'])->name('show');
+    Route::get('/data', [CartController::class, 'showCart'])->name('show');
     Route::post('/items', [CartController::class, 'addToCart'])->name('items.store');
     Route::patch('/items/{cartItemId}', [CartController::class, 'updateCartItem'])->name('items.update');
     Route::delete('/items/{cartItemId}', [CartController::class, 'removeCartItem'])->name('items.delete');
@@ -54,7 +62,9 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 
    //Route::view('/login', 'auth.login')->name('login');
    Route::view('/signup', 'auth.signup')->name('signup');
+   Route::view('/b2b-signup', 'auth.signup-b2b')->name('b2b.signup');
    Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password');
+   Route::view('/book-meeting', 'prelogin.book-meeting')->name('book-meeting');
 
 // Route::view('/dashboard/customer', 'dashboard.customer')->name('customer.dashboard');
 // Route::view('/dashboard/admin', 'dashboard.admin')->name('admin.dashboard');
@@ -68,7 +78,10 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 
    Route::view('/privacy', 'legal.privacy')->name('privacy');
    Route::view('/terms', 'legal.terms')->name('terms');
+   Route::view('/refund-policy', 'legal.refund')->name('refund-policy');
    Route::view('/faq', 'legal.faq')->name('faq');
+   Route::view('/order-confirmation', 'order.confirmation')->name('order.confirmation');
+   Route::view('/maintenance', 'errors.503')->name('maintenance');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->middleware('auth')->name('proforma.index');
