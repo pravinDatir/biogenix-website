@@ -12,8 +12,10 @@ return new class extends Migration
             Schema::create('categories', function (Blueprint $table) {
                 $table->id()->primary();
                 $table->string('name');
-                 $table->string('description')->nullable();
+                $table->string('description')->nullable();
+                $table->string('application')->nullable();
                 $table->string('slug')->unique();
+                $table->string('default_image_path')->nullable();
                 $table->decimal('gst_rate', 5, 2)->default(18.00);
                 $table->unsignedInteger('sort_order')->default(0);
                 $table->timestamps();
@@ -26,6 +28,7 @@ return new class extends Migration
                 $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
                 $table->string('name');
                 $table->string('slug');
+                $table->string('default_image_path')->nullable();
                 $table->unsignedInteger('sort_order')->default(0);
                 $table->timestamps();
                 $table->unique(['category_id', 'slug'], 'subcategory_category_slug_unique');

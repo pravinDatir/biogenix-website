@@ -160,6 +160,7 @@ class ProductService
     {
         try {
             return Category::query()
+                ->orderBy('sort_order')
                 ->orderBy('name')
                 ->get();
         } catch (Throwable $exception) {
@@ -168,6 +169,37 @@ class ProductService
         }
     }
 
+    // This returns only the configured home page categories in config order.
+    public function GetConfiguredCategories(): Collection
+    {
+        try {
+            $configuredSlugs = collect(config('common.home_page_category_slugs', []))
+                ->filter(fn (mixed $slug): bool => is_string($slug) && trim($slug) !== '')
+                ->map(fn (string $slug): string => trim($slug))
+                ->unique()
+                ->values();
+
+            if ($configuredSlugs->isEmpty()) {
+                return $this->categories();
+            }
+
+            $categories = Category::query()
+                ->whereIn('slug', $configuredSlugs->all())
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+                ->keyBy('slug');
+
+            return $configuredSlugs
+                ->map(fn (string $slug) => $categories->get($slug))
+                ->filter()
+                ->values();
+        } catch (Throwable $exception) {
+            Log::error('Failed to load configured product categories.', ['error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+    
     // This returns the top frequently bought together products for one product.
     public function frequentlyBoughtTogetherProducts(int $productId, ?User $user): Collection
     {

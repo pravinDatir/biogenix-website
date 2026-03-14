@@ -16,7 +16,7 @@ class HomeController extends Controller
     {
         try {
             // Step 1: load the product categories used on the home page.
-            $productCategories = $productService->categories();
+            $productCategories = $productService->GetConfiguredCategories();
 
             Log::info('HomeController.index Product categories:', ['categories' => $productCategories]);
 

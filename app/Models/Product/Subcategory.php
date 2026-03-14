@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subcategory extends Model
 {
-    protected $fillable = ['category_id', 'name', 'slug', 'sort_order'];
+    protected $fillable = ['category_id', 'name', 'slug', 'default_image_path', 'sort_order'];
 
     protected function casts(): array
     {

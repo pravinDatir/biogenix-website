@@ -11,21 +11,82 @@ class CatalogSeeder extends Seeder
     {
         $now = now();
 
-       // Step 1: seed category-level GST rates.
-       DB::table('categories')->insert([
-            ['id' => 1, 'name' => 'Diagnostics', 'slug' => 'diagnostics', 'description' => 'Laboratory diagnostic equipment and testing systems.', 'gst_rate' => 18.00, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 2, 'name' => 'Imaging', 'slug' => 'imaging', 'description' => 'Medical imaging devices for radiology and diagnostic scans.', 'gst_rate' => 18.00, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 3, 'name' => 'Cardiology', 'slug' => 'cardiology', 'description' => 'Devices and systems used for heart monitoring and cardiac diagnostics.', 'gst_rate' => 18.00, 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 4, 'name' => 'Consumables', 'slug' => 'consumables', 'description' => 'Single-use medical supplies and laboratory consumable products.', 'gst_rate' => 12.00, 'sort_order' => 4, 'created_at' => $now, 'updated_at' => $now],
+        // Step 1: seed categories and subcategories used across the catalog.
+        DB::table('categories')->insert([
+            [
+                'id' => 1,
+                'name' => 'Diagnostics',
+                'slug' => 'diagnostics',
+                'description' => 'Diagnostic kits and testing systems for clinical and laboratory use.',
+                'application' => 'Hospitals, pathology labs, diagnostic centers, clinics',
+                'gst_rate' => 18.00,
+                'sort_order' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 2,
+                'name' => 'Biochemistry',
+                'slug' => 'biochemistry',
+                'description' => 'Clinical biochemistry reagents, analyzers, and test kits.',
+                'application' => 'Clinical chemistry labs, hospital laboratories, research labs',
+                'gst_rate' => 18.00,
+                'sort_order' => 2,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 3,
+                'name' => 'Molecular Diagnostics',
+                'slug' => 'molecular-diagnostics',
+                'description' => 'PCR kits, molecular testing products, and advanced diagnostic solutions.',
+                'application' => 'Molecular labs, infectious disease testing, research institutions',
+                'gst_rate' => 18.00,
+                'sort_order' => 3,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 4,
+                'name' => 'Laboratory Equipment',
+                'slug' => 'laboratory-equipment',
+                'description' => 'IVD instruments, analyzers, and supporting laboratory equipment.',
+                'application' => 'Diagnostic labs, hospitals, medical colleges, research facilities',
+                'gst_rate' => 18.00,
+                'sort_order' => 4,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 5,
+                'name' => 'Consumables',
+                'slug' => 'consumables',
+                'description' => 'Single-use laboratory and medical consumables.',
+                'application' => 'Routine lab operations, sample handling, testing workflows',
+                'gst_rate' => 12.00,
+                'sort_order' => 5,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ]);
+
         DB::table('subcategories')->insert([
-            ['id' => 1, 'category_id' => 1, 'name' => 'Hematology', 'slug' => 'hematology', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 2, 'category_id' => 1, 'name' => 'Biochemistry', 'slug' => 'biochemistry', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 3, 'category_id' => 2, 'name' => 'Digital X-Ray', 'slug' => 'digital-xray', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 4, 'category_id' => 2, 'name' => 'Ultrasound', 'slug' => 'ultrasound', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 5, 'category_id' => 3, 'name' => 'ECG Systems', 'slug' => 'ecg-systems', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 6, 'category_id' => 4, 'name' => 'Gloves', 'slug' => 'gloves', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 7, 'category_id' => 4, 'name' => 'Syringes', 'slug' => 'syringes', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 1, 'category_id' => 1, 'name' => 'ELISA Kits', 'slug' => 'elisa-kits', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 2, 'category_id' => 1, 'name' => 'Rapid Test Kits', 'slug' => 'rapid-test-kits', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 3, 'category_id' => 1, 'name' => 'Serology Kits', 'slug' => 'serology-kits', 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 4, 'category_id' => 1, 'name' => 'Urine Testing Kits', 'slug' => 'urine-testing-kits', 'sort_order' => 4, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 5, 'category_id' => 2, 'name' => 'Biochemistry Reagents', 'slug' => 'biochemistry-reagents', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 6, 'category_id' => 2, 'name' => 'Clinical Chemistry Kits', 'slug' => 'clinical-chemistry-kits', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 7, 'category_id' => 2, 'name' => 'Hematology Reagents', 'slug' => 'hematology-reagents', 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 8, 'category_id' => 3, 'name' => 'RT-PCR Kits', 'slug' => 'rt-pcr-kits', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 9, 'category_id' => 3, 'name' => 'Molecular Products', 'slug' => 'molecular-products', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 10, 'category_id' => 3, 'name' => 'Microbiology', 'slug' => 'microbiology', 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 11, 'category_id' => 4, 'name' => 'IVD Instruments', 'slug' => 'ivd-instruments', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 12, 'category_id' => 4, 'name' => 'Analyzers', 'slug' => 'analyzers', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 13, 'category_id' => 4, 'name' => 'Laboratory Equipment', 'slug' => 'lab-equipment', 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 14, 'category_id' => 5, 'name' => 'Blood Collection Consumables', 'slug' => 'blood-collection-consumables', 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 15, 'category_id' => 5, 'name' => 'Plasticware', 'slug' => 'plasticware', 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 16, 'category_id' => 5, 'name' => 'General Lab Consumables', 'slug' => 'general-lab-consumables', 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
         ]);
 
         DB::table('product_specifications')->insert([

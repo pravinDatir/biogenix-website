@@ -195,9 +195,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * @return array<string, mixed>
-     */
     // This validates the product CRUD form payload.
     protected function validateCrudPayload(Request $request): array
     {
