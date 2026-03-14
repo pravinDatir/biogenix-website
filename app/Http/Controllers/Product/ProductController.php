@@ -47,7 +47,7 @@ class ProductController extends Controller
 
             // Step 3: load the catalog products and sidebar options for the current user.
             $user = $request->user();
-            $catalogData = $productService->catalogListingData($user, $catalogFilters);
+            $catalogData = $productService->getProductListToBeDisplayed($user, $catalogFilters);
 
             // Step 4: track user browsing activity.
             $productService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_browse', [

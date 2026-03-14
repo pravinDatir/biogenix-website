@@ -15,6 +15,7 @@ return new class extends Migration
                 $table->string('description')->nullable();
                 $table->string('application')->nullable();
                 $table->string('slug')->unique();
+                $table->boolean('IsDisplayedOnHomePage')->default(false);
                 $table->string('default_image_path')->nullable();
                 $table->decimal('gst_rate', 5, 2)->default(18.00);
                 $table->unsignedInteger('sort_order')->default(0);
