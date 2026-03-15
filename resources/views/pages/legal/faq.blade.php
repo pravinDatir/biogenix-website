@@ -30,14 +30,14 @@
                             <input id="faqSearch" type="text" class="{{ $inputClass }} pl-10" placeholder="e.g. shipping time...">
                         </div>
                     </div>
-                    <div>
-                        <label for="faqFilter" class="mb-2 block text-sm font-semibold text-slate-700">Category</label>
-                        <select id="faqFilter" class="{{ $inputClass }} appearance-none">
-                            <option value="all">All Categories</option>
-                            <option value="product">Product Info</option>
-                            <option value="ordering">Ordering Process</option>
-                            <option value="delivery">Delivery & Payment</option>
-                        </select>
+                    <div class="md:col-span-3 mt-2">
+                        <label class="mb-3 block text-sm font-semibold text-slate-700">Filter by Category</label>
+                        <div id="faqFilterTabs" class="flex flex-wrap gap-2">
+                            <button type="button" data-filter="all" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition">All Categories</button>
+                            <button type="button" data-filter="product" class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200">Product Info</button>
+                            <button type="button" data-filter="ordering" class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200">Ordering Process</button>
+                            <button type="button" data-filter="delivery" class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200">Delivery & Payment</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,28 +135,71 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('faqSearch');
-        const filterInput = document.getElementById('faqFilter');
+        const tabs = document.querySelectorAll('#faqFilterTabs button');
         const items = Array.from(document.querySelectorAll('[data-faq-item]'));
         const emptyState = document.getElementById('faqEmptyState');
+        let currentFilter = 'all';
+
+        // Store original text for highly stable search highlighting
+        items.forEach(item => {
+            const pTags = item.querySelectorAll('p');
+            pTags.forEach(p => {
+                if(!p.dataset.orig) p.dataset.orig = p.innerHTML;
+            });
+        });
 
         function normalize(value) {
             return (value || '').toLowerCase().trim();
         }
 
+        function highlightText(element, term) {
+            const origHTML = element.dataset.orig || element.innerHTML;
+            if (!term) {
+                element.innerHTML = origHTML;
+                return;
+            }
+            
+            // Simple robust regex highlight ignoring HTML tags inside text (mostly plain text in our FAQs anyway)
+            const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            
+            // Revert first to orig to avoid nested marks
+            element.innerHTML = origHTML;
+            
+            // Loop through child text nodes to replace text content safely
+            const walk = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+            let n;
+            const nodesToReplace = [];
+            while(n = walk.nextNode()) {
+                if(normalize(n.nodeValue).includes(term)) {
+                    nodesToReplace.push(n);
+                }
+            }
+            
+            nodesToReplace.forEach(node => {
+                const span = document.createElement('span');
+                span.innerHTML = node.nodeValue.replace(regex, '<mark class="bg-yellow-200 text-slate-900 rounded-sm px-1">$1</mark>');
+                node.parentNode.replaceChild(span, node);
+            });
+        }
+
         function applyFilter() {
             const searchTerm = normalize(searchInput ? searchInput.value : '');
-            const selectedCategory = filterInput ? filterInput.value : 'all';
             let visibleCount = 0;
 
             items.forEach(function (item) {
                 const category = item.getAttribute('data-faq-category') || '';
-                const text = normalize(item.textContent);
-                const categoryMatch = selectedCategory === 'all' || selectedCategory === category;
-                const searchMatch = !searchTerm || text.includes(searchTerm);
+                // Check original text for match instead of highlighted text
+                const textForSearch = Array.from(item.querySelectorAll('p')).map(p => p.dataset.orig).join(' ').toLowerCase();
+                const categoryMatch = currentFilter === 'all' || currentFilter === category;
+                const searchMatch = !searchTerm || textForSearch.includes(searchTerm);
                 const visible = categoryMatch && searchMatch;
 
                 item.classList.toggle('hidden', !visible);
-                if (visible) visibleCount++;
+                if (visible) {
+                    visibleCount++;
+                    // Apply highlight
+                    item.querySelectorAll('p').forEach(p => highlightText(p, searchTerm));
+                }
             });
 
             if (emptyState) {
@@ -165,7 +208,22 @@
         }
 
         if (searchInput) searchInput.addEventListener('input', applyFilter);
-        if (filterInput) filterInput.addEventListener('change', applyFilter);
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab styles
+                tabs.forEach(t => {
+                    t.classList.remove('bg-slate-900', 'text-white');
+                    t.classList.add('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200');
+                });
+                this.classList.remove('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200');
+                this.classList.add('bg-slate-900', 'text-white');
+                
+                currentFilter = this.getAttribute('data-filter');
+                applyFilter();
+            });
+        });
+        
         applyFilter();
     });
 </script>

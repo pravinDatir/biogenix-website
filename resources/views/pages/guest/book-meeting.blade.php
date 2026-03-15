@@ -91,19 +91,24 @@
                         <p class="mt-2 max-w-none text-base leading-8 text-slate-600">Select a preferred time slot, and we will confirm your meeting over email.</p>
                     </div>
 
-                    <form id="meetingForm" class="relative z-10 grid grid-cols-1 gap-5 md:grid-cols-2" novalidate>
-                        <div class="md:col-span-2">
-                            <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">1. Select Date & Time</p>
-                            <div id="meetingQuickDates" class="mb-3 flex flex-wrap gap-2"></div>
+                    <form id="meetingForm" class="relative z-10" novalidate>
+                        <!-- Step 1: Date & Time -->
+                        <div id="meetingStep1" class="transition-all duration-500">
+                            <div class="mb-4 flex items-center justify-between">
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Step 1 of 2: Select Date & Time</p>
+                                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700">1</span>
+                            </div>
+                            
+                            <div id="meetingQuickDates" class="mb-5 flex flex-wrap gap-2"></div>
 
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                                 <div>
                                     <label for="meetingDate" class="mb-1 block text-sm font-medium text-slate-700">Preferred Date</label>
                                     <input id="meetingDate" type="date" class="{{ $inputClass }}" required>
                                     <p data-meeting-error="meetingDate" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
                                 </div>
                                 <div>
-                                    <label for="meetingSlot" class="mb-1 block text-sm font-medium text-slate-700">Time Slot</label>
+                                    <label for="meetingSlot" class="mb-1 block text-sm font-medium text-slate-700 flex justify-between">Time Slot <span class="text-slate-400 font-normal shadow-sm px-2 bg-slate-100 rounded text-[10px] leading-relaxed">IST Zone</span></label>
                                     <select id="meetingSlot" class="{{ $selectClass }}" required>
                                         <option value="">Select a slot</option>
                                         <option>10:00 AM - 11:00 AM</option>
@@ -114,33 +119,46 @@
                                     <p data-meeting-error="meetingSlot" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
                                 </div>
                             </div>
+                            
+                            <div class="mt-8 flex justify-end">
+                                <button type="button" id="nextStepBtn" class="{{ $primaryButtonClass }} w-full sm:w-auto">Continue to Details <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg></button>
+                            </div>
                         </div>
 
-                        <div class="md:col-span-2 mt-2">
-                            <p class="mb-3 border-t border-slate-100 pt-5 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">2. Your Details</p>
-                        </div>
+                        <!-- Step 2: Personal Details -->
+                        <div id="meetingStep2" class="hidden transition-all duration-500 translate-x-4 opacity-0">
+                            <div class="mb-6 flex items-center justify-between border-b border-slate-100 pb-4">
+                                <div>
+                                    <button type="button" id="prevStepBtn" class="mb-2 flex items-center text-xs font-semibold text-slate-500 hover:text-primary-600 transition-colors"><svg class="mr-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg> Back to Schedule</button>
+                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Step 2 of 2: Your Details</p>
+                                </div>
+                                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-xs font-bold text-white shadow-md">2</span>
+                            </div>
 
-                        <div>
-                            <label for="meetingName" class="mb-1 block text-sm font-medium text-slate-700">Full Name</label>
-                            <input id="meetingName" type="text" class="{{ $inputClass }}" placeholder="e.g. Dr. Jane Doe" required>
-                            <p data-meeting-error="meetingName" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
-                        </div>
+                            <div class="grid grid-cols-1 gap-5">
+                                <div>
+                                    <label for="meetingName" class="mb-1 block text-sm font-medium text-slate-700">Full Name</label>
+                                    <input id="meetingName" type="text" class="{{ $inputClass }}" placeholder="e.g. Dr. Jane Doe" required>
+                                    <p data-meeting-error="meetingName" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
+                                </div>
 
-                        <div>
-                            <label for="meetingEmail" class="mb-1 block text-sm font-medium text-slate-700">Work Email</label>
-                            <input id="meetingEmail" type="email" class="{{ $inputClass }}" placeholder="you@hospital.com" required>
-                            <p data-meeting-error="meetingEmail" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
-                        </div>
+                                <div>
+                                    <label for="meetingEmail" class="mb-1 block text-sm font-medium text-slate-700">Work Email</label>
+                                    <input id="meetingEmail" type="email" class="{{ $inputClass }}" placeholder="you@hospital.com" required>
+                                    <p data-meeting-error="meetingEmail" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
+                                </div>
 
-                        <div class="md:col-span-2">
-                            <label for="meetingOrg" class="mb-1 block text-sm font-medium text-slate-700">Organization / Hospital Name</label>
-                            <input id="meetingOrg" type="text" class="{{ $inputClass }}" placeholder="Name of your institution" required>
-                            <p data-meeting-error="meetingOrg" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
-                        </div>
+                                <div>
+                                    <label for="meetingOrg" class="mb-1 block text-sm font-medium text-slate-700">Organization / Hospital Name</label>
+                                    <input id="meetingOrg" type="text" class="{{ $inputClass }}" placeholder="Name of your institution" required>
+                                    <p data-meeting-error="meetingOrg" class="mt-2 hidden text-xs font-medium text-rose-600"></p>
+                                </div>
+                            </div>
 
-                        <div class="md:col-span-2 mt-4 flex flex-wrap items-center gap-3">
-                            <button type="submit" id="meetingSubmitBtn" class="{{ $primaryButtonClass }} w-full md:w-auto">Confirm Meeting Request</button>
-                            <p id="meetingStatus" class="mt-2 min-h-[1.25rem] w-full text-sm font-medium text-slate-600 md:mt-0 md:w-auto"></p>
+                            <div class="mt-8 flex flex-wrap items-center gap-3">
+                                <button type="submit" id="meetingSubmitBtn" class="{{ $primaryButtonClass }} w-full md:w-auto">Confirm Meeting Request</button>
+                                <p id="meetingStatus" class="mt-2 min-h-[1.25rem] w-full text-sm font-medium text-slate-600 md:mt-0 md:w-auto"></p>
+                            </div>
                         </div>
                     </form>
 
@@ -232,9 +250,64 @@
         const quickDatesWrap = document.getElementById('meetingQuickDates');
         const meetingDateInput = document.getElementById('meetingDate');
         const status = document.getElementById('meetingStatus');
+        
+        // Step logic
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        const prevStepBtn = document.getElementById('prevStepBtn');
+        const step1 = document.getElementById('meetingStep1');
+        const step2 = document.getElementById('meetingStep2');
+        
         const fieldIds = ['meetingDate', 'meetingSlot', 'meetingName', 'meetingEmail', 'meetingOrg'];
+        const step1Fields = ['meetingDate', 'meetingSlot'];
 
         if (!form || !status) return;
+
+        function validateStep1() {
+            let valid = true;
+            step1Fields.forEach(function (fieldId) {
+                const input = document.getElementById(fieldId);
+                if (!input) return;
+                const value = input.value.trim();
+                resetFieldState(fieldId);
+
+                if (!value) {
+                    setFieldError(fieldId, 'This field is required');
+                    valid = false;
+                }
+            });
+            return valid;
+        }
+
+        if (nextStepBtn) {
+            nextStepBtn.addEventListener('click', function() {
+                if (validateStep1()) {
+                    step1.classList.add('opacity-0', '-translate-x-4');
+                    setTimeout(() => {
+                        step1.classList.add('hidden');
+                        step2.classList.remove('hidden');
+                        // Small reflow delay
+                        setTimeout(() => {
+                            step2.classList.remove('opacity-0', 'translate-x-4');
+                            document.getElementById('meetingName').focus();
+                        }, 50);
+                    }, 500);
+                }
+            });
+        }
+
+        if (prevStepBtn) {
+            prevStepBtn.addEventListener('click', function() {
+                step2.classList.add('opacity-0', 'translate-x-4');
+                setTimeout(() => {
+                    step2.classList.add('hidden');
+                    step1.classList.remove('hidden');
+                    // Small reflow delay
+                    setTimeout(() => {
+                        step1.classList.remove('opacity-0', '-translate-x-4');
+                    }, 50);
+                }, 500);
+            });
+        }
 
         function formatDateForInput(date) {
             const year = date.getFullYear();
@@ -370,6 +443,8 @@
             bookAnotherBtn.addEventListener('click', function () {
                 form.reset();
                 form.classList.remove('hidden');
+                step2.classList.add('hidden', 'opacity-0', 'translate-x-4');
+                step1.classList.remove('hidden', 'opacity-0', '-translate-x-4');
                 fieldIds.forEach(resetFieldState);
                 status.textContent = '';
                 status.classList.remove('text-emerald-600', 'text-rose-600');

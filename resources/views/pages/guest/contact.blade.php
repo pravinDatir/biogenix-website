@@ -2,10 +2,12 @@
     $contactCardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl animate-rise';
     $panelClass = 'relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm animate-rise md:p-8';
     $accentPanelClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm animate-rise md:p-8';
-    $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
-    $textareaClass = 'block min-h-[9rem] w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
+    $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
+    $textareaClass = 'block min-h-[9rem] w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
     $primaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
+    $labelClass = 'absolute left-4 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-sm text-slate-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-primary-600 cursor-text';
 @endphp
+
 
 <div class="bg-slate-50">
     <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
@@ -60,13 +62,10 @@
             <div class="flex flex-col justify-start space-y-6 lg:col-span-5">
                 <article class="{{ $panelClass }}">
                     <div class="relative h-64 w-full overflow-hidden rounded-2xl bg-slate-200">
-                        <button id="contactMapLoadBtn" type="button" class="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-slate-900/55 text-white backdrop-blur-sm transition hover:bg-slate-900/65">
-                            <span class="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/30 bg-white/10 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-white/20">Load Map</span>
-                        </button>
                         <iframe
                             id="contactMap"
-                            class="h-full w-full"
-                            data-src="https://www.google.com/maps?q=Lucknow%2C%20Uttar%20Pradesh&output=embed"
+                            class="h-full w-full border-0"
+                            src="https://www.google.com/maps?q=Lucknow%2C%20Uttar%20Pradesh&output=embed"
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
                             title="Biogenix Location Map"
@@ -114,38 +113,42 @@
                 </div>
 
                 <form id="contactForm" class="relative z-10 grid grid-cols-1 gap-6 md:grid-cols-2" novalidate>
-                    <div class="space-y-2">
-                        <label for="name" class="block text-sm font-semibold text-slate-700">Full Name</label>
-                        <input type="text" id="name" class="{{ $inputClass }}" placeholder="e.g. Jane Doe" required>
+                    <div class="relative">
+                        <input type="text" id="name" class="{{ $inputClass }} peer pt-6 pb-2" placeholder=" " required>
+                        <label for="name" class="{{ $labelClass }}">Full Name</label>
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="email" class="block text-sm font-semibold text-slate-700">Work Email</label>
-                        <input type="email" id="email" class="{{ $inputClass }}" placeholder="jane@hospital.com" required>
+                    <div class="relative">
+                        <input type="email" id="email" class="{{ $inputClass }} peer pt-6 pb-2" placeholder=" " required>
+                        <label for="email" class="{{ $labelClass }}">Work Email</label>
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="phone" class="block text-sm font-semibold text-slate-700">Phone Mobile</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 font-medium text-slate-500">+91</span>
-                            <input type="text" id="phone" class="{{ $inputClass }} pl-12" placeholder="10-digit number" maxlength="10" required>
+                    <div class="relative">
+                        <span class="absolute left-3 top-4 flex items-center font-medium text-slate-500">+91</span>
+                        <input type="text" id="phone" class="{{ $inputClass }} peer pl-12 pt-6 pb-2" placeholder=" " maxlength="10" required>
+                        <label for="phone" class="{{ $labelClass }} left-12">Phone Mobile</label>
+                    </div>
+
+                    <div class="relative">
+                        <select id="inquiryType" class="{{ $inputClass }} appearance-none peer pt-6 pb-2" required>
+                            <option value="" disabled selected hidden></option>
+                            <option value="Product Information">Product Information</option>
+                            <option value="Generate Quotation">Generate Quotation</option>
+                            <option value="Partnership">Partnership</option>
+                            <option value="Technical Support">Technical Support</option>
+                        </select>
+                        <label for="inquiryType" class="{{ $labelClass }} peer-valid:-translate-y-3 peer-valid:scale-75">Inquiry Type</label>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="inquiryType" class="block text-sm font-semibold text-slate-700">Inquiry Type</label>
-                        <select id="inquiryType" class="{{ $inputClass }} appearance-none" required>
-                            <option value="">Select inquiry category</option>
-                            <option>Product Information</option>
-                            <option>Generate Quotation</option>
-                            <option>Partnership</option>
-                            <option>Technical Support</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-2 md:col-span-2">
-                        <label for="message" class="block text-sm font-semibold text-slate-700">Message</label>
-                        <textarea id="message" rows="5" class="{{ $textareaClass }}" placeholder="How can we help you today?" required></textarea>
+                    <div class="relative md:col-span-2">
+                        <textarea id="message" rows="5" class="{{ $textareaClass }} peer pt-6 pb-2" placeholder=" " maxlength="500" required></textarea>
+                        <label for="message" class="{{ $labelClass }}">Message</label>
+                        <div class="absolute bottom-3 right-4 text-xs font-semibold text-slate-400">
+                            <span id="charCount">0</span>/500
+                        </div>
                     </div>
 
                     <div class="mt-4 flex flex-col items-center gap-4 md:col-span-2 sm:flex-row">
@@ -229,6 +232,20 @@
                     mapFrame.setAttribute('src', mapFrame.dataset.src || '');
                 }
                 mapBtn.classList.add('hidden');
+            });
+        }
+
+        const messageArea = document.getElementById('message');
+        const charCount = document.getElementById('charCount');
+
+        if (messageArea && charCount) {
+            messageArea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+                if (this.value.length >= 500) {
+                    charCount.classList.add('text-rose-600');
+                } else {
+                    charCount.classList.remove('text-rose-600');
+                }
             });
         }
 
