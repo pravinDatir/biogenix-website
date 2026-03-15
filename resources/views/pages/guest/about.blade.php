@@ -114,7 +114,7 @@
                         @endif
                         
                         <div class="w-full md:w-[45%] {{ $idx % 2 == 0 ? 'md:text-right md:pr-12' : 'md:order-3 md:pl-12' }}">
-                            <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
+                            <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-xl transition-all duration-700 opacity-0 translate-y-8 scroll-reveal-item hover:-translate-y-1 hover:shadow-2xl">
                                 <p class="text-3xl font-bold tracking-tight {{ $milestone['year_class'] }}">{{ $milestone['year'] }}</p>
                                 <h3 class="mt-2 text-xl font-bold text-slate-900">{{ $milestone['title'] }}</h3>
                                 <p class="mt-3 text-base text-slate-600">{{ $milestone['desc'] }}</p>
@@ -122,7 +122,7 @@
                         </div>
                         
                         <!-- Center Node -->
-                        <div class="absolute left-1/2 z-10 hidden h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white text-white shadow-xl transform transition-transform group-hover:scale-125 md:flex {{ $milestone['node_class'] }}">
+                        <div class="absolute left-1/2 z-10 hidden h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white text-white shadow-xl transform transition-all duration-700 opacity-0 scale-50 scroll-reveal-node group-hover:scale-125 md:flex {{ $milestone['node_class'] }}">
                              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                         </div>
                         
@@ -198,8 +198,8 @@
                 <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-lg transition-all hover:-translate-y-2 hover:border-primary-100 hover:shadow-2xl animate-rise">
                         <div class="absolute inset-0 -z-0 translate-y-full bg-primary-50 transition-transform duration-300 group-hover:translate-y-0"></div>
                         <div class="relative z-10 flex flex-col items-center">
-                            <div class="mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-primary-600 text-3xl font-bold text-white shadow-lg shadow-primary-600/30">
-                                {{ strtoupper(substr($leader['name'], 0, 1)) }}
+                            <div class="mb-5 h-24 w-24 overflow-hidden rounded-full shadow-lg shadow-primary-600/30 ring-4 ring-white">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($leader['name']) }}&background=ea580c&color=fff&size=200&bold=true" alt="{{ $leader['name'] }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
                             </div>
                             <h3 class="text-2xl font-bold text-slate-900">{{ $leader['name'] }}</h3>
                             <p class="mt-2 inline-block rounded-full bg-primary-100 px-4 py-1 text-sm font-bold text-primary-700">{{ $leader['role'] }}</p>
@@ -309,3 +309,27 @@
         </div>
     </section>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('scroll-reveal-item')) {
+                        entry.target.classList.remove('opacity-0', 'translate-y-8');
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                    }
+                    if (entry.target.classList.contains('scroll-reveal-node')) {
+                        entry.target.classList.remove('opacity-0', 'scale-50');
+                        entry.target.classList.add('opacity-100', 'scale-100');
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.scroll-reveal-item, .scroll-reveal-node').forEach(el => observer.observe(el));
+    });
+</script>
+@endpush

@@ -196,12 +196,17 @@
                 </x-ui.surface-card>
             </div>
 
-            <div class="lg:col-span-4">
+            <div class="lg:col-span-4 lg:sticky lg:top-8 lg:self-start">
                 <x-ui.surface-card class="{{ $sidebarCardClass }}">
                     <h3 class="text-lg font-semibold text-slate-900">Preview Quote</h3>
                     <p class="mt-1 text-sm text-slate-600">Review recipient and estimated MRP totals before generating PDF.</p>
                     <div id="quote-summary-body" class="mt-3 text-sm text-slate-600">
-                        Select products and quantities to preview estimated MRP totals.
+                        <div class="py-4 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50">
+                            <svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            <p class="text-xs text-slate-500">Select products and quantities<br>to preview estimated MRP totals.</p>
+                        </div>
                     </div>
                     @guest
                         <div class="mt-4 border-t border-slate-200 pt-4">
@@ -303,15 +308,19 @@
                 itemCount++;
             });
 
+            const emptyStateHtml = '<div class="py-4 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50"><svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><p class="text-xs text-slate-500">Select products and quantities<br>to preview estimated MRP totals.</p></div>';
+
             if (!itemCount) {
-                summaryBody.textContent = 'Select products and quantities to preview estimated MRP totals.';
+                summaryBody.innerHTML = emptyStateHtml;
                 return;
             }
 
             summaryBody.innerHTML =
-                '<p><strong>Items Selected:</strong> ' + itemCount + '</p>' +
-                '<p><strong>Estimated MRP Total:</strong> ' + formatMoney(currency, total) + '</p>' +
-                '<p class="mt-2 text-xs text-slate-500">Final calculations are validated on the server during quotation generation.</p>';
+                '<div class="animate-pulse-quick rounded-xl border border-primary-100 bg-primary-50 p-4">' +
+                '<div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-600">Items Selected:</span><span class="font-bold text-slate-900">' + itemCount + '</span></div>' +
+                '<div class="flex items-center justify-between"><span class="text-sm font-semibold text-slate-800">Estimated MRP Total:</span><span class="text-lg font-bold text-primary-700">' + formatMoney(currency, total) + '</span></div>' +
+                '</div>' +
+                '<p class="mt-3 text-xs text-slate-500">Final calculations are validated on the server during quotation generation.</p>';
         }
 
         function serializeDraft() {
@@ -486,7 +495,7 @@
         if (clearDraftBtn) {
             clearDraftBtn.addEventListener('click', function () {
                 localStorage.removeItem(draftKey);
-                summaryBody.innerHTML = 'Select products and quantities to preview estimated MRP totals.';
+                summaryBody.innerHTML = '<div class="py-4 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50"><svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><p class="text-xs text-slate-500">Select products and quantities<br>to preview estimated MRP totals.</p></div>';
                 if (quoteDraftStatus) {
                     quoteDraftStatus.textContent = 'Draft cleared.';
                     quoteDraftStatus.classList.remove('text-red-600');

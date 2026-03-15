@@ -12,6 +12,7 @@
         ['label' => 'Home', 'route' => 'home', 'href' => route('home')],
         ['label' => 'Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
         ['label' => 'Generate Quote', 'route' => 'proforma.create', 'href' => route('proforma.create')],
+        ['label' => 'PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
         ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
         ['label' => 'FAQ', 'route' => 'faq', 'href' => route('faq')],
         ['label' => 'Contact Us', 'route' => 'contact', 'href' => route('contact')],
