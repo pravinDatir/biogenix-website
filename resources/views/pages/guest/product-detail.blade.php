@@ -821,10 +821,12 @@
                             syncLocalCart(target, quantity);
                             showToast({
                                 title: 'Added to cart',
-                                message: productName + ' was added to your cart. Login will be required only during checkout.',
+                                message: productName + ' was added to your cart.',
                                 variant: 'info',
-                                primary: { label: 'View Cart', href: cartPageUrl },
                             });
+                            if (typeof window.openCartSidebar === 'function') {
+                                window.openCartSidebar();
+                            }
                             return;
                         }
 
@@ -853,8 +855,10 @@
                                 title: 'Added to cart',
                                 message: productName + ' was added to your cart.',
                                 variant: 'info',
-                                primary: { label: 'View Cart', href: cartPageUrl },
                             });
+                            if (typeof window.openCartSidebar === 'function') {
+                                window.openCartSidebar();
+                            }
                         } catch (error) {
                             const isAuthError = error && error.type === 'auth';
                             showToast({

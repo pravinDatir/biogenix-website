@@ -19,7 +19,7 @@
     ];
     $mobileQuickActions = [
         ['label' => 'My Profile', 'href' => $profileHref, 'icon' => 'profile'],
-        ['label' => 'View Cart', 'href' => route('cart.page'), 'icon' => 'cart'],
+        ['label' => 'View Cart', 'href' => '#', 'icon' => 'cart', 'onclick' => 'openCartSidebar'],
         ['label' => 'Generate Quote', 'href' => route('proforma.create'), 'icon' => 'quote'],
         ['label' => 'Support', 'href' => route('contact'), 'icon' => 'support'],
     ];
@@ -74,9 +74,10 @@
                 <a href="{{ route('signup') }}" id="signupBtn" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">Sign Up</a>
             @endauth
 
-            <a
-                href="{{ route('cart.page') }}"
-                class="inline-flex items-center gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-slate-900 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20"
+            <button
+                type="button"
+                onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
+                class="inline-flex items-center gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer"
                 aria-label="View cart"
             >
                 <span class="relative inline-flex h-7 w-7 items-center justify-center text-slate-900">
@@ -93,7 +94,7 @@
                     >0</span>
                 </span>
                 <span class="text-sm font-bold leading-none text-slate-900">Cart</span>
-            </a>
+            </button>
 
             {{-- Profile icon --}}
             <a
@@ -211,7 +212,11 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     @foreach ($mobileQuickActions as $action)
-                        <a href="{{ $action['href'] }}" class="rounded-[22px] border border-slate-200 bg-slate-50 p-3 text-left no-underline transition hover:border-primary-200 hover:bg-primary-50 hover:text-slate-900">
+                        @if (isset($action['onclick']))
+                            <button type="button" onclick="if(typeof openCartSidebar==='function'){openCartSidebar();}var cm=document.getElementById('mobileMenuClose');if(cm){cm.click();}" class="rounded-[22px] border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-primary-200 hover:bg-primary-50 hover:text-slate-900 cursor-pointer">
+                        @else
+                            <a href="{{ $action['href'] }}" class="rounded-[22px] border border-slate-200 bg-slate-50 p-3 text-left no-underline transition hover:border-primary-200 hover:bg-primary-50 hover:text-slate-900">
+                        @endif
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary-700 shadow-sm">
                                 @if ($action['icon'] === 'profile')
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
@@ -241,7 +246,11 @@
                                 @endif
                             </span>
                             <span class="mt-3 block text-sm font-semibold text-slate-900">{{ $action['label'] }}</span>
-                        </a>
+                        @if (isset($action['onclick']))
+                            </button>
+                        @else
+                            </a>
+                        @endif
                     @endforeach
                 </div>
             </section>

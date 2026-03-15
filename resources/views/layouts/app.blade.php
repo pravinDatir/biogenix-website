@@ -22,8 +22,9 @@
 {{-- Toast Notification Container --}}
 <div id="toastContainer" class="toast-container"></div>
 
-<div class="flex min-h-screen flex-col">
+<div id="pageWrapper" class="flex min-h-screen flex-col" style="transition: padding-right 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
     @include('partials.header')
+    @include('partials.cart-sidebar')
 
     <main class="flex-1">
         @unless ($suppressShellAlerts)
