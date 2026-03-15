@@ -20,6 +20,9 @@ class User extends Authenticatable
         'email',
         'user_type',
         'b2b_type',
+        'designation',
+        'phone',
+        'alt_phone',
         'company_id',
         'status',
         'approved_at',
@@ -103,6 +106,12 @@ class User extends Authenticatable
     public function supportTickets(): HasMany
     {
         return $this->hasMany(SupportTicket::class, 'owner_user_id');
+    }
+
+    // This loads saved addresses linked to the user.
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(UserAddress::class, 'user_id');
     }
 
     // This checks whether the user is a B2C account.

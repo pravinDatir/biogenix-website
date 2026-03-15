@@ -1,18 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-  let currentStep = 1;
-
   const nextBtn = document.getElementById("nextBtn");
   const backBtn = document.getElementById("backBtn");
   const form = document.getElementById("signupForm");
+  const stepNodes = Array.from(document.querySelectorAll(".step"));
+  const formSteps = Array.from(document.querySelectorAll(".form-step"));
+  const stateSelect = document.getElementById("state");
+  const progressFill = document.getElementById("signupProgressFill");
+  const progressBar = document.getElementById("signupProgressBar");
+  const currentStepLabel = document.getElementById("signupCurrentStep");
+  const currentStepName = document.getElementById("signupCurrentLabel");
+  const stepLabels = ["Personal Details", "Address"];
+
+  if (!form || !nextBtn || !backBtn || !stepNodes.length || !formSteps.length) {
+    return;
+  }
 
   setupPasswordToggle("signupPassword", "toggleSignupPassword");
   setupPasswordToggle("confirmPassword", "toggleConfirmPassword");
 
-  /* ================= STEP CONTROL ================= */
+  nextBtn.addEventListener("click", (event) => {
+    event.preventDefault();
 
-  nextBtn.addEventListener("click", () => {
-    if (!validateStep1()) return;
+    if (!validateStep1()) {
+      return;
+    }
+
     toggleStep(2);
   });
 
@@ -20,159 +32,110 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleStep(1);
   });
 
-  function toggleStep(step) {
-    currentStep = step;
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-    document.querySelectorAll(".form-step").forEach(s =>
-      s.classList.remove("active")
+    if (!validateStep2()) {
+      return;
+    }
+
+    setHiddenField(
+      form,
+      "name",
+      `${document.getElementById("firstName").value} ${document.getElementById("lastName").value}`.trim()
     );
-
-    document.querySelector(`[data-step="${step}"]`).classList.add("active");
-
-    document.querySelectorAll(".step").forEach((s, i) =>
-      s.classList.toggle("active", i + 1 === step)
-    );
-  }
-
-  /* ================= ACCOUNT TYPE ================= */
-
-  document.querySelectorAll('input[name="accountType"]').forEach(radio => {
-    radio.addEventListener("change", handleAccountTypeChange);
-  });
-
-  function handleAccountTypeChange() {
-    const selected = document.querySelector('input[name="accountType"]:checked').value;
-    const businessFields = document.getElementById("businessFields");
-    const addressLabel = document.getElementById("addressLabel");
-
-    if (selected === "business") {
-      businessFields.classList.remove("hidden");
-      addressLabel.textContent = "Office / Building";
-    } else {
-      businessFields.classList.add("hidden");
-      addressLabel.textContent = "Flat / House / Building";
-    }
-  }
-
-  handleAccountTypeChange();
-
-  /* ================= STEP 1 VALIDATION ================= */
-
-  function validateStep1() {
-    const selected = document.querySelector('input[name="accountType"]:checked').value;
-
-    let fields = [
-      { id: "firstName", rules: ["required"] },
-      { id: "lastName", rules: ["required"] },
-      { id: "signupEmail", rules: ["required", "email"] },
-      { id: "signupPassword", rules: ["required"] },
-      { id: "confirmPassword", rules: ["required"] },
-      { id: "phone", rules: ["required", "phone"] }
-    ];
-
-    if (selected === "business") {
-      fields.push(
-        { id: "businessType", rules: ["required"] },
-        { id: "companyName", rules: ["required"] }
-      );
-    }
-
-    let valid = validateFields(fields);
- const pass = document.getElementById("signupPassword").value.trim();
-  const confirm = document.getElementById("confirmPassword").value.trim();
-  
-     // ONLY check match if both fields are filled
-  if (pass !== "" && confirm !== "") {
-    if (!validatePasswordMatch("signupPassword", "confirmPassword")) {
-      valid = false;
-    }
-  }
-
-    return valid;
-  }
-
-  /* ================= FINAL SUBMIT ================= */
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const fields = [
-      { id: "addressLine1", rules: ["required"] },
-      { id: "addressLine2", rules: ["required"] },
-      { id: "landmark", rules: ["required"] },
-      { id: "pincode", rules: ["required", "pincode"] },
-      { id: "city", rules: ["required"] },
-      { id: "state", rules: ["required"] },
-    ];
-
-    if (!validateFields(fields)) return;
-
-    const accountType = document.querySelector('input[name="accountType"]:checked').value;
-    const businessTypeRaw = document.getElementById("businessType").value.trim().toLowerCase();
-    const businessTypeMap = {
-      dealer: "dealer",
-      distributor: "distributor",
-      labs: "lab",
-      lab: "lab",
-      hospital: "hospital",
-    };
-
-    setHiddenField(form, "name", `${document.getElementById("firstName").value} ${document.getElementById("lastName").value}`.trim());
-    setHiddenField(form, "user_type", accountType === "business" ? "b2b" : "b2c");
-    setHiddenField(form, "company_name", document.getElementById("companyName").value.trim());
-    setHiddenField(form, "b2b_type", businessTypeMap[businessTypeRaw] || "");
 
     form.submit();
   });
 
-  /* ================= COLLECT DATA ================= */
+  function toggleStep(step) {
+    formSteps.forEach((node) => {
+      node.classList.toggle("active", Number(node.dataset.step) === step);
+    });
 
-  function collectSignupData() {
-    const accountType = document.querySelector('input[name="accountType"]:checked').value;
+    stepNodes.forEach((node, index) => {
+      node.classList.toggle("active", index + 1 === step);
+      node.classList.toggle("is-complete", index + 1 < step);
+    });
 
-    return {
-      accountType: accountType,
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: signupEmail.value,
-      phone: phone.value,
-       businessType: accountType === "business"
-      ? businessType.value
-      : null,
-     companyName: accountType === "business"
-      ? companyName.value
-      : null,
+    if (progressFill) {
+      progressFill.style.width = `${(step / formSteps.length) * 100}%`;
+    }
 
-      address: {
-        line1: addressLine1.value,
-        line2: addressLine2.value,
-        landmark: landmark.value,
-        pincode: pincode.value,
-        city: city.value,
-        state: state.value
-      }
-    };
+    if (progressBar) {
+      progressBar.setAttribute("aria-valuenow", String(step));
+    }
+
+    if (currentStepLabel) {
+      currentStepLabel.textContent = String(step);
+    }
+
+    if (currentStepName) {
+      currentStepName.textContent = stepLabels[step - 1] || "";
+    }
   }
 
-  /* ================= STATES ================= */
+  function validateStep1() {
+    const fields = [
+      { id: "firstName", rules: ["required"] },
+      { id: "lastName", rules: ["required"] },
+      { id: "signupEmail", rules: ["required", "email"] },
+      { id: "phone", rules: ["required", "phone"] },
+      { id: "signupPassword", rules: ["required"] },
+      { id: "confirmPassword", rules: ["required"] },
+    ];
 
-  const states = [
-  "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa",
-  "Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala",
-  "Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland",
-  "Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura",
-  "Uttar Pradesh","Uttarakhand","West Bengal",
-  "Andaman and Nicobar Islands","Chandigarh","Dadra and Nagar Haveli and Daman and Diu",
-  "Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry"
-];
+    let valid = validateFields(fields);
+    const password = document.getElementById("signupPassword").value.trim();
+    const confirmPassword = document.getElementById("confirmPassword").value.trim();
 
-  const stateSelect = document.getElementById("state");
+    if (password !== "" && confirmPassword !== "" && !validatePasswordMatch("signupPassword", "confirmPassword")) {
+      valid = false;
+    }
 
-  states.forEach(s => {
-    const opt = document.createElement("option");
-    opt.value = opt.textContent = s;
-    stateSelect.appendChild(opt);
-  });
+    return valid;
+  }
+
+  function validateStep2() {
+    return validateFields([
+      { id: "addressLine1", rules: ["required"] },
+      { id: "pincode", rules: ["required", "pincode"] },
+      { id: "city", rules: ["required"] },
+      { id: "state", rules: ["required"] },
+    ]);
+  }
+
+  populateStates();
+  toggleStep(1);
+
+  function populateStates() {
+    if (!stateSelect) {
+      return;
+    }
+
+    const states = [
+      "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa",
+      "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
+      "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland",
+      "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+      "Uttar Pradesh", "Uttarakhand", "West Bengal",
+      "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+      "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry",
+    ];
+    const selectedState = stateSelect.dataset.oldValue || "";
+
+    states.forEach((state) => {
+      const option = document.createElement("option");
+      option.value = state;
+      option.textContent = state;
+
+      if (selectedState === state) {
+        option.selected = true;
+      }
+
+      stateSelect.appendChild(option);
+    });
+  }
 
   function setHiddenField(formEl, name, value) {
     let hiddenField = formEl.querySelector(`input[name="${name}"]`);
@@ -186,5 +149,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     hiddenField.value = value;
   }
-
 });

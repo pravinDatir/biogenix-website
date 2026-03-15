@@ -1,199 +1,196 @@
-@php
-    $portal = 'b2c';
-    $selectedCustomerType = 'retail';
-    $customerTypeOptions = ['retail' => 'Retail'];
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/pages/signup.css') }}?v=20260315-3">
+<style>
+    .signup-page .password-wrapper {
+        position: relative;
+        display: block;
+    }
 
-    $view = [
-        'leftBadge' => 'JOIN BIOGENIX RETAIL',
-        'leftTitle' => 'Create your personal buying account.',
-        'leftCopy' => 'Register as a retail customer to access MRP-oriented catalog visibility, self quotations, and personal order workflows.',
-        'infoBadge' => 'B2C Signup',
-        'infoTitle' => 'Retail Customer Onboarding',
-        'infoCopy' => 'Create your personal healthcare buying account with MRP-oriented catalog and self-service order workflows.',
-        'infoBadgeClass' => 'border border-primary-400/30 bg-primary-500/20 text-primary-50',
-        'infoDotClass' => 'bg-primary-300',
-        'infoItems' => [
-            'Retail access and self profile scope',
-            'Own quotations, own orders, own support',
-        ],
-        'notice' => null,
-        'bgGradient' => 'from-primary-950 via-slate-900 to-slate-950',
-    ];
+    .signup-page .password-wrapper input {
+        padding-right: 40px !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 12px center !important;
+        background-size: 16px 16px !important;
+    }
 
-    $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
-    $primaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
-    $secondaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
-    $primaryLinkClass = 'text-sm font-semibold text-primary-700 transition hover:text-primary-800';
-@endphp
+    .signup-page .password-wrapper input.is-password-visible {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l18 18'/%3E%3Cpath d='M10.7 5.1A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a18.8 18.8 0 0 1-3.2 3.9'/%3E%3Cpath d='M6.6 6.6C4.2 8.3 2 12 2 12s3.6 7 10 7c1.9 0 3.6-.5 5.1-1.3'/%3E%3Cpath d='M9.9 9.9a3 3 0 0 0 4.2 4.2'/%3E%3C/svg%3E") !important;
+    }
 
-<div class="flex items-center justify-center">
-    <section class="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-        <div class="grid grid-cols-1 xl:grid-cols-[0.9fr_1.1fr]">
-            <aside class="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br {{ $view['bgGradient'] }} p-10 text-white xl:flex lg:p-14">
-                <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/5 blur-3xl"></div>
-                <div class="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-black/20 blur-3xl"></div>
+    .signup-page .password-wrapper .toggle-password {
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 40px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        appearance: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        opacity: 0 !important;
+        cursor: pointer !important;
+    }
+</style>
+@endpush
 
-                <div class="relative z-10">
-                    <span class="mb-6 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-bold tracking-wider text-white backdrop-blur-md">
-                        {{ $view['leftBadge'] }}
-                    </span>
+<div class="signup-page">
+    <div class="signup-orb signup-orb--left"></div>
+    <div class="signup-orb signup-orb--right"></div>
 
-                    <h1 class="max-w-xl text-4xl font-bold tracking-tight text-white md:text-5xl">{{ $view['leftTitle'] }}</h1>
-                    <p class="mt-5 max-w-lg text-base leading-8 text-slate-300">{{ $view['leftCopy'] }}</p>
+    <section class="signup-shell">
+        <div class="signup-card">
+            <form id="signupForm" method="POST" action="{{ route('register') }}" class="signup-form" novalidate>
+                @csrf
+                <input type="hidden" name="user_type" value="b2c">
+                <input type="hidden" name="country" value="India">
+
+                <div class="signup-card-head">
+                    <h1 class="signup-title">Sign Up</h1>
+                    <div class="mt-2 text-center">
+                        <p class="text-sm text-slate-600">
+                            Are you a business owner or a healthcare professional?</br>
+                            <a href="{{ route('b2b.signup') }}" class="font-semibold text-primary-700 hover:text-primary-600">
+                                Register for a B2B Account
+                            </a>
+                        </p>
+                    </div>
                 </div>
 
-                <div class="relative z-10 mb-auto mt-12 rounded-3xl border border-primary-400/30 bg-primary-950/40 p-8 shadow-2xl backdrop-blur-md">
-                    <span class="mb-4 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide {{ $view['infoBadgeClass'] }}">
-                        {{ $view['infoBadge'] }}
-                    </span>
-
-                    <h2 class="mb-3 text-2xl font-bold text-white">{{ $view['infoTitle'] }}</h2>
-                    <p class="mb-6 text-sm leading-relaxed text-slate-300">{{ $view['infoCopy'] }}</p>
-
-                    <ul class="space-y-3 text-sm text-slate-200">
-                        @foreach ($view['infoItems'] as $item)
-                            <li class="flex items-start">
-                                <span class="mr-3 mt-1.5 h-2 w-2 shrink-0 rounded-full {{ $view['infoDotClass'] }}"></span>
-                                <span class="leading-relaxed">{{ $item }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-
-                    @if ($view['notice'])
-                        <div class="mt-6 flex items-start rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm font-medium text-amber-200 backdrop-blur-sm">
-                            <svg class="mr-2 h-5 w-5 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                            {{ $view['notice'] }}
+                <div class="signup-progress" aria-label="Signup progress">
+                    <div class="signup-progress-meta">
+                        <span class="signup-progress-caption">Step <span id="signupCurrentStep">1</span> of 2</span>
+                        <span id="signupCurrentLabel" class="signup-progress-current">Personal Details</span>
+                    </div>
+                    <div id="signupProgressBar" class="signup-progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="2" aria-valuenow="1">
+                        <span id="signupProgressFill" class="signup-progress-fill"></span>
+                    </div>
+                    <div class="stepper">
+                        <div class="step active">
+                            <span class="step-number">1</span>
+                            <span class="step-text">Personal Details</span>
                         </div>
-                    @endif
-                </div>
-            </aside>
-
-            <div class="relative flex flex-col justify-center bg-white p-8 md:p-12 lg:p-14">
-                <div class="mb-8 xl:hidden">
-                    <span class="mb-4 inline-flex items-center rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">
-                        {{ $view['leftBadge'] }}
-                    </span>
-                    <h1 class="text-4xl font-bold tracking-tight text-slate-950">{{ $view['leftTitle'] }}</h1>
-                    <p class="mt-2 text-base leading-8 text-slate-600">{{ $view['leftCopy'] }}</p>
-                </div>
-
-                <div class="mb-8">
-                    <h2 class="text-4xl font-bold tracking-tight text-slate-950">Signup / Registration</h2>
-                    <p class="mt-2 max-w-none text-base leading-8 text-slate-600">Create your account and continue with role-based access.</p>
-                </div>
-
-                <div class="mb-8">
-                    <p class="text-sm text-slate-600">
-                        Are you a business owner or a healthcare professional?
-                        <a href="{{ route('b2b.signup') }}" class="{{ $primaryLinkClass }}">Register for a B2B Account</a>
-                    </p>
-                </div>
-
-                @if (session('success'))
-                    <div class="mb-6 flex items-start rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
-                        <svg class="mr-2 h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        {{ session('success') }}
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Address</span>
+                        </div>
                     </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="mb-6 flex items-start rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-                        <svg class="mr-2 h-5 w-5 shrink-0 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        {{ session('error') }}
-                    </div>
-                @endif
+                </div>
 
                 @if ($errors->any())
-                    <div class="mb-6 flex items-start rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-                        <svg class="mr-2 h-5 w-5 shrink-0 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        <ul class="list-disc space-y-1 pl-4">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                    <div class="signup-alert" role="alert">
+                        <strong>Check the form and try again.</strong>
+                        <span>{{ $errors->first() }}</span>
                     </div>
                 @endif
 
-                <form id="signupForm" method="POST" action="{{ route('register') }}" class="grid grid-cols-1 gap-5 md:grid-cols-2" novalidate>
-                    @csrf
-
-                    <div class="md:col-span-2">
-                        <label for="customerType" class="mb-2 block text-sm font-semibold text-slate-700">Customer Type</label>
-                        <select id="customerType" class="{{ $inputClass }}" required>
-                            @foreach ($customerTypeOptions as $value => $label)
-                                <option value="{{ $value }}" @selected($portal === 'b2b' ? $selectedCustomerType === $value : $value === 'retail')>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <input type="hidden" name="user_type" id="userType" value="{{ $portal }}">
-                    <input type="hidden" name="b2b_type" id="b2bType" value="{{ $portal === 'b2b' ? $selectedCustomerType : '' }}">
-
-                    @if ($portal === 'b2b')
-                        <div class="md:col-span-2 flex items-center rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
-                            <svg class="mr-2 h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            B2B registration requires admin approval before login activation.
+                <div class="form-step active" data-step="1">
+                    <div class="signup-grid signup-grid--two">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}" placeholder="Aarav">
+                            <span class="error"></span>
                         </div>
-                    @endif
 
-                    <div>
-                        <label for="name" class="mb-2 block text-sm font-semibold text-slate-700">Full Name</label>
-                        <input type="text" name="name" id="name" class="{{ $inputClass }} @error('name') border-rose-500 ring-4 ring-rose-500/10 @enderror" value="{{ old('name') }}" placeholder="John Doe" required>
-                        @error('name')
-                            <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p>
-                        @enderror
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}" placeholder="Sharma">
+                            <span class="error"></span>
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="email" class="mb-2 block text-sm font-semibold text-slate-700">Email Address</label>
-                        <input type="email" name="email" id="email" class="{{ $inputClass }} @error('email') border-rose-500 ring-4 ring-rose-500/10 @enderror" value="{{ old('email') }}" placeholder="you@company.com" autocomplete="email" required>
-                        @error('email')
-                            <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p>
-                        @enderror
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" name="email" value="{{ old('email') }}" placeholder="you@example.com" autocomplete="email">
+                        <span class="error"></span>
                     </div>
 
-                    <div>
-                        <label for="phone" class="mb-2 block text-sm font-semibold text-slate-700">Phone Number</label>
-                        <input type="text" name="phone" id="phone" class="{{ $inputClass }} @error('phone') border-rose-500 ring-4 ring-rose-500/10 @enderror" maxlength="10" value="{{ old('phone') }}" placeholder="10-digit number" inputmode="numeric" required>
-                        @error('phone')
-                            <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p>
-                        @enderror
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="text" id="phone" name="phone" maxlength="10" value="{{ old('phone') }}" placeholder="10-digit mobile number" inputmode="numeric">
+                        <span class="error"></span>
                     </div>
 
-                    <div>
-                        <label for="company_name" class="mb-2 block text-sm font-semibold text-slate-700">Organization</label>
-                        <input type="text" name="company_name" id="company_name" class="{{ $inputClass }} @error('company_name') border-rose-500 ring-4 ring-rose-500/10 @enderror" value="{{ old('company_name') }}" placeholder="Company (if applicable)" @required($portal === 'b2b')>
-                        @error('company_name')
-                            <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p>
-                        @enderror
+                    <div class="signup-grid signup-grid--two">
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="signupPassword" name="password" placeholder="Minimum 8 characters" autocomplete="new-password">
+                                <button type="button" id="toggleSignupPassword" class="toggle-password" aria-label="Show password"></button>
+                            </div>
+                            <span class="error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="confirmPassword" name="password_confirmation" placeholder="Repeat your password" autocomplete="new-password">
+                                <button type="button" id="toggleConfirmPassword" class="toggle-password" aria-label="Show password"></button>
+                            </div>
+                            <span class="error"></span>
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="password" class="mb-2 block text-sm font-semibold text-slate-700">Password</label>
-                        <input type="password" name="password" id="password" class="{{ $inputClass }} @error('password') border-rose-500 ring-4 ring-rose-500/10 @enderror" minlength="8" placeholder="Min. 8 characters" required>
-                        @error('password')
-                            <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p>
-                        @enderror
+                    <div class="signup-actions signup-actions--single">
+                        <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="2">
+                    <div class="form-group">
+                        <label for="addressLine1">Flat / House / Building</label>
+                        <input type="text" id="addressLine1" name="address_1" value="{{ old('address_1') }}" placeholder="Flat number, house, or building name">
+                        <span class="error"></span>
                     </div>
 
-                    <div>
-                        <label for="password_confirmation" class="mb-2 block text-sm font-semibold text-slate-700">Confirm Password</label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" class="{{ $inputClass }} @error('password_confirmation') border-rose-500 ring-4 ring-rose-500/10 @enderror" minlength="8" placeholder="Re-enter password" required>
-                        @error('password_confirmation')
-                            <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p>
-                        @enderror
+                    <div class="form-group">
+                        <label for="addressLine2">Area / Street / Sector</label>
+                        <input type="text" id="addressLine2" name="address_2" value="{{ old('address_2') }}" placeholder="Street, area, sector, or landmark">
+                        <span class="error"></span>
                     </div>
 
-                    <div class="mt-4 flex flex-col gap-4 md:col-span-2 sm:flex-row sm:items-center">
-                        <button type="submit" id="signupSubmitBtn" class="{{ $primaryButtonClass }} flex-1">
-                            Create Account
-                        </button>
-                        <a href="{{ route('login', ['user_type' => $portal]) }}" class="{{ $secondaryButtonClass }} flex-1">
-                            Back to Login
-                        </a>
+                    <div class="signup-grid signup-grid--two">
+                        <div class="form-group">
+                            <label for="city">Town / City</label>
+                            <input type="text" id="city" name="city" value="{{ old('city') }}" placeholder="Mumbai">
+                            <span class="error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" id="pincode" name="pincode" value="{{ old('pincode') }}" placeholder="400001" inputmode="numeric">
+                            <span class="error"></span>
+                        </div>
                     </div>
-                </form>
-            </div>
+
+                    <div class="signup-grid signup-grid--two">
+                        <div class="form-group">
+                            <label for="state">State / UT</label>
+                            <select id="state" name="state" data-old-value="{{ old('state') }}">
+                                <option value="">Select State / UT</option>
+                            </select>
+                            <span class="error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="countryDisplay">Country</label>
+                            <input type="text" id="countryDisplay" value="India" disabled>
+                        </div>
+                    </div>
+
+                    <div class="signup-actions">
+                        <button type="button" class="btn btn-outline" id="backBtn">Back</button>
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </section>
 </div>
+
+@push('scripts')
+<script src="{{ asset('js/signup.js') }}?v=20260315-3"></script>
+@endpush

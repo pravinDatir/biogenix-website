@@ -38,6 +38,21 @@ class CreateNewUser implements CreatesNewUsers
                 'user_type' => ['required', Rule::in(['b2c', 'b2b'])],
                 'b2b_type' => ['nullable', 'required_if:user_type,b2b', Rule::in(['dealer', 'distributor', 'lab', 'hospital'])],
                 'company_name' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:255'],
+                'legal_name' => ['nullable', 'string', 'max:255'],
+                'gst_number' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:20'],
+                'pan_number' => ['nullable', 'string', 'max:20'],
+                'reg_number' => ['nullable', 'string', 'max:255'],
+                'established_year' => ['nullable', 'integer', 'min:1900', 'max:'.date('Y')],
+                'website' => ['nullable', 'url', 'max:255'],
+                'designation' => ['nullable', 'string', 'max:255'],
+                'phone' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:20'],
+                'alt_phone' => ['nullable', 'string', 'max:20'],
+                'address_1' => ['nullable', 'string', 'max:255'],
+                'address_2' => ['nullable', 'string', 'max:255'],
+                'city' => ['nullable', 'string', 'max:128'],
+                'state' => ['nullable', 'string', 'max:128'],
+                'pincode' => ['nullable', 'string', 'max:20'],
+                'country' => ['nullable', 'string', 'max:128'],
                 'password' => $this->passwordRules(),
             ])->validate();
 
@@ -47,20 +62,32 @@ class CreateNewUser implements CreatesNewUsers
                 $approvedAt = now();
 
                 if (($input['user_type'] ?? null) === 'b2b') {
-                    $company = Company::query()->firstOrCreate(
+                    $company = Company::query()->updateOrCreate(
                         ['name' => $input['company_name']],
-                        ['company_type' => $input['b2b_type'], 'is_active' => true],
+                        [
+                            'legal_name' => $input['legal_name'] ?? null,
+                            'gst_number' => $input['gst_number'] ?? null,
+                            'pan_number' => $input['pan_number'] ?? null,
+                            'registration_number' => $input['reg_number'] ?? null,
+                            'established_year' => isset($input['established_year']) ? (int) $input['established_year'] : null,
+                            'website' => $input['website'] ?? null,
+                            'company_type' => $input['b2b_type'],
+                            'is_active' => true,
+                        ],
                     );
 
                     $status = 'pending_approval';
                     $approvedAt = null;
                 }
 
-                return User::query()->create([
+                $user = User::query()->create([
                     'name' => $input['name'],
                     'email' => $input['email'],
                     'user_type' => $input['user_type'],
                     'b2b_type' => ($input['user_type'] ?? null) === 'b2b' ? $input['b2b_type'] : null,
+                    'designation' => $input['designation'] ?? null,
+                    'phone' => $input['phone'] ?? null,
+                    'alt_phone' => $input['alt_phone'] ?? null,
                     'company_id' => $company?->id,
                     'status' => $status,
                     'approved_at' => $approvedAt,
@@ -68,6 +95,26 @@ class CreateNewUser implements CreatesNewUsers
                     'created_by_user_id' => null,
                     'password' => Hash::make($input['password']),
                 ]);
+
+                if (
+                    filled($input['address_1'] ?? null)
+                    && filled($input['city'] ?? null)
+                    && filled($input['state'] ?? null)
+                    && filled($input['pincode'] ?? null)
+                ) {
+                    $user->addresses()->create([
+                        'line1' => $input['address_1'],
+                        'line2' => $input['address_2'] ?? null,
+                        'city' => $input['city'],
+                        'state' => $input['state'],
+                        'postal_code' => $input['pincode'],
+                        'country' => $input['country'] ?? 'India',
+                        'is_default_shipping' => true,
+                        'is_default_billing' => true,
+                    ]);
+                }
+
+                return $user;
             });
 
             $this->rolePermissionService->assignDefaultRole($user);

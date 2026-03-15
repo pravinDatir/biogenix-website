@@ -9,11 +9,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
-    protected $fillable = ['name', 'company_type', 'is_active'];
+    protected $fillable = [
+        'name',
+        'legal_name',
+        'gst_number',
+        'pan_number',
+        'registration_number',
+        'established_year',
+        'website',
+        'company_type',
+        'is_active',
+    ];
 
     protected function casts(): array
     {
         return [
+            'established_year' => 'integer',
             'is_active' => 'boolean',
         ];
     }

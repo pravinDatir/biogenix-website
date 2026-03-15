@@ -15,6 +15,12 @@ return new class extends Migration
             Schema::create('companies', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
+                $table->string('legal_name')->nullable();
+                $table->string('gst_number', 20)->nullable();
+                $table->string('pan_number', 20)->nullable();
+                $table->string('registration_number')->nullable();
+                $table->unsignedSmallInteger('established_year')->nullable();
+                $table->string('website')->nullable();
                 $table->string('company_type')->nullable();
                 $table->boolean('is_active')->default(true);
                 $table->timestamp('created_at')->nullable();

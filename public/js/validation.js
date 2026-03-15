@@ -174,24 +174,15 @@ function setupPasswordToggle(inputId, toggleId) {
 
   toggleBtn.addEventListener("click", () => {
     const input = document.getElementById(inputId);
-    const icon = toggleBtn.querySelector("i");
 
     if (input.type === "password") {
       input.type = "text";
-      if (icon) {
-        icon.classList.replace("bi-eye-slash", "bi-eye");
-      } else {
-        toggleBtn.textContent = "Hide";
-      }
+      input.classList.add("is-password-visible");
+      toggleBtn.setAttribute("aria-label", "Hide password");
     } else {
       input.type = "password";
-      if (icon) {
-        icon.classList.replace("bi-eye", "bi-eye-slash");
-      } else {
-        toggleBtn.textContent = "Show";
-      }
+      input.classList.remove("is-password-visible");
+      toggleBtn.setAttribute("aria-label", "Show password");
     }
   });
 }
-
-
