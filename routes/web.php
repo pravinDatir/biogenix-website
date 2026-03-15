@@ -37,6 +37,8 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
 
+Route::view('/pi-quotation', 'pi-quotation.generate')->name('pi-quotation.generate');
+
 Route::get('/cart', function () { return redirect()->route('products.index'); })->name('cart.page');
 Route::view('/checkout', 'pages.guest.checkout')->name('checkout.page');
 
