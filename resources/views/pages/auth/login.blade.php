@@ -8,7 +8,7 @@
         <div class="auth-grid">
             <aside class="auth-media">
                 <img
-                    src="{{ asset('images/home2.jpg') }}"
+                    src="{{ asset('storage/slides/home2.jpg') }}"
                     alt="Biogenix laboratory"
                     class="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"

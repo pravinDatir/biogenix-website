@@ -9,7 +9,7 @@
 
 <div class="bg-slate-50">
     <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
-        <img src="{{ asset('images/image2.jpg') }}" alt="Contact Biogenix" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+        <img src="{{ asset('storage/slides/image2.jpg') }}" alt="Contact Biogenix" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/60 to-slate-900/40"></div>
         <div class="container relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">

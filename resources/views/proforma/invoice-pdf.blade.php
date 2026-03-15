@@ -110,7 +110,7 @@
     $termsItems = config('invoice.terms.items', []);
     $bankLines = config('invoice.bank.lines', []);
 
-    $logoAbsolutePath = public_path(config('invoice.company.logo_path', 'images/biogenix-logo.png'));
+    $logoAbsolutePath = public_path(config('invoice.company.logo_path', 'storage/slides/logo.jpg'));
     $logoDataUri = null;
 
     if (is_file($logoAbsolutePath)) {

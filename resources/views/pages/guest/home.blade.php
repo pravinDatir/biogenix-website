@@ -1,39 +1,11 @@
-@php
-    $heroSlides = [
-        [
-            'tag' => 'Diagnostic Innovation',
-            'title' => 'A One-Stop Diagnostic Powerhouse for India.',
-            'copy' => 'From rapid IVD kits to intelligent instruments, Biogenix helps labs and hospitals scale with speed, quality, and dependable support.',
-            'image' => asset('images/image1.jpg'),
-        ],
-        [
-            'tag' => 'Clinical Workflow',
-            'title' => 'Precision technologies for modern care delivery.',
-            'copy' => 'Integrated catalog, quote, and fulfillment workflows built for high-performance diagnostics teams.',
-            'image' => asset('images/image3.jpg'),
-        ],
-        [
-            'tag' => 'Lucknow Operations',
-            'title' => 'Fast logistics support with trusted service execution.',
-            'copy' => 'Same-day assistance for priority requirements with transparent communication and support.',
-            'image' => asset('images/hema1.jpg'),
-        ],
-    ];
-
-    $cardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md';
-    $darkCardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm';
-    $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
-    $primaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
-@endphp
-
 <div>
     <section class="relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
             <div id="heroTrack" class="flex h-full w-full transition-transform duration-700 ease-out">
-                @foreach ($heroSlides as $slide)
+                @foreach ($heroSlides ?? [] as $slide)
                     <article class="relative h-full w-full shrink-0">
                         <img
-                            src="{{ $slide['image'] }}"
+                            src="{{ asset($slide['image']) }}"
                             alt="{{ $slide['title'] }}"
                             class="absolute inset-0 h-full w-full object-cover"
                             @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif
@@ -69,7 +41,7 @@
         <div class="pointer-events-none absolute bottom-5 left-0 right-0 z-20 sm:bottom-6">
             <div class="container flex items-center justify-between gap-3">
                 <div id="heroDots" class="pointer-events-auto flex items-center gap-2">
-                    @foreach ($heroSlides as $slide)
+                    @foreach ($heroSlides ?? [] as $slide)
                         <button
                             type="button"
                             class="h-2.5 w-8 rounded-full bg-white/40 transition hover:bg-white/80"
@@ -90,22 +62,30 @@
     <section class="bg-slate-50 py-12 md:py-16">
         <div class="container">
             <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
-            <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                @foreach ([
-                    ['name' => 'IVD Kits', 'copy' => 'Rapid, reliable kits for daily diagnostics.', 'image' => asset('images/home1.jpg')],
-                    ['name' => 'Reagents', 'copy' => 'Validated chemistry and molecular reagents.', 'image' => asset('images/hema2.jpg')],
-                    ['name' => 'Instruments', 'copy' => 'High-throughput systems for clinical teams.', 'image' => asset('images/image2.jpg')],
-                    ['name' => 'Consumables', 'copy' => 'Lab essentials engineered for consistency.', 'image' => asset('images/home3.jpg')],
-                ] as $item)
-                    <article class="{{ $cardClass }}">
-                        <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="h-40 w-full rounded-2xl object-cover" loading="lazy" decoding="async">
+            <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-5">
+                @forelse (($productCategories ?? collect()) as $category)
+                    <article class="home-card">
+                        <img
+                            src="{{ asset($category->default_image_path ?: 'storage/categories/image1.jpg') }}"
+                            alt="{{ $category->name }}"
+                            class="h-40 w-full rounded-2xl object-cover"
+                            loading="lazy"
+                            decoding="async"
+                        >
                         <div class="space-y-2 pt-4">
-                            <h3 class="text-lg font-semibold text-slate-900">{{ $item['name'] }}</h3>
-                            <p class="text-sm text-slate-600">{{ $item['copy'] }}</p>
+                            <h3 class="text-lg font-semibold text-slate-900">{{ $category->name }}</h3>
+                            <p class="text-sm text-slate-600">
+                                {{ \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 110) }}
+                            </p>
                             <x-ui.action-link :href="route('products.index')" variant="secondary">Explore</x-ui.action-link>
                         </div>
                     </article>
-                @endforeach
+                @empty
+                    <article class="home-panel sm:col-span-2 xl:col-span-5">
+                        <h3 class="text-lg font-semibold text-slate-900">Categories will appear here</h3>
+                        <p class="mt-2 text-sm text-slate-600">No home page categories are available right now.</p>
+                    </article>
+                @endforelse
             </div>
         </div>
     </section>
@@ -114,7 +94,7 @@
         <div class="container">
             <x-ui.section-heading title="Clinical & Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <article class="{{ $darkCardClass }}">
+                <article class="home-panel">
                     <x-badge variant="info">B2B Operations</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Distributor, Lab, and Hospital Enablement</h3>
                     <p class="mt-2 text-sm text-slate-600">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
@@ -122,7 +102,7 @@
                         <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])">B2B Login</x-ui.action-link>
                     </div>
                 </article>
-                <article class="{{ $darkCardClass }}">
+                <article class="home-panel">
                     <x-badge variant="success">B2C Access</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Retail and Independent Care Buyers</h3>
                     <p class="mt-2 text-sm text-slate-600">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
@@ -145,15 +125,15 @@
                 </div>
             </article>
 
-            <article class="{{ $darkCardClass }} xl:col-span-5">
+            <article class="home-panel xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
                 <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
                     <div>
                         <label for="newsletterEmail" class="mb-2 block text-sm font-semibold text-slate-700">Work Email</label>
-                        <input id="newsletterEmail" type="email" class="{{ $inputClass }}" placeholder="you@organization.com" required>
+                        <input id="newsletterEmail" type="email" class="home-input" placeholder="you@organization.com" required>
                     </div>
-                    <button type="submit" id="newsletterSubmitBtn" class="{{ $primaryButtonClass }} w-full">Subscribe</button>
+                    <button type="submit" id="newsletterSubmitBtn" class="home-primary-button w-full">Subscribe</button>
                     <p id="newsletterStatus" class="min-h-[1.25rem] text-sm font-medium text-slate-600"></p>
                 </form>
             </article>
@@ -163,7 +143,7 @@
     <section class="bg-white py-12 md:py-16">
         <div class="container grid grid-cols-1 gap-6 lg:grid-cols-12">
             <article class="min-h-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-xl md:min-h-[22rem] lg:col-span-6">
-                <img src="{{ asset('images/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
+                <img src="{{ asset('storage/slides/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
             </article>
 
             <article class="lg:col-span-6">
@@ -175,7 +155,7 @@
                         ['title' => 'Compliance-Ready', 'copy' => 'Quality-first processes aligned to regulated healthcare operations.'],
                         ['title' => 'Consultative Service', 'copy' => 'Pre-sale and post-sale support for clinical and procurement teams.'],
                     ] as $value)
-                        <article class="{{ $darkCardClass }}">
+                        <article class="home-panel">
                             <h3 class="text-base font-semibold text-slate-900">{{ $value['title'] }}</h3>
                             <p class="mt-2 text-sm text-slate-600">{{ $value['copy'] }}</p>
                         </article>
@@ -194,7 +174,7 @@
                     ['title' => 'Choosing the Right Reagent Mix', 'tag' => 'Product Guide', 'copy' => 'A practical framework for balancing consistency, throughput, and budget.', 'href' => route('products.index'), 'action' => 'Browse Products'],
                     ['title' => 'Checklist for New Instrument Rollouts', 'tag' => 'Implementation', 'copy' => 'Deployment, training, and support essentials for successful onboarding.', 'href' => route('contact'), 'action' => 'Talk to Team'],
                 ] as $insight)
-                    <article class="{{ $darkCardClass }}">
+                    <article class="home-panel">
                         <x-badge variant="default">{{ $insight['tag'] }}</x-badge>
                         <h3 class="mt-3 text-lg font-semibold text-slate-900">{{ $insight['title'] }}</h3>
                         <p class="mt-2 text-sm text-slate-600">{{ $insight['copy'] }}</p>

@@ -137,24 +137,6 @@
         return ($negative ? '-' : '') . '<span class="currency-symbol">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
     };
 
-    $resolveImageUrl = function ($product): ?string {
-        $rawImage = $product->image_path ?? $product->image ?? null;
-
-        if (! filled($rawImage)) {
-            return null;
-        }
-
-        if (Str::startsWith($rawImage, ['http://', 'https://', '/'])) {
-            return $rawImage;
-        }
-
-        if (Str::startsWith($rawImage, 'images/')) {
-            return asset($rawImage);
-        }
-
-        return asset('storage/' . ltrim($rawImage, '/'));
-    };
-
     $resolveVisualVariant = function ($product, int $index): string {
         $context = Str::lower(implode(' ', array_filter([
             $product->name ?? null,
@@ -477,7 +459,7 @@
                                     $listPrice = $price !== null ? round($price * 1.16, 2) : null;
                                 $detailUrl = route('products.productDetails', $product->id);
                                     $variantId = $product->visible_variant_id ?? null;
-                                    $imageUrl = $resolveImageUrl($product);
+                                    $imageUrl = filled($product->image_path ?? null) ? asset($product->image_path) : null;
                                     $visualVariant = $resolveVisualVariant($product, $loop->index);
                                     $ratingValue = number_format(4.6 + (($loop->index % 3) * 0.1), 1);
                                     $reviewTotal = 42 + ($loop->index * 7);

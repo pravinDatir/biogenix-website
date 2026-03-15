@@ -4,7 +4,7 @@
 
 <div class="min-h-screen bg-slate-50">
     <section class="relative overflow-hidden bg-slate-900 py-16 text-white lg:py-20">
-        <img src="{{ asset('images/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
+        <img src="{{ asset('storage/slides/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-b from-primary-900/50 to-slate-950/80"></div>
         <div class="container relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">

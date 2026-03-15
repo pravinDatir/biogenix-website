@@ -20,7 +20,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'Diagnostic kits and testing systems for clinical and laboratory use.',
                 'application' => 'Hospitals, pathology labs, diagnostic centers, clinics',
                 'IsDisplayedOnHomePage' => true,
-                'default_image_path' => 'images/image1.jpg',
+                'default_image_path' => 'storage/categories/image1.jpg',
                 'gst_rate' => 18.00,
                 'sort_order' => 1,
                 'created_at' => $now,
@@ -33,7 +33,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'Clinical biochemistry reagents, analyzers, and test kits.',
                 'application' => 'Clinical chemistry labs, hospital laboratories, research labs',
                 'IsDisplayedOnHomePage' => true,
-                'default_image_path' => 'images/image2.jpg',
+                'default_image_path' => 'storage/categories/image2.jpg',
                 'gst_rate' => 18.00,
                 'sort_order' => 2,
                 'created_at' => $now,
@@ -46,7 +46,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'PCR kits, molecular testing products, and advanced diagnostic solutions.',
                 'application' => 'Molecular labs, infectious disease testing, research institutions',
                 'IsDisplayedOnHomePage' => true,
-                'default_image_path' => 'images/image3.jpg',
+                'default_image_path' => 'storage/categories/image3.jpg',
                 'gst_rate' => 18.00,
                 'sort_order' => 3,
                 'created_at' => $now,
@@ -59,7 +59,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'IVD instruments, analyzers, and supporting laboratory equipment.',
                 'application' => 'Diagnostic labs, hospitals, medical colleges, research facilities',
                 'IsDisplayedOnHomePage' => true,
-                'default_image_path' => 'images/image4.jpg',
+                'default_image_path' => 'storage/categories/image4.jpg',
                 'gst_rate' => 18.00,
                 'sort_order' => 4,
                 'created_at' => $now,
@@ -72,7 +72,7 @@ class CatalogSeeder extends Seeder
                 'description' => 'Single-use laboratory and medical consumables.',
                 'application' => 'Routine lab operations, sample handling, testing workflows',
                 'IsDisplayedOnHomePage' => true,
-                'default_image_path' => 'images/image5.jpg',
+                'default_image_path' => 'storage/categories/image5.jpg',
                 'gst_rate' => 12.00,
                 'sort_order' => 5,
                 'created_at' => $now,
@@ -110,15 +110,15 @@ class CatalogSeeder extends Seeder
         ]);
 
         DB::table('product_image')->insert([
-            ['id' => 1,'file_path' => 'images/hema1.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 2, 'file_path' => 'images/hema2.jpg', 'is_primary' => false, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 3,  'file_path' => 'images/image1.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 4, 'file_path' => 'images/image2.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 5, 'file_path' => 'images/image3.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 6, 'file_path' => 'images/image4.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 7, 'file_path' => 'images/image5.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 8,  'file_path' => 'images/image1.jpg', 'is_primary' => false, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 9, 'file_path' => 'images/image2.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 1,'file_path' => 'storage/products/hema1.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 2, 'file_path' => 'storage/products/hema2.jpg', 'is_primary' => false, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 3,  'file_path' => 'storage/products/image1.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 4, 'file_path' => 'storage/products/image2.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 5, 'file_path' => 'storage/products/image3.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 6, 'file_path' => 'storage/products/image4.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 7, 'file_path' => 'storage/products/image5.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 8,  'file_path' => 'storage/products/image1.jpg', 'is_primary' => false, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['id' => 9, 'file_path' => 'storage/products/image2.jpg', 'is_primary' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
         ]);
         // Step 2: seed product-level GST override where needed.
         DB::table('products')->insert([
@@ -213,12 +213,12 @@ class CatalogSeeder extends Seeder
             return $row;
         }, $genericPriceRows));
 
-        // Optional example: client-specific contract pricing.
+        // Optional example: client-specific company pricing.
         $firstCompanyId = DB::table('companies')->value('id');
         if ($firstCompanyId) {
-            $contractPriceRows = [
-                ['product_variant_id' => 1, 'price_type' => 'contract', 'company_id' => $firstCompanyId, 'amount' => 238000.00, 'currency' => 'INR', 'quantity' => 15, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-                ['product_variant_id' => 6, 'price_type' => 'contract', 'company_id' => $firstCompanyId, 'amount' => 116500.00, 'currency' => 'INR', 'quantity' => 20, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+            $companyPriceRows = [
+                ['product_variant_id' => 1, 'price_type' => 'company_price', 'company_id' => $firstCompanyId, 'amount' => 238000.00, 'currency' => 'INR', 'quantity' => 15, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
+                ['product_variant_id' => 6, 'price_type' => 'company_price', 'company_id' => $firstCompanyId, 'amount' => 116500.00, 'currency' => 'INR', 'quantity' => 20, 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
             ];
 
             DB::table('product_prices')->insert(array_map(function (array $row) use ($variantGstRates, $variantQuantityRules): array {
@@ -233,7 +233,7 @@ class CatalogSeeder extends Seeder
                 $row['lot_size'] = $quantityRules['lot_size'];
 
                 return $row;
-            }, $contractPriceRows));
+            }, $companyPriceRows));
         }
 
         DB::table('variant_attributes')->insert([

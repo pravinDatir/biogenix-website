@@ -17,44 +17,13 @@ return new class extends Migration
                 $table->string('name');
                 $table->string('company_type')->nullable();
                 $table->boolean('is_active')->default(true);
-                $table->timestamps();
+                $table->timestamp('created_at')->nullable();
+                $table->timestamp('updated_at')->nullable();
             });
         }
 
-        Schema::table('companies', function (Blueprint $table): void {
-            if (! Schema::hasColumn('companies', 'company_type')) {
-                $table->string('company_type')->nullable()->after('name');
-            }
-
-            if (! Schema::hasColumn('companies', 'is_active')) {
-                $table->boolean('is_active')->default(true)->after('company_type');
-            }
-
-            if (! Schema::hasColumn('companies', 'created_at')) {
-                $table->timestamp('created_at')->nullable();
-            }
-
-            if (! Schema::hasColumn('companies', 'updated_at')) {
-                $table->timestamp('updated_at')->nullable();
-            }
-        });
-
         Schema::table('users', function (Blueprint $table) {
-            if (! Schema::hasColumn('users', 'user_type')) {
-                $table->string('user_type', 50)->default('b2c')->after('email');
-            }
-
-            if (! Schema::hasColumn('users', 'b2b_type')) {
-                $table->string('b2b_type', 50)->nullable()->after('user_type');
-            }
-
-            if (! Schema::hasColumn('users', 'company_id')) {
-                $table->foreignId('company_id')->nullable()->after('b2b_type')->constrained('companies')->nullOnDelete();
-            }
-
-            if (! Schema::hasColumn('users', 'status')) {
-                $table->string('status', 20)->default('active')->after('company_id');
-            }
+            $table->foreign('company_id')->references('id')->on('companies')->nullOnDelete();
         });
 
         if (! Schema::hasTable('roles')) {
@@ -136,28 +105,6 @@ return new class extends Migration
             Schema::table('users', function (Blueprint $table): void {
                 if (Schema::hasColumn('users', 'company_id')) {
                     $table->dropForeign(['company_id']);
-                }
-
-                $columns = [];
-
-                if (Schema::hasColumn('users', 'user_type')) {
-                    $columns[] = 'user_type';
-                }
-
-                if (Schema::hasColumn('users', 'b2b_type')) {
-                    $columns[] = 'b2b_type';
-                }
-
-                if (Schema::hasColumn('users', 'company_id')) {
-                    $columns[] = 'company_id';
-                }
-
-                if (Schema::hasColumn('users', 'status')) {
-                    $columns[] = 'status';
-                }
-
-                if (! empty($columns)) {
-                    $table->dropColumn($columns);
                 }
             });
         }

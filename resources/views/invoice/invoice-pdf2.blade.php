@@ -149,7 +149,7 @@
     $bankLines = config('invoice.bank.lines', []);
 
     // Step 2: convert the configured logo into a data URI for DomPDF.
-    $logoAbsolutePath = public_path(config('invoice.company.logo_path', 'images/biogenix-logo.png'));
+    $logoAbsolutePath = public_path(config('invoice.company.logo_path', 'storage/slides/logo.jpg'));
     $logoDataUri = null;
 
     if (is_file($logoAbsolutePath)) {

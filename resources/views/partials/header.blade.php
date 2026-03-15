@@ -28,7 +28,7 @@
 <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
     <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 lg:px-8 xl:px-10">
         <a href="{{ route('home') }}" class="shrink-0">
-            <img src="{{ asset('images/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-14 w-auto md:h-16">
+            <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-14 w-auto md:h-16">
         </a>
 
         {{-- Mobile hamburger --}}
@@ -123,7 +123,7 @@
     >
         <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Biogenix Logo" width="40" height="40" decoding="async" class="h-10 w-10 rounded-2xl object-cover">
+                <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Biogenix Logo" width="40" height="40" decoding="async" class="h-10 w-10 rounded-2xl object-cover">
                 <div>
                     <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-slate-950">Biogenix Menu</p>
                     <p class="text-xs font-medium text-slate-400">Mobile navigation</p>

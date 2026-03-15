@@ -66,14 +66,16 @@ return new class extends Migration
             });
         }
 
-         if (! Schema::hasTable('product_prices')) {
+        if (! Schema::hasTable('product_prices')) {
             Schema::create('product_prices', function (Blueprint $table) {
                 $table->id();
-                // Pricing is now linked to variant.
+                // Pricing is linked to variants and can hold both default and company_price rows.
                 $table->unsignedBigInteger('product_variant_id')->nullable();
                 $table->string('price_type', 30);
                 $table->foreignId('company_id')->nullable()->constrained('companies')->nullOnDelete();
                 $table->decimal('amount', 12, 2);
+                $table->string('DiscountType', 20)->default('cash');
+                $table->decimal('Discount', 12, 2)->default(0);
                 $table->decimal('gst_rate', 5, 2)->default(0);
                 $table->decimal('tax_amount', 12, 2)->default(0);
                 $table->decimal('price_after_gst', 12, 2)->default(0);

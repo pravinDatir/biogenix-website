@@ -15,6 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('user_type', 50)->default('b2c');
+            $table->string('b2b_type', 50)->nullable();
+            $table->foreignId('company_id')->nullable();
+            $table->string('status', 20)->default('active');
+            $table->timestamp('approved_at')->nullable();
+            $table->unsignedBigInteger('approved_by_user_id')->nullable();
+            $table->unsignedBigInteger('created_by_user_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

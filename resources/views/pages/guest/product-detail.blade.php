@@ -39,34 +39,12 @@
             return ($negative ? '-' : '') . '<span class="currency-symbol">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
         };
 
-        $resolveImageUrl = function ($item): string {
-            $rawImage = $item->image_path
-                ?? $item->image
-                ?? $item->primary_image_path
-                ?? $item->primaryImage?->file_path
-                ?? null;
-
-            if (! filled($rawImage)) {
-                return asset('images/logo.jpg');
-            }
-
-            if (Str::startsWith($rawImage, ['http://', 'https://', '/'])) {
-                return $rawImage;
-            }
-
-            if (Str::startsWith($rawImage, 'images/')) {
-                return asset($rawImage);
-            }
-
-            return asset('storage/' . ltrim($rawImage, '/'));
-        };
-
         $productTitle = trim((string) ($product->name ?? 'Product Details'));
         $brandLabel = trim((string) ($product->brand ?? 'Biogenix'));
         $categoryLabel = trim((string) ($product->category_name ?? 'Laboratory Equipment'));
         $applicationLabel = trim((string) ($product->subcategory_name ?? 'Clinical Diagnostics'));
         $modelLabel = trim((string) ($product->visible_variant_sku ?? $product->sku ?? 'N/A'));
-        $imageUrl = $resolveImageUrl($product);
+        $imageUrl = asset($product->image_path ?: 'storage/slides/logo.jpg');
         $galleryImages = collect(['Main View', 'Pack View', 'Bench View', 'Workflow'])
             ->map(fn (string $label) => ['label' => $label, 'src' => $imageUrl]);
         $currentPrice = $product->visible_price !== null ? (float) $product->visible_price : null;
@@ -75,7 +53,7 @@
         $ratingValue = number_format(4.7 + ((((int) ($product->id ?? 1)) % 3) * 0.1), 1);
         $primaryBadge = filled($applicationLabel) ? $applicationLabel : 'Premium Series';
         $secondaryBadge = ((int) ($product->id ?? 1) % 2 === 0) ? 'Clinical Ready' : 'Best Seller';
-        $stockText = ($product->is_active ?? true) ? 'In Stock' : 'Limited Availability';
+        $stockStatus = trim((string) ($product->stock_status ?? 'Out of Stock'));
         $brochure = $product->brochure_path ?? $product->brochure_url ?? null;
         $brochureUrl = filled($brochure)
             ? (Str::startsWith($brochure, ['http://', 'https://', '/']) ? $brochure : asset('storage/' . ltrim($brochure, '/')))
@@ -206,7 +184,7 @@
                             <span>{{ $ratingValue }}</span>
                             <span class="text-slate-300">|</span>
                             <span>{{ $reviewCount }} Customer Reviews</span>
-                            <x-ui.status-badge type="product" :value="$stockText" :label="$stockText" dot />
+                            <x-ui.status-badge type="product" :value="$stockStatus" :label="$stockStatus" dot />
                         </div>
 
                         <div class="flex flex-wrap gap-2">
@@ -457,9 +435,9 @@
 
                 @if ($relatedProducts->isNotEmpty())
                     <div class="product-detail-related-grid">
-                        @foreach ($relatedProducts as $relatedProduct)
-                            @php
-                                $relatedImage = $resolveImageUrl($relatedProduct);
+                            @foreach ($relatedProducts as $relatedProduct)
+                                @php
+                                $relatedImage = asset($relatedProduct->primaryImage?->file_path ?: 'storage/slides/logo.jpg');
                                 $relatedPrice = $relatedProduct->visible_price !== null ? (float) $relatedProduct->visible_price : null;
                                 $relatedReviews = 38 + (((int) ($relatedProduct->id ?? 1)) * 3);
                             @endphp

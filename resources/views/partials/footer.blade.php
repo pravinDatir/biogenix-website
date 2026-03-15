@@ -8,7 +8,7 @@
             <section class="rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)] backdrop-blur sm:p-6 lg:col-span-5">
                 <div class="flex items-center gap-4">
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-2 shadow-lg shadow-primary-950/20">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="Biogenix Logo" class="h-full w-full object-contain">
+                        <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Biogenix Logo" class="h-full w-full object-contain">
                     </div>
                     <div>
                         <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-primary-200/80">Biogenix Healthcare</p>

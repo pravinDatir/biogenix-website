@@ -13,18 +13,20 @@ use App\Http\Controllers\SupportTicket\SupportTicketController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
+// Flow completed
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.page');
-// for testing PI flow only, will be removed later.
-Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
 
- Route::get('/products', [ProductController::class, 'index'])->name('products.index');
- Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
-
+// flow incomplete 
  // Preview-only customer workspace pages (UI shells)
  Route::view('/customer/profile', 'customer.profile')->name('customer.profile.preview');
  Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
  Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
+
+ // for testing PI flow only, will be removed later.
+Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page');
 
  Route::get('/products-crud', [ProductController::class, 'showCrudProduct'])->name('products.crud.index');
  Route::post('/products-crud', [ProductController::class, 'addProduct'])->name('products.crud.store');

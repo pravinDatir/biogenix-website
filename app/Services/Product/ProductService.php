@@ -82,7 +82,6 @@ class ProductService
         $product->visible_variant_id = $price['product_variant_id'] ?? null;
         $product->visible_variant_sku = $price['variant_sku'] ?? null;
         $product->visible_variant_name = $price['variant_name'] ?? null;
-
         return $product;
     }
 
@@ -317,7 +316,8 @@ class ProductService
             return Category::query()
                 ->orderBy('sort_order')
                 ->orderBy('name')
-                ->get();
+                ->get()
+                ->values();
         } catch (Throwable $exception) {
             Log::error('Failed to load product categories.', ['error' => $exception->getMessage()]);
             throw $exception;
@@ -339,7 +339,8 @@ class ProductService
                     ->where('IsDisplayedOnHomePage', true)
                     ->orderBy('sort_order')
                     ->orderBy('name')
-                    ->get();
+                    ->get()
+                    ->values();
             }
 
             $categories = Category::query()
@@ -362,6 +363,28 @@ class ProductService
     
 
     /////////////////////////////// FOR PRODUCT DETAIL PAGE //////////////////////////////////
+    // This loads one product only when it is visible to the current user.
+    public function getAccessibleProductByProductId(?User $user, int $productId): ?object
+    {
+        try {
+            // Load the visible product row using the same storefront visibility rules as the catalog page.
+            $product = $this->dataVisibilityService->visibleProductQuery($user)
+                ->where('products.id', $productId)
+                ->first();
+
+            // Return nothing when the product is outside the current user's visibility scope.
+            if (! $product) {
+                return null;
+            }
+
+            // Attach the visible price fields needed by the product detail page.
+            return $this->attachResolvedPriceData($product, $user);
+        } catch (Throwable $exception) {
+            Log::error('Failed to load visible product.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
     // This returns the top frequently bought together products for one product.
     public function frequentlyBoughtTogetherProducts(int $productId, ?User $user): Collection
     {
@@ -491,7 +514,6 @@ class ProductService
                     $product->visible_variant_id = $price['product_variant_id'] ?? null;
                     $product->visible_variant_sku = $price['variant_sku'] ?? null;
                     $product->visible_variant_name = $price['variant_name'] ?? null;
-
                     return $product;
                 })
                 ->filter()

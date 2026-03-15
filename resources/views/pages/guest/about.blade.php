@@ -9,7 +9,7 @@
 <div class="bg-slate-50 min-h-screen">
     <!-- Premium Hero Section -->
     <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
-        <img src="{{ asset('images/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+        <img src="{{ asset('storage/slides/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/70 to-primary-900/30"></div>
         <div class="container relative z-10">
             <div class="mb-6 flex flex-wrap items-center gap-2 text-sm font-medium text-slate-300">

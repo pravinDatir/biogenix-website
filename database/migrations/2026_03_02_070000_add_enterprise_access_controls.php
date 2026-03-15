@@ -11,21 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('users')) {
-            Schema::table('users', function (Blueprint $table): void {
-                if (! Schema::hasColumn('users', 'approved_at')) {
-                    $table->timestamp('approved_at')->nullable()->after('status');
-                }
-
-                if (! Schema::hasColumn('users', 'approved_by_user_id')) {
-                    $table->unsignedBigInteger('approved_by_user_id')->nullable()->after('approved_at');
-                }
-
-                if (! Schema::hasColumn('users', 'created_by_user_id')) {
-                    $table->unsignedBigInteger('created_by_user_id')->nullable()->after('approved_by_user_id');
-                }
-            });
-        }
+        // Enterprise approval columns now live directly in the base users create statement.
 
         if (! Schema::hasTable('departments')) {
             Schema::create('departments', function (Blueprint $table): void {
@@ -111,20 +97,6 @@ return new class extends Migration
             Schema::drop('departments');
         }
 
-        if (Schema::hasTable('users')) {
-            Schema::table('users', function (Blueprint $table): void {
-                $dropColumns = [];
-
-                foreach (['approved_at', 'approved_by_user_id', 'created_by_user_id'] as $column) {
-                    if (Schema::hasColumn('users', $column)) {
-                        $dropColumns[] = $column;
-                    }
-                }
-
-                if (! empty($dropColumns)) {
-                    $table->dropColumn($dropColumns);
-                }
-            });
-        }
+        // No user columns to roll back here because they now live in the base users create statement.
     }
 };

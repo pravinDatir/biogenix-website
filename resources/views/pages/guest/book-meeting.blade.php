@@ -10,7 +10,7 @@
 
 <div>
     <section class="relative overflow-hidden bg-slate-900 py-16 text-white md:py-24">
-        <img src="{{ asset('images/image3.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+        <img src="{{ asset('storage/slides/image3.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-r from-primary-950/90 via-slate-900/80 to-slate-900/40"></div>
         <div class="container relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
@@ -71,7 +71,7 @@
                 <div class="{{ $sectionCardClass }}">
                     <div class="flex items-center gap-4">
                         <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-slate-200">
-                            <img src="{{ asset('images/logo.jpg') }}" alt="Expert" class="h-full w-full object-cover">
+                            <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Expert" class="h-full w-full object-cover">
                         </div>
                         <div>
                             <p class="text-sm font-semibold text-slate-900">Enterprise Sales Team</p>

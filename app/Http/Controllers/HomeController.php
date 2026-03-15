@@ -17,13 +17,17 @@ class HomeController extends Controller
         try {
             // Step 1: load the product categories used on the home page.
             $productCategories = $productService->GetConfiguredCategories();
+            $heroSlides = $this->getHomeHeroSlides();
 
             Log::info('HomeController.index Product categories:', ['categories' => $productCategories]);
 
             // Step 2: merge home page data with the category list.
             return view('prelogin.homepage', array_merge(
                 $homeService->viewData($request->user()),
-                ['productCategories' => $productCategories],
+                [
+                    'productCategories' => $productCategories,
+                    'heroSlides' => $heroSlides,
+                ],
             ));
         } catch (Throwable $exception) {
             Log::error('Failed to load home page.', ['error' => $exception->getMessage()]);
@@ -31,6 +35,7 @@ class HomeController extends Controller
             return $this->viewWithError('prelogin.homepage', [
                 'roleSlugs' => [],
                 'productCategories' => collect(),
+                'heroSlides' => $this->getHomeHeroSlides(),
             ], $exception, 'Unable to load the home page.');
         }
     }
@@ -41,13 +46,17 @@ class HomeController extends Controller
         try {
             // Step 1: load the product categories used on the home page.
             $productCategories = $productService->categories();
+            $heroSlides = $this->getHomeHeroSlides();
 
             Log::info('HomeController.index Product categories:', ['categories' => $productCategories]);
 
             // Step 2: merge home page data with the category list.
             return view('home', array_merge(
                 $homeService->viewData($request->user()),
-                ['productCategories' => $productCategories],
+                [
+                    'productCategories' => $productCategories,
+                    'heroSlides' => $heroSlides,
+                ],
             ));
         } catch (Throwable $exception) {
             Log::error('Failed to load home page.', ['error' => $exception->getMessage()]);
@@ -55,7 +64,28 @@ class HomeController extends Controller
             return $this->viewWithError('prelogin.homepage', [
                 'roleSlugs' => [],
                 'productCategories' => collect(),
+                'heroSlides' => $this->getHomeHeroSlides(),
             ], $exception, 'Unable to load the home page.');
         }
+    }
+
+    // This reads the configured home hero slides as configured for the view.
+    protected function getHomeHeroSlides(): array
+    {
+        return collect(config('common.home_hero_slides', []))
+            ->filter(fn (mixed $slide): bool => is_array($slide))
+            ->map(function (array $slide): array {
+                $imagePath = trim((string) ($slide['image'] ?? ''));
+
+                return [
+                    'tag' => trim((string) ($slide['tag'] ?? '')),
+                    'title' => trim((string) ($slide['title'] ?? '')),
+                    'copy' => trim((string) ($slide['copy'] ?? '')),
+                    'image' => $imagePath,
+                ];
+            })
+            ->filter(fn (array $slide): bool => $slide['tag'] !== '' && $slide['title'] !== '' && $slide['copy'] !== '' && $slide['image'] !== '')
+            ->values()
+            ->all();
     }
 }

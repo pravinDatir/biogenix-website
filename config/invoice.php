@@ -12,7 +12,7 @@ return [
             'Lucknow (U.P.) Mob.: 9889485222, 9616105666',
             'E-mail: biogenix2007@yahoo.com, info@biogenixinc.com',
         ],
-        'logo_path' => 'images/biogenix-logo.png',
+        'logo_path' => 'storage/slides/logo.jpg',
     ],
 
     // These values control the document title and static labels.

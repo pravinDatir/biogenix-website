@@ -86,6 +86,8 @@ class DataVisibilityService
                 ->where('product_prices.is_active', true)
                 ->select([
                     'product_prices.amount',
+                    'product_prices.DiscountType as discount_type',
+                    'product_prices.Discount as discount_value',
                     'product_prices.gst_rate',
                     'product_prices.tax_amount',
                     'product_prices.price_after_gst',
@@ -100,19 +102,19 @@ class DataVisibilityService
                 ]);
 
             if ($user && $user->isB2b() && $user->company_id) {
-                $contractPrice = (clone $baseQuery)
-                    ->where('product_prices.price_type', 'contract')
+                $companyPrice = (clone $baseQuery)
+                    ->where('product_prices.price_type', 'company_price')
                     ->where('product_prices.company_id', $user->company_id)
                     ->orderBy('product_variants.id')
                     ->orderBy('product_prices.id')
                     ->first();
 
-                if ($contractPrice) {
-                    return $this->formatResolvedPrice($contractPrice, $productId, $user);
+                if ($companyPrice) {
+                    return $this->formatResolvedPrice($companyPrice, $productId, $user);
                 }
             }
 
-            foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'contract')) as $priceType) {
+            foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'company_price')) as $priceType) {
                 $price = (clone $baseQuery)
                     ->where('product_prices.price_type', $priceType)
                     ->whereNull('product_prices.company_id')
@@ -144,6 +146,8 @@ class DataVisibilityService
                 ->where('product_prices.is_active', true)
                 ->select([
                     'product_prices.amount',
+                    'product_prices.DiscountType as discount_type',
+                    'product_prices.Discount as discount_value',
                     'product_prices.gst_rate',
                     'product_prices.tax_amount',
                     'product_prices.price_after_gst',
@@ -158,21 +162,21 @@ class DataVisibilityService
                     'product_variants.variant_name',
                 ]);
 
-            // Step 2: check company-specific contract price first for B2B users.
+            // Step 2: check company-specific price first for B2B users.
             if ($user && $user->isB2b() && $user->company_id) {
-                $contractPrice = (clone $baseQuery)
-                    ->where('product_prices.price_type', 'contract')
+                $companyPrice = (clone $baseQuery)
+                    ->where('product_prices.price_type', 'company_price')
                     ->where('product_prices.company_id', $user->company_id)
                     ->orderBy('product_prices.id')
                     ->first();
 
-                if ($contractPrice) {
-                    return $this->formatResolvedPrice($contractPrice, (int) $contractPrice->product_id, $user);
+                if ($companyPrice) {
+                    return $this->formatResolvedPrice($companyPrice, (int) $companyPrice->product_id, $user);
                 }
             }
 
-            // Step 3: resolve the first matching non-contract price by current price priority.
-            foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'contract')) as $priceType) {
+            // Step 3: resolve the first matching non-company price by current price priority.
+            foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'company_price')) as $priceType) {
                 $price = (clone $baseQuery)
                     ->where('product_prices.price_type', $priceType)
                     ->whereNull('product_prices.company_id')
@@ -326,7 +330,7 @@ class DataVisibilityService
             }
 
             if ($this->isFullAdmin($user) || $this->isDelegatedAdmin($user)) {
-                return ['contract', 'logged_in', 'dealer', 'institutional', 'retail', 'public'];
+                return ['company_price', 'logged_in', 'dealer', 'institutional', 'retail', 'public'];
             }
 
             if ($user->isB2c()) {
@@ -335,14 +339,14 @@ class DataVisibilityService
 
             if ($user->isB2b()) {
                 if (in_array($user->b2b_type, ['dealer', 'distributor'], true)) {
-                    return ['contract', 'dealer', 'logged_in', 'public', 'retail'];
+                    return ['company_price', 'dealer', 'logged_in', 'public', 'retail'];
                 }
 
                 if (in_array($user->b2b_type, ['lab', 'hospital'], true)) {
-                    return ['contract', 'institutional', 'logged_in', 'public', 'retail'];
+                    return ['company_price', 'institutional', 'logged_in', 'public', 'retail'];
                 }
 
-                return ['contract', 'dealer', 'institutional', 'logged_in', 'public', 'retail'];
+                return ['company_price', 'dealer', 'institutional', 'logged_in', 'public', 'retail'];
             }
 
             return ['retail', 'public'];
@@ -400,12 +404,27 @@ class DataVisibilityService
     protected function formatResolvedPrice(object $price, int $productId, ?User $user): array
     {
         try {
+            // Read the saved base price before any discount is applied.
+            $baseAmount = round((float) $price->amount, 2);
+
+            // Calculate the usable discount values from the configured type and value.
+            $discountDetails = $this->getDiscountDetails($baseAmount, $price->discount_type ?? null, $price->discount_value ?? null);
+
+            // Recalculate tax on the discounted base price so the totals stay correct.
+            $gstRate = round((float) $price->gst_rate, 2);
+            $taxAmount = round(($discountDetails['final_amount'] * $gstRate) / 100, 2);
+            $priceAfterGst = round($discountDetails['final_amount'] + $taxAmount, 2);
+
             return [
-                'amount' => (float) $price->amount,
-                'gst_rate' => (float) $price->gst_rate,
-                'tax_amount' => (float) $price->tax_amount,
-                'price_after_gst' => (float) $price->price_after_gst,
+                'base_amount' => $baseAmount,
+                'amount' => $discountDetails['final_amount'],
+                'gst_rate' => $gstRate,
+                'tax_amount' => $taxAmount,
+                'price_after_gst' => $priceAfterGst,
                 'currency' => (string) $price->currency,
+                'discount_type' => $discountDetails['discount_type'],
+                'discount_value' => $discountDetails['discount_value'],
+                'discount_amount' => $discountDetails['discount_amount'],
                 'min_order_quantity' => (int) $price->min_order_quantity,
                 'max_order_quantity' => $price->max_order_quantity === null ? null : (int) $price->max_order_quantity,
                 'lot_size' => (int) $price->lot_size,
@@ -418,5 +437,40 @@ class DataVisibilityService
             Log::error('Failed to format resolved price.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
+    }
+
+    // This calculates one safe discount result from the configured discount type and value.
+    protected function getDiscountDetails(float $baseAmount, mixed $discountType, mixed $discountValue): array
+    {
+        // Keep the stored discount type limited to the supported values only.
+        $finalDiscountType = strtolower(trim((string) $discountType));
+
+        if (! in_array($finalDiscountType, ['cash', 'percent'], true)) {
+            $finalDiscountType = 'cash';
+        }
+
+        // Ignore negative discounts and keep the saved value easy to reason about.
+        $finalDiscountValue = round(max(0, (float) $discountValue), 2);
+
+        // Convert percentage discounts into their matching amount from the base price.
+        if ($finalDiscountType === 'percent') {
+            $finalDiscountValue = min($finalDiscountValue, 100);
+            $discountAmount = round(($baseAmount * $finalDiscountValue) / 100, 2);
+        } else {
+            $discountAmount = $finalDiscountValue;
+        }
+
+        // Never allow the discount to reduce the price below zero.
+        $discountAmount = min($discountAmount, $baseAmount);
+
+        // This is the final base price that the customer should pay before GST.
+        $finalAmount = round($baseAmount - $discountAmount, 2);
+
+        return [
+            'discount_type' => $finalDiscountType,
+            'discount_value' => $finalDiscountValue,
+            'discount_amount' => $discountAmount,
+            'final_amount' => $finalAmount,
+        ];
     }
 }

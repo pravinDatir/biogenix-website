@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product\ProductVariant;
 use App\Services\Product\ProductService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -90,9 +91,28 @@ class ProductController extends Controller
         try {
             // Step 1: load the visible product details for the user.
             $user = $request->user();
-            $product = $productService->findVisibleProduct($user, $productId);
+            $product = $productService->getAccessibleProductByProductId($user, $productId);
 
             abort_if(! $product, 404);
+
+            $stockStatus = 'Out of Stock';
+            if ($product->visible_variant_id) {
+                $visibleVariant = ProductVariant::query()
+                    ->select(['stock_quantity', 'min_order_quantity'])
+                    ->find($product->visible_variant_id);
+
+                if ($visibleVariant) {
+                    if ((int) $visibleVariant->stock_quantity > ((int) $visibleVariant->min_order_quantity * 10)) {
+                        $stockStatus = 'Limited Availability';
+                    } elseif ((int) $visibleVariant->stock_quantity >= (int) $visibleVariant->min_order_quantity) {
+                        $stockStatus = 'In Stock';
+                    }
+                }
+            }
+
+            $product->stock_status = $stockStatus;
+
+            $relatedProducts = $productService->frequentlyBoughtTogetherProducts($productId, $user);
 
             // Step 2: track user product view activity.
             $productService->logUserActivity($user,$request->session()->getId(), $request->path(), 'product_view', [
@@ -102,6 +122,7 @@ class ProductController extends Controller
             return view('prelogin.product-details', [
                 'id' => $productId,
                 'product' => $product,
+                'related_products' => $relatedProducts,
                 'gst_rate' => (float) ($product->gst_rate ?? 0),
                 'tax_amount' => $product->tax_amount ?? null,
                 'price_with_gst' => $product->price_with_gst ?? null,
