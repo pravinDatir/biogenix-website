@@ -106,3 +106,46 @@
         </div>
     </div>
 </footer>
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- GLOBAL: Back-to-Top Button --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+<button
+    id="backToTopBtn"
+    type="button"
+    aria-label="Back to top"
+    style="opacity:0;pointer-events:none;"
+    class="fixed bottom-6 right-6 z-[999] inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg ring-1 ring-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:bg-primary-600 hover:text-white hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
+>
+    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
+</button>
+
+<script>
+    (function () {
+        var btn = document.getElementById('backToTopBtn');
+        if (!btn) return;
+
+        var visible = false;
+
+        function syncBtn() {
+            var shouldShow = window.scrollY > 300;
+            if (shouldShow === visible) return;
+            visible = shouldShow;
+            if (visible) {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            } else {
+                btn.style.opacity = '0';
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        window.addEventListener('scroll', syncBtn, { passive: true });
+
+        btn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }());
+</script>

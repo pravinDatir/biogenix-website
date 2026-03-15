@@ -162,9 +162,36 @@
 
                 <div class="product-detail-content">
                     <div class="space-y-3.5">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <x-ui.status-badge type="product" :value="$primaryBadge" :label="$primaryBadge" />
-                            <x-ui.status-badge type="product" :value="$secondaryBadge" :label="$secondaryBadge" />
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <x-ui.status-badge type="product" :value="$primaryBadge" :label="$primaryBadge" />
+                                <x-ui.status-badge type="product" :value="$secondaryBadge" :label="$secondaryBadge" />
+                            </div>
+                            {{-- ══ Share + Wishlist Buttons ══ --}}
+                            <div class="flex items-center gap-2">
+                                {{-- Wishlist --}}
+                                <button type="button" id="wishlistBtn" class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600" aria-label="Save to wishlist">
+                                    <svg id="wishlistIcon" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 0 0 0 6.364L12 20.364l7.682-7.682a4.5 4.5 0 0 0-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 0 0-6.364 0Z"/>
+                                    </svg>
+                                    <span id="wishlistLabel">Save</span>
+                                </button>
+                                {{-- Share --}}
+                                <div class="relative" id="shareParent">
+                                    <button type="button" id="shareToggleBtn" class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700" aria-label="Share product">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                                            <path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/>
+                                        </svg>
+                                        <span class="hidden sm:inline">Share</span>
+                                    </button>
+                                    <div id="shareDropdown" class="invisible absolute right-0 top-[calc(100%+6px)] z-50 w-56 rounded-2xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-200">
+                                        <button type="button" data-share="copy"    class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy Link</button>
+                                        <button type="button" data-share="whatsapp" class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-700"><svg class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.75h-.004a9.72 9.72 0 0 1-4.99-1.37l-.358-.212-3.713.974.992-3.623-.233-.37A9.86 9.86 0 0 1 2.25 12.05C2.25 6.65 6.65 2.25 12.05 2.25S21.85 6.65 21.85 12.05 17.45 21.75 12.05 21.75zM12.05.75C5.82.75.75 5.82.75 12.05a11.3 11.3 0 0 0 1.535 5.688L.75 23.25l5.666-1.487A11.3 11.3 0 0 0 12.05 23.25c6.23 0 11.3-5.07 11.3-11.3S18.28.75 12.05.75z"/></svg>WhatsApp</button>
+                                        <button type="button" data-share="email"    class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"><svg class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="space-y-3">
@@ -296,6 +323,28 @@
                                 @endforeach
                             </div>
 
+                        {{-- ══ Pincode / Delivery Check ══ --}}
+                        <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                            <p class="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                <svg class="h-3.5 w-3.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                                Check Delivery Availability
+                            </p>
+                            <div class="flex gap-2">
+                                <input
+                                    id="pincodeInput"
+                                    type="text"
+                                    inputmode="numeric"
+                                    maxlength="6"
+                                    placeholder="Enter 6-digit pincode"
+                                    class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 placeholder-slate-400 outline-none transition focus:border-primary-400 focus:ring-2 focus:ring-primary-600/15"
+                                >
+                                <button type="button" id="pincodeCheckBtn" class="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white transition hover:bg-primary-700">
+                                    Check
+                                </button>
+                            </div>
+                            <p id="pincodeResult" class="mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500"></p>
+                        </div>
+
                         <a href="{{ $brochureUrl ?: '#' }}" @if ($brochureUrl) target="_blank" rel="noopener" @endif data-download-label="Full Brochure" class="{{ $secondaryButtonClass }} js-download-resource mt-4 w-full">
                             Download Full Brochure
                         </a>
@@ -304,7 +353,26 @@
                 </div>
             </section>
 
-            <section class="mt-5">
+            {{-- ═══════════════════════════════════════════════════════ --}}
+            {{-- STICKY TAB NAVIGATION BAR --}}
+            {{-- ═══════════════════════════════════════════════════════ --}}
+            <nav id="productTabBar" class="sticky top-0 z-40 -mx-3 mt-6 border-b border-slate-200 bg-white/95 px-3 backdrop-blur transition-shadow duration-300 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:-mx-10 xl:px-10" aria-label="Product sections">
+                <div class="flex gap-0.5 overflow-x-auto py-0 scrollbar-hide">
+                    @foreach ([
+                        ['id' => 'sectionBulkPricing',  'label' => 'Pricing'],
+                        ['id' => 'sectionOverview',     'label' => 'Overview'],
+                        ['id' => 'sectionResources',    'label' => 'Resources'],
+                        ['id' => 'sectionSpecs',        'label' => 'Specs'],
+                        ['id' => 'sectionRelated',      'label' => 'Related'],
+                    ] as $tab)
+                        <button type="button" class="product-tab-btn shrink-0 whitespace-nowrap rounded-none border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-slate-500 transition hover:text-primary-700" data-tab-target="{{ $tab['id'] }}">
+                            {{ $tab['label'] }}
+                        </button>
+                    @endforeach
+                </div>
+            </nav>
+
+            <section id="sectionBulkPricing" class="mt-5 scroll-mt-16">
                 <div class="{{ $sectionCardClass }}">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <h2 class="{{ $sectionHeadingClass }}">Bulk Tier Pricing</h2>
@@ -335,7 +403,7 @@
                 </div>
             </section>
 
-            <section class="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+            <section id="sectionOverview" class="mt-5 scroll-mt-16 grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
                 <div class="{{ $sectionCardClass }}">
                     <h2 class="{{ $sectionHeadingClass }}">Product Overview</h2>
                     <div class="mt-5 space-y-5 text-sm leading-7 text-slate-600 md:text-base">
@@ -371,7 +439,7 @@
                     </div>
                 </div>
 
-                <div class="{{ $sectionCardClass }}">
+                <div id="sectionResources" class="{{ $sectionCardClass }} scroll-mt-16">
                     <div class="flex items-center justify-between gap-3">
                         <h3 class="{{ $sectionHeadingClass }}">Technical Resources</h3>
                         <x-ui.status-badge type="product" value="resource_count" :label="count($resourceCards) . ' files'" />
@@ -402,7 +470,7 @@
                     </div>
                 </div>
 
-                <div class="{{ $sectionCardClass }}">
+                <div id="sectionSpecs" class="{{ $sectionCardClass }} scroll-mt-16">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <h2 class="{{ $sectionHeadingClass }}">Technical Specifications</h2>
                         <x-ui.status-badge type="product" value="validated_configuration" label="Validated configuration" />
@@ -427,40 +495,50 @@
                 </div>
             </section>
 
-            <section class="mt-6 pb-2">
+            <section id="sectionRelated" class="mt-6 scroll-mt-16 pb-2">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <h2 class="{{ $sectionHeadingClass }}">Frequently Bought Together</h2>
-                    <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-700 transition hover:text-primary-800">View All Related Products</a>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="relatedPrev" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-40" aria-label="Previous">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+                        </button>
+                        <button type="button" id="relatedNext" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-40" aria-label="Next">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        </button>
+                        <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-700 transition hover:text-primary-800">View All</a>
+                    </div>
                 </div>
 
                 @if ($relatedProducts->isNotEmpty())
-                    <div class="product-detail-related-grid">
+                    <div class="relative mt-4 overflow-hidden">
+                        <div id="relatedCarouselTrack" class="flex gap-4 overflow-x-auto scroll-smooth pb-2 scrollbar-hide" style="-webkit-overflow-scrolling:touch">
                             @foreach ($relatedProducts as $relatedProduct)
                                 @php
-                                $relatedImage = asset($relatedProduct->primaryImage?->file_path ?: 'storage/slides/logo.jpg');
-                                $relatedPrice = $relatedProduct->visible_price !== null ? (float) $relatedProduct->visible_price : null;
-                                $relatedReviews = 38 + (((int) ($relatedProduct->id ?? 1)) * 3);
-                            @endphp
-                            <article class="product-detail-related-card group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl">
-                                <div class="overflow-hidden">
-                                    <img src="{{ $relatedImage }}" alt="{{ $relatedProduct->name }}" class="h-[220px] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
-                                </div>
-                                <div class="space-y-3 px-4 pb-5 pt-4">
-                                    <div class="flex items-center gap-1 text-amber-400">
-                                        @for ($star = 0; $star < 5; $star++)
-                                            <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z"></path></svg>
-                                        @endfor
-                                        <span class="ml-1 text-xs font-medium text-slate-500">{{ $relatedReviews }} reviews</span>
+                                    $relatedImage = asset($relatedProduct->primaryImage?->file_path ?: 'storage/slides/logo.jpg');
+                                    $relatedPrice = $relatedProduct->visible_price !== null ? (float) $relatedProduct->visible_price : null;
+                                    $relatedReviews = 38 + (((int) ($relatedProduct->id ?? 1)) * 3);
+                                @endphp
+                                <article class="group w-[280px] shrink-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl snap-start">
+                                    <div class="overflow-hidden">
+                                        <img src="{{ $relatedImage }}" alt="{{ $relatedProduct->name }}" class="h-[200px] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                     </div>
-                                    <h3 class="text-base font-semibold leading-6 text-slate-950">{{ Str::limit((string) ($relatedProduct->name ?? 'Related Product'), 52) }}</h3>
-                                    <p class="text-sm leading-6 text-slate-500">{{ $relatedProduct->brand ?? 'Biogenix' }}</p>
-                                    <div class="flex items-center justify-between gap-3">
-                                        <p class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($relatedPrice) !!}</p>
-                                        <a href="{{ route('products.productDetails', $relatedProduct->id) }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Quick Add</a>
+                                    <div class="space-y-3 px-4 pb-5 pt-4">
+                                        <div class="flex items-center gap-1 text-amber-400">
+                                            @for ($star = 0; $star < 5; $star++)
+                                                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z"></path></svg>
+                                            @endfor
+                                            <span class="ml-1 text-xs font-medium text-slate-500">{{ $relatedReviews }} reviews</span>
+                                        </div>
+                                        <h3 class="text-base font-semibold leading-6 text-slate-950">{{ Str::limit((string) ($relatedProduct->name ?? 'Related Product'), 52) }}</h3>
+                                        <p class="text-sm leading-6 text-slate-500">{{ $relatedProduct->brand ?? 'Biogenix' }}</p>
+                                        <div class="flex items-center justify-between gap-3">
+                                            <p class="text-lg font-extrabold tracking-tight text-primary-700">{!! $formatInr($relatedPrice) !!}</p>
+                                            <a href="{{ route('products.productDetails', $relatedProduct->id) }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View</a>
+                                        </div>
                                     </div>
-                                </div>
-                            </article>
-                        @endforeach
+                                </article>
+                            @endforeach
+                        </div>
                     </div>
                 @else
                     <div class="mt-6 rounded-[28px] border border-dashed border-slate-300 bg-white px-6 py-12 text-center shadow-sm">
@@ -468,6 +546,23 @@
                     </div>
                 @endif
             </section>
+        </div>
+    </div>
+
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    {{-- STICKY ADD-TO-CART BAR (mobile / scroll-down) --}}
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    <div id="stickyAddToCartBar" class="fixed inset-x-0 bottom-0 z-50 translate-y-full border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-4px_24px_rgba(15,23,42,0.08)] backdrop-blur transition-transform duration-300 xl:hidden">
+        <div class="mx-auto flex max-w-xl items-center gap-3">
+            <img src="{{ $imageUrl }}" alt="{{ $productTitle }}" class="h-11 w-11 shrink-0 rounded-xl border border-slate-100 object-cover">
+            <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-slate-900">{{ $productTitle }}</p>
+                <p class="text-base font-extrabold text-primary-700">{!! $formatInr($currentPrice) !!}</p>
+            </div>
+            <button type="button" id="stickyAddToCartBtn" class="js-add-to-cart inline-flex h-11 shrink-0 items-center gap-1.5 rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 10.5a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L21 7H7"/></svg>
+                Add to Cart
+            </button>
         </div>
     </div>
 
@@ -898,7 +993,175 @@
                         });
                     });
                 });
+
+                /* ══════════════════════════════════════════════
+                   SHARE DROPDOWN
+                ══════════════════════════════════════════════ */
+                var shareParent   = document.getElementById('shareParent');
+                var shareToggle   = document.getElementById('shareToggleBtn');
+                var shareDropdown = document.getElementById('shareDropdown');
+
+                function openShare()  { if (shareDropdown) { shareDropdown.classList.remove('invisible','opacity-0'); shareDropdown.classList.add('opacity-100'); } }
+                function closeShare() { if (shareDropdown) { shareDropdown.classList.add('invisible','opacity-0'); shareDropdown.classList.remove('opacity-100'); } }
+
+                if (shareToggle && shareDropdown && shareParent) {
+                    shareToggle.addEventListener('click', function (e) { e.stopPropagation(); shareDropdown.classList.contains('invisible') ? openShare() : closeShare(); });
+                    document.addEventListener('click', function (e) { if (!shareParent.contains(e.target)) closeShare(); });
+                    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeShare(); });
+                }
+
+                document.querySelectorAll('[data-share]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var url   = window.location.href;
+                        var title = document.title;
+                        var type  = btn.dataset.share;
+                        if (type === 'copy') {
+                            navigator.clipboard.writeText(url).then(function () {
+                                showToast({ title: 'Link copied!', message: 'Product link has been copied to your clipboard.', variant: 'info', duration: 2400 });
+                            });
+                        } else if (type === 'whatsapp') {
+                            window.open('https://wa.me/?text=' + encodeURIComponent(title + ' — ' + url), '_blank');
+                        } else if (type === 'email') {
+                            window.location.href = 'mailto:?subject=' + encodeURIComponent(title) + '&body=' + encodeURIComponent('Check out this product: ' + url);
+                        }
+                        closeShare();
+                    });
+                });
+
+                /* ══════════════════════════════════════════════
+                   WISHLIST BUTTON
+                ══════════════════════════════════════════════ */
+                var WISH_KEY   = 'biogenix_wishlist';
+                var wishBtn    = document.getElementById('wishlistBtn');
+                var wishIcon   = document.getElementById('wishlistIcon');
+                var wishLabel  = document.getElementById('wishlistLabel');
+                var productId  = Number(@json($product->id));
+
+                function loadWishlist()   { try { return JSON.parse(localStorage.getItem(WISH_KEY) || '[]'); } catch(e) { return []; } }
+                function saveWishlist(arr) { localStorage.setItem(WISH_KEY, JSON.stringify(arr)); }
+                function isWished()       { return loadWishlist().some(function (x) { return x.id === productId; }); }
+
+                function syncWishBtn() {
+                    if (!wishBtn) return;
+                    var active = isWished();
+                    wishIcon.setAttribute('fill', active ? 'currentColor' : 'none');
+                    wishBtn.classList.toggle('border-rose-300', active);
+                    wishBtn.classList.toggle('bg-rose-50', active);
+                    wishBtn.classList.toggle('text-rose-600', active);
+                    wishBtn.classList.toggle('border-slate-200', !active);
+                    wishBtn.classList.toggle('bg-slate-50', !active);
+                    wishBtn.classList.toggle('text-slate-600', !active);
+                    wishLabel.textContent = active ? 'Saved' : 'Save';
+                }
+                syncWishBtn();
+
+                if (wishBtn) {
+                    wishBtn.addEventListener('click', function () {
+                        var list = loadWishlist();
+                        if (isWished()) {
+                            saveWishlist(list.filter(function (x) { return x.id !== productId; }));
+                            showToast({ title: 'Removed from wishlist', message: @json($productTitle) + ' was removed.', variant: 'info', duration: 2000 });
+                        } else {
+                            list.push({ id: productId, name: @json($productTitle), image: @json($imageUrl), price: @json($currentPrice) });
+                            saveWishlist(list);
+                            showToast({ title: 'Saved to wishlist ♥', message: @json($productTitle) + ' was saved.', variant: 'info', duration: 2000 });
+                        }
+                        syncWishBtn();
+                    });
+                }
+
+                /* ══════════════════════════════════════════════
+                   PINCODE CHECK
+                ══════════════════════════════════════════════ */
+                var pincodeInput    = document.getElementById('pincodeInput');
+                var pincodeCheckBtn = document.getElementById('pincodeCheckBtn');
+                var pincodeResult   = document.getElementById('pincodeResult');
+
+                if (pincodeCheckBtn && pincodeInput && pincodeResult) {
+                    pincodeCheckBtn.addEventListener('click', function () {
+                        var code = (pincodeInput.value || '').replace(/\D/g, '');
+                        pincodeInput.value = code;
+                        if (code.length !== 6) {
+                            pincodeResult.textContent = 'Please enter a valid 6-digit pincode.';
+                            pincodeResult.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-rose-600';
+                            return;
+                        }
+                        var prefix = Number(code.charAt(0));
+                        if (prefix >= 2 && prefix <= 8) {
+                            pincodeResult.innerHTML = '✓ <strong>Delivery available</strong> to ' + code + ' — Estimated 24-48 hours';
+                            pincodeResult.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-emerald-700';
+                        } else {
+                            pincodeResult.textContent = '✗ Delivery not available for this pincode currently.';
+                            pincodeResult.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-rose-600';
+                        }
+                    });
+                    pincodeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') pincodeCheckBtn.click(); });
+                }
+
+                /* ══════════════════════════════════════════════
+                   STICKY TAB BAR
+                ══════════════════════════════════════════════ */
+                var tabBar    = document.getElementById('productTabBar');
+                var tabBtns   = tabBar ? Array.from(tabBar.querySelectorAll('.product-tab-btn')) : [];
+                var tabTargets = tabBtns.map(function (btn) { return document.getElementById(btn.dataset.tabTarget); }).filter(Boolean);
+
+                tabBtns.forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var target = document.getElementById(btn.dataset.tabTarget);
+                        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                });
+
+                /* highlight active tab on scroll */
+                if (tabTargets.length) {
+                    var onScroll = function () {
+                        var scrollY = window.scrollY + 80;
+                        var activeId = null;
+                        tabTargets.forEach(function (sec) {
+                            if (sec.offsetTop <= scrollY) activeId = sec.id;
+                        });
+                        tabBtns.forEach(function (btn) {
+                            var isActive = btn.dataset.tabTarget === activeId;
+                            btn.classList.toggle('border-primary-600', isActive);
+                            btn.classList.toggle('text-primary-700', isActive);
+                            btn.classList.toggle('border-transparent', !isActive);
+                            btn.classList.toggle('text-slate-500', !isActive);
+                        });
+                    };
+                    window.addEventListener('scroll', onScroll, { passive: true });
+                    onScroll();
+                }
+
+                /* ══════════════════════════════════════════════
+                   STICKY ADD-TO-CART BAR
+                ══════════════════════════════════════════════ */
+                var stickyBar = document.getElementById('stickyAddToCartBar');
+                if (stickyBar) {
+                    window.addEventListener('scroll', function () {
+                        stickyBar.classList.toggle('translate-y-full', window.scrollY < 400);
+                        stickyBar.classList.toggle('translate-y-0', window.scrollY >= 400);
+                    }, { passive: true });
+                }
+
+                /* ══════════════════════════════════════════════
+                   RELATED PRODUCTS CAROUSEL
+                ══════════════════════════════════════════════ */
+                var relatedTrack = document.getElementById('relatedCarouselTrack');
+                var relatedPrev  = document.getElementById('relatedPrev');
+                var relatedNext  = document.getElementById('relatedNext');
+                var scrollAmt    = 300;
+
+                if (relatedTrack && relatedPrev && relatedNext) {
+                    relatedPrev.addEventListener('click', function () { relatedTrack.scrollBy({ left: -scrollAmt, behavior: 'smooth' }); });
+                    relatedNext.addEventListener('click', function () { relatedTrack.scrollBy({ left: scrollAmt, behavior: 'smooth' }); });
+                }
+
             });
         </script>
     @endpush
+
+    <style>
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+    </style>
 @endif
