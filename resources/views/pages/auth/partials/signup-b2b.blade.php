@@ -9,6 +9,7 @@
     $buttonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
     $linkClass = 'text-sm font-semibold text-primary-700 transition hover:text-primary-800';
     $checkboxClass = 'h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500/20';
+    $designationOptions = config('common.b2b_designation_options', []);
 @endphp
 
 <div class="{{ $shellClass }}">
@@ -41,7 +42,6 @@
         <form id="signupForm" method="POST" action="{{ route('register') }}" novalidate>
             @csrf
             <input type="hidden" name="user_type" id="userType" value="b2b">
-            <input type="hidden" name="b2b_type" id="b2bType" value="distributor">
 
             <div class="{{ $panelClass }}">
                 <div class="{{ $sectionHeaderClass }}">
@@ -61,21 +61,25 @@
                     <div>
                         <label for="legal_name" class="mb-1.5 block text-xs font-semibold text-slate-700">Legal Business Name</label>
                         <input type="text" name="legal_name" id="legal_name" class="{{ $inputClass }}" placeholder="As per PAN/GST" value="{{ old('legal_name') }}">
+                        @error('legal_name')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="gst_number" class="mb-1.5 block text-xs font-semibold text-slate-700">GST Number <span class="text-rose-500">*</span></label>
-                        <input type="text" name="gst_number" id="gst_number" class="{{ $inputClass }} uppercase" placeholder="22AAAAA0000A1Z5">
+                        <input type="text" name="gst_number" id="gst_number" class="{{ $inputClass }} uppercase" placeholder="22AAAAA0000A1Z5" value="{{ old('gst_number') }}">
+                        @error('gst_number')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="pan_number" class="mb-1.5 block text-xs font-semibold text-slate-700">PAN Number</label>
-                        <input type="text" name="pan_number" id="pan_number" class="{{ $inputClass }} uppercase" placeholder="ABCDE1234F">
+                        <input type="text" name="pan_number" id="pan_number" class="{{ $inputClass }} uppercase" placeholder="ABCDE1234F" value="{{ old('pan_number') }}">
+                        @error('pan_number')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="reg_number" class="mb-1.5 block text-xs font-semibold text-slate-700">Company Registration Number</label>
-                        <input type="text" name="reg_number" id="reg_number" class="{{ $inputClass }} uppercase" placeholder="U00000XX0000XX000000">
+                        <input type="text" name="reg_number" id="reg_number" class="{{ $inputClass }} uppercase" placeholder="U00000XX0000XX000000" value="{{ old('reg_number') }}">
+                        @error('reg_number')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
@@ -83,14 +87,22 @@
                         <select id="established_year" name="established_year" class="{{ $inputClass }}">
                             <option value="">Select Year</option>
                             @for ($i = date('Y'); $i >= 1950; $i--)
-                                <option value="{{ $i }}">{{ $i }}</option>
+                                <option value="{{ $i }}" @selected((string) old('established_year') === (string) $i)>{{ $i }}</option>
                             @endfor
                         </select>
+                        @error('established_year')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
-                    <div class="md:col-span-2">
+                    <div>
+                        <label for="company_type" class="mb-1.5 block text-xs font-semibold text-slate-700">Company Type</label>
+                        <input type="text" name="company_type" id="company_type" class="{{ $inputClass }}" placeholder="e.g. Proprietorship" value="{{ old('company_type') }}">
+                        @error('company_type')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div>
                         <label for="website" class="mb-1.5 block text-xs font-semibold text-slate-700">Company Website</label>
-                        <input type="url" name="website" id="website" class="{{ $inputClass }}" placeholder="https://www.biogenix.com">
+                        <input type="url" name="website" id="website" class="{{ $inputClass }}" placeholder="https://www.biogenix.com" value="{{ old('website') }}">
+                        @error('website')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
                 </div>
             </div>
@@ -111,8 +123,14 @@
                     </div>
 
                     <div>
-                        <label for="designation" class="mb-1.5 block text-xs font-semibold text-slate-700">Designation</label>
-                        <input type="text" name="designation" id="designation" class="{{ $inputClass }}" placeholder="e.g. Purchase Manager">
+                        <label for="b2b_type" class="mb-1.5 block text-xs font-semibold text-slate-700">Designation <span class="text-rose-500">*</span></label>
+                        <select name="b2b_type" id="b2b_type" class="{{ $inputClass }}" required>
+                            <option value="">Select Designation</option>
+                            @foreach ($designationOptions as $value => $label)
+                                <option value="{{ $value }}" @selected(old('b2b_type') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('b2b_type')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
@@ -132,7 +150,8 @@
 
                     <div>
                         <label for="alt_phone" class="mb-1.5 block text-xs font-semibold text-slate-700">Alternate Phone</label>
-                        <input type="text" name="alt_phone" id="alt_phone" class="{{ $inputClass }}" placeholder="022-12345678">
+                        <input type="text" name="alt_phone" id="alt_phone" class="{{ $inputClass }}" placeholder="022-12345678" value="{{ old('alt_phone') }}">
+                        @error('alt_phone')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="md:col-span-2 pt-2"><hr class="border-slate-100"></div>
@@ -162,38 +181,43 @@
                 <div class="grid grid-cols-1 gap-5 p-6 md:grid-cols-2">
                     <div class="md:col-span-2">
                         <label for="address_1" class="mb-1.5 block text-xs font-semibold text-slate-700">Billing Address Line 1 <span class="text-rose-500">*</span></label>
-                        <input type="text" name="address_1" id="address_1" class="{{ $inputClass }}" placeholder="Suite, Building, Street">
+                        <input type="text" name="address_1" id="address_1" class="{{ $inputClass }}" placeholder="Suite, Building, Street" value="{{ old('address_1') }}">
+                        @error('address_1')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="md:col-span-2">
                         <label for="address_2" class="mb-1.5 block text-xs font-semibold text-slate-700">Billing Address Line 2</label>
-                        <input type="text" name="address_2" id="address_2" class="{{ $inputClass }}" placeholder="Area, Landmark">
+                        <input type="text" name="address_2" id="address_2" class="{{ $inputClass }}" placeholder="Area, Landmark" value="{{ old('address_2') }}">
+                        @error('address_2')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="city" class="mb-1.5 block text-xs font-semibold text-slate-700">City <span class="text-rose-500">*</span></label>
                         <select id="city" name="city" class="{{ $inputClass }}">
                             <option value="">Select City</option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Bangalore">Bangalore</option>
-                            <option value="Pune">Pune</option>
+                            <option value="Mumbai" @selected(old('city') === 'Mumbai')>Mumbai</option>
+                            <option value="Delhi" @selected(old('city') === 'Delhi')>Delhi</option>
+                            <option value="Bangalore" @selected(old('city') === 'Bangalore')>Bangalore</option>
+                            <option value="Pune" @selected(old('city') === 'Pune')>Pune</option>
                         </select>
+                        @error('city')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="state" class="mb-1.5 block text-xs font-semibold text-slate-700">State <span class="text-rose-500">*</span></label>
                         <select id="state" name="state" class="{{ $inputClass }}">
                             <option value="">Select State</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Karnataka">Karnataka</option>
+                            <option value="Maharashtra" @selected(old('state') === 'Maharashtra')>Maharashtra</option>
+                            <option value="Delhi" @selected(old('state') === 'Delhi')>Delhi</option>
+                            <option value="Karnataka" @selected(old('state') === 'Karnataka')>Karnataka</option>
                         </select>
+                        @error('state')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>
                         <label for="pincode" class="mb-1.5 block text-xs font-semibold text-slate-700">Pincode <span class="text-rose-500">*</span></label>
-                        <input type="text" name="pincode" id="pincode" class="{{ $inputClass }}" placeholder="400001">
+                        <input type="text" name="pincode" id="pincode" class="{{ $inputClass }}" placeholder="400001" value="{{ old('pincode') }}">
+                        @error('pincode')<p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                     </div>
 
                     <div>

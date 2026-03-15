@@ -28,5 +28,12 @@ return [
         'laboratory-equipment',
         'consumables',
     ],
+    'b2b_designation_options' => [
+        'dealer' => 'Dealer',
+        'distributor' => 'Distributor',
+        'sales' => 'Sales',
+        'lab' => 'Laboratory',
+        'hospital' => 'Hospital',
+    ],
     'frequently_bought_together_limit' => 4,
 ];
