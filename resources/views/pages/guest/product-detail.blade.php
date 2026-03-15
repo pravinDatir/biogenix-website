@@ -61,6 +61,8 @@
         $quoteUrl = route('proforma.create', ['product_id' => $product->id]);
         $cartVariantId = $product->visible_variant_id ?? null;
         $loginUrl = route('login');
+        // Step 1: read the business-owned overview directly from the product row for the detail section.
+        $productOverview = trim((string) ($product->product_overview ?? ''));
         $previousUrl = url()->previous();
         $currentUrl = url()->current();
         $currentHost = parse_url(url()->to('/'), PHP_URL_HOST);
@@ -70,26 +72,19 @@
             : route('products.index');
         $shippingHighlights = ['Ships in 24-48 hours', 'Validated packaging', 'Priority support available'];
         $trustSignals = ['Secure enterprise checkout', 'GST-ready commercial invoice', 'Cold-chain dispatch support'];
-        $overviewPoints = array_values(array_filter([
-            filled($brandLabel) ? 'Trusted brand line: ' . $brandLabel : null,
-            filled($applicationLabel) ? 'Suitable for ' . Str::lower($applicationLabel) . ' workflows.' : null,
-            filled($product->visible_variant_name ?? null) ? 'Visible variant: ' . $product->visible_variant_name : null,
-            'Prepared for institutional procurement and quotation workflows.',
-        ]));
+        // Step 2: prepare the saved visible-variant technical specifications for the detail section.
+        $technicalSpecificationRows = collect($product->technical_specification_json ?? [])
+            ->map(fn ($value, $label) => [
+                'label' => trim((string) $label),
+                'value' => trim((string) $value),
+            ])
+            ->filter(fn (array $row) => $row['label'] !== '' && $row['value'] !== '')
+            ->values();
         $resourceCards = [
             ['title' => 'Certificate of Analysis', 'meta' => 'Batch-linked quality document', 'href' => $brochureUrl ?: '#', 'icon' => 'clipboard'],
             ['title' => 'Safety Data Sheet', 'meta' => 'Handling and compliance reference', 'href' => $brochureUrl ?: '#', 'icon' => 'shield'],
             ['title' => 'User Manual', 'meta' => 'Installation and usage guide', 'href' => $brochureUrl ?: '#', 'icon' => 'book'],
             ['title' => 'Maintenance Schedule', 'meta' => 'Standard care checklist', 'href' => $brochureUrl ?: '#', 'icon' => 'calendar'],
-        ];
-        $specRows = [
-            ['Max RPM', number_format(17500 + ((int) ($product->id ?? 1) * 120)) . ' RPM'],
-            ['Max RCF', number_format(30130 + ((int) ($product->id ?? 1) * 180)) . ' x g'],
-            ['Capacity', (2 + ((int) ($product->id ?? 1) % 3)) . ' x 250 mL'],
-            ['Temperature Range', '-20 to +40 deg C'],
-            ['Run Time', '10s to 99h 59min'],
-            ['Noise Level', '< ' . max(46, 56 - (int) ($product->id ?? 1)) . ' dB(A)'],
-            ['Dimensions', (440 + ((int) ($product->id ?? 1) * 5)) . ' x 550 x 370 mm'],
         ];
         $bulkTierRows = [
             ['label' => '1 - 2 Units', 'discount' => 'None', 'price' => $currentPrice, 'min' => 1, 'max' => 2, 'discount_value' => 0],
@@ -285,6 +280,7 @@
                             </div>
 
                             <div class="{{ $actionsClass }}">
+                                {{-- Step 1: keep the core storefront purchase actions together inside the pricing card. --}}
                                 @guest
                                     <a href="{{ $loginUrl }}" class="{{ $primaryButtonClass }} js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -314,6 +310,35 @@
                                     </svg>
                                     <span>Add to Quote</span>
                                 </a>
+
+                                {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
+                                @guest
+                                    <a href="{{ $loginUrl }}" class="{{ $secondaryButtonClass }} orange_button sm:col-span-2">
+                                        <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M5 12h14"></path>
+                                            <path d="m12 5 7 7-7 7"></path>
+                                        </svg>
+                                        <span>Buy Now</span>
+                                    </a>
+                                @else
+                                    <form method="POST" action="{{ route('checkout.buy-now') }}" class="sm:col-span-2">
+                                        @csrf
+
+                                        {{-- Step 3: submit the selected product and current quantity so checkout includes this choice immediately. --}}
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="product_variant_id" value="{{ $cartVariantId }}">
+                                        <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="1">
+
+                                        {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
+                                        <button type="submit" class="{{ $secondaryButtonClass }} orange_button">
+                                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M5 12h14"></path>
+                                                <path d="m12 5 7 7-7 7"></path>
+                                            </svg>
+                                            <span>Buy Now</span>
+                                        </button>
+                                    </form>
+                                @endguest
                             </div>
                         </div>
 
@@ -407,18 +432,8 @@
                 <div class="{{ $sectionCardClass }}">
                     <h2 class="{{ $sectionHeadingClass }}">Product Overview</h2>
                     <div class="mt-5 space-y-5 text-sm leading-7 text-slate-600 md:text-base">
-                        <p>{{ $product->description ?: 'This product is presented for scientific buyers who need reliable performance, clear documentation, and a polished procurement experience.' }}</p>
-                        <p>The detail flow keeps pricing, technical references, and quotation actions together so users can move from evaluation to purchase without losing context.</p>
-                        <ul class="space-y-3">
-                            @foreach ($overviewPoints as $point)
-                                <li class="flex items-start gap-3">
-                                    <span class="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary-50 text-primary-700">
-                                        <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.5 7.563a1 1 0 0 1-1.421 0l-3-3.025a1 1 0 1 1 1.42-1.408l2.29 2.31 6.79-6.854a1 1 0 0 1 1.415 0Z" clip-rule="evenodd"></path></svg>
-                                    </span>
-                                    <span>{{ $point }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
+                        {{-- Step 2: render the saved product overview exactly from database content instead of page-level hardcoded copy. --}}
+                        <p>{!! nl2br(e($productOverview)) !!}</p>
 
                         <div class="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-5">
                             <div class="flex flex-wrap items-center justify-between gap-3">
@@ -470,20 +485,23 @@
                     </div>
                 </div>
 
-                <div id="sectionSpecs" class="{{ $sectionCardClass }} scroll-mt-16">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="{{ $sectionHeadingClass }}">Technical Specifications</h2>
-                        <x-ui.status-badge type="product" value="validated_configuration" label="Validated configuration" />
+                @if ($technicalSpecificationRows->isNotEmpty())
+                    <div id="sectionSpecs" class="{{ $sectionCardClass }} scroll-mt-16">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h2 class="{{ $sectionHeadingClass }}">Technical Specifications</h2>
+                            <x-ui.status-badge type="product" value="validated_configuration" label="Validated configuration" />
+                        </div>
+                        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                            {{-- Step 3: render the saved visible-variant technical specs directly from the database payload. --}}
+                            @foreach ($technicalSpecificationRows as $row)
+                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{{ $row['label'] }}</p>
+                                    <p class="mt-3 text-base font-medium leading-7 text-slate-900">{{ $row['value'] }}</p>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                    <div class="mt-6 grid gap-4 sm:grid-cols-2">
-                        @foreach ($specRows as $row)
-                            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
-                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{{ $row[0] }}</p>
-                                <p class="mt-3 text-base font-medium leading-7 text-slate-900">{{ $row[1] }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+                @endif
 
                 <div class="rounded-3xl border border-primary-100 bg-primary-50 p-5 shadow-sm md:p-6">
                     <h3 class="{{ $sectionHeadingClass }}">Need a Custom Setup?</h3>
@@ -592,12 +610,10 @@
                 const tierDiscount = document.getElementById('detailTierDiscount');
                 const bulkTierRows = Array.from(document.querySelectorAll('[data-bulk-tier-row]'));
                 const bulkTierHint = document.getElementById('bulkTierHint');
+                const buyNowQuantityInput = document.getElementById('productDetailBuyNowQuantity');
                 let quantity = 1;
 
-                const cartItemsUrl = @json(route('cart.items.store'));
                 const loginUrl = @json(route('login'));
-                const cartPageUrl = @json(route('cart.page'));
-                const csrfToken = @json(csrf_token());
                 const isAuthenticated = @json(auth()->check());
 
                 const showToast = function (options) {
@@ -667,34 +683,6 @@
                             toast.remove();
                         }, 220);
                     }, Number(options && options.duration ? options.duration : 4200));
-                };
-
-                const addToCart = async function (payload) {
-                    const response = await fetch(cartItemsUrl, {
-                        method: 'POST',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                        },
-                        body: JSON.stringify(payload),
-                    });
-
-                    const contentType = String(response.headers.get('content-type') || '');
-                    if (response.redirected || !contentType.includes('application/json')) {
-                        throw { type: 'auth' };
-                    }
-
-                    const data = await response.json().catch(function () {
-                        return null;
-                    });
-
-                    if (!response.ok) {
-                        throw { type: 'error', message: data && data.message ? data.message : 'Unable to add product to cart.' };
-                    }
-
-                    return data;
                 };
 
                 const syncLocalCart = function (target, selectedQuantity) {
@@ -796,22 +784,36 @@
                     }
                 };
 
-                syncTierPricing();
+                const syncSelectedQuantity = function (shouldAnimate) {
+                    // Step 1: keep the visible quantity label aligned with the current product selection.
+                    if (quantityValue) {
+                        quantityValue.textContent = String(quantity);
+
+                        if (shouldAnimate !== false) {
+                            quantityValue.classList.add('scale-110');
+
+                            window.setTimeout(function () {
+                                quantityValue.classList.remove('scale-110');
+                            }, 120);
+                        }
+                    }
+
+                    // Step 2: keep the buy-now form aligned with the same selected quantity.
+                    if (buyNowQuantityInput) {
+                        buyNowQuantityInput.value = String(quantity);
+                    }
+
+                    // Step 3: refresh the tier pricing so the buyer sees the correct checkout estimate.
+                    syncTierPricing();
+                };
+
+                syncSelectedQuantity(false);
 
                 bulkTierRows.forEach(function (row) {
                     row.addEventListener('click', function () {
                         const min = Math.max(1, Number(row.dataset.min || 1));
                         quantity = min;
-
-                        if (quantityValue) {
-                            quantityValue.textContent = String(quantity);
-                            quantityValue.classList.add('scale-110');
-                            window.setTimeout(function () {
-                                quantityValue.classList.remove('scale-110');
-                            }, 120);
-                        }
-
-                        syncTierPricing();
+                        syncSelectedQuantity();
                     });
                 });
 
@@ -889,18 +891,7 @@
                 document.querySelectorAll('.catalog-qty-btn').forEach(function (button) {
                     button.addEventListener('click', function () {
                         quantity = Math.max(1, quantity + Number(button.dataset.direction || 0));
-
-                        if (!quantityValue) {
-                            return;
-                        }
-
-                        quantityValue.textContent = String(quantity);
-                        quantityValue.classList.add('scale-110');
-                        syncTierPricing();
-
-                        window.setTimeout(function () {
-                            quantityValue.classList.remove('scale-110');
-                        }, 120);
+                        syncSelectedQuantity();
                     });
                 });
 
@@ -938,13 +929,21 @@
                         target.classList.add('opacity-80');
 
                         try {
-                            await addToCart({
-                                product_id: productId,
-                            product_variant_id: variantId,
-                            quantity: quantity,
-                        });
+                            // Step 1: let the shared cart store decide whether this add should stay local or go to the backend cart.
+                            const result = await window.CartStore.addItem({
+                                productId: productId,
+                                variantId: variantId,
+                                quantity: quantity,
+                                unitPrice: Number(target.dataset.unitPrice || 0) || (Number('{{ $currentPrice ?? 0 }}') || 0),
+                                name: productName,
+                                model: target.dataset.model || '{{ $modelLabel }}',
+                                image: lightboxImage ? lightboxImage.src || mainImage.src : (mainImage ? mainImage.src : ''),
+                            });
 
-                            syncLocalCart(target, quantity);
+                            // Step 2: keep the existing toast flow for backend validation and login issues.
+                            if (!result || result.ok === false) {
+                                throw result || { type: 'error', message: 'Unable to add product to cart.' };
+                            }
 
                             showToast({
                                 title: 'Added to cart',

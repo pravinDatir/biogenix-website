@@ -331,10 +331,40 @@
                 }
 
                 /* ── Render Line Card (with Save for Later button) ── */
+                const getLineSubtotal = function (item) {
+                    // Step 1: prefer the backend subtotal when the current cart line came from the authenticated cart.
+                    if (Number.isFinite(Number(item.lineSubtotal))) {
+                        return Number(item.lineSubtotal);
+                    }
+
+                    // Step 2: keep the existing guest subtotal fallback for pre-login browsing.
+                    return Number(item.unitPrice || 0) * Math.max(1, Number(item.quantity || 1));
+                };
+
+                const getLineTax = function (item) {
+                    // Step 1: prefer the backend tax when the current cart line came from the authenticated cart.
+                    if (Number.isFinite(Number(item.taxAmount))) {
+                        return Number(item.taxAmount);
+                    }
+
+                    // Step 2: keep the existing guest GST fallback for pre-login browsing.
+                    return getLineSubtotal(item) * 0.18;
+                };
+
+                const getLineTotal = function (item) {
+                    // Step 1: prefer the backend total when the current cart line came from the authenticated cart.
+                    if (Number.isFinite(Number(item.lineTotal))) {
+                        return Number(item.lineTotal);
+                    }
+
+                    // Step 2: keep the existing guest total fallback for pre-login browsing.
+                    return getLineSubtotal(item) + getLineTax(item);
+                };
+
                 const renderLineCard = function (item) {
                     const quantity  = Math.max(1, Number(item.quantity || 1));
                     const unitPrice = Number(item.unitPrice || 0);
-                    const subtotal  = unitPrice * quantity;
+                    const subtotal  = getLineSubtotal(item);
                     const image     = String(item.image || 'https://via.placeholder.com/220x220?text=Biogenix');
                     const model     = String(item.model || 'N/A');
                     const name      = String(item.name || 'Product');
@@ -447,7 +477,7 @@
                 /* ── Render Summary Row ── */
                 const renderSummaryRow = function (item) {
                     const quantity = Math.max(1, Number(item.quantity || 1));
-                    const total    = Number(item.unitPrice || 0) * quantity;
+                    const total    = getLineTotal(item);
                     const image    = String(item.image || 'https://via.placeholder.com/96x96?text=Bio');
                     const name     = String(item.name || 'Product');
                     return `
@@ -579,18 +609,20 @@
                     if (checkoutButton) checkoutButton.classList.remove('opacity-70');
 
                     var subtotal = 0;
+                    var tax = 0;
+                    var total = 0;
                     items.forEach(function (item) {
-                        const qty  = Math.max(1, Number(item.quantity || 1));
-                        subtotal  += Number(item.unitPrice || 0) * qty;
+                        subtotal += getLineSubtotal(item);
+                        tax += getLineTax(item);
+                        total += getLineTotal(item);
                         cartList.insertAdjacentHTML('beforeend', renderLineCard(item));
                         summaryItems.insertAdjacentHTML('beforeend', renderSummaryRow(item));
                     });
 
-                    const tax = subtotal * 0.18;
                     if (itemCount)  itemCount.textContent      = totalUnits + (totalUnits === 1 ? ' item' : ' items');
                     if (subtotalEl) subtotalEl.innerHTML        = formatInr(subtotal);
                     if (taxEl)      taxEl.innerHTML             = formatInr(tax);
-                    if (totalEl)    totalEl.innerHTML           = formatInr(subtotal + tax);
+                    if (totalEl)    totalEl.innerHTML           = formatInr(total);
 
                     updateShippingProgress(subtotal);
                     bindActions();
@@ -602,3 +634,11 @@
         </script>
     @endpush
 @endsection
+
+@push('scripts')
+    @if (!is_null($initialCart ?? null))
+        <script>
+            window.__BIOGENIX_PAGE_CART__ = @json($initialCart);
+        </script>
+    @endif
+@endpush

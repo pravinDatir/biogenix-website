@@ -290,11 +290,11 @@ class CartService
     protected function findCartForUser(User $user): ?Cart
     {
         try {
-            // Step 1: load the cart with its items, variants, and products.
+            // Step 1: load the cart with the image data needed by the storefront cart screens.
             return Cart::query()
                 ->with([
                     'items' => fn ($builder) => $builder->orderBy('id'),
-                    'items.variant.product',
+                    'items.variant.product.primaryImage',
                 ])
                 ->where('user_id', $user->id)
                 ->first();
@@ -467,9 +467,10 @@ class CartService
     protected function buildCartItemResponse(CartItem $cartItem, User $user): array
     {
         try {
-            // Step 1: load the related variant and product for the cart row.
+            // Step 1: load the product, variant, and primary image used across the cart UI.
             $productVariant = $cartItem->variant;
             $product = $productVariant?->product;
+            $imagePath = $product?->primaryImage?->file_path;
 
             // Step 2: resolve the live current price for the selected variant.
             $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user);
@@ -488,7 +489,7 @@ class CartService
             $lineTaxAmount = round($unitTaxAmount * (int) $cartItem->quantity, 4);
             $lineTotal = round($unitPriceAfterGst * (int) $cartItem->quantity, 4);
 
-            // Step 4: return the JSON-ready cart item payload.
+            // Step 4: return a cart item payload that the storefront can render without extra lookups.
             return [
                 'id' => $cartItem->id,
                 'product_id' => $product?->id,
@@ -496,6 +497,7 @@ class CartService
                 'product_name' => $product?->name,
                 'variant_name' => $productVariant?->variant_name,
                 'sku' => $productVariant?->sku,
+                'image_url' => filled($imagePath) ? asset($imagePath) : null,
                 'quantity' => (int) $cartItem->quantity,
                 'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
                 'price_type' => $resolvedVariantPrice['price_type'] ?? null,

@@ -59,6 +59,8 @@ return new class extends Migration
                 $table->string('name');
                 $table->string('brand')->nullable();
                 $table->text('description')->nullable();
+                // Business overview keeps the product detail page content data-driven instead of hardcoded.
+                $table->text('product_overview')->nullable();
                 $table->decimal('gst_rate', 5, 2)->nullable();
                 $table->string('visibility_scope', 20)->default('public');
                 $table->boolean('is_active')->default(true);

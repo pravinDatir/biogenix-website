@@ -536,6 +536,7 @@
                                         </div>
 
                                         <div class="catalog-card-actions">
+                                            {{-- Step 1: keep the standard product actions available directly from each catalog card. --}}
                                             <a href="{{ $detailUrl }}" class="catalog-card-action catalog-card-action--secondary">
                                                 <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"></path>
@@ -562,6 +563,26 @@
                                                     <span>Add to Cart</span>
                                                 </button>
                                             @endguest
+
+                                            {{-- Step 2: let buyers move straight to checkout with the selected item plus the existing cart. --}}
+                                            @guest
+                                                <a href="{{ route('login') }}" class="catalog-card-action catalog-card-action--secondary orange_button" style="grid-column: 1 / -1;">
+                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M5 12h14"></path>
+                                                        <path d="m12 5 7 7-7 7"></path>
+                                                    </svg>
+                                                    <span>Buy Now</span>
+                                                </a>
+                                            @else
+                                                {{-- Step 3: submit through a dedicated hidden form so the catalog filter form stays valid HTML. --}}
+                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" class="catalog-card-action catalog-card-action--secondary orange_button w-full" style="grid-column: 1 / -1;">
+                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M5 12h14"></path>
+                                                        <path d="m12 5 7 7-7 7"></path>
+                                                    </svg>
+                                                    <span>Buy Now</span>
+                                                </button>
+                                            @endguest
                                         </div>
                                     </div>
                                 </article>
@@ -575,6 +596,18 @@
         </form>
     </div>
 </div>
+
+@auth
+    @foreach ($productCollection as $product)
+        {{-- Step 4: keep one dedicated MVC form per catalog product for the buy-now submit action. --}}
+        <form id="catalogBuyNowForm{{ $product->id }}" method="POST" action="{{ route('checkout.buy-now') }}" class="hidden">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="product_variant_id" value="{{ $product->visible_variant_id ?? '' }}">
+            <input type="hidden" name="quantity" value="1">
+        </form>
+    @endforeach
+@endauth
 
 @push('scripts')
     <script>
@@ -668,10 +701,7 @@
             }
 
             const toastHost = document.getElementById('uiToastHost');
-            const cartItemsUrl = @json(route('cart.items.store'));
             const loginUrl = @json(route('login'));
-            const cartPageUrl = @json(route('cart.page'));
-            const csrfToken = @json(csrf_token());
             const isAuthenticated = @json(auth()->check());
 
             const showToast = function (options) {
@@ -743,34 +773,6 @@
                 }, Number(options && options.duration ? options.duration : 4200));
             };
 
-            const addToCart = async function (payload) {
-                const response = await fetch(cartItemsUrl, {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                    },
-                    body: JSON.stringify(payload),
-                });
-
-                const contentType = String(response.headers.get('content-type') || '');
-                if (response.redirected || !contentType.includes('application/json')) {
-                    throw { type: 'auth' };
-                }
-
-                const data = await response.json().catch(function () {
-                    return null;
-                });
-
-                if (!response.ok) {
-                    throw { type: 'error', message: data && data.message ? data.message : 'Unable to add product to cart.' };
-                }
-
-                return data;
-            };
-
             const syncLocalCart = function (target, quantity) {
                 if (!window.CartStore) {
                     return;
@@ -826,13 +828,21 @@
                     target.classList.add('opacity-80');
 
                     try {
-                        await addToCart({
-                            product_id: productId,
-                            product_variant_id: variantId,
+                        // Step 1: let the shared cart store decide whether this add should stay local or go to the backend cart.
+                        const result = await window.CartStore.addItem({
+                            productId: productId,
+                            variantId: variantId,
                             quantity: quantity,
+                            unitPrice: Number(target.dataset.unitPrice || 0),
+                            name: productName,
+                            model: target.dataset.model || '',
+                            image: target.dataset.image || '',
                         });
 
-                        syncLocalCart(target, quantity);
+                        // Step 2: keep the existing error handling simple for session and validation problems.
+                        if (!result || result.ok === false) {
+                            throw result || { type: 'error', message: 'Unable to add product to cart.' };
+                        }
 
                         showToast({
                             title: 'Added to cart',

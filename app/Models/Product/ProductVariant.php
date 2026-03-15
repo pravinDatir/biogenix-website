@@ -12,7 +12,7 @@ class ProductVariant extends Model
         'product_id',
         'sku',
         'variant_name',
-        'attributes_json',
+        'technical_specification_json',
         'min_order_quantity',
         'max_order_quantity',
         'model_number',
@@ -25,7 +25,7 @@ class ProductVariant extends Model
     {
         return [
             'product_id' => 'integer',
-            'attributes_json' => 'array',
+            'technical_specification_json' => 'array',
             'min_order_quantity' => 'integer',
             'max_order_quantity' => 'integer',
             'stock_quantity' => 'integer',

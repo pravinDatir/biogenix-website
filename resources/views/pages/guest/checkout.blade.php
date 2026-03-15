@@ -451,19 +451,29 @@
                             <p id="couponMsg" class="mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500"></p>
                         </div>
 
-                        {{-- Login warning --}}
-                        <div id="checkoutLoginWarning" class="mt-4 hidden rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
-                            <p class="font-semibold">Login required</p>
-                            <p class="mt-1 leading-6 text-amber-800">Please sign in at the final checkout step to place this order and continue with billing.</p>
-                            <a href="{{ route('login') }}" class="{{ $buttonPrimaryClass }} mt-4">Login</a>
-                        </div>
+                        @guest
+                            {{-- Step 1: guide guest buyers to login before they can submit the checkout order. --}}
+                            <div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
+                                <p class="font-semibold">Login required</p>
+                                <p class="mt-1 leading-6 text-amber-800">Please sign in before placing the order so we can save the cart, billing context, and final order reference correctly.</p>
+                                <a href="{{ route('login') }}" class="{{ $buttonPrimaryClass }} mt-4">Login</a>
+                            </div>
+                        @endguest
 
-                        <button id="placeOrderButton" type="button" class="{{ $buttonPrimaryClass }} mt-5 w-full gap-2">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Place Order
-                        </button>
+                        @auth
+                            {{-- Step 1: submit the current cart through the controller so checkout follows the standard MVC flow. --}}
+                            <form method="POST" action="{{ route('checkout.submit') }}" class="mt-5">
+                                @csrf
+
+                                {{-- Step 2: keep the submit action simple because the backend cart already holds the current checkout items. --}}
+                                <button type="submit" class="{{ $buttonPrimaryClass }} w-full gap-2">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Place Order
+                                </button>
+                            </form>
+                        @endauth
 
                         {{-- ─── PROMINENT TRUST BADGES ─── --}}
                         <div class="mt-5 grid grid-cols-3 gap-2">
@@ -513,13 +523,10 @@
                 const taxEl            = document.getElementById('checkoutTax');
                 const totalEl          = document.getElementById('checkoutTotal');
                 const emptyState       = document.getElementById('checkoutEmptyState');
-                const loginWarning     = document.getElementById('checkoutLoginWarning');
-                const placeOrderButton = document.getElementById('placeOrderButton');
                 const paymentCards     = Array.from(document.querySelectorAll('[data-payment-card]'));
                 const paymentInputs    = Array.from(document.querySelectorAll('input[name="payment_method"]'));
                 const addressCards     = Array.from(document.querySelectorAll('[data-address-card]'));
                 const poUploadPanel    = document.getElementById('poUploadPanel');
-                const isAuthenticated  = @json(auth()->check());
 
                 /* ── Add New Address inline form ── */
                 const addToggleBtn  = document.getElementById('addAddressToggleBtn');
@@ -608,9 +615,39 @@
                 };
 
                 /* ── render summary row ── */
+                const getLineSubtotal = function (item) {
+                    // Step 1: prefer the backend subtotal when the current cart line came from the authenticated cart.
+                    if (Number.isFinite(Number(item.lineSubtotal))) {
+                        return Number(item.lineSubtotal);
+                    }
+
+                    // Step 2: keep the existing guest subtotal fallback for pre-login browsing.
+                    return Number(item.unitPrice || 0) * Math.max(1, Number(item.quantity || 1));
+                };
+
+                const getLineTax = function (item) {
+                    // Step 1: prefer the backend tax when the current cart line came from the authenticated cart.
+                    if (Number.isFinite(Number(item.taxAmount))) {
+                        return Number(item.taxAmount);
+                    }
+
+                    // Step 2: keep the existing guest GST fallback for pre-login browsing.
+                    return getLineSubtotal(item) * 0.18;
+                };
+
+                const getLineTotal = function (item) {
+                    // Step 1: prefer the backend total when the current cart line came from the authenticated cart.
+                    if (Number.isFinite(Number(item.lineTotal))) {
+                        return Number(item.lineTotal);
+                    }
+
+                    // Step 2: keep the existing guest total fallback for pre-login browsing.
+                    return getLineSubtotal(item) + getLineTax(item);
+                };
+
                 const renderSummaryRow = function (item) {
                     const quantity = Math.max(1, Number(item.quantity || 1));
-                    const total    = Number(item.unitPrice || 0) * quantity;
+                    const total    = getLineTotal(item);
                     const image    = String(item.image || 'https://via.placeholder.com/96x96?text=Bio');
                     const name     = String(item.name || 'Product');
                     const model    = String(item.model || 'N/A');
@@ -646,19 +683,23 @@
                     if (summaryItems) summaryItems.classList.remove('hidden');
 
                     var subtotal = 0;
+                    var tax = 0;
+                    var total = 0;
                     items.forEach(function (item) {
-                        const qty = Math.max(1, Number(item.quantity || 1));
-                        subtotal += Number(item.unitPrice || 0) * qty;
+                        subtotal += getLineSubtotal(item);
+                        tax += getLineTax(item);
+                        total += getLineTotal(item);
                         if (summaryItems) summaryItems.insertAdjacentHTML('beforeend', renderSummaryRow(item));
                     });
 
                     const discount = subtotal * appliedDiscount;
-                    const discounted = subtotal - discount;
-                    const tax = discounted * 0.18;
+                    const discountedSubtotal = Math.max(0, subtotal - discount);
+                    const taxAfterDiscount = subtotal > 0 ? (discountedSubtotal / subtotal) * tax : 0;
+                    const totalAfterDiscount = discountedSubtotal + taxAfterDiscount;
 
                     if (subtotalEl) subtotalEl.innerHTML = formatInr(subtotal);
-                    if (taxEl) taxEl.innerHTML = formatInr(tax);
-                    if (totalEl) totalEl.innerHTML = formatInr(discounted + tax);
+                    if (taxEl) taxEl.innerHTML = formatInr(taxAfterDiscount);
+                    if (totalEl) totalEl.innerHTML = formatInr(totalAfterDiscount);
 
                     if (couponDiscountAmt && discount > 0) {
                         couponDiscountAmt.innerHTML = '– ' + formatInr(discount);
@@ -709,26 +750,6 @@
                     input.addEventListener('change', syncPaymentCards);
                 });
 
-                if (!isAuthenticated && loginWarning) loginWarning.classList.remove('hidden');
-
-                if (placeOrderButton) {
-                    placeOrderButton.addEventListener('click', function () {
-                        if (!isAuthenticated) {
-                            if (loginWarning) {
-                                loginWarning.classList.remove('hidden');
-                                loginWarning.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                            }
-                            return;
-                        }
-                        placeOrderButton.disabled = true;
-                        placeOrderButton.classList.add('opacity-70', 'cursor-not-allowed');
-                        setTimeout(function () {
-                            placeOrderButton.disabled = false;
-                            placeOrderButton.classList.remove('opacity-70', 'cursor-not-allowed');
-                        }, 800);
-                    });
-                }
-
                 /* ── GSTIN auto-uppercase ── */
                 var gstinInput = document.getElementById('gstinInput');
                 var panInput   = document.getElementById('panInput');
@@ -742,3 +763,11 @@
         </script>
     @endpush
 @endsection
+
+@push('scripts')
+    @if (!is_null($initialCart ?? null))
+        <script>
+            window.__BIOGENIX_PAGE_CART__ = @json($initialCart);
+        </script>
+    @endif
+@endpush

@@ -18,6 +18,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.page');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
+Route::get('/cart', [CartController::class, 'showCustomerCartPage'])->name('cart.page');
+Route::get('/checkout', [CartController::class, 'showCustomerCheckoutPage'])->name('checkout.page');
+Route::post('/checkout', [CartController::class, 'submitCustomerCheckoutOrder'])->middleware('auth')->name('checkout.submit');
+Route::post('/checkout/buy-now', [CartController::class, 'startImmediateCheckout'])->middleware('auth')->name('checkout.buy-now');
 
 // flow incomplete 
  // Preview-only customer workspace pages (UI shells)
@@ -37,8 +41,7 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
 
-Route::get('/cart', function () { return redirect()->route('products.index'); })->name('cart.page');
-Route::view('/checkout', 'pages.guest.checkout')->name('checkout.page');
+
 
 Route::middleware('auth')->prefix('orders')->name('orders.')->group(function (): void {
     Route::get('/', [OrderController::class, 'showOrderCrud'])->name('index');
@@ -82,7 +85,7 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
    Route::view('/terms', 'legal.terms')->name('terms');
    Route::view('/refund-policy', 'legal.refund')->name('refund-policy');
    Route::view('/faq', 'legal.faq')->name('faq');
-   Route::view('/order-confirmation', 'order.confirmation')->name('order.confirmation');
+   Route::get('/order-confirmation', [CartController::class, 'showOrderConfirmationPage'])->name('order.confirmation');
    Route::view('/maintenance', 'errors.503')->name('maintenance');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

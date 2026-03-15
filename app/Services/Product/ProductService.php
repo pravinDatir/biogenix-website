@@ -377,12 +377,37 @@ class ProductService
                 return null;
             }
 
-            // Attach the visible price fields needed by the product detail page.
-            return $this->attachResolvedPriceData($product, $user);
+            // Step 1: attach the visible price fields needed by the product detail page.
+            $product = $this->attachResolvedPriceData($product, $user);
+
+            // Step 2: attach the visible variant technical specs so the detail page can read them directly from database content.
+            return $this->attachVisibleVariantTechnicalSpecifications($product);
         } catch (Throwable $exception) {
             Log::error('Failed to load visible product.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
+    }
+
+    // This attaches the technical specs for the currently visible product variant.
+    protected function attachVisibleVariantTechnicalSpecifications(object $product): object
+    {
+        // Step 1: keep the detail page predictable by defaulting to an empty specs list.
+        $product->technical_specification_json = [];
+
+        // Step 2: stop early when no visible variant is available for the current product view.
+        if (! filled($product->visible_variant_id ?? null)) {
+            return $product;
+        }
+
+        // Step 3: load only the visible variant specs needed by the product detail page.
+        $visibleVariant = ProductVariant::query()
+            ->select(['id', 'technical_specification_json'])
+            ->find((int) $product->visible_variant_id);
+
+        // Step 4: attach the saved variant specs directly to the product payload for the Blade view.
+        $product->technical_specification_json = $visibleVariant?->technical_specification_json ?? [];
+
+        return $product;
     }
 
     // This returns the top frequently bought together products for one product.

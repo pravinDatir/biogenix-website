@@ -468,10 +468,39 @@
         };
 
         /* ─── Render ─── */
+        const getLineSubtotal = function (item) {
+            // Step 1: prefer the backend subtotal when the current cart line came from the authenticated cart.
+            if (Number.isFinite(Number(item.lineSubtotal))) {
+                return Number(item.lineSubtotal);
+            }
+
+            // Step 2: keep the existing guest subtotal fallback for pre-login browsing.
+            return Number(item.unitPrice || 0) * Math.max(1, Number(item.quantity || 1));
+        };
+
+        const getLineTax = function (item) {
+            // Step 1: prefer the backend tax when the current cart line came from the authenticated cart.
+            if (Number.isFinite(Number(item.taxAmount))) {
+                return Number(item.taxAmount);
+            }
+
+            // Step 2: keep the existing guest GST fallback for pre-login browsing.
+            return getLineSubtotal(item) * 0.18;
+        };
+
+        const getLineTotal = function (item) {
+            // Step 1: prefer the backend total when the current cart line came from the authenticated cart.
+            if (Number.isFinite(Number(item.lineTotal))) {
+                return Number(item.lineTotal);
+            }
+
+            // Step 2: keep the existing guest total fallback for pre-login browsing.
+            return getLineSubtotal(item) + getLineTax(item);
+        };
+
         const renderItem = function (item) {
             const qty = Math.max(1, Number(item.quantity || 1));
-            const unitPrice = Number(item.unitPrice || 0);
-            const lineTotal = unitPrice * qty;
+            const lineTotal = getLineTotal(item);
             const img = String(item.image || 'https://via.placeholder.com/150x150?text=Bio');
             const name = String(item.name || 'Product');
             const model = String(item.model || '');
@@ -525,14 +554,17 @@
             itemsContainer.innerHTML = items.map(renderItem).join('');
 
             let subtotal = 0;
+            let tax = 0;
+            let total = 0;
             items.forEach(function (item) {
-                subtotal += Number(item.unitPrice || 0) * Math.max(1, Number(item.quantity || 1));
+                subtotal += getLineSubtotal(item);
+                tax += getLineTax(item);
+                total += getLineTotal(item);
             });
 
-            const tax = subtotal * 0.18;
             subtotalEl.textContent = formatInr(subtotal);
             taxEl.textContent = formatInr(tax);
-            totalEl.textContent = formatInr(subtotal + tax);
+            totalEl.textContent = formatInr(total);
 
             bindSidebarActions();
         };

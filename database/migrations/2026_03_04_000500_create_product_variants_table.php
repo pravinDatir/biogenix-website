@@ -20,7 +20,8 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->string('sku')->unique();
             $table->string('variant_name')->default('Default Variant');
-            $table->json('attributes_json')->nullable();
+            // Business technical specifications are stored per visible variant for the product detail page.
+            $table->json('technical_specification_json')->nullable();
             $table->unsignedInteger('min_order_quantity')->default(1);
             $table->unsignedInteger('max_order_quantity')->nullable();
             $table->string('model_number')->nullable();

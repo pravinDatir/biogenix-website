@@ -7,6 +7,8 @@ use App\Services\Cart\CartService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,6 +18,86 @@ use Throwable;
 
 class CartController extends Controller
 {
+    // This shows the cart page using the standard controller-to-view flow.
+    public function showCustomerCartPage(Request $request, CartService $cartService): View
+    {
+        // Step 1: load the current cart once so the cart page opens with the latest backend data.
+        $initialCart = $this->loadCurrentCartForPage($request, $cartService);
+
+        // Step 2: return the cart page with the current cart seed for the storefront view.
+        return view('pages.guest.cart', [
+            'initialCart' => $initialCart,
+        ]);
+    }
+
+    // This shows the checkout page using the standard controller-to-view flow.
+    public function showCustomerCheckoutPage(Request $request, CartService $cartService): View
+    {
+        // Step 1: load the current cart once so the checkout page opens with the latest backend data.
+        $initialCart = $this->loadCurrentCartForPage($request, $cartService);
+
+        // Step 2: return the checkout page with the current cart seed for the storefront view.
+        return view('pages.guest.checkout', [
+            'initialCart' => $initialCart,
+        ]);
+    }
+
+    // This starts the buy-now journey by adding the selected item into the current cart first.
+    public function startImmediateCheckout(Request $request, CartService $cartService): RedirectResponse
+    {
+        try {
+            // Step 1: validate the selected product details coming from the storefront buy-now action.
+            $validatedSelectedItem = $request->validate([
+                'product_id' => ['required', 'integer', 'exists:products,id'],
+                'product_variant_id' => ['nullable', 'integer', 'exists:product_variants,id'],
+                'quantity' => ['required', 'integer', 'min:1'],
+            ]);
+
+            // Step 2: add the selected item into the current cart so checkout includes both old and new items together.
+            $cartService->addToCart($validatedSelectedItem, $request->user());
+
+            // Step 3: send the customer straight to checkout to review and submit the full cart.
+            return redirect()->route('checkout.page');
+        } catch (Throwable $exception) {
+            Log::error('Failed to start immediate checkout.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
+
+            // Step 4: send the customer back with a business-friendly error message when buy now cannot start.
+            return $this->redirectBackWithBusinessMessage($exception, 'Unable to start checkout right now.');
+        }
+    }
+
+    // This submits the current cart as one final customer order.
+    public function submitCustomerCheckoutOrder(Request $request, CartService $cartService): RedirectResponse
+    {
+        try {
+            // Step 1: convert the current cart into a submitted order using the shared cart service.
+            $submittedOrder = $cartService->checkoutCart([], $request->user());
+
+            // Step 2: send the customer to confirmation with the newly created order summary in session.
+            return redirect()
+                ->route('order.confirmation')
+                ->with('recentCheckoutOrder', $submittedOrder['order'])
+                ->with('success', 'Order placed successfully.');
+        } catch (Throwable $exception) {
+            Log::error('Failed to submit customer checkout order.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
+
+            // Step 3: send the customer back to checkout with a business-friendly error message when submission fails.
+            return $this->redirectBackWithBusinessMessage($exception, 'Unable to place your order right now.');
+        }
+    }
+
+    // This shows the order confirmation page after a successful checkout.
+    public function showOrderConfirmationPage(Request $request): View
+    {
+        // Step 1: read the recently submitted order from session when the customer just completed checkout.
+        $recentCheckoutOrder = $request->session()->get('recentCheckoutOrder');
+
+        // Step 2: return the confirmation page with the recent order data for display.
+        return view('order.confirmation', [
+            'recentCheckoutOrder' => $recentCheckoutOrder,
+        ]);
+    }
+
     // This returns the current user's cart as JSON.
     public function showCart(Request $request, CartService $cartService): JsonResponse
     {
@@ -165,5 +247,36 @@ class CartController extends Controller
             'message' => $this->resolveErrorMessage($exception, $defaultMessage),
             'errors' => $exception instanceof ValidationException ? $exception->errors() : [],
         ], $statusCode);
+    }
+
+    // This loads the initial cart data for full cart-related pages.
+    protected function loadCurrentCartForPage(Request $request, CartService $cartService): ?array
+    {
+        // Step 1: skip database work when the current shopper is still browsing as a guest.
+        if (! $request->user()) {
+            return null;
+        }
+
+        try {
+            // Step 2: load the current database cart once so the page can start with backend data already available.
+            return $cartService->showCart($request->user());
+        } catch (Throwable $exception) {
+            Log::error('Failed to load current cart page data.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
+
+            // Step 3: keep the page usable even when the cart seed cannot be prepared.
+            return null;
+        }
+    }
+
+    // This converts checkout failures into a standard redirect response for page-based flows.
+    protected function redirectBackWithBusinessMessage(Throwable $exception, string $defaultMessage): RedirectResponse
+    {
+        // Step 1: return the validation details directly when the business rule failure came from form input or cart rules.
+        if ($exception instanceof ValidationException) {
+            return back()->withErrors($exception->errors())->withInput();
+        }
+
+        // Step 2: return one friendly fallback message for unexpected checkout issues.
+        return back()->with('error', $defaultMessage);
     }
 }

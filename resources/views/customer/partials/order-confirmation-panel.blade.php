@@ -1,25 +1,47 @@
 @php
+    // Step 1: prefer the latest submitted checkout order so the customer sees real confirmation details after checkout.
+    $confirmedOrder = is_array($recentCheckoutOrder ?? null) ? $recentCheckoutOrder : [];
+
+    // Step 2: keep the portal badge aligned with the current shopper profile when a live order summary is not available yet.
     $portal = auth()->user()?->user_type ?? request('user_type', request('portal', 'b2c'));
     $portal = $portal === 'b2b' ? 'b2b' : 'b2c';
 
-    $orderId = $portal === 'b2b' ? 'ORD-20260311-2048' : 'ORD-20260311-1194';
-    $invoiceId = $portal === 'b2b' ? 'INV-20260311-8814' : 'INV-20260311-4318';
+    // Step 3: prepare the live confirmation values when the order was just placed from the checkout flow.
+    $hasConfirmedOrder = $confirmedOrder !== [];
+    $orderId = $hasConfirmedOrder
+        ? 'ORD-' . str_pad((string) ($confirmedOrder['id'] ?? 0), 6, '0', STR_PAD_LEFT)
+        : ($portal === 'b2b' ? 'ORD-20260311-2048' : 'ORD-20260311-1194');
+    $invoiceId = $hasConfirmedOrder ? 'Generated after review' : ($portal === 'b2b' ? 'INV-20260311-8814' : 'INV-20260311-4318');
     $recipientEmail = auth()->user()?->email ?? ($portal === 'b2b' ? 'procurement@metrocarelab.com' : 'customer@biogenix.com');
     $recipientName = auth()->user()?->name ?? ($portal === 'b2b' ? 'Metro Care Lab' : 'Prakhar Kapoor');
-    $orderAmount = $portal === 'b2b' ? 'INR 1,84,000.00' : 'INR 8,420.00';
-    $deliveryWindow = $portal === 'b2b' ? 'Estimated dispatch within 24 hours' : 'Estimated delivery by March 16, 2026';
+    $orderAmount = $hasConfirmedOrder
+        ? 'INR ' . number_format((float) ($confirmedOrder['total_amount'] ?? 0), 2)
+        : ($portal === 'b2b' ? 'INR 1,84,000.00' : 'INR 8,420.00');
+    $deliveryWindow = $hasConfirmedOrder
+        ? 'The fulfillment team is now preparing dispatch, invoice review, and the next communication update for this order.'
+        : ($portal === 'b2b' ? 'Estimated dispatch within 24 hours' : 'Estimated delivery by March 16, 2026');
 
-    $timeline = $portal === 'b2b'
+    // Step 4: keep the confirmation timeline simple and real for both live orders and fallback preview states.
+    $timeline = $hasConfirmedOrder
         ? [
-            ['title' => 'Order accepted', 'copy' => 'Your procurement request is now locked and visible to the account operations team.'],
-            ['title' => 'Invoice and confirmation sent', 'copy' => 'Order confirmation and invoice details were shared to the registered business email.'],
-            ['title' => 'Dispatch planning started', 'copy' => 'The warehouse and account team are aligning packaging, compliance, and shipping windows.'],
+            ['title' => 'Order accepted', 'copy' => 'Your checkout was received successfully and the order is now locked for processing.'],
+            ['title' => 'Order review started', 'copy' => 'The operations team is validating product availability, pricing, and invoice readiness.'],
+            ['title' => 'Dispatch planning started', 'copy' => 'The warehouse team is now preparing the next shipping and communication updates.'],
         ]
-        : [
-            ['title' => 'Order accepted', 'copy' => 'Your payment was captured successfully and your order is now confirmed.'],
-            ['title' => 'Invoice and confirmation sent', 'copy' => 'A confirmation email and invoice summary were sent to your registered email address.'],
-            ['title' => 'Packing and courier handoff', 'copy' => 'The order has moved into packing and the courier update will appear in tracking next.'],
-        ];
+        : ($portal === 'b2b'
+            ? [
+                ['title' => 'Order accepted', 'copy' => 'Your procurement request is now locked and visible to the account operations team.'],
+                ['title' => 'Invoice and confirmation sent', 'copy' => 'Order confirmation and invoice details were shared to the registered business email.'],
+                ['title' => 'Dispatch planning started', 'copy' => 'The warehouse and account team are aligning packaging, compliance, and shipping windows.'],
+            ]
+            : [
+                ['title' => 'Order accepted', 'copy' => 'Your payment was captured successfully and your order is now confirmed.'],
+                ['title' => 'Invoice and confirmation sent', 'copy' => 'A confirmation email and invoice summary were sent to your registered email address.'],
+                ['title' => 'Packing and courier handoff', 'copy' => 'The order has moved into packing and the courier update will appear in tracking next.'],
+            ]);
+
+    // Step 5: use the existing orders list route so the confirmation page links to a real screen.
+    $ordersPageUrl = auth()->check() ? route('orders.index') : route('login');
 @endphp
 
 <div class="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
@@ -66,13 +88,13 @@
         <div class="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-5">
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Confirmation Message</p>
             <p class="mt-3 text-base font-semibold leading-7 text-slate-900">
-                Hello {{ $recipientName }}, your order {{ $orderId }} has been confirmed successfully. We have also emailed invoice {{ $invoiceId }} to {{ $recipientEmail }}.
+                Hello {{ $recipientName }}, your order {{ $orderId }} has been confirmed successfully. We have shared the latest order confirmation to {{ $recipientEmail }}.
             </p>
             <p class="mt-3 text-sm leading-6 text-slate-600">{{ $deliveryWindow }}</p>
         </div>
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-            <a href="{{ route('order.tracking') }}" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white no-underline shadow-sm transition hover:bg-primary-700">Track Order</a>
+            <a href="{{ $ordersPageUrl }}" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white no-underline shadow-sm transition hover:bg-primary-700">View Orders</a>
             <a href="{{ route('products.index') }}" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-50">Continue Shopping</a>
             <a href="{{ route('contact') }}" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-50">Contact Support</a>
         </div>

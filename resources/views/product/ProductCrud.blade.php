@@ -125,8 +125,8 @@
             </div>
 
             <div class="space-y-2 md:col-span-2">
-                <label for="create_variant_attr_json_0">Attributes JSON</label>
-                <input id="create_variant_attr_json_0" name="variant_attributes_json[]" value="{{ old('variant_attributes_json.0') }}">
+                <label for="create_variant_technical_specification_json_0">Technical Specifications JSON</label>
+                <input id="create_variant_technical_specification_json_0" name="variant_technical_specification_json[]" value="{{ old('variant_technical_specification_json.0') }}">
             </div>
 
             <div class="space-y-2">
@@ -207,8 +207,8 @@
                 <label for="create_variant_catalog_1">Catalog Number</label>
                 <input id="create_variant_catalog_1" name="variant_catalog_number[]" value="{{ old('variant_catalog_number.1') }}">
 
-                <label for="create_variant_attr_json_1">Attributes JSON</label>
-                <input id="create_variant_attr_json_1" name="variant_attributes_json[]" value="{{ old('variant_attributes_json.1') }}">
+                <label for="create_variant_technical_specification_json_1">Technical Specifications JSON</label>
+                <input id="create_variant_technical_specification_json_1" name="variant_technical_specification_json[]" value="{{ old('variant_technical_specification_json.1') }}">
 
                 <label for="create_variant_min_order_1">Min Order Quantity</label>
                 <input id="create_variant_min_order_1" name="variant_min_order_quantity[]" type="number" min="1" value="{{ old('variant_min_order_quantity.1', 1) }}">
@@ -337,8 +337,8 @@
                 <h3 class="text-lg font-semibold text-slate-950">Variants</h3>
                 @php
                     $variantRows = $editingVariants->count() > 0
-                        ? $editingVariants->push((object) ['id' => null, 'sku' => '', 'variant_name' => '', 'attributes_json' => '', 'min_order_quantity' => 1, 'max_order_quantity' => '', 'model_number' => '', 'catalog_number' => '', 'public_price' => '', 'logged_in_price' => '', 'retail_price' => '', 'dealer_price' => '', 'institutional_price' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => ''])
-                        : collect([(object) ['id' => null, 'sku' => '', 'variant_name' => '', 'attributes_json' => '', 'min_order_quantity' => 1, 'max_order_quantity' => '', 'model_number' => '', 'catalog_number' => '', 'public_price' => '', 'logged_in_price' => '', 'retail_price' => '', 'dealer_price' => '', 'institutional_price' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => '']]);
+                        ? $editingVariants->push((object) ['id' => null, 'sku' => '', 'variant_name' => '', 'technical_specification_json' => '', 'min_order_quantity' => 1, 'max_order_quantity' => '', 'model_number' => '', 'catalog_number' => '', 'public_price' => '', 'logged_in_price' => '', 'retail_price' => '', 'dealer_price' => '', 'institutional_price' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => ''])
+                        : collect([(object) ['id' => null, 'sku' => '', 'variant_name' => '', 'technical_specification_json' => '', 'min_order_quantity' => 1, 'max_order_quantity' => '', 'model_number' => '', 'catalog_number' => '', 'public_price' => '', 'logged_in_price' => '', 'retail_price' => '', 'dealer_price' => '', 'institutional_price' => '', 'price' => '', 'stock_quantity' => '', 'is_active' => 1, 'attribute_name' => '', 'attribute_value' => '']]);
                 @endphp
 
                 @foreach ($variantRows as $index => $variant)
@@ -377,8 +377,8 @@
                         <label>Catalog Number</label>
                         <input name="variant_catalog_number[]" value="{{ old('variant_catalog_number.'.$index, $variant->catalog_number ?? '') }}">
 
-                        <label>Attributes JSON</label>
-                        <input name="variant_attributes_json[]" value="{{ old('variant_attributes_json.'.$index, $variant->attributes_json ?? '') }}">
+                        <label>Technical Specifications JSON</label>
+                        <input name="variant_technical_specification_json[]" value="{{ old('variant_technical_specification_json.'.$index, $variant->technical_specification_json ?? '') }}">
 
                         <label>Min Order Quantity</label>
                         <input name="variant_min_order_quantity[]" type="number" min="1" value="{{ old('variant_min_order_quantity.'.$index, $variant->min_order_quantity ?? 1) }}">
