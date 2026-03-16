@@ -156,14 +156,6 @@
         };
     };
 
-    $badgeSets = [
-        ['In Stock', 'Verified'],
-        ['Clinical Ready', null],
-        ['New Arrival', null],
-        ['Best Seller', null],
-        ['Institutional Fav', null],
-        ['Legacy Support', null],
-    ];
 @endphp
 
 <div class="mx-auto w-full max-w-none px-4 md:-mt-8 md:px-6 xl:px-10">
@@ -454,10 +446,20 @@
                         <div class="catalog-premium-grid">
                             @foreach ($productCollection as $product)
                                 @php
-                                    $badgeRow = $badgeSets[$loop->index % count($badgeSets)];
+                                    // Step 1: split the saved comma-separated badges so the catalog card stays data-driven.
+                                    $badgeRow = collect(explode(',', (string) ($product->badges ?? '')))
+                                        ->map(fn (string $badge): string => trim($badge))
+                                        ->filter()
+                                        ->values();
                                     $price = $product->visible_price !== null ? (float) $product->visible_price : null;
-                                    $listPrice = $price !== null ? round($price * 1.16, 2) : null;
-                                $detailUrl = route('products.productDetails', $product->id);
+                                    // Step 2: use the saved base amount as the list MRP instead of generating a fake UI-only number.
+                                    $listPrice = $product->visible_base_price !== null ? (float) $product->visible_base_price : $price;
+                                    // Step 3: show a two-price state only when a real discount exists on the resolved backend price.
+                                    $hasVisibleDiscount = (float) ($product->visible_discount_amount ?? 0) > 0
+                                        && $listPrice !== null
+                                        && $price !== null
+                                        && $listPrice > $price;
+                                    $detailUrl = route('products.productDetails', $product->id);
                                     $variantId = $product->visible_variant_id ?? null;
                                     $imageUrl = filled($product->image_path ?? null) ? asset($product->image_path) : null;
                                     $visualVariant = $resolveVisualVariant($product, $loop->index);
@@ -476,7 +478,7 @@
                                             @endif
                                         </div>
                                         <div class="absolute left-6 top-6 flex flex-col gap-2">
-                                            @foreach ($badgeRow as $badgeIndex => $badgeLabel)
+                                            @foreach ($badgeRow as $badgeLabel)
                                                 @if ($badgeLabel)
                                                     <x-ui.status-badge type="product" :value="$badgeLabel" :label="$badgeLabel" class="shadow-sm" />
                                                 @endif
@@ -502,14 +504,21 @@
                                         </div>
 
                                         <div class="catalog-card-price rounded-2xl bg-slate-50 px-3 py-3">
-                                            <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                                <span>List MRP</span>
-                                                <span class="line-through">{!! $listPrice !== null ? $formatInr($listPrice) : 'N/A' !!}</span>
-                                            </div>
-                                            <div class="mt-1.5 flex items-baseline justify-between gap-2">
-                                                <span class="text-[10px] font-bold uppercase tracking-wider text-primary-600/70">Your Price</span>
-                                                <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price) !!}</span>
-                                            </div>
+                                            @if ($hasVisibleDiscount)
+                                                <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                                    <span>List MRP</span>
+                                                    <span class="line-through">{!! $listPrice !== null ? $formatInr($listPrice) : 'N/A' !!}</span>
+                                                </div>
+                                                <div class="mt-1.5 flex items-baseline justify-between gap-2">
+                                                    <span class="text-[10px] font-bold uppercase tracking-wider text-primary-600/70">Your Price</span>
+                                                    <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price) !!}</span>
+                                                </div>
+                                            @else
+                                                <div class="flex items-baseline justify-between gap-2">
+                                                    <span class="text-[10px] font-bold uppercase tracking-wider text-primary-600/70">List MRP</span>
+                                                    <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($listPrice) !!}</span>
+                                                </div>
+                                            @endif
                                         </div>
 
                                         <div class="catalog-premium-card__meta text-slate-700">
@@ -517,7 +526,7 @@
                                                 <path d="M7 8h10M7 12h10M7 16h6"></path>
                                                 <path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8l-5 0V6a2 2 0 0 1 2-2Z"></path>
                                             </svg>
-                                            <span>MOQ: {{ $product->visible_variant_name ?? ($product->brand ? '1 Unit' : '5 Units') }}</span>
+                                            <span>Min Order Qty: {{ (int) ($product->visible_min_order_quantity ?? 1) }}</span>
                                         </div>
 
                                         <div class="catalog-premium-card__signals font-medium text-slate-600">

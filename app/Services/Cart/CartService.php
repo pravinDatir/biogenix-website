@@ -382,11 +382,11 @@ class CartService
         }
     }
 
-    // This validates cart quantity using the live current price rules.
+    // This validates cart quantity using the live current variant rules.
     protected function validateCartQuantity(int $quantity, array $resolvedVariantPrice): void
     {
         try {
-            // Step 1: read the live min quantity, max quantity, and lot size.
+            // Step 1: read the live min quantity, max quantity, and lot size from the selected sellable variant.
             $minOrderQuantity = max(1, (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1));
             $maxOrderQuantity = $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'];
             $lotSize = max(1, (int) ($resolvedVariantPrice['lot_size'] ?? 1));

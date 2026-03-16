@@ -18,6 +18,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.page');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
+Route::get('/cart', [CartController::class, 'showCustomerCartPage'])->name('cart.page');
+Route::get('/checkout', [CartController::class, 'showCustomerCheckoutPage'])->name('checkout.page');
+Route::post('/checkout', [CartController::class, 'submitCustomerCheckoutOrder'])->middleware('auth')->name('checkout.submit');
+Route::post('/checkout/buy-now', [CartController::class, 'startImmediateCheckout'])->middleware('auth')->name('checkout.buy-now');
 
 // flow incomplete 
  // Preview-only customer workspace pages (UI shells)

@@ -47,12 +47,18 @@
         $imageUrl = asset($product->image_path ?: 'storage/slides/logo.jpg');
         $galleryImages = collect(['Main View', 'Pack View', 'Bench View', 'Workflow'])
             ->map(fn (string $label) => ['label' => $label, 'src' => $imageUrl]);
+        $basePrice = $product->visible_base_price !== null ? (float) $product->visible_base_price : null;
         $currentPrice = $product->visible_price !== null ? (float) $product->visible_price : null;
-        $listPrice = $currentPrice !== null ? round($currentPrice * 1.16, 2) : null;
+        $displayPrice = $currentPrice ?? $basePrice;
+        $discountAmount = max(0, (float) ($product->visible_discount_amount ?? 0));
+        $hasVisibleDiscount = $basePrice !== null && $currentPrice !== null && $discountAmount > 0 && $basePrice > $currentPrice;
         $reviewCount = max(28, ((int) ($product->id ?? 1) * 9) + 24);
         $ratingValue = number_format(4.7 + ((((int) ($product->id ?? 1)) % 3) * 0.1), 1);
-        $primaryBadge = filled($applicationLabel) ? $applicationLabel : 'Premium Series';
-        $secondaryBadge = ((int) ($product->id ?? 1) % 2 === 0) ? 'Clinical Ready' : 'Best Seller';
+        // Step 3: split the saved comma-separated badges so the detail page uses product-managed labels.
+        $productBadges = collect(explode(',', (string) ($product->badges ?? '')))
+            ->map(fn (string $badge): string => trim($badge))
+            ->filter()
+            ->values();
         $stockStatus = trim((string) ($product->stock_status ?? 'Out of Stock'));
         $brochure = $product->brochure_path ?? $product->brochure_url ?? null;
         $brochureUrl = filled($brochure)
@@ -87,9 +93,9 @@
             ['title' => 'Maintenance Schedule', 'meta' => 'Standard care checklist', 'href' => $brochureUrl ?: '#', 'icon' => 'calendar'],
         ];
         $bulkTierRows = [
-            ['label' => '1 - 2 Units', 'discount' => 'None', 'price' => $currentPrice, 'min' => 1, 'max' => 2, 'discount_value' => 0],
-            ['label' => '3 - 5 Units', 'discount' => '5% Off', 'price' => $currentPrice !== null ? round($currentPrice * 0.95, 2) : null, 'min' => 3, 'max' => 5, 'discount_value' => 5],
-            ['label' => '6+ Units', 'discount' => '12% Off', 'price' => $currentPrice !== null ? round($currentPrice * 0.88, 2) : null, 'min' => 6, 'max' => null, 'discount_value' => 12],
+            ['label' => '1 - 2 Units', 'discount' => 'None', 'price' => $displayPrice, 'min' => 1, 'max' => 2, 'discount_value' => 0],
+            ['label' => '3 - 5 Units', 'discount' => '5% Off', 'price' => $displayPrice !== null ? round($displayPrice * 0.95, 2) : null, 'min' => 3, 'max' => 5, 'discount_value' => 5],
+            ['label' => '6+ Units', 'discount' => '12% Off', 'price' => $displayPrice !== null ? round($displayPrice * 0.88, 2) : null, 'min' => 6, 'max' => null, 'discount_value' => 12],
         ];
         $relatedProducts = collect($related_products ?? [])->filter();
         $compactCardClass = 'rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm md:p-5';
@@ -159,8 +165,9 @@
                     <div class="space-y-3.5">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div class="flex flex-wrap items-center gap-2">
-                                <x-ui.status-badge type="product" :value="$primaryBadge" :label="$primaryBadge" />
-                                <x-ui.status-badge type="product" :value="$secondaryBadge" :label="$secondaryBadge" />
+                                @foreach ($productBadges as $productBadge)
+                                    <x-ui.status-badge type="product" :value="$productBadge" :label="$productBadge" />
+                                @endforeach
                             </div>
                             {{-- ══ Share + Wishlist Buttons ══ --}}
                             <div class="flex items-center gap-2">
@@ -221,11 +228,16 @@
                             <div>
                                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Market Retail Price (MRP)</p>
                                 <div class="mt-3 flex flex-wrap items-baseline gap-3">
-                                    <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($currentPrice) !!}</span>
-                                    @if ($listPrice !== null)
-                                        <span class="text-sm font-medium text-slate-400 line-through">{!! $formatInr($listPrice) !!}</span>
+                                    @if ($hasVisibleDiscount)
+                                        <span class="text-sm font-medium text-slate-400 line-through">{!! $formatInr($basePrice) !!}</span>
+                                        <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($currentPrice) !!}</span>
+                                    @else
+                                        <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($displayPrice) !!}</span>
                                     @endif
                                 </div>
+                                @if ($hasVisibleDiscount)
+                                    <p class="mt-2 text-sm font-medium text-emerald-700">You save {!! $formatInr($discountAmount) !!}</p>
+                                @endif
                                 <p class="mt-2 text-sm font-medium text-slate-500">Inclusive of enterprise-grade packaging and compliance-ready dispatch.</p>
                             </div>
 
@@ -245,14 +257,14 @@
                                         </svg>
                                     </span>
                                     <div class="space-y-1">
-                                        <p class="text-base font-medium text-slate-900">{{ auth()->check() ? 'Account-aware pricing controls are active' : 'Unlock wholesale pricing and bulk contract rates' }}</p>
-                                        <p class="text-sm leading-6 text-slate-500">{{ auth()->check() ? 'This product follows your current account visibility and quotation rules.' : 'Login reveals B2B price ladders, contract terms, and customer-specific discounts.' }}</p>
+                                        <p class="text-base font-medium text-slate-900">{{ auth()->check() ? 'Account-aware pricing controls are active' : 'Login to Checkout' }}</p>
+                                        <p class="text-sm leading-6 text-slate-500">{{ auth()->check() ? 'This product follows your current account visibility and quotation rules.' : 'Login to place your order, view account-based pricing, and continue with cart or quote.' }}</p>
                                     </div>
                                 </div>
                                 
                                 @guest
                                     <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">
-                                        Login to See B2B Price
+                                        Login to Continue
                                     </a>
                                 @endguest
                             </div>
@@ -271,7 +283,7 @@
                             <div class="{{ $estimateClass }}">
                                 <div class="flex items-center justify-between gap-3 text-sm font-medium text-slate-600">
                                     <span>Estimated total</span>
-                                    <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{!! $formatInr($currentPrice) !!}</span>
+                                    <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{!! $formatInr($displayPrice) !!}</span>
                                 </div>
                                 <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
                                     <span id="detailTierLabel">Tier: {{ $bulkTierRows[0]['label'] }}</span>
@@ -313,7 +325,7 @@
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
                                 @guest
-                                    <a href="{{ $loginUrl }}" class="{{ $secondaryButtonClass }} orange_button sm:col-span-2">
+                                    <a href="{{ route('checkout.page') }}" class="{{ $secondaryButtonClass }} orange_button js-buy-now sm:col-span-2" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
@@ -614,6 +626,7 @@
                 let quantity = 1;
 
                 const loginUrl = @json(route('login'));
+                const checkoutUrl = @json(route('checkout.page'));
                 const isAuthenticated = @json(auth()->check());
 
                 const showToast = function (options) {
@@ -966,6 +979,22 @@
                             target.removeAttribute('aria-busy');
                             target.classList.remove('opacity-80');
                         }
+                    });
+                });
+
+                const buyNowButtons = Array.from(document.querySelectorAll('.js-buy-now'));
+                buyNowButtons.forEach(function (button) {
+                    button.addEventListener('click', function (event) {
+                        // Step 1: keep the guest buy-now item in the same local cart so checkout can read it immediately.
+                        if (!window.CartStore) {
+                            return;
+                        }
+
+                        event.preventDefault();
+                        syncLocalCart(event.currentTarget, quantity);
+
+                        // Step 2: move the shopper straight to checkout after the selected item is saved.
+                        window.location.href = checkoutUrl;
                     });
                 });
 

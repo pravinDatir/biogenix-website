@@ -15,6 +15,7 @@ class ProductVariant extends Model
         'technical_specification_json',
         'min_order_quantity',
         'max_order_quantity',
+        'lot_size',
         'model_number',
         'catalog_number',
         'stock_quantity',
@@ -28,6 +29,7 @@ class ProductVariant extends Model
             'technical_specification_json' => 'array',
             'min_order_quantity' => 'integer',
             'max_order_quantity' => 'integer',
+            'lot_size' => 'integer',
             'stock_quantity' => 'integer',
             'is_active' => 'boolean',
         ];

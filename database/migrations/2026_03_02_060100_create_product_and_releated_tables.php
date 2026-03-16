@@ -59,6 +59,8 @@ return new class extends Migration
                 $table->string('name');
                 $table->string('brand')->nullable();
                 $table->text('description')->nullable();
+                // Business badges keep catalog and detail merchandising labels data-driven.
+                $table->string('badges')->nullable();
                 // Business overview keeps the product detail page content data-driven instead of hardcoded.
                 $table->text('product_overview')->nullable();
                 $table->decimal('gst_rate', 5, 2)->nullable();
@@ -82,10 +84,6 @@ return new class extends Migration
                 $table->decimal('tax_amount', 12, 2)->default(0);
                 $table->decimal('price_after_gst', 12, 2)->default(0);
                 $table->string('currency', 3)->default('INR');
-                $table->unsignedInteger('min_order_quantity')->default(1);
-                $table->unsignedInteger('max_order_quantity')->nullable();
-                $table->unsignedInteger('lot_size')->default(1);
-                $table->unsignedInteger('quantity')->default(0);
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
                 $table->index(['product_variant_id', 'price_type'], 'product_prices_variant_price_type_index');

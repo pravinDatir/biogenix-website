@@ -428,11 +428,11 @@ class OrderService
         }
     }
 
-    // This checks the selected quantity against the current price row rules.
+    // This checks the selected quantity against the current sellable variant rules.
     protected function validateOrderQuantity(int $quantity, array $price, int $index): void
     {
         try {
-            // Step 1: read min quantity, max quantity, and lot size from the price row.
+            // Step 1: read min quantity, max quantity, and lot size from the resolved variant rules.
             $minOrderQuantity = max(1, (int) ($price['min_order_quantity'] ?? 1));
             $maxOrderQuantity = $price['max_order_quantity'] === null ? null : (int) $price['max_order_quantity'];
             $lotSize = max(1, (int) ($price['lot_size'] ?? 1));

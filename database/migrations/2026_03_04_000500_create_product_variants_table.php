@@ -24,6 +24,7 @@ return new class extends Migration
             $table->json('technical_specification_json')->nullable();
             $table->unsignedInteger('min_order_quantity')->default(1);
             $table->unsignedInteger('max_order_quantity')->nullable();
+            $table->unsignedInteger('lot_size')->default(1);
             $table->string('model_number')->nullable();
             $table->string('catalog_number')->nullable();
             $table->unsignedInteger('stock_quantity')->default(0);

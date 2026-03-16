@@ -22,6 +22,7 @@ class Product extends Model
         'name',
         'brand',
         'description',
+        'badges',
         'product_overview',
         'gst_rate',
         'visibility_scope',

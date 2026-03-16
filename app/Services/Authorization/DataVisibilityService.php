@@ -79,6 +79,7 @@ class DataVisibilityService
     public function resolvePrice(int $productId, ?User $user): ?array
     {
         try {
+            // Step 1: read price rows and the sellable variant rules together because buying rules belong to the variant, not to the company price row.
             $baseQuery = ProductPrice::query()
                 ->join('product_variants', 'product_variants.id', '=', 'product_prices.product_variant_id')
                 ->where('product_variants.product_id', $productId)
@@ -92,15 +93,16 @@ class DataVisibilityService
                     'product_prices.tax_amount',
                     'product_prices.price_after_gst',
                     'product_prices.currency',
-                    'product_prices.min_order_quantity',
-                    'product_prices.max_order_quantity',
-                    'product_prices.lot_size',
                     'product_prices.price_type',
                     'product_variants.id as product_variant_id',
                     'product_variants.sku as variant_sku',
                     'product_variants.variant_name',
+                    'product_variants.min_order_quantity',
+                    'product_variants.max_order_quantity',
+                    'product_variants.lot_size',
                 ]);
 
+            // Step 2: honour company-specific price first whenever the logged-in B2B user has a negotiated company price.
             if ($user && $user->isB2b() && $user->company_id) {
                 $companyPrice = (clone $baseQuery)
                     ->where('product_prices.price_type', 'company_price')
@@ -114,6 +116,7 @@ class DataVisibilityService
                 }
             }
 
+            // Step 3: fall back through the normal role-based price order until one visible price is found.
             foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'company_price')) as $priceType) {
                 $price = (clone $baseQuery)
                     ->where('product_prices.price_type', $priceType)
@@ -138,7 +141,7 @@ class DataVisibilityService
     public function resolveVariantPrice(int $productVariantId, ?User $user): ?array
     {
         try {
-            // Step 1: build the base price query for the exact selected variant.
+            // Step 1: build the exact selected variant query and keep variant quantity rules on the same payload.
             $baseQuery = ProductPrice::query()
                 ->join('product_variants', 'product_variants.id', '=', 'product_prices.product_variant_id')
                 ->where('product_variants.id', $productVariantId)
@@ -152,14 +155,14 @@ class DataVisibilityService
                     'product_prices.tax_amount',
                     'product_prices.price_after_gst',
                     'product_prices.currency',
-                    'product_prices.min_order_quantity',
-                    'product_prices.max_order_quantity',
-                    'product_prices.lot_size',
                     'product_prices.price_type',
                     'product_variants.product_id',
                     'product_variants.id as product_variant_id',
                     'product_variants.sku as variant_sku',
                     'product_variants.variant_name',
+                    'product_variants.min_order_quantity',
+                    'product_variants.max_order_quantity',
+                    'product_variants.lot_size',
                 ]);
 
             // Step 2: check company-specific price first for B2B users.
@@ -415,6 +418,11 @@ class DataVisibilityService
             $taxAmount = round(($discountDetails['final_amount'] * $gstRate) / 100, 2);
             $priceAfterGst = round($discountDetails['final_amount'] + $taxAmount, 2);
 
+            // Keep the buy-rule values from the selected sellable variant so every downstream flow follows one source of truth.
+            $minOrderQuantity = max(1, (int) $price->min_order_quantity);
+            $maxOrderQuantity = $price->max_order_quantity === null ? null : (int) $price->max_order_quantity;
+            $lotSize = max(1, (int) $price->lot_size);
+
             return [
                 'base_amount' => $baseAmount,
                 'amount' => $discountDetails['final_amount'],
@@ -425,9 +433,9 @@ class DataVisibilityService
                 'discount_type' => $discountDetails['discount_type'],
                 'discount_value' => $discountDetails['discount_value'],
                 'discount_amount' => $discountDetails['discount_amount'],
-                'min_order_quantity' => (int) $price->min_order_quantity,
-                'max_order_quantity' => $price->max_order_quantity === null ? null : (int) $price->max_order_quantity,
-                'lot_size' => (int) $price->lot_size,
+                'min_order_quantity' => $minOrderQuantity,
+                'max_order_quantity' => $maxOrderQuantity,
+                'lot_size' => $lotSize,
                 'price_type' => (string) $price->price_type,
                 'product_variant_id' => (int) $price->product_variant_id,
                 'variant_sku' => (string) $price->variant_sku,

@@ -324,11 +324,11 @@ class ProformaInvoiceService
         }
     }
 
-    // This validates min quantity, max quantity, and lot size before PI save.
+    // This validates min quantity, max quantity, and lot size before PI save using the selected variant rules.
     protected function validateQuantityRules(int $quantity, array $price, int $index): void
     {
         try {
-            // Step 1: read the resolved quantity rules from the selected price row.
+            // Step 1: read the resolved quantity rules from the selected sellable variant.
             $minOrderQuantity = max(1, (int) ($price['min_order_quantity'] ?? 1));
             $maxOrderQuantity = $price['max_order_quantity'] ?? null;
             $lotSize = max(1, (int) ($price['lot_size'] ?? 1));

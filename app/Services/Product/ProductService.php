@@ -73,7 +73,11 @@ class ProductService
     {
         $price = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
 
+        // Step 1: keep the original saved base amount so the storefront can show the real MRP when needed.
+        $product->visible_base_price = $price['base_amount'] ?? null;
         $product->visible_price = $price['amount'] ?? null;
+        // Step 2: keep the resolved discount amount so the storefront can decide whether to show a discounted price state.
+        $product->visible_discount_amount = $price['discount_amount'] ?? 0;
         $product->gst_rate = $price['gst_rate'] ?? 0;
         $product->tax_amount = $price['tax_amount'] ?? null;
         $product->price_with_gst = $price['price_after_gst'] ?? null;
@@ -82,6 +86,8 @@ class ProductService
         $product->visible_variant_id = $price['product_variant_id'] ?? null;
         $product->visible_variant_sku = $price['variant_sku'] ?? null;
         $product->visible_variant_name = $price['variant_name'] ?? null;
+        // Step 3: keep the resolved minimum order quantity ready for storefront quantity messaging.
+        $product->visible_min_order_quantity = $price['min_order_quantity'] ?? 1;
         return $product;
     }
 
@@ -539,6 +545,7 @@ class ProductService
                     $product->visible_variant_id = $price['product_variant_id'] ?? null;
                     $product->visible_variant_sku = $price['variant_sku'] ?? null;
                     $product->visible_variant_name = $price['variant_name'] ?? null;
+                    $product->visible_min_order_quantity = $price['min_order_quantity'] ?? 1;
                     return $product;
                 })
                 ->filter()
