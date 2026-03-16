@@ -516,15 +516,26 @@
 
                         @auth
                             {{-- Step 1: submit the current cart through the controller so checkout follows the standard MVC flow. --}}
-                            <form method="POST" action="{{ route('checkout.submit') }}" class="mt-5">
+                            <form method="POST" action="{{ route('checkout.submit') }}" class="mt-5" onsubmit="
+                                const btn = this.querySelector('button[type=submit]');
+                                btn.disabled = true;
+                                btn.innerHTML = `
+                                    <svg class='h-4 w-4 animate-spin' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'>
+                                        <circle class='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' stroke-width='4'></circle>
+                                        <path class='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+                                    </svg>
+                                    Processing Order...
+                                `;
+                                btn.classList.add('cursor-wait');
+                            ">
                                 @csrf
 
                                 {{-- Step 2: keep the submit action simple because the backend cart already holds the current checkout items. --}}
-                                <button type="submit" class="{{ $buttonPrimaryClass }} w-full gap-2">
+                                <button type="submit" class="{{ $buttonPrimaryClass }} w-full gap-2 transition-all">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
-                                    Place Order
+                                    <span>Place Order</span>
                                 </button>
                             </form>
                         @endauth
@@ -712,16 +723,33 @@
                     const image    = String(item.image || 'https://via.placeholder.com/96x96?text=Bio');
                     const name     = String(item.name || 'Product');
                     const model    = String(item.model || 'N/A');
+                    const id       = String(item.id || item.productId || '');
                     return `
-                        <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
                             <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
                                 <img src="${image}" alt="${name}" class="h-full w-full object-cover">
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-sm font-semibold text-slate-900">${name}</p>
-                                <p class="mt-1 text-xs text-slate-500">Qty: ${quantity} | ${model}</p>
+                                <p class="mt-0.5 text-xs text-slate-500">${model}</p>
+                                <div class="mt-2 flex items-center gap-3">
+                                    <div class="flex items-center rounded-lg border border-slate-200 bg-white">
+                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.CartStore.updateItemQuantity('${id}', Math.max(1, ${quantity} - 1)); render();">
+                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" /></svg>
+                                        </button>
+                                        <input type="number" readonly class="w-8 border-x border-slate-200 bg-transparent text-center text-xs font-semibold text-slate-900 outline-none" value="${quantity}">
+                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.CartStore.updateItemQuantity('${id}', ${quantity} + 1); render();">
+                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                                        </button>
+                                    </div>
+                                    <button type="button" class="text-xs font-medium text-slate-400 underline decoration-slate-300 underline-offset-2 transition hover:text-rose-600 hover:decoration-rose-300" onclick="window.CartStore.removeItem('${id}'); render();">
+                                        Remove
+                                    </button>
+                                </div>
                             </div>
-                            <span class="text-sm font-semibold text-primary-700">${formatInr(subtotal)}</span>
+                            <div class="flex flex-col items-end justify-between self-stretch">
+                                <span class="text-sm font-semibold text-primary-700">${formatInr(subtotal)}</span>
+                            </div>
                         </div>
                     `;
                 };

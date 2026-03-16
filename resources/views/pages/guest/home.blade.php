@@ -71,6 +71,43 @@
                         </svg>
                     </button>
                 </div>
+    <!-- ... -->
+        </div>
+    </section>
+
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- SEARCH BAR STRIP --}}
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    <section class="relative z-30 -mt-10 mb-4 px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div class="mx-auto w-full max-w-4xl rounded-3xl bg-white p-3 shadow-xl ring-1 ring-slate-900/5 sm:p-4">
+            <form action="{{ route('products.index') }}" method="GET" class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div class="relative flex-1">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197M15.803 15.803A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                    </div>
+                    <input
+                        type="search"
+                        name="search"
+                        id="homeProductSearch"
+                        class="block w-full rounded-2xl border-0 bg-slate-50 py-4 pl-12 pr-4 text-base text-slate-900 ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-primary-600 focus:outline-none sm:text-lg"
+                        placeholder="Search products, categories, or keywords..."
+                        aria-label="Search catalog"
+                        required
+                    >
+                </div>
+                <button type="submit" class="inline-flex min-h-[3.5rem] items-center justify-center gap-2 rounded-2xl bg-primary-600 px-8 text-base font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30">
+                    Search Catalog
+                </button>
+            </form>
+            <div class="mt-3 hidden items-center justify-center gap-2 px-2 sm:flex">
+                <p class="text-xs font-medium text-slate-500">Popular searches:</p>
+                <div class="flex gap-2">
+                    <a href="{{ route('products.index', ['search' => 'hematology']) }}" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200">Hematology</a>
+                    <a href="{{ route('products.index', ['search' => 'reagents']) }}" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200">Reagents</a>
+                    <a href="{{ route('products.index', ['search' => 'consumables']) }}" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200">Consumables</a>
+                </div>
             </div>
         </div>
     </section>
@@ -395,6 +432,41 @@
                             {{ $insight['action'] }}
                         </x-ui.action-link>
                     </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- FREQUENTLY ASKED QUESTIONS --}}
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    <section class="bg-slate-50 py-12 md:py-16">
+        <div class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 xl:px-10">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900">Frequently Asked Questions</h2>
+                <p class="mt-4 text-base text-slate-600">Got questions? We have answers. If you can't find what you're looking for, please <a href="{{ route('contact') }}" class="font-semibold text-primary-600 hover:text-primary-500">contact our support team</a>.</p>
+            </div>
+            <div class="mt-10 space-y-4">
+                @foreach ([
+                    ['q' => 'Do you ship to all locations in India?', 'a' => 'Yes, we provide pan-India delivery. We also offer same-day or next-day delivery in select regions, including Lucknow and surrounding areas, depending on product availability and current stock levels.'],
+                    ['q' => 'How can I request a bulk or institutional quotation?', 'a' => 'You can use the "Generate Quote" button available on most pages to instantly build an MRP quotation. For negotiated or institutional pricing, we recommend creating a B2B account or booking a meeting with our sales team.'],
+                    ['q' => 'Are your medical supplies and instruments certified?', 'a' => 'Absolutely. We only partner with leading brands and manufacturers. All our products comply with standard regulations such as ISO, CE Marking, and FDA where applicable.'],
+                    ['q' => 'What is your return or replacement policy?', 'a' => 'We offer replacements for items that arrive damaged, defective, or do not match the order description. Due to the sensitive nature of diagnostic supplies, returns for correctly fulfilled products are handled on a case-by-case basis. Please review our full return policy for details.'],
+                    ['q' => 'Do you provide post-installation support for instruments?', 'a' => 'Yes. For medium to large diagnostic instruments, we coordinate with manufacturer technicians to ensure proper installation, basic operational training, and support.'],
+                ] as $index => $faq)
+                    <details class="group rounded-3xl border border-slate-200 bg-white shadow-sm [&_summary::-webkit-details-marker]:hidden" {{ $index === 0 ? 'open' : '' }}>
+                        <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 rounded-3xl group-open:rounded-b-none">
+                            <h3 class="text-lg font-semibold">{{ $faq['q'] }}</h3>
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition-transform duration-300 group-open:-rotate-180 group-open:bg-primary-50 group-open:text-primary-600">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-6 pt-0 text-slate-600">
+                            <p class="text-base leading-relaxed">{{ $faq['a'] }}</p>
+                        </div>
+                    </details>
                 @endforeach
             </div>
         </div>
