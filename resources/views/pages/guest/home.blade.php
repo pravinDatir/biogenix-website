@@ -1,8 +1,454 @@
-<div>
+@push('styles')
+<style>
+    .home-page {
+        --home-orange: #ff6a00;
+        --home-cyan: #38bdf8;
+        --home-navy: #07111f;
+        --home-panel: rgba(255, 255, 255, 0.74);
+        background:
+            radial-gradient(circle at top left, rgba(255, 106, 0, 0.12), transparent 23%),
+            radial-gradient(circle at 88% 14%, rgba(56, 189, 248, 0.12), transparent 20%),
+            linear-gradient(180deg, #f5f9ff 0%, #eef4ff 50%, #f9fbff 100%);
+    }
+
+    .home-page .home-card,
+    .home-page .home-panel {
+        border-color: rgba(148, 163, 184, 0.18);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.78));
+        box-shadow: 0 24px 55px rgba(15, 23, 42, 0.07);
+        backdrop-filter: blur(18px);
+    }
+
+    .home-page .home-card {
+        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+
+    .home-page .home-card:hover,
+    .home-page .home-panel:hover {
+        border-color: rgba(255, 106, 0, 0.2);
+        box-shadow: 0 28px 60px rgba(15, 23, 42, 0.11);
+    }
+
+    .home-page .home-input {
+        border-radius: 1rem;
+        border-color: rgba(148, 163, 184, 0.28);
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    .home-page .home-primary-button {
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #ff6a00, #ff8f3f);
+        box-shadow: 0 18px 30px rgba(255, 106, 0, 0.28);
+    }
+
+    .home-page .home-primary-button:hover {
+        background: linear-gradient(135deg, #ed6200, #ff7b21);
+    }
+
+    .home-hero::before,
+    .home-hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 9999px;
+        pointer-events: none;
+        filter: blur(12px);
+    }
+
+    .home-hero::before {
+        top: 4rem;
+        left: -6rem;
+        height: 18rem;
+        width: 18rem;
+        background: radial-gradient(circle, rgba(255, 106, 0, 0.34), transparent 70%);
+    }
+
+    .home-hero::after {
+        right: -5rem;
+        top: -2rem;
+        height: 20rem;
+        width: 20rem;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.28), transparent 72%);
+    }
+
+    .home-hero-track-overlay {
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent);
+    }
+
+    .home-hero-copy-shell {
+        position: relative;
+        max-width: 64rem;
+        border-radius: 2rem;
+        background: linear-gradient(180deg, rgba(7, 17, 31, 0.16), rgba(7, 17, 31, 0.04));
+        padding: 0.35rem 1.2rem 1.25rem 0;
+        backdrop-filter: blur(4px);
+    }
+
+    .home-hero-title,
+    .home-hero-copy,
+    .home-hero-chip-text {
+        text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .home-route-visual {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        min-height: 11rem;
+    }
+
+    .home-route-visual::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(7, 17, 31, 0.14), rgba(7, 17, 31, 0.76));
+    }
+
+    .home-route-visual img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .home-panel:hover .home-route-visual img {
+        transform: scale(1.05);
+    }
+
+    .home-route-copy {
+        position: absolute;
+        inset: auto 1rem 1rem 1rem;
+        z-index: 1;
+    }
+
+    .home-route-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 25rem;
+        border-radius: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 26px 64px rgba(15, 23, 42, 0.14);
+    }
+
+    .home-route-card img {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.7s ease;
+    }
+
+    .home-route-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(180deg, rgba(7, 17, 31, 0.08) 0%, rgba(7, 17, 31, 0.22) 32%, rgba(7, 17, 31, 0.84) 100%);
+        z-index: 0;
+    }
+
+    .home-route-card::after {
+        content: '';
+        position: absolute;
+        inset: 1rem;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .home-route-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .home-route-card__content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        min-height: 25rem;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.5rem;
+    }
+
+    .home-route-card__chip {
+        position: absolute;
+        left: 1.5rem;
+        top: 1.5rem;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.12);
+        padding: 0.55rem 0.9rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(12px);
+    }
+
+    .home-route-card__panel {
+        border-radius: 1.6rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: linear-gradient(180deg, rgba(7, 17, 31, 0.34), rgba(7, 17, 31, 0.52));
+        padding: 1.25rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .home-delivery-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .home-delivery-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(135deg, rgba(255, 106, 0, 0.96), rgba(255, 147, 71, 0.84)),
+            url('{{ asset('storage/slides/lucknow-map.svg') }}');
+        background-position: center, center;
+        background-repeat: no-repeat, no-repeat;
+        background-size: cover, cover;
+        opacity: 1;
+    }
+
+    .home-delivery-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 26%),
+            linear-gradient(90deg, rgba(122, 38, 0, 0.14), transparent 52%);
+    }
+
+    .home-delivery-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .home-stats {
+        margin-top: -3.8rem;
+        z-index: 20;
+    }
+
+    .home-stats-shell {
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.72));
+        box-shadow: 0 28px 70px rgba(15, 23, 42, 0.1);
+        backdrop-filter: blur(24px);
+    }
+
+    .home-category-grid {
+        display: grid;
+        gap: 0.9rem;
+    }
+
+    .home-category-tile {
+        position: relative;
+        overflow: hidden;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        border-radius: 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
+        isolation: isolate;
+    }
+
+    .home-category-tile__media {
+        position: relative;
+        height: 14.25rem;
+        flex: 0 0 14.25rem;
+        overflow: hidden;
+    }
+
+    .home-category-tile__image {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.7s ease;
+    }
+
+    .home-category-tile__media::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(180deg, rgba(7, 17, 31, 0.04) 0%, rgba(7, 17, 31, 0.08) 55%, rgba(7, 17, 31, 0.26) 100%);
+        z-index: 0;
+    }
+
+    .home-category-tile:hover .home-category-tile__image {
+        transform: scale(1.06);
+    }
+
+    .home-category-tile__content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+        flex: 1;
+        padding: 0.85rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
+    }
+
+    .home-category-tile--featured,
+    .home-category-tile--featured .home-category-tile__content {
+        min-height: 0;
+    }
+
+    .home-category-tile--featured .home-category-tile__media {
+        height: 14.25rem;
+        flex-basis: 14.25rem;
+    }
+
+    .home-category-pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.75);
+        padding: 0.35rem 0.7rem;
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #0f172a;
+        backdrop-filter: blur(12px);
+    }
+
+    .home-category-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 106, 0, 0.16);
+        background: rgba(255, 243, 236, 0.95);
+        padding: 0.35rem 0.65rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #9a3412;
+        backdrop-filter: blur(10px);
+    }
+
+    .home-category-copy {
+        max-width: 28rem;
+        color: #64748b;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+    }
+
+    .home-category-action {
+        display: inline-flex;
+        min-height: 2.5rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.9rem;
+        background: linear-gradient(135deg, #ff6a00, #ff8f3f);
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #ffffff;
+        box-shadow: 0 14px 24px rgba(255, 106, 0, 0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .home-category-action:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(135deg, #ed6200, #ff7b21);
+        box-shadow: 0 16px 28px rgba(255, 106, 0, 0.28);
+    }
+
+    @media (min-width: 640px) {
+        .home-category-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 768px) {
+        .home-category-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .home-category-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .home-category-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
+
+    .home-solutions {
+        background:
+            radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.11), transparent 24%),
+            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.12), transparent 18%),
+            linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .home-trust {
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.82));
+        backdrop-filter: blur(14px);
+    }
+
+    .home-cta {
+        background:
+            radial-gradient(circle at top right, rgba(255, 106, 0, 0.18), transparent 28%),
+            linear-gradient(135deg, #07111f 0%, #102243 52%, #112d60 100%);
+    }
+
+    .home-reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .home-reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .home-page .home-card,
+        .home-page .home-panel,
+        .home-reveal {
+            transition: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .home-stats {
+            margin-top: -2.2rem;
+        }
+    }
+</style>
+@endpush
+
+<div class="home-page">
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- HERO CAROUSEL --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
+    <section class="home-hero relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
+        <div class="home-hero-track-overlay absolute inset-0 opacity-30"></div>
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
             <div id="heroTrack" class="flex h-full w-full transition-transform duration-700 ease-out">
                 @foreach ($heroSlides ?? [] as $slide)
@@ -14,25 +460,48 @@
                             @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif
                             decoding="async"
                         >
-                        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/60 to-slate-900/30"></div>
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_22%_28%,rgba(7,17,31,0.28),transparent_22%),linear-gradient(105deg,rgba(7,17,31,0.98)_10%,rgba(7,17,31,0.84)_44%,rgba(7,17,31,0.62)_62%,rgba(7,17,31,0.9)_100%)]"></div>
 
-                        <div class="container relative z-10 grid min-h-[calc(100vh-88px)] grid-cols-1 gap-8 py-10 pb-24 md:py-14 lg:grid-cols-12">
-                            <div class="flex flex-col justify-center lg:col-span-7">
-                                <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
-                                <h1 class="mt-5 max-w-3xl text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
-                                <p class="mt-6 max-w-2xl text-base leading-8 text-slate-100 md:text-xl">{{ $slide['copy'] }}</p>
+                        <div class="container relative z-10 grid min-h-[calc(100vh-88px)] grid-cols-1 gap-8 py-10 pb-28 md:py-14 lg:grid-cols-12">
+                            <div class="home-reveal flex flex-col justify-center lg:col-span-7">
+                                <div class="home-hero-copy-shell">
+                                    <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
+                                    <h1 class="home-hero-title mt-5 max-w-4xl font-['Sora'] text-5xl font-semibold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
+                                    <p class="home-hero-copy mt-6 max-w-2xl text-base leading-8 text-slate-100 md:text-xl">{{ $slide['copy'] }}</p>
 
-                                <div class="mt-8 flex flex-wrap items-center gap-3">
-                                    <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
-                                    <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book Meeting</x-ui.action-link>
+                                    <div class="mt-8 flex flex-wrap items-center gap-3">
+                                        <x-ui.action-link :href="route('products.index')" variant="secondary" class="min-h-11 px-5">Browse Catalog</x-ui.action-link>
+                                        <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                                        <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book Meeting</x-ui.action-link>
+                                    </div>
+
+                                    <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-200">
+                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Healthcare-first sourcing</span>
+                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Fast quotation workflow</span>
+                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Structured support handoff</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="flex items-end lg:col-span-5">
-                                <div class="w-full rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur">
+                            <div class="home-reveal flex items-end lg:col-span-5">
+                                <div class="w-full rounded-[1.75rem] border border-white/14 bg-white/10 p-5 backdrop-blur-xl">
                                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Featured Focus</p>
                                     <h2 class="mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
                                     <p class="mt-3 text-sm text-slate-100">Biogenix combines category expertise with enterprise-ready support to improve continuity across procurement and delivery operations.</p>
+                                    <div class="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                                        <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
+                                            <p class="text-xl font-semibold text-white">24h</p>
+                                            <p class="text-xs uppercase tracking-[0.18em] text-white/60">Dispatch promise</p>
+                                        </div>
+                                        <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
+                                            <p class="text-xl font-semibold text-white">200+</p>
+                                            <p class="text-xs uppercase tracking-[0.18em] text-white/60">Institutional clients</p>
+                                        </div>
+                                        <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
+                                            <p class="text-xl font-semibold text-white">98%</p>
+                                            <p class="text-xs uppercase tracking-[0.18em] text-white/60">Satisfaction score</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -78,9 +547,9 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- STATS / SOCIAL PROOF STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="border-b border-slate-100 bg-white py-8">
+    <section class="home-stats border-b border-transparent bg-transparent py-8">
         <div class="container">
-            <dl class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+            <dl class="home-stats-shell grid grid-cols-2 gap-6 rounded-[2rem] px-5 py-6 sm:grid-cols-4 sm:px-6">
                 @foreach ([
                     ['value' => '5,000+', 'label' => 'Products Listed', 'icon' => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'],
                     ['value' => '200+',   'label' => 'Lab & Hospital Clients', 'icon' => 'M3 21h18M9 21V9m6 12V9M3 9l9-7 9 7'],
@@ -106,45 +575,44 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- CORE PRODUCT CATEGORIES (with hover overlay + count badge) --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-slate-50 py-12 md:py-16">
+    <section class="home-categories bg-transparent py-12 md:py-16">
         <div class="container">
-            <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
-            <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-5">
+            <div class="home-reveal">
+                <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
+            </div>
+            <div class="home-category-grid mt-6">
                 @forelse (($productCategories ?? collect()) as $category)
-                    <article class="home-card group">
-                        {{-- Image with gradient overlay on hover --}}
-                        <div class="relative overflow-hidden rounded-2xl">
+                    @php
+                        $tileClass = 'home-category-tile--standard';
+                        $imagePath = $category->default_image_path ?: 'storage/categories/image1.jpg';
+                        $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
+                    @endphp
+                    <article class="home-category-tile home-reveal group {{ $tileClass }}">
+                        <div class="home-category-tile__media">
                             <img
-                                src="{{ asset($category->default_image_path ?: 'storage/categories/image1.jpg') }}"
+                                src="{{ asset($imagePath) }}"
                                 alt="{{ $category->name }}"
-                                class="h-40 w-full object-cover transition duration-500 group-hover:scale-[1.06]"
+                                class="home-category-tile__image"
                                 loading="lazy"
                                 decoding="async"
                             >
-                            {{-- Dark overlay on hover --}}
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                            {{-- Hover CTA --}}
-                            <div class="absolute inset-0 flex items-end justify-center pb-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-1.5 text-xs font-semibold text-slate-900 shadow-lg">
-                                    <svg class="h-3.5 w-3.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" /><circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                    Explore
-                                </span>
+                            <div class="relative z-[1] flex items-start justify-between gap-3 p-4">
+                                <span class="home-category-pill">{{ $loop->first ? 'Featured category' : 'Category' }}</span>
+                                @if (isset($category->products_count) && $category->products_count > 0)
+                                    <span class="home-category-meta">{{ $category->products_count }} products</span>
+                                @endif
                             </div>
-                            {{-- Product count badge --}}
-                            @if (isset($category->products_count) && $category->products_count > 0)
-                                <span class="absolute right-3 top-3 inline-flex items-center rounded-full bg-primary-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
-                                    {{ $category->products_count }}
-                                </span>
-                            @endif
                         </div>
-                        <div class="space-y-2 pt-4">
-                            <h3 class="text-lg font-semibold text-slate-900">{{ $category->name }}</h3>
-                            <p class="text-sm text-slate-600">
-                                {{ \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 110) }}
-                            </p>
-                            <x-ui.action-link :href="route('products.index')" variant="secondary">Explore</x-ui.action-link>
+                        <div class="home-category-tile__content">
+                            <div>
+                                <h3 class="font-['Sora'] text-lg font-semibold tracking-tight text-slate-950">{{ $category->name }}</h3>
+                                <p class="home-category-copy mt-1.5 text-[13px] leading-5.5">
+                                    {{ $categoryCopy }}
+                                </p>
+                            </div>
+                            <div class="mt-auto">
+                                <a href="{{ route('products.index') }}" class="home-category-action">Explore</a>
+                            </div>
                         </div>
                     </article>
                 @empty
@@ -160,24 +628,38 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- CLINICAL & BUSINESS SOLUTIONS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-white py-12 md:py-16">
+    <section class="home-solutions py-12 md:py-16">
         <div class="container">
-            <x-ui.section-heading title="Clinical &amp; Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
+            <div class="home-reveal">
+                <x-ui.section-heading title="Clinical &amp; Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
+            </div>
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <article class="home-panel">
-                    <x-badge variant="info">B2B Operations</x-badge>
-                    <h3 class="mt-3 text-xl font-semibold text-slate-900">Distributor, Lab, and Hospital Enablement</h3>
-                    <p class="mt-2 text-sm text-slate-600">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
-                    <div class="mt-5">
-                        <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])">B2B Login</x-ui.action-link>
+                <article class="home-route-card home-reveal">
+                    <img src="{{ asset('storage/slides/image2.jpg') }}" alt="B2B healthcare procurement" loading="lazy" decoding="async">
+                    <span class="home-route-card__chip">B2B Operations</span>
+                    <div class="home-route-card__content">
+                        <div class="home-route-card__panel">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For institutions and channel partners</p>
+                            <h3 class="mt-3 text-2xl font-semibold text-white">Distributor, lab, and hospital buying with structured support.</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-200">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
+                            <div class="mt-5">
+                                <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])" variant="inverse">B2B Login</x-ui.action-link>
+                            </div>
+                        </div>
                     </div>
                 </article>
-                <article class="home-panel">
-                    <x-badge variant="success">B2C Access</x-badge>
-                    <h3 class="mt-3 text-xl font-semibold text-slate-900">Retail and Independent Care Buyers</h3>
-                    <p class="mt-2 text-sm text-slate-600">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
-                    <div class="mt-5">
-                        <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])">B2C Login</x-ui.action-link>
+                <article class="home-route-card home-reveal">
+                    <img src="{{ asset('storage/slides/image5.jpg') }}" alt="B2C healthcare retail buying" loading="lazy" decoding="async">
+                    <span class="home-route-card__chip">B2C Access</span>
+                    <div class="home-route-card__content">
+                        <div class="home-route-card__panel">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For direct and retail buyers</p>
+                            <h3 class="mt-3 text-2xl font-semibold text-white">A cleaner buying path for faster product access.</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-200">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
+                            <div class="mt-5">
+                                <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])" variant="inverse">B2C Login</x-ui.action-link>
+                            </div>
+                        </div>
                     </div>
                 </article>
             </div>
@@ -187,7 +669,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- PARTNER / BRAND TRUST BAR --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="border-y border-slate-100 bg-slate-50 py-8">
+    <section class="home-trust border-y border-slate-100 py-8">
         <div class="container">
             <p class="mb-6 text-center text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Trusted by leading healthcare institutions &amp; diagnostic brands</p>
             <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10">
@@ -218,18 +700,21 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- SAME-DAY DELIVERY + NEWSLETTER --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-slate-50 py-12 md:py-16">
+    <section class="home-newsletter bg-transparent py-12 md:py-16">
         <div class="container grid grid-cols-1 gap-5 xl:grid-cols-12">
-            <article class="rounded-3xl bg-gradient-to-r from-primary-600 to-primary-700 p-6 text-white shadow-sm xl:col-span-7 md:p-8">
-                <h2 class="text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
-                <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
-                <div class="mt-5 flex flex-wrap gap-3">
-                    <x-ui.action-link :href="route('proforma.create')" variant="contrast" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
-                    <x-ui.action-link :href="route('contact')" variant="inverse" class="min-h-11 px-5">Talk to Support</x-ui.action-link>
+            <article class="home-delivery-card home-reveal rounded-3xl p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8">
+                <div class="home-delivery-content">
+                    <span class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow local support</span>
+                    <h2 class="mt-4 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
+                    <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <x-ui.action-link :href="route('proforma.create')" variant="contrast" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                        <x-ui.action-link :href="route('contact')" variant="inverse" class="min-h-11 px-5">Talk to Support</x-ui.action-link>
+                    </div>
                 </div>
             </article>
 
-            <article class="home-panel xl:col-span-5">
+            <article class="home-panel home-reveal xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
                 <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
@@ -247,13 +732,13 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- WHY BIOGENIX --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-white py-12 md:py-16">
+    <section class="home-why bg-transparent py-12 md:py-16">
         <div class="container grid grid-cols-1 gap-6 lg:grid-cols-12">
-            <article class="min-h-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-xl md:min-h-[22rem] lg:col-span-6">
+            <article class="home-reveal min-h-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-xl md:min-h-[22rem] lg:col-span-6">
                 <img src="{{ asset('storage/slides/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
             </article>
 
-            <article class="lg:col-span-6">
+            <article class="home-reveal lg:col-span-6">
                 <x-ui.section-heading title="Why Leading Teams Choose Biogenix" subtitle="A modern diagnostics partner model inspired by enterprise healthcare standards." />
                 <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     @foreach ([
@@ -282,9 +767,11 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- TESTIMONIALS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-slate-50 py-12 md:py-16">
+    <section class="home-testimonials bg-transparent py-12 md:py-16">
         <div class="container">
-            <x-ui.section-heading title="What Our Clients Say" subtitle="Trusted by procurement heads, lab managers, and healthcare institutions across India." />
+            <div class="home-reveal">
+                <x-ui.section-heading title="What Our Clients Say" subtitle="Trusted by procurement heads, lab managers, and healthcare institutions across India." />
+            </div>
             <div class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
                 @foreach ([
                     [
@@ -312,7 +799,7 @@
                         'color'   => 'bg-violet-600',
                     ],
                 ] as $testimonial)
-                    <article class="home-panel flex flex-col gap-4">
+                    <article class="home-panel home-reveal flex flex-col gap-4">
                         {{-- Stars --}}
                         <div class="flex items-center gap-0.5">
                             @for ($s = 0; $s < $testimonial['rating']; $s++)
@@ -344,9 +831,11 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- INSIGHTS & UPDATES (with icon thumbnails) --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-white py-12 md:py-16">
+    <section class="home-insights bg-transparent py-12 md:py-16">
         <div class="container">
-            <x-ui.section-heading title="Insights &amp; Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
+            <div class="home-reveal">
+                <x-ui.section-heading title="Insights &amp; Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
+            </div>
             <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 @foreach ([
                     [
@@ -377,7 +866,7 @@
                         'color'  => 'bg-violet-50 text-violet-600',
                     ],
                 ] as $insight)
-                    <article class="home-panel group flex flex-col gap-4">
+                    <article class="home-panel home-reveal group flex flex-col gap-4">
                         {{-- Icon thumbnail --}}
                         <div class="flex items-center gap-4">
                             <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl {{ $insight['color'] }} transition group-hover:scale-110">
@@ -403,15 +892,17 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- FINAL CTA STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-slate-950 py-12 text-white md:py-14">
+    <section class="home-cta py-12 text-white md:py-14">
         <div class="container text-center">
-            <h2 class="text-2xl font-semibold text-white md:text-3xl">Need a faster procurement decision?</h2>
-            <p class="mx-auto mt-3 max-w-3xl text-sm text-slate-200 md:text-base">
-                Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
-            </p>
-            <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
-                <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book a Meeting</x-ui.action-link>
+            <div class="home-reveal">
+                <h2 class="font-['Sora'] text-2xl font-semibold text-white md:text-4xl">Need a faster procurement decision?</h2>
+                <p class="mx-auto mt-3 max-w-3xl text-sm text-slate-200 md:text-base">
+                    Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
+                </p>
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                    <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                    <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book a Meeting</x-ui.action-link>
+                </div>
             </div>
         </div>
     </section>
@@ -440,12 +931,14 @@
         }
 
         function moveTo(target) {
+            if (!track || total === 0) return;
             index = (target + total) % total;
-            if (track) track.style.transform = 'translateX(-' + (index * 100) + '%)';
+            track.style.transform = 'translateX(-' + (index * 100) + '%)';
             paintDots();
         }
 
         function startAuto() {
+            if (total <= 1) return;
             if (intervalId) clearInterval(intervalId);
             intervalId = setInterval(function () { moveTo(index + 1); }, 5000);
         }
@@ -487,8 +980,29 @@
             carousel.addEventListener('mouseleave', startAuto);
         }
 
-        moveTo(0);
-        startAuto();
+        if (total > 0) {
+            moveTo(0);
+            startAuto();
+        }
+
+        const revealItems = Array.from(document.querySelectorAll('.home-reveal'));
+        if ('IntersectionObserver' in window && revealItems.length) {
+            const revealObserver = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.18 });
+
+            revealItems.forEach(function (item) {
+                revealObserver.observe(item);
+            });
+        } else {
+            revealItems.forEach(function (item) {
+                item.classList.add('is-visible');
+            });
+        }
 
         /* ─── Newsletter ─── */
         const newsletterForm   = document.getElementById('newsletterForm');
