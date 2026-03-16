@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@if((isset($roleSlugs) && (in_array('Super Admin', $roleSlugs) || in_array('Admin', $roleSlugs) || in_array('System Admin', $roleSlugs))) || in_array(strtolower($user->user_type ?? ''), ['admin', 'super_admin', 'system_admin']))
+    <script>window.location.href = "{{ route('adminPanel.dashboard') }}";</script>
+@endif
+
 @php
     $summaryCards = [
         ['label' => 'User Type', 'value' => strtoupper($user->user_type), 'tone' => 'primary'],
