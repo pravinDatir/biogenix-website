@@ -12,7 +12,7 @@
             Catalog
         </a>
         <span class="mx-2 text-slate-300">›</span>
-        <a href="{{ route('adminPanel.products') }}" class="hover:text-slate-900 transition flex items-center gap-1.5">
+        <a href="{{ route('adminPanel.products') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
             Products
         </a>
         <span class="mx-2 text-slate-300">›</span>
@@ -26,17 +26,17 @@
             <p class="text-sm text-slate-500 mt-1">Configure product details, visibility, and pricing for the Biogenix catalog.</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('adminPanel.products') }}" class="px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm">
+            <a href="{{ route('adminPanel.products') }}" class="ajax-link px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm">
                 Cancel
             </a>
-            <button class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20">
+            <button id="saveProductBtn" type="button" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20">
                 Save Product
             </button>
         </div>
     </div>
 
     <!-- Form Sections -->
-    <form class="space-y-6 pb-12">
+    <form id="productForm" class="space-y-6 pb-12" novalidate>
 
         <!-- 1. Product Information -->
         <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
@@ -52,20 +52,20 @@
                     <!-- Product Name -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Product Name <span class="text-rose-500">*</span></label>
-                        <input type="text" placeholder="e.g. Molecular Grade Reagent Kit" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productName" type="text" required placeholder="e.g. Molecular Grade Reagent Kit" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                     
                     <!-- SKU -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">SKU / Catalog ID <span class="text-rose-500">*</span></label>
-                        <input type="text" placeholder="e.g. BGX-7700-01" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productSku" type="text" required placeholder="e.g. BGX-7700-01" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
 
                 <!-- Description -->
                 <div class="space-y-2">
                     <label class="block text-[13px] font-bold text-slate-700">Description <span class="text-rose-500">*</span></label>
-                    <textarea rows="4" placeholder="Enter comprehensive product details, specifications, and use cases..." class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y"></textarea>
+                    <textarea id="productDesc" rows="4" required placeholder="Enter comprehensive product details, specifications, and use cases..." class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y"></textarea>
                 </div>
 
                 <!-- Specifics -> Product Overview -->
@@ -89,7 +89,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Brand <span class="text-rose-500">*</span></label>
-                        <input type="text" placeholder="e.g. Biogenix Pro" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productBrand" type="text" required placeholder="e.g. Biogenix Pro" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span class="text-slate-400 font-normal">(Optional)</span></label>
@@ -97,7 +97,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Stock Qty <span class="text-rose-500">*</span></label>
-                        <input type="number" placeholder="100" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productStock" type="number" required placeholder="100" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                     
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Base Price ($) <span class="text-rose-500">*</span></label>
-                        <input type="number" placeholder="0.00" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productPrice" type="number" required placeholder="0.00" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
 
                     <div class="space-y-3">
@@ -215,13 +215,13 @@
                     </div>
                     <h3 class="text-base font-bold text-[#0f172a]">Product Specifications</h3>
                 </div>
-                <button type="button" class="text-[12px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5">
+                <button id="addSpecBtn" type="button" class="text-[12px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                     Add Specification
                 </button>
             </div>
             
-            <div class="p-6">
+            <div id="specRows" class="p-6 space-y-4">
                 <!-- Single Row -->
                 <div class="flex items-end gap-4">
                     <div class="flex-1 space-y-2">
@@ -253,8 +253,8 @@
                 <!-- Left: Upload Box -->
                 <div class="lg:col-span-2 space-y-4">
                     <label class="block text-[13px] font-bold text-slate-700">Product Images</label>
-                    
-                    <div class="border-2 border-dashed border-slate-300 rounded-2xl bg-[#f8fafc] p-10 flex flex-col items-center justify-center text-center transition hover:bg-slate-50 cursor-pointer">
+                    <input id="imageUploadInput" type="file" accept="image/png,image/jpeg,image/webp" multiple class="hidden">
+                    <div id="imageDropZone" class="border-2 border-dashed border-slate-300 rounded-2xl bg-[#f8fafc] p-10 flex flex-col items-center justify-center text-center transition hover:bg-slate-50 cursor-pointer" onclick="document.getElementById('imageUploadInput').click()">
                         <div class="h-12 w-12 rounded-full bg-[#ebeff5] text-[#091b3f] flex items-center justify-center mb-4">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                         </div>
@@ -266,7 +266,7 @@
                     </div>
 
                     <!-- Thumbnails -->
-                    <div class="flex flex-wrap gap-4 mt-2">
+                    <div id="imagePreviewGrid" class="flex flex-wrap gap-4 mt-2">
                         <!-- Image 1 placeholder style -->
                         <div class="h-24 w-24 rounded-xl border-2 border-slate-200 bg-[#7baaa5] flex items-center justify-center overflow-hidden relative group">
                             <!-- Dummy box object -->
@@ -361,3 +361,128 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+// ─── Form Validation ───
+const requiredFields = [
+    {id:'productName', label:'Product Name'},
+    {id:'productSku', label:'SKU'},
+    {id:'productDesc', label:'Description'},
+    {id:'productBrand', label:'Brand'},
+    {id:'productStock', label:'Stock Qty'},
+    {id:'productPrice', label:'Base Price'}
+];
+
+function validateProductForm() {
+    let valid = true;
+    let firstInvalid = null;
+    document.querySelectorAll('.field-error').forEach(e => e.remove());
+    document.querySelectorAll('.border-rose-400').forEach(e => e.classList.remove('border-rose-400','ring-1','ring-rose-200'));
+    requiredFields.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (!el) return;
+        const val = el.value.trim();
+        if (!val) {
+            valid = false;
+            el.classList.add('border-rose-400','ring-1','ring-rose-200');
+            const err = document.createElement('p');
+            err.className = 'field-error text-[11px] font-semibold text-rose-500 mt-1';
+            err.textContent = f.label + ' is required';
+            el.parentElement.appendChild(err);
+            if (!firstInvalid) firstInvalid = el;
+        }
+    });
+    if (firstInvalid) firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+    return valid;
+}
+
+// Clear error on input
+requiredFields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+        el.classList.remove('border-rose-400','ring-1','ring-rose-200');
+        const err = el.parentElement.querySelector('.field-error');
+        if (err) err.remove();
+    });
+});
+
+document.getElementById('saveProductBtn')?.addEventListener('click', function() {
+    if (!validateProductForm()) {
+        AdminToast.show('Please fill in all required fields', 'error');
+        return;
+    }
+    AdminBtnLoading.start(this);
+    setTimeout(() => {
+        AdminBtnLoading.stop(this);
+        AdminToast.show('Product saved successfully!', 'success');
+    }, 1500);
+});
+
+// ─── Add Specification Row ───
+document.getElementById('addSpecBtn')?.addEventListener('click', () => {
+    const container = document.getElementById('specRows');
+    const row = document.createElement('div');
+    row.className = 'flex items-end gap-4';
+    row.innerHTML = `
+        <div class="flex-1 space-y-2">
+            <label class="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Attribute Key</label>
+            <input type="text" placeholder="e.g. Shelf Life" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+        </div>
+        <div class="flex-1 space-y-2">
+            <label class="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Attribute Value</label>
+            <input type="text" placeholder="12 months" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+        </button>
+    `;
+    container.appendChild(row);
+    row.querySelector('input').focus();
+    AdminToast.show('New specification row added', 'info');
+});
+
+// ─── Image Upload with Preview ───
+const imageInput = document.getElementById('imageUploadInput');
+const previewGrid = document.getElementById('imagePreviewGrid');
+const dropZone = document.getElementById('imageDropZone');
+
+if (imageInput) {
+    imageInput.addEventListener('change', handleImageFiles);
+    // Drag and drop
+    if (dropZone) {
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('border-[#091b3f]','bg-blue-50/50'); });
+        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-[#091b3f]','bg-blue-50/50'); });
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault(); dropZone.classList.remove('border-[#091b3f]','bg-blue-50/50');
+            if (e.dataTransfer.files.length) { imageInput.files = e.dataTransfer.files; handleImageFiles(); }
+        });
+    }
+}
+
+function handleImageFiles() {
+    const files = imageInput.files;
+    Array.from(files).forEach(file => {
+        if (!file.type.match('image.*')) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            // Remove any existing "add more" placeholder before appending
+            const addMore = previewGrid.querySelector('.add-more-img');
+            const thumb = document.createElement('div');
+            thumb.className = 'h-24 w-24 rounded-xl border-2 border-slate-200 overflow-hidden relative group';
+            thumb.innerHTML = `
+                <img src="${e.target.result}" class="w-full h-full object-cover" alt="preview">
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-1.5 right-1.5 h-6 w-6 rounded bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+            `;
+            if (addMore) previewGrid.insertBefore(thumb, addMore);
+            else previewGrid.appendChild(thumb);
+        };
+        reader.readAsDataURL(file);
+    });
+    AdminToast.show(`${files.length} image(s) added`, 'success');
+}
+</script>
+@endpush

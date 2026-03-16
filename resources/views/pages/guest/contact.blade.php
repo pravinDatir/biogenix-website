@@ -1,7 +1,7 @@
 @php
-    $contactCardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl animate-rise';
-    $panelClass = 'relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm animate-rise md:p-8';
-    $accentPanelClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm animate-rise md:p-8';
+    $contactCardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl';
+    $panelClass = 'relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8';
+    $accentPanelClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm md:p-8';
     $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
     $textareaClass = 'block min-h-[9rem] w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
     $primaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
@@ -13,7 +13,7 @@
     <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
         <img src="{{ asset('storage/slides/image2.jpg') }}" alt="Contact Biogenix" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/60 to-slate-900/40"></div>
-        <div class="container relative z-10 text-center">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
                 <a href="{{ route('home') }}">Home</a>
                 <span>/</span>
@@ -25,7 +25,7 @@
     </section>
 
     <section class="relative z-20 -mt-12 pb-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
                     ['title' => 'Corporate Office', 'copy' => 'Lucknow, Uttar Pradesh', 'phone' => '+91 98765 43210', 'email' => 'support@biogenix.com', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
@@ -58,7 +58,7 @@
     </section>
 
     <section class="py-12 pb-24">
-        <div class="container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8 xl:px-10">
             <div class="flex flex-col justify-start space-y-6 lg:col-span-5">
                 <article class="{{ $panelClass }}">
                     <div class="relative h-64 w-full overflow-hidden rounded-2xl bg-slate-200">
@@ -167,7 +167,7 @@
     </section>
 
     <section class="bg-white py-16 md:py-20">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Service Assurance" subtitle="Clear response commitments and logistics coverage for every request." />
             <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
@@ -176,7 +176,7 @@
                     ['title' => 'Escalation Desk', 'value' => '24/7', 'copy' => 'Escalate critical lab-down issues straight to senior support.'],
                     ['title' => 'Coverage', 'value' => 'PAN India', 'copy' => 'Forward stocking and partner routes for tier-1 to tier-3 cities.'],
                 ] as $sla)
-                    <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl animate-rise">
+                    <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
                         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ $sla['title'] }}</p>
                         <p class="mt-3 text-2xl font-bold text-slate-950">{{ $sla['value'] }}</p>
                         <p class="mt-3 text-sm leading-6 text-slate-600">{{ $sla['copy'] }}</p>
@@ -187,7 +187,7 @@
     </section>
 
     <section class="bg-slate-50 py-16 md:py-20">
-        <div class="container grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:items-center lg:px-8 xl:px-10">
             <div class="space-y-4 lg:col-span-5">
                 <x-ui.section-heading title="How We Engage" subtitle="Simple, transparent steps from inquiry to resolved request." />
                 <p class="text-base leading-8 text-slate-600">Every request: sales or support, follows the same structured flow so you always know what happens next.</p>

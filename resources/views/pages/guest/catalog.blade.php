@@ -46,6 +46,30 @@
         + $selectedBrands->count()
         + ($search !== '' ? 1 : 0)
         + ($selectedMaxPrice < $maxPrice ? 1 : 0);
+    $totalProducts = (int) $products->total();
+    $productSummaryLabel = $totalProducts.' '.Str::plural('product', $totalProducts).' available';
+    $filterSummaryLabel = $activeFilterCount === 1
+        ? '1 active filter'
+        : $activeFilterCount.' active filters';
+    $formatInrPlain = function (float|int|null $amount, int $decimals = 0): string {
+        if ($amount === null) {
+            return 'Request Pricing';
+        }
+
+        $negative = $amount < 0;
+        $amount = abs((float) $amount);
+        $formatted = number_format($amount, $decimals, '.', '');
+        [$integerPart, $fractionPart] = array_pad(explode('.', $formatted), 2, '00');
+
+        if (strlen($integerPart) > 3) {
+            $lastThree = substr($integerPart, -3);
+            $remaining = substr($integerPart, 0, -3);
+            $remaining = preg_replace('/\B(?=(\d{2})+(?!\d))/', ',', $remaining);
+            $integerPart = $remaining . ',' . $lastThree;
+        }
+
+        return ($negative ? '-' : '') . 'Rs. ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+    };
 
     $currentQuery = request()->query();
 
@@ -134,7 +158,7 @@
             $integerPart = $remaining . ',' . $lastThree;
         }
 
-        return ($negative ? '-' : '') . '<span class="currency-symbol">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+        return ($negative ? '-' : '') . '<span class="text-base font-medium opacity-60">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
     };
 
     $resolveVisualVariant = function ($product, int $index): string {
@@ -167,21 +191,21 @@
 @endphp
 
 <div class="mx-auto w-full max-w-none px-4 md:-mt-8 md:px-6 xl:px-10">
-    <div class="catalog-premium-stage">
-        <div id="catalogMobileBackdrop" class="catalog-mobile-backdrop" aria-hidden="true"></div>
-        <div id="catalogLoadingOverlay" class="catalog-loading-overlay" aria-hidden="true">
-            <div class="catalog-loading-card">
-                <div class="catalog-spinner-row">
-                    <span class="catalog-spinner" aria-hidden="true"></span>
+    <div class="w-full max-w-none box-border px-4 sm:px-6 xl:px-7">
+        <div id="catalogMobileBackdrop" class="pointer-events-none fixed inset-0 z-[60] bg-slate-950/45 opacity-0 transition-opacity duration-200 xl:hidden" aria-hidden="true"></div>
+        <div id="catalogLoadingOverlay" class="pointer-events-none fixed inset-0 z-[75] flex items-center justify-center bg-slate-950/18 px-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
+            <div class="w-full max-w-sm rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.16)]">
+                <div class="flex items-center gap-3">
+                    <span class="h-10 w-10 animate-spin rounded-full border-4 border-primary-100 border-t-primary-600" aria-hidden="true"></span>
                     <p class="text-sm font-semibold text-slate-900">Updating results</p>
                 </div>
                 <p class="mt-3 text-sm leading-6 text-slate-500">Applying filters and refreshing product availability. This takes a moment.</p>
             </div>
         </div>
-        <div id="uiToastHost" class="ui-toast-host" aria-live="polite" aria-atomic="true"></div>
-        <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="catalog-premium-form">
-            <section class="catalog-premium-section pt-2 md:pt-3">
-                <div class="catalog-premium-hero">
+        <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
+        <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="space-y-4 md:space-y-5">
+            <section class="w-full pt-2 md:pt-3">
+                <div class="rounded-[2rem] border border-white/70 bg-[radial-gradient(circle_at_top_right,rgba(47,143,255,0.16),transparent_24%),linear-gradient(135deg,#ffffff_0%,#f8fbff_52%,#eef5fd_100%)] p-5 shadow-[0_32px_70px_rgba(15,23,42,0.08)] md:p-5">
                     <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
                         <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-slate-700">Home</a>
                         <span>/</span>
@@ -190,16 +214,16 @@
                         <span class="text-slate-700">{{ $selectedCategories->first() ?: ($selectedApplications->first() ?: 'IVD Kits & Reagents') }}</span>
                     </div>
 
-                    <div class="catalog-premium-toolbar mt-4">
-                        <div class="catalog-premium-heading">
+                    <div class="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(36rem,0.9fr)] xl:items-end">
+                        <div class="max-w-3xl">
                             <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Product Catalog</h1>
                             <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">
                                 Explore our comprehensive range of high-performance biotech reagents, IVD kits, and life science research tools engineered for precision.
                             </p>
                         </div>
 
-                        <div class="catalog-premium-controls">
-                            <label class="catalog-premium-search">
+                        <div class="grid gap-3.5 md:grid-cols-[minmax(0,1fr)_minmax(220px,260px)]">
+                            <label class="flex min-h-[3.875rem] flex-wrap items-stretch gap-3 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(15,23,42,0.06)] md:flex-nowrap md:items-center md:gap-3.5 md:px-4 md:py-2.5">
                                 <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="11" cy="11" r="7"></circle>
                                     <path d="m20 20-3.5-3.5"></path>
@@ -209,12 +233,13 @@
                                     name="search"
                                     value="{{ $search }}"
                                     placeholder="Search by SKU, product name, application, or brand..."
+                                    class="min-w-0 flex-1 border-0 bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400"
                                     aria-label="Search products"
                                 >
-                                <button type="submit">Search</button>
+                                <button type="submit" class="w-full rounded-[0.875rem] bg-gradient-to-r from-primary-600 to-primary-700 px-5 py-4 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_20px_36px_rgba(35,131,235,0.24)] md:w-auto">Search</button>
                             </label>
 
-                            <div class="catalog-premium-sort">
+                            <div class="flex min-h-[3.5rem] items-center justify-between gap-3.5 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(15,23,42,0.06)] md:min-h-[3.875rem]">
                                 <span class="text-sm font-medium text-slate-400">Sort by:</span>
                                 <select id="catalogSort" name="sort" class="border-0 bg-transparent pr-6 text-sm font-semibold text-slate-800 outline-none">
                                     <option value="relevant" @selected($sort === 'relevant')>Most Relevant</option>
@@ -228,8 +253,8 @@
                 </div>
             </section>
 
-            <section class="catalog-premium-layout pb-4 md:pb-5">
-                <aside id="catalogSidebar" class="min-w-0 space-y-5 rounded-[32px] border border-slate-200 bg-white p-4 shadow-sm md:p-5 xl:sticky xl:top-6">
+            <section class="grid items-start gap-5 pb-4 md:pb-5 xl:grid-cols-[18rem_minmax(0,1fr)] min-[1680px]:grid-cols-[18.5rem_minmax(0,1fr)]">
+                <aside id="catalogSidebar" class="hidden min-w-0 space-y-5 rounded-[32px] border border-slate-200 bg-white p-4 shadow-sm md:p-5 xl:sticky xl:top-6 xl:block">
                     <div class="flex items-center justify-between gap-3 xl:hidden">
                         <div>
                             <p class="text-sm font-semibold text-slate-900">Filters</p>
@@ -246,19 +271,19 @@
 
                     @if ($activeFilterCount > 0)
                         <div class="flex items-center justify-between rounded-2xl bg-primary-50 px-4 py-3">
-                            <span class="text-sm font-medium text-primary-700">{{ $activeFilterCount }} filters applied</span>
-                            <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-700 no-underline hover:text-primary-600">Clear</a>
+                            <span class="text-sm font-medium text-primary-700">{{ $filterSummaryLabel }}</span>
+                            <a href="{{ route('products.index') }}" class="text-sm font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
                         </div>
                     @endif
 
-                    <details class="catalog-filter-group" open>
-                        <summary class="catalog-filter-summary">
-                            <span class="catalog-filter-summary-title">Category</span>
-                            <span class="catalog-filter-summary-actions">
+                    <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
+                            <span class="text-sm font-semibold text-slate-900">Category</span>
+                            <span class="flex items-center gap-3">
                                 @if ($selectedCategories->isNotEmpty())
-                                    <a href="{{ $dropQueryKey('category_name') }}" class="catalog-filter-clear">Clear</a>
+                                    <a href="{{ $dropQueryKey('category_name') }}" class="text-xs font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
                                 @endif
-                                <svg class="catalog-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+                                <svg class="h-4 w-4 text-slate-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
                             </span>
                         </summary>
                         <div class="mt-4 space-y-3">
@@ -276,14 +301,14 @@
                         </div>
                     </details>
 
-                    <details class="catalog-filter-group" open>
-                        <summary class="catalog-filter-summary">
-                            <span class="catalog-filter-summary-title">Application</span>
-                            <span class="catalog-filter-summary-actions">
+                    <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
+                            <span class="text-sm font-semibold text-slate-900">Application</span>
+                            <span class="flex items-center gap-3">
                                 @if ($selectedApplications->isNotEmpty())
-                                    <a href="{{ $dropQueryKeys(['application_name', 'subcategory_name']) }}" class="catalog-filter-clear">Clear</a>
+                                    <a href="{{ $dropQueryKeys(['application_name', 'subcategory_name']) }}" class="text-xs font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
                                 @endif
-                                <svg class="catalog-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+                                <svg class="h-4 w-4 text-slate-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
                             </span>
                         </summary>
                         <div class="mt-4 space-y-3">
@@ -301,14 +326,14 @@
                         </div>
                     </details>
 
-                    <details class="catalog-filter-group" open>
-                        <summary class="catalog-filter-summary">
-                            <span class="catalog-filter-summary-title">Brand</span>
-                            <span class="catalog-filter-summary-actions">
+                    <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
+                            <span class="text-sm font-semibold text-slate-900">Brand</span>
+                            <span class="flex items-center gap-3">
                                 @if ($selectedBrands->isNotEmpty())
-                                    <a href="{{ $dropQueryKey('brand_name') }}" class="catalog-filter-clear">Clear</a>
+                                    <a href="{{ $dropQueryKey('brand_name') }}" class="text-xs font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
                                 @endif
-                                <svg class="catalog-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+                                <svg class="h-4 w-4 text-slate-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
                             </span>
                         </summary>
                         <div class="mt-4 space-y-3">
@@ -326,15 +351,15 @@
                         </div>
                     </details>
 
-                    <details class="catalog-filter-group" open>
-                        <summary class="catalog-filter-summary">
-                            <span class="catalog-filter-summary-title">Price Range</span>
-                            <span class="catalog-filter-summary-actions">
+                    <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
+                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
+                            <span class="text-sm font-semibold text-slate-900">Price Range</span>
+                            <span class="flex items-center gap-3">
                                 <span id="catalogPriceLabel" class="text-xs font-semibold text-primary-700">{!! $formatInr($selectedMaxPrice, 0) !!}</span>
                                 @if ($selectedMaxPrice < $maxPrice)
-                                    <a href="{{ $dropQueryKey('max_price') }}" class="catalog-filter-clear">Clear</a>
+                                    <a href="{{ $dropQueryKey('max_price') }}" class="text-xs font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
                                 @endif
-                                <svg class="catalog-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+                                <svg class="h-4 w-4 text-slate-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
                             </span>
                         </summary>
                         <div class="mt-4 px-1">
@@ -355,31 +380,31 @@
                         </div>
                     </details>
 
-                    <div class="catalog-mobile-apply xl:hidden">
-                        <button type="submit">Apply Filters</button>
-                        <a href="{{ route('products.index') }}">Clear All</a>
+                    <div class="flex flex-col gap-3 border-t border-slate-200 pt-4 xl:hidden">
+                        <button type="submit" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Apply Filters</button>
+                        <a href="{{ route('products.index') }}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Reset Filters</a>
                     </div>
                 </aside>
 
-                <div class="catalog-premium-results">
-                    <div class="catalog-premium-results-header">
+                <div class="grid min-w-0 content-start gap-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex flex-wrap items-center gap-3">
-                            <div class="catalog-premium-metric">
-                                <p class="text-sm font-medium text-slate-500">{{ $products->total() }} products available</p>
+                            <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                                <p class="text-sm font-medium text-slate-500">{{ $productSummaryLabel }}</p>
                             </div>
                             @if ($search !== '')
-                                <div class="catalog-premium-metric border-primary-100 bg-primary-50">
-                                    <p class="text-sm font-medium text-primary-700">Search: <span class="font-semibold">{{ $search }}</span></p>
+                                <div class="rounded-2xl border border-primary-100 bg-primary-50 px-4 py-3 shadow-sm">
+                                    <p class="text-sm font-medium text-primary-700">Search term: <span class="font-semibold">{{ $search }}</span></p>
                                 </div>
                             @endif
                             @if ($activeFilterCount > 0)
-                                <div class="catalog-premium-metric">
-                                    <p class="text-sm font-medium text-slate-500">{{ $activeFilterCount }} active filters</p>
+                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                                    <p class="text-sm font-medium text-slate-500">{{ $filterSummaryLabel }}</p>
                                 </div>
                             @endif
                         </div>
 
-                        <div class="catalog-toolbar-actions">
+                        <div class="flex flex-wrap items-center gap-2.5">
                             <button type="button" id="catalogFiltersOpen" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-700 xl:hidden" aria-label="Open filters">
                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M4 6h16"></path>
@@ -391,52 +416,58 @@
 
                             @if ($search !== '' || $activeFilterCount > 0)
                                 <a href="{{ route('products.index') }}" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-                                    Reset Catalog
+                                    Reset Filters
                                 </a>
                             @endif
                         </div>
                     </div>
 
                     @if ($search !== '' || $selectedMaxPrice < $maxPrice || $selectedCategories->isNotEmpty() || $selectedApplications->isNotEmpty() || $selectedBrands->isNotEmpty())
-                        <div class="catalog-active-chips">
+                        <div class="flex flex-wrap items-center gap-2">
                             @if ($search !== '')
-                                <a href="{{ $dropQueryKeys(['search', 'search_text', 'search_value']) }}" class="catalog-chip" title="Remove search filter">
-                                    <strong>Search</strong>: {{ Str::limit($search, 26) }}
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
+                                <a href="{{ $dropQueryKeys(['search', 'search_text', 'search_value']) }}" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-300/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" title="Remove search filter">
+                                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">Search</span>
+                                    <span class="text-slate-800">{{ Str::limit($search, 26) }}</span>
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
                                 </a>
                             @endif
 
                             @if ($selectedMaxPrice < $maxPrice)
-                                <a href="{{ $dropQueryKey('max_price') }}" class="catalog-chip" title="Remove price filter">
-                                    <strong>Up to</strong> {!! $formatInr($selectedMaxPrice, 0) !!}
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
+                                <a href="{{ $dropQueryKey('max_price') }}" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-300/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" title="Remove max price filter">
+                                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">Max Price</span>
+                                    <span class="text-slate-800">{{ $formatInrPlain($selectedMaxPrice, 0) }}</span>
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
                                 </a>
                             @endif
 
                             @foreach ($selectedCategories as $label)
-                                <a href="{{ $removeQueryArrayValue('category_name', $label) }}" class="catalog-chip" title="Remove category filter">
-                                    <strong>Category</strong>: {{ $label }}
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
+                                <a href="{{ $removeQueryArrayValue('category_name', $label) }}" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-300/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" title="Remove category filter">
+                                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">Category</span>
+                                    <span class="text-slate-800">{{ $label }}</span>
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
                                 </a>
                             @endforeach
 
                             @foreach ($selectedApplications as $label)
-                                <a href="{{ $removeQueryArrayValueFromKeys(['application_name', 'subcategory_name'], $label) }}" class="catalog-chip" title="Remove application filter">
-                                    <strong>Application</strong>: {{ $label }}
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
+                                <a href="{{ $removeQueryArrayValueFromKeys(['application_name', 'subcategory_name'], $label) }}" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-300/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" title="Remove application filter">
+                                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">Application</span>
+                                    <span class="text-slate-800">{{ $label }}</span>
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
                                 </a>
                             @endforeach
 
                             @foreach ($selectedBrands as $label)
-                                <a href="{{ $removeQueryArrayValue('brand_name', $label) }}" class="catalog-chip" title="Remove brand filter">
-                                    <strong>Brand</strong>: {{ $label }}
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
+                                <a href="{{ $removeQueryArrayValue('brand_name', $label) }}" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-slate-300/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" title="Remove brand filter">
+                                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">Brand</span>
+                                    <span class="text-slate-800">{{ $label }}</span>
+                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
                                 </a>
                             @endforeach
 
-                            <a href="{{ route('products.index') }}" class="catalog-chip catalog-chip--clear" title="Clear all filters">
-                                Clear all
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
+                            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-primary-100 bg-primary-50 px-3 py-1.5 text-xs font-semibold text-primary-700 shadow-sm transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" title="Reset filters">
+                                <span class="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold text-primary-700">Reset</span>
+                                <span>Filters</span>
+                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
                             </a>
                         </div>
                     @endif
@@ -447,11 +478,11 @@
                             title="No products matched these filters"
                             description="Remove one or more filters to see more catalog items."
                             :action-href="route('products.index')"
-                            action-label="Clear Filters"
+                            action-label="Reset Filters"
                             class="rounded-[28px] border border-slate-200 bg-white px-6 py-16 shadow-sm"
                         />
                     @else
-                        <div class="catalog-premium-grid">
+                        <div data-catalog-product-grid class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
                             @foreach ($productCollection as $product)
                                 @php
                                     $badgeRow = $badgeSets[$loop->index % count($badgeSets)];
@@ -466,13 +497,13 @@
                                     $inStock = (bool) ($product->is_active ?? true);
                                     $stockText = $inStock ? 'In Stock' : 'Limited Availability';
                                 @endphp
-                                <article class="catalog-premium-card group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-                                    <div class="catalog-premium-card__media">
+                                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                                    <div class="relative px-3 pt-3">
                                         <div class="overflow-hidden rounded-2xl">
                                             @if ($imageUrl)
-                                                <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="catalog-premium-card__visual w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
+                                                <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                             @else
-                                                @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'catalog-premium-card__visual rounded-2xl transition duration-300 group-hover:scale-[1.04]'])
+                                                @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-[clamp(13.5rem,18vw,15rem)] rounded-2xl transition duration-300 group-hover:scale-[1.04]'])
                                             @endif
                                         </div>
                                         <div class="absolute left-6 top-6 flex flex-col gap-2">
@@ -484,10 +515,10 @@
                                         </div>
                                     </div>
 
-                                    <div class="catalog-premium-card__body">
-                                        <div class="catalog-premium-card__header">
-                                            <p class="page-kicker text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
-                                            <h3 class="catalog-card-title text-base font-semibold leading-6 text-slate-950">{{ Str::limit((string) $product->name, 58) }}</h3>
+                                    <div class="flex flex-1 flex-col gap-2.5 px-4 pb-4 pt-3.5">
+                                        <div class="space-y-1.5">
+                                            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
+                                            <h3 class="overflow-hidden text-base font-semibold leading-6 text-slate-950 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">{{ Str::limit((string) $product->name, 58) }}</h3>
                                             <p class="text-xs text-slate-400">SKU: {{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}</p>
                                             <div class="flex items-center gap-2 pt-1 text-sm font-medium text-slate-500">
                                                 <span class="flex items-center gap-1 text-amber-400">
@@ -501,33 +532,33 @@
                                             </div>
                                         </div>
 
-                                        <div class="catalog-card-price rounded-2xl bg-slate-50 px-3 py-3">
+                                        <div class="rounded-2xl bg-slate-50 px-3 py-3">
                                             <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
                                                 <span>List MRP</span>
-                                                <span class="line-through">{!! $listPrice !== null ? $formatInr($listPrice) : 'N/A' !!}</span>
+                                                <span class="line-through">{!! $listPrice !== null ? $formatInr($listPrice, 2) : 'N/A' !!}</span>
                                             </div>
                                             <div class="mt-1.5 flex items-baseline justify-between gap-2">
                                                 <span class="text-[10px] font-bold uppercase tracking-wider text-primary-600/70">Your Price</span>
-                                                <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price) !!}</span>
+                                                <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
                                             </div>
                                         </div>
 
-                                        <div class="catalog-premium-card__meta text-slate-700">
+                                        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-700">
                                             <svg class="h-3.5 w-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M7 8h10M7 12h10M7 16h6"></path>
                                                 <path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8l-5 0V6a2 2 0 0 1 2-2Z"></path>
                                             </svg>
-                                            <span>MOQ: {{ $product->visible_variant_name ?? ($product->brand ? '1 Unit' : '5 Units') }}</span>
+                                            <span>Variant: {{ $product->visible_variant_name ?: 'Standard' }}</span>
                                         </div>
 
-                                        <div class="catalog-premium-card__signals font-medium text-slate-600">
+                                        <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-600">
                                             <x-ui.status-badge type="product" :value="$stockText" :label="$stockText" dot />
-                                            <span class="catalog-ships">
+                                            <span class="inline-flex items-center gap-2 rounded-full bg-slate-200/65 px-3 py-1 text-xs font-semibold text-slate-600">
                                                 Ships 24-48h
                                             </span>
                                         </div>
 
-                                        <div class="catalog-card-discount rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
+                                        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
                                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Bulk Discounts Available</p>
                                             <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
                                                 <span>5+ units: 5% off</span>
@@ -535,9 +566,9 @@
                                             </div>
                                         </div>
 
-                                        <div class="catalog-card-actions">
+                                        <div data-catalog-action-group class="mt-auto grid w-full grid-cols-1 gap-2 sm:grid-cols-2">
                                             {{-- Step 1: keep the standard product actions available directly from each catalog card. --}}
-                                            <a href="{{ $detailUrl }}" class="catalog-card-action catalog-card-action--secondary">
+                                            <a href="{{ $detailUrl }}" class="flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-slate-300 bg-white px-4 py-2 text-center text-sm font-semibold leading-tight text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.06)] transition hover:-translate-y-px hover:border-primary-600 hover:text-primary-600">
                                                 <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                     <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"></path>
                                                     <circle cx="12" cy="12" r="3"></circle>
@@ -545,7 +576,7 @@
                                                 <span>View Details</span>
                                             </a>
                                             @guest
-                                                <a href="{{ route('login') }}" class="catalog-card-action catalog-card-action--primary js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="1" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                <a href="{{ route('login') }}" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="1" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <circle cx="9" cy="20" r="1"></circle>
                                                         <circle cx="18" cy="20" r="1"></circle>
@@ -554,7 +585,7 @@
                                                     <span>Add to Cart</span>
                                                 </a>
                                             @else
-                                                <button type="button" class="catalog-card-action catalog-card-action--primary js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="1" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                <button type="button" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="1" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <circle cx="9" cy="20" r="1"></circle>
                                                         <circle cx="18" cy="20" r="1"></circle>
@@ -566,7 +597,7 @@
 
                                             {{-- Step 2: let buyers move straight to checkout with the selected item plus the existing cart. --}}
                                             @guest
-                                                <a href="{{ route('login') }}" class="catalog-card-action catalog-card-action--secondary orange_button" style="grid-column: 1 / -1;">
+                                                <a href="{{ route('login') }}" data-catalog-buy-now class="col-span-full flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)] sm:col-span-2">
                                                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <path d="M5 12h14"></path>
                                                         <path d="m12 5 7 7-7 7"></path>
@@ -575,7 +606,7 @@
                                                 </a>
                                             @else
                                                 {{-- Step 3: submit through a dedicated hidden form so the catalog filter form stays valid HTML. --}}
-                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" class="catalog-card-action catalog-card-action--secondary orange_button w-full" style="grid-column: 1 / -1;">
+                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="col-span-full flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)] sm:col-span-2">
                                                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <path d="M5 12h14"></path>
                                                         <path d="m12 5 7 7-7 7"></path>
@@ -620,14 +651,36 @@
             const openFilters = document.getElementById('catalogFiltersOpen');
             const closeFilters = document.getElementById('catalogFiltersClose');
             const backdrop = document.getElementById('catalogMobileBackdrop');
+            const sidebar = document.getElementById('catalogSidebar');
+            const loadingOverlay = document.getElementById('catalogLoadingOverlay');
 
             const isDesktop = function () {
                 return window.matchMedia && window.matchMedia('(min-width: 1280px)').matches;
             };
 
             const setMobileFiltersOpen = function (open) {
-                root.classList.toggle('catalog-mobile-open', Boolean(open));
-                document.body.style.overflow = open ? 'hidden' : '';
+                document.body.classList.toggle('overflow-hidden', Boolean(open));
+
+                if (backdrop) {
+                    backdrop.classList.toggle('pointer-events-auto', Boolean(open));
+                    backdrop.classList.toggle('opacity-100', Boolean(open));
+                    backdrop.classList.toggle('pointer-events-none', !open);
+                    backdrop.classList.toggle('opacity-0', !open);
+                }
+
+                if (sidebar && !isDesktop()) {
+                    sidebar.classList.toggle('hidden', !open);
+                    sidebar.classList.toggle('fixed', Boolean(open));
+                    sidebar.classList.toggle('inset-y-0', Boolean(open));
+                    sidebar.classList.toggle('left-0', Boolean(open));
+                    sidebar.classList.toggle('z-[70]', Boolean(open));
+                    sidebar.classList.toggle('block', Boolean(open));
+                    sidebar.classList.toggle('w-[min(92vw,24rem)]', Boolean(open));
+                    sidebar.classList.toggle('overflow-y-auto', Boolean(open));
+                    sidebar.classList.toggle('rounded-r-[28px]', Boolean(open));
+                    sidebar.classList.toggle('rounded-l-none', Boolean(open));
+                    sidebar.classList.toggle('shadow-[0_36px_90px_rgba(15,23,42,0.22)]', Boolean(open));
+                }
             };
 
             if (openFilters) {
@@ -696,7 +749,10 @@
             if (form) {
                 form.addEventListener('submit', function () {
                     setMobileFiltersOpen(false);
-                    root.classList.add('catalog-loading');
+                    if (loadingOverlay) {
+                        loadingOverlay.classList.remove('pointer-events-none', 'opacity-0');
+                        loadingOverlay.classList.add('pointer-events-auto', 'opacity-100');
+                    }
                 });
             }
 
@@ -715,23 +771,25 @@
                 const primaryAction = options && options.primary ? options.primary : null;
 
                 const toast = document.createElement('div');
-                toast.className = 'ui-toast';
+                toast.className = 'pointer-events-auto flex w-full max-w-[560px] items-start gap-3 rounded-[18px] border border-white/80 bg-white/92 px-4 py-3 shadow-[0_28px_70px_rgba(15,23,42,0.12)] transition duration-200';
 
                 const icon = document.createElement('div');
-                icon.className = variant === 'warn' ? 'ui-toast__icon ui-toast__icon--warn' : 'ui-toast__icon';
+                icon.className = variant === 'warn'
+                    ? 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-orange-50 text-orange-600'
+                    : 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-blue-50 text-primary-600';
                 icon.innerHTML = variant === 'warn'
                     ? '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M12 9v4\"></path><path d=\"M12 17h.01\"></path><path d=\"M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z\"></path></svg>'
                     : '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M20 6 9 17l-5-5\"></path></svg>';
 
                 const body = document.createElement('div');
-                body.className = 'ui-toast__body';
+                body.className = 'min-w-0 flex-1';
 
                 const titleEl = document.createElement('div');
-                titleEl.className = 'ui-toast__title';
+                titleEl.className = 'text-sm font-bold leading-[1.2] text-slate-900';
                 titleEl.textContent = title;
 
                 const messageEl = document.createElement('div');
-                messageEl.className = 'ui-toast__message';
+                messageEl.className = 'mt-1.5 text-[13px] font-medium leading-6 text-slate-500';
                 messageEl.textContent = message;
 
                 body.appendChild(titleEl);
@@ -740,11 +798,11 @@
                 }
 
                 const actions = document.createElement('div');
-                actions.className = 'ui-toast__actions';
+                actions.className = 'flex shrink-0 items-center gap-2';
 
                 if (primaryAction && primaryAction.href && primaryAction.label) {
                     const primary = document.createElement('a');
-                    primary.className = 'ui-toast__btn ui-toast__btn--primary';
+                    primary.className = 'rounded-xl bg-primary-600 px-3 py-2 text-[13px] font-bold text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:bg-primary-700';
                     primary.href = String(primaryAction.href);
                     primary.textContent = String(primaryAction.label);
                     actions.appendChild(primary);
@@ -752,7 +810,7 @@
 
                 const dismiss = document.createElement('button');
                 dismiss.type = 'button';
-                dismiss.className = 'ui-toast__btn';
+                dismiss.className = 'rounded-xl border border-slate-300 bg-white px-3 py-2 text-[13px] font-bold text-slate-700 transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700';
                 dismiss.textContent = 'Dismiss';
                 dismiss.addEventListener('click', function () {
                     toast.remove();
@@ -765,8 +823,7 @@
                 toastHost.appendChild(toast);
 
                 window.setTimeout(function () {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(10px) scale(0.98)';
+                    toast.classList.add('translate-y-2', 'scale-[0.98]', 'opacity-0');
                     window.setTimeout(function () {
                         toast.remove();
                     }, 220);
@@ -867,6 +924,13 @@
                     }
                 });
             });
+
+            window.addEventListener('resize', function () {
+                if (isDesktop()) {
+                    setMobileFiltersOpen(false);
+                }
+            });
         });
     </script>
 @endpush
+

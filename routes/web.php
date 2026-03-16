@@ -35,6 +35,7 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
  Route::delete('/products-crud/{productId}', [ProductController::class, 'deleteProductById'])->name('products.crud.destroy');
 
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
+Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
 Route::view('/pi-quotation', 'pi-quotation.generate')->name('pi-quotation.generate');
 Route::view('/adminPanel/dashboard', 'adminPanel.dashboard')->name('adminPanel.dashboard');
 Route::view('/adminPanel/products', 'adminPanel.products')->name('adminPanel.products');
@@ -43,6 +44,7 @@ Route::view('/adminPanel/pricing', 'adminPanel.pricing')->name('adminPanel.prici
 Route::view('/adminPanel/pi-quotation', 'adminPanel.pi-quotation')->name('adminPanel.pi-quotation.index');
 Route::view('/adminPanel/pi-quotation/create', 'adminPanel.pi-quotation-create')->name('adminPanel.pi-quotation.create');
 Route::view('/adminPanel/orders', 'adminPanel.orders')->name('adminPanel.orders');
+Route::view('/adminPanel/orders/view', 'adminPanel.order-details')->name('adminPanel.orders.view');
 Route::get('/cart', function () { return redirect()->route('products.index'); })->name('cart.page');
 Route::view('/checkout', 'pages.guest.checkout')->name('checkout.page');
 

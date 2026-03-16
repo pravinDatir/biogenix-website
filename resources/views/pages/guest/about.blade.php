@@ -1,5 +1,5 @@
 @php
-    $cardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl animate-rise';
+    $cardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl';
     $accentCardClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm md:p-8';
     $titleClass = 'text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-7xl';
     $copyClass = 'mt-8 max-w-2xl text-lg leading-8 text-slate-300';
@@ -11,7 +11,7 @@
     <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
         <img src="{{ asset('storage/slides/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/70 to-primary-900/30"></div>
-        <div class="container relative z-10">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
             <div class="mb-6 flex flex-wrap items-center gap-2 text-sm font-medium text-slate-300">
                 <a href="{{ route('home') }}">Home</a>
                 <span>/</span>
@@ -33,7 +33,7 @@
 
     <!-- Stats Section overlapping hero -->
     <section class="-mt-12 relative z-20 pb-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
                     ['label' => 'Founded', 'value' => '2017', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
@@ -58,24 +58,24 @@
     <!-- Vision/Mission/Values -->
     <section class="py-16 md:py-24 relative overflow-hidden">
         <div class="absolute inset-0 bg-primary-900/[0.02] transform -skew-y-3 origin-top-left -z-10"></div>
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Our Philosophy" subtitle="Vision, Mission, and Values driving our long-term healthcare impact." />
             <div class="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <article class="relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-8 shadow-xl group animate-rise">
+                <article class="relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-8 shadow-xl group">
                     <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                         <svg class="h-24 w-24 text-primary-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 relative z-10">Vision</h3>
                     <p class="mt-4 text-base leading-relaxed text-slate-600 relative z-10">To become the most trusted diagnostics partner for institutions and communities across India.</p>
                 </article>
-                <article class="relative overflow-hidden rounded-3xl border border-primary-100 bg-primary-50/40 p-8 shadow-xl group animate-rise">
+                <article class="relative overflow-hidden rounded-3xl border border-primary-100 bg-primary-50/40 p-8 shadow-xl group">
                     <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                         <svg class="h-24 w-24 text-primary-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 relative z-10">Mission</h3>
                     <p class="mt-4 text-base leading-relaxed text-slate-600 relative z-10">Deliver high-quality diagnostics products with dependable support and transparent fulfillment workflows.</p>
                 </article>
-                <article class="relative rounded-3xl border border-primary-100 bg-white p-8 shadow-xl overflow-hidden group animate-rise">
+                <article class="relative rounded-3xl border border-primary-100 bg-white p-8 shadow-xl overflow-hidden group">
                     <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                         <svg class="w-24 h-24 text-primary-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A120.1 120.1 0 0010 1C5.586 1 1.732 3.943.458 8s5.128 7 9.542 7c4.414 0 8.268-2.943 9.542-7-1.274-4.057-5.064-7-9.542-7zm-4.502 6.002a2 2 0 11-4 0 2 2 0 014 0zm8.004 0a2 2 0 11-4 0 2 2 0 014 0zm-4.002 6.002a2 2 0 11-4 0 2 2 0 014 0h-4a2 2 0 114 0zM15 17h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0H5v2h2v-2z" clip-rule="evenodd"/></svg>
                     </div>
@@ -97,7 +97,7 @@
 
     <!-- Modern Journey Timeline -->
     <section class="py-16 md:py-24 bg-white">
-        <div class="container max-w-5xl">
+        <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Our Journey" subtitle="A focused path from regional diagnostic support to scalable healthcare operations." />
             
             <div class="mt-16 space-y-12">
@@ -140,7 +140,7 @@
         <div class="absolute top-0 right-0 -mr-48 -mt-48 h-96 w-96 rounded-full bg-primary-600 opacity-20 blur-3xl"></div>
         <div class="absolute bottom-0 left-0 -ml-48 -mb-48 h-96 w-96 rounded-full bg-primary-600 opacity-20 blur-3xl"></div>
         
-        <div class="container relative z-10 grid grid-cols-1 gap-12 lg:grid-cols-2">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8 xl:px-10 relative z-10">
             <article class="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
                 <h2 class="text-3xl font-bold tracking-tight">Leadership & Teams</h2>
                 <p class="mt-4 text-lg text-slate-300">Our management, operations, and support teams collaborate to deliver end-to-end diagnostics service reliability.</p>
@@ -186,7 +186,7 @@
 
     <!-- Leadership Team -->
     <section class="py-16 md:py-24 bg-white">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Leadership Team" subtitle="Cross-functional leaders driving product quality, customer outcomes, and operational excellence." />
             
             <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
@@ -195,7 +195,7 @@
                     ['name' => 'Neha Srivastava', 'role' => 'Head - Clinical Solutions', 'copy' => 'Guides product fit and technical diagnostics enablement.'],
                     ['name' => 'Rahul Verma', 'role' => 'Head - Operations', 'copy' => 'Owns inventory planning, logistics, and service continuity.'],
                 ] as $leader)
-                <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-lg transition-all hover:-translate-y-2 hover:border-primary-100 hover:shadow-2xl animate-rise">
+                <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-lg transition-all hover:-translate-y-2 hover:border-primary-100 hover:shadow-2xl">
                         <div class="absolute inset-0 -z-0 translate-y-full bg-primary-50 transition-transform duration-300 group-hover:translate-y-0"></div>
                         <div class="relative z-10 flex flex-col items-center">
                             <div class="mb-5 h-24 w-24 overflow-hidden rounded-full shadow-lg shadow-primary-600/30 ring-4 ring-white">
@@ -213,7 +213,7 @@
 
     <!-- Customer Outcomes -->
     <section class="py-16 md:py-24 bg-slate-50">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Customer Outcomes" subtitle="Measurable reliability across procurement, delivery, and post-install support." />
             <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
@@ -234,7 +234,7 @@
 
     <!-- Service Blueprint -->
     <section class="py-16 md:py-24 bg-white">
-        <div class="container grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 xl:px-10">
             <div class="space-y-4">
                 <x-ui.section-heading title="Service Blueprint" subtitle="One consistent playbook from first inquiry to repeat supply." />
                 <p class="text-base leading-8 text-slate-600">Each account is run on a predictable loop: discovery, solutioning, validated delivery, and continuous optimisation.</p>
@@ -290,7 +290,7 @@
 
     <!-- Global map -->
     <section class="py-16 bg-slate-50">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-xl lg:p-6">
                 <div class="mb-6 text-center">
                     <h2 class="text-3xl font-semibold tracking-tight text-slate-950">National Presence</h2>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="@yield('meta_description', 'Biogenix Healthcare Solutions — Precision diagnostics, innovative life science research tools, and medical instruments for laboratories and healthcare professionals.')">
+        content="@yield('meta_description', 'Biogenix Healthcare Solutions - Precision diagnostics, innovative life science research tools, and medical instruments for laboratories and healthcare professionals.')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Biogenix')</title>
     <link rel="icon" type="image/jpeg" href="{{ asset('storage/slides/logo.jpg') }}?v=20260309">
@@ -21,30 +21,27 @@
     @stack('styles')
 </head>
 
-<body class="min-h-screen text-slate-800 antialiased"
-    style="background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 34%), radial-gradient(circle at right 15%, rgba(14, 165, 233, 0.12), transparent 28%), linear-gradient(180deg, #f8fbff 0%, #eff5ff 100%);">
+<body class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_right_15%,rgba(14,165,233,0.12),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#eff5ff_100%)] font-sans text-slate-800 antialiased">
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
 
-    {{-- Toast Notification Container --}}
-    <div id="toastContainer" class="toast-container"></div>
+    <div id="toastContainer" class="pointer-events-none fixed right-4 top-5 z-[120] flex w-[min(calc(100vw-2rem),24rem)] flex-col gap-3 sm:right-6 sm:top-6"></div>
 
-    <div id="pageWrapper" class="flex min-h-screen flex-col"
-        style="transition: padding-right 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
+    <div id="pageWrapper" class="flex min-h-screen flex-col">
         @include('partials.header')
         @include('partials.cart-sidebar')
 
-        <main class="flex-1">
+        <main class="flex-1 transition-[padding] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]">
             @unless ($suppressShellAlerts)
-                <div class="container space-y-4">
+                <div class="mx-auto w-full max-w-7xl space-y-4 px-4 sm:px-6 lg:px-8 xl:px-10">
                     @if (session()->has('impersonation.impersonator_id'))
-                        <div
-                            class="animate-entrance rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
+                        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
                             You are currently impersonating another user.
                             <form method="POST" action="{{ route('impersonation.stop') }}" class="inline-block">
                                 @csrf
                                 <button type="submit"
-                                    class="ml-2 inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Stop
-                                    Impersonation</button>
+                                    class="ml-2 inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                                    Stop Impersonation
+                                </button>
                             </form>
                         </div>
                     @endif
@@ -62,7 +59,7 @@
                 </div>
             @endunless
 
-            <div class="w-full animate-entrance">
+            <div class="w-full">
                 @yield('content')
             </div>
         </main>
@@ -70,11 +67,9 @@
         @include('partials.footer')
     </div>
 
-    {{-- Floating Support Widget --}}
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
-        <div id="supportTicketForm" class="is-hidden hidden w-[360px] sm:w-[400px] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl transition-all duration-300 origin-bottom-right">
-            <!-- Header -->
-            <div class="bg-[#0b74fb] px-5 py-4 flex items-start justify-between">
+        <div id="supportTicketForm" class="hidden w-[360px] origin-bottom-right translate-y-3 scale-95 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white opacity-0 pointer-events-none shadow-2xl transition duration-300 sm:w-[400px]">
+            <div class="flex items-start justify-between bg-[#0b74fb] px-5 py-4">
                 <div class="flex items-center gap-3">
                     <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-[#3b93ff] text-white">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -83,21 +78,20 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-[15px] font-bold text-white leading-tight">Biogenix Support</h3>
-                        <p class="text-[11px] text-blue-100 mt-0.5">Average response time: &lt; 2 hours</p>
+                        <h3 class="text-[15px] font-bold leading-tight text-white">Biogenix Support</h3>
+                        <p class="mt-0.5 text-[11px] text-blue-100">Average response time: &lt; 2 hours</p>
                     </div>
                 </div>
-                <button onclick="toggleSupportForm()" class="text-blue-100 hover:text-white transition-colors p-1 -mr-2">
+                <button onclick="toggleSupportForm()" class="-mr-2 p-1 text-blue-100 transition-colors hover:text-white">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
 
-            <!-- Body -->
-            <div class="p-6 flex-1 overflow-y-auto bg-white text-left">
-                <h4 class="text-lg font-bold text-slate-900 leading-tight mb-1">Raise a Ticket</h4>
-                <p class="text-[13px] text-slate-500 mb-5 leading-relaxed">Submit your request and our biotech experts will assist you.</p>
+            <div class="flex-1 overflow-y-auto bg-white p-6 text-left">
+                <h4 class="mb-1 text-lg font-bold leading-tight text-slate-900">Raise a Ticket</h4>
+                <p class="mb-5 text-[13px] leading-relaxed text-slate-500">Submit your request and our biotech experts will assist you.</p>
 
                 <form action="{{ route('contact') }}" method="GET" class="space-y-4">
                     <div>
@@ -116,7 +110,9 @@
                                 <option value="Other">Other</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -128,20 +124,20 @@
 
                     <div>
                         <label class="mb-1.5 block text-[13px] font-semibold text-slate-800">Attachments</label>
-                        <label class="flex flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-[#fbfcfd] py-5 px-4 text-center cursor-pointer hover:bg-slate-50 transition-colors">
-                            <svg class="h-4 w-4 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-[#fbfcfd] px-4 py-5 text-center transition-colors hover:bg-slate-50">
+                            <svg class="mb-2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                             </svg>
-                            <span class="text-[11px] text-slate-500 font-medium">Click to upload or drag and drop</span>
-                            <span class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider">PDF, PNG, JPG (MAX. 5MB)</span>
+                            <span class="text-[11px] font-medium text-slate-500">Click to upload or drag and drop</span>
+                            <span class="mt-1 text-[10px] uppercase tracking-wider text-slate-400">PDF, PNG, JPG (MAX. 5MB)</span>
                             <input type="file" class="hidden" name="attachment">
                         </label>
                     </div>
-                    
+
                     <button type="submit" class="hidden">Submit</button>
 
-                    <div class="mt-2 text-center pt-3 pb-2">
-                        <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-[0.05em] flex items-center justify-center gap-1.5">
+                    <div class="mt-2 pb-2 pt-3 text-center">
+                        <span class="flex items-center justify-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.05em] text-slate-400">
                             ENCRYPTED CONNECTION &bull; BIOGENIX SECURE SUPPORT
                         </span>
                     </div>
@@ -149,7 +145,6 @@
             </div>
         </div>
 
-        <!-- Floating Button -->
         <button onclick="toggleSupportForm()" class="group flex h-14 w-14 items-center justify-center rounded-full bg-[#0b74fb] text-white shadow-xl shadow-blue-500/30 transition-all hover:scale-105 hover:bg-blue-700" aria-label="Open support ticket">
             <svg class="h-7 w-7 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.477 2 2 5.582 2 10c0 2.476 1.343 4.675 3.444 6.136.213 1.393-.454 3.125-.5 3.245a.5.5 0 00.643.64c.12-.046 1.85-.712 3.244-1.127A9.852 9.852 0 0012 18c5.523 0 10-3.582 10-8s-4.477-8-10-8zm-3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
@@ -157,31 +152,41 @@
         </button>
     </div>
 
-    {{-- Scroll-to-top Button --}}
-
-
     <script>
-        // ─── Support form toggle ───
-        function toggleSupportForm() {
-            const form = document.getElementById('supportTicketForm');
-            if (form.classList.contains('is-hidden')) {
-                form.classList.remove('hidden');
-                setTimeout(() => {
-                    form.classList.remove('is-hidden');
-                }, 10);
-            } else {
-                form.classList.add('is-hidden');
-                setTimeout(() => {
-                    form.classList.add('hidden');
-                }, 300);
-            }
+        function dismissToast(toast) {
+            if (!toast) return;
+            toast.classList.add('translate-y-2', 'opacity-0');
+            window.setTimeout(function () {
+                toast.remove();
+            }, 300);
         }
 
-        // ─── Toast notification system ───
+        function toggleSupportForm() {
+            const form = document.getElementById('supportTicketForm');
+            if (!form) return;
+
+            const isHidden = form.classList.contains('hidden') || form.classList.contains('opacity-0');
+            if (isHidden) {
+                form.classList.remove('hidden');
+                window.requestAnimationFrame(function () {
+                    form.classList.remove('translate-y-3', 'scale-95', 'opacity-0', 'pointer-events-none');
+                });
+                return;
+            }
+
+            form.classList.add('translate-y-3', 'scale-95', 'opacity-0', 'pointer-events-none');
+            window.setTimeout(function () {
+                if (form.classList.contains('opacity-0')) {
+                    form.classList.add('hidden');
+                }
+            }, 300);
+        }
+
         window.BiogenixToast = {
             show: function (message, type, duration) {
                 type = type || 'info';
                 duration = duration || 5000;
+
                 var container = document.getElementById('toastContainer');
                 if (!container) return;
 
@@ -191,21 +196,46 @@
                     warning: '<svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
                     info: '<svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
                 };
+                var toneMap = {
+                    success: ['border-emerald-200', 'bg-emerald-50/95', 'text-emerald-700'],
+                    error: ['border-rose-200', 'bg-rose-50/95', 'text-rose-700'],
+                    warning: ['border-amber-200', 'bg-amber-50/95', 'text-amber-700'],
+                    info: ['border-sky-200', 'bg-sky-50/95', 'text-sky-700']
+                };
 
                 var toast = document.createElement('div');
-                toast.className = 'toast toast--' + type;
-                toast.innerHTML = (iconMap[type] || '') + '<span>' + message + '</span><button class="toast-close" onclick="this.parentElement.classList.add(\'is-leaving\');setTimeout(function(){toast.remove()},300)">&times;</button>';
+                toast.className = 'pointer-events-auto flex items-start gap-3 rounded-2xl border px-4 py-3 shadow-lg backdrop-blur transition duration-300';
+                (toneMap[type] || toneMap.info).forEach(function (className) {
+                    toast.classList.add(className);
+                });
+
+                var icon = document.createElement('div');
+                icon.innerHTML = iconMap[type] || iconMap.info;
+
+                var text = document.createElement('p');
+                text.className = 'min-w-0 flex-1 text-sm font-medium leading-6';
+                text.textContent = message;
+
+                var closeBtn = document.createElement('button');
+                closeBtn.type = 'button';
+                closeBtn.className = 'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-current/70 transition hover:bg-black/5 hover:text-current';
+                closeBtn.setAttribute('aria-label', 'Dismiss notification');
+                closeBtn.innerHTML = '&times;';
+                closeBtn.addEventListener('click', function () {
+                    dismissToast(toast);
+                });
+
+                toast.appendChild(icon.firstElementChild || document.createElement('span'));
+                toast.appendChild(text);
+                toast.appendChild(closeBtn);
                 container.appendChild(toast);
 
-                var closeRef = toast;
-                setTimeout(function () {
-                    closeRef.classList.add('is-leaving');
-                    setTimeout(function () { closeRef.remove(); }, 300);
+                window.setTimeout(function () {
+                    dismissToast(toast);
                 }, duration);
             }
         };
 
-        // ─── Auto-show session toasts ───
         document.addEventListener('DOMContentLoaded', function () {
             @if (session('success'))
                 window.BiogenixToast.show(@json(session('success')), 'success');
@@ -216,19 +246,7 @@
             @if (session('status'))
                 window.BiogenixToast.show(@json(session('status')), 'info');
             @endif
-    });
-
-        // ─── Scroll-to-top ───
-        (function () {
-            var btn = document.getElementById('scrollTopBtn');
-            if (!btn) return;
-            window.addEventListener('scroll', function () {
-                btn.classList.toggle('is-hidden', window.scrollY < 400);
-            }, { passive: true });
-            btn.addEventListener('click', function () {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        })();
+        });
     </script>
 
     <script src="{{ asset('js/validation.js') }}"></script>

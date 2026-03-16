@@ -69,8 +69,9 @@
             <div class="mt-6 overflow-hidden rounded-[24px] border border-slate-200 bg-white px-6 py-5 shadow-sm md:rounded-[28px]">
                 <div class="relative flex items-center justify-between">
                     {{-- Connecting line --}}
-                    <div class="absolute left-0 right-0 top-[22px] h-0.5 bg-slate-200" aria-hidden="true">
-                        <div id="stepProgressLine" class="h-full bg-primary-600 transition-all duration-500" style="width: 16.66%"></div>
+                    <div id="stepProgressLine" class="absolute left-0 right-0 top-[22px] flex gap-2" aria-hidden="true">
+                        <span data-step-connector class="h-0.5 flex-1 rounded-full bg-slate-200 transition-all duration-500"></span>
+                        <span data-step-connector class="h-0.5 flex-1 rounded-full bg-slate-200 transition-all duration-500"></span>
                     </div>
 
                     @foreach ([
@@ -214,10 +215,9 @@
                                     <input
                                         type="text"
                                         id="gstinInput"
-                                        class="{{ $inputClass }}"
+                                        class="{{ $inputClass }} uppercase"
                                         placeholder="22AAAAA0000A1Z5"
                                         maxlength="15"
-                                        style="text-transform:uppercase"
                                     >
                                     <p class="mt-1 text-xs text-slate-500">15-character GST Identification Number</p>
                                 </div>
@@ -226,10 +226,9 @@
                                     <input
                                         type="text"
                                         id="panInput"
-                                        class="{{ $inputClass }}"
+                                        class="{{ $inputClass }} uppercase"
                                         placeholder="AAAPL1234C"
                                         maxlength="10"
-                                        style="text-transform:uppercase"
                                     >
                                     <p class="mt-1 text-xs text-slate-500">Required for high-value orders (&gt; ₹2L)</p>
                                 </div>
@@ -414,7 +413,7 @@
                                 <span>Shipping (Same-Day)</span>
                                 <span class="font-semibold text-emerald-700">FREE</span>
                             </div>
-                            <div class="flex items-center justify-between" id="couponDiscountRow" style="display:none!important">
+                            <div class="hidden items-center justify-between" id="couponDiscountRow">
                                 <span class="text-emerald-700">Coupon Discount</span>
                                 <span id="couponDiscountAmount" class="font-semibold text-emerald-700">– Rs. 0.00</span>
                             </div>
@@ -435,10 +434,9 @@
                                 <input
                                     id="couponInput"
                                     type="text"
-                                    class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 placeholder-slate-400 outline-none transition focus:border-primary-400 focus:ring-2 focus:ring-primary-600/15"
+                                    class="{{ $inputClass }} min-w-0 flex-1 bg-white uppercase"
                                     placeholder="Enter code (e.g. BIO10)"
                                     autocomplete="off"
-                                    style="text-transform:uppercase"
                                 >
                                 <button
                                     id="couponApplyBtn"
@@ -556,10 +554,14 @@
 
                 /* ── Step progress bar ── */
                 const progressLine = document.getElementById('stepProgressLine');
+                const progressConnectors = progressLine ? Array.from(progressLine.querySelectorAll('[data-step-connector]')) : [];
                 function setStep(n) {
                     if (!progressLine) return;
-                    const widths = { 1: '16.66%', 2: '50%', 3: '100%' };
-                    progressLine.style.width = widths[n] || '16.66%';
+                    progressConnectors.forEach(function (connector, index) {
+                        const active = index < n - 1;
+                        connector.classList.toggle('bg-primary-600', active);
+                        connector.classList.toggle('bg-slate-200', !active);
+                    });
                     [1, 2, 3].forEach(function (s) {
                         var circle = document.querySelector('#stepIndicator' + s + ' .step-circle');
                         if (!circle) return;
@@ -596,12 +598,14 @@
                             appliedDiscount = VALID_COUPONS[code];
                             couponMsg.textContent = '✓ Coupon applied — ' + (appliedDiscount * 100) + '% off!';
                             couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-emerald-700';
-                            if (couponDiscountRow) couponDiscountRow.style.removeProperty('display');
+                            if (couponDiscountRow) couponDiscountRow.classList.remove('hidden');
+                            if (couponDiscountRow) couponDiscountRow.classList.add('flex');
                         } else {
                             appliedDiscount = 0;
                             couponMsg.textContent = '✗ Invalid or expired coupon code.';
                             couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-rose-600';
-                            if (couponDiscountRow) couponDiscountRow.style.setProperty('display', 'none', 'important');
+                            if (couponDiscountRow) couponDiscountRow.classList.add('hidden');
+                            if (couponDiscountRow) couponDiscountRow.classList.remove('flex');
                         }
                         render();
                     });
@@ -610,8 +614,8 @@
                 /* ── formatInr ── */
                 const formatInr = function (value) {
                     const numeric = Number(value);
-                    if (!Number.isFinite(numeric)) return '<span class="currency-symbol">Rs.</span> 0.00';
-                    return '<span class="currency-symbol">Rs.</span> ' + numeric.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    if (!Number.isFinite(numeric)) return 'Rs. 0.00';
+                    return 'Rs. ' + numeric.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 };
 
                 /* ── render summary row ── */
@@ -673,9 +677,9 @@
                     if (!items.length) {
                         if (emptyState) emptyState.classList.remove('hidden');
                         if (summaryItems) summaryItems.classList.add('hidden');
-                        if (subtotalEl) subtotalEl.innerHTML = '<span class="currency-symbol">Rs.</span> 0.00';
-                        if (taxEl)      taxEl.innerHTML      = '<span class="currency-symbol">Rs.</span> 0.00';
-                        if (totalEl)    totalEl.innerHTML    = '<span class="currency-symbol">Rs.</span> 0.00';
+                        if (subtotalEl) subtotalEl.innerHTML = 'Rs. 0.00';
+                        if (taxEl)      taxEl.innerHTML      = 'Rs. 0.00';
+                        if (totalEl)    totalEl.innerHTML    = 'Rs. 0.00';
                         return;
                     }
 
