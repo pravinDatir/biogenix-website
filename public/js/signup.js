@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const nextBtn = document.getElementById("nextBtn");
   const backBtn = document.getElementById("backBtn");
+  const submitBtn = document.getElementById("signupSubmitBtn");
   const form = document.getElementById("signupForm");
-  const stepNodes = Array.from(document.querySelectorAll(".step"));
-  const formSteps = Array.from(document.querySelectorAll(".form-step"));
+  const stepNodes = Array.from(document.querySelectorAll("[data-signup-step]"));
+  const formSteps = Array.from(document.querySelectorAll("[data-signup-panel]"));
+  const connectors = Array.from(document.querySelectorAll("[data-signup-connector]"));
   const stateSelect = document.getElementById("state");
-  const progressFill = document.getElementById("signupProgressFill");
   const progressBar = document.getElementById("signupProgressBar");
   const currentStepLabel = document.getElementById("signupCurrentStep");
   const currentStepName = document.getElementById("signupCurrentLabel");
@@ -15,8 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  setupPasswordToggle("signupPassword", "toggleSignupPassword");
-  setupPasswordToggle("confirmPassword", "toggleConfirmPassword");
+  if (typeof setupPasswordToggle === "function") {
+    setupPasswordToggle("signupPassword", "toggleSignupPassword");
+    setupPasswordToggle("confirmPassword", "toggleConfirmPassword");
+  }
 
   nextBtn.addEventListener("click", (event) => {
     event.preventDefault();
@@ -45,22 +48,59 @@ document.addEventListener("DOMContentLoaded", () => {
       `${document.getElementById("firstName").value} ${document.getElementById("lastName").value}`.trim()
     );
 
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add("cursor-not-allowed", "opacity-70");
+      submitBtn.setAttribute("aria-disabled", "true");
+    }
+
     form.submit();
   });
 
   function toggleStep(step) {
     formSteps.forEach((node) => {
-      node.classList.toggle("active", Number(node.dataset.step) === step);
+      node.classList.toggle("hidden", Number(node.dataset.step) !== step);
     });
 
     stepNodes.forEach((node, index) => {
-      node.classList.toggle("active", index + 1 === step);
-      node.classList.toggle("is-complete", index + 1 < step);
+      const stepNumber = index + 1;
+      const isCurrent = stepNumber === step;
+      const isActive = stepNumber <= step;
+      const circle = node.querySelector("[data-signup-step-circle]");
+      const caption = node.querySelector("[data-signup-step-caption]");
+      const label = node.querySelector("[data-signup-step-label]");
+
+      node.classList.toggle("border-primary-200", isCurrent);
+      node.classList.toggle("bg-primary-50/80", isCurrent);
+      node.classList.toggle("shadow-sm", isCurrent);
+      node.classList.toggle("border-slate-200", !isCurrent);
+      node.classList.toggle("bg-white", !isCurrent);
+
+      if (circle) {
+        circle.classList.toggle("border-primary-600", isActive);
+        circle.classList.toggle("bg-primary-600", isActive);
+        circle.classList.toggle("text-white", isActive);
+        circle.classList.toggle("border-slate-300", !isActive);
+        circle.classList.toggle("bg-white", !isActive);
+        circle.classList.toggle("text-slate-400", !isActive);
+      }
+
+      if (caption) {
+        caption.classList.toggle("text-primary-600", isActive);
+        caption.classList.toggle("text-slate-400", !isActive);
+      }
+
+      if (label) {
+        label.classList.toggle("text-slate-900", isActive);
+        label.classList.toggle("text-slate-500", !isActive);
+      }
     });
 
-    if (progressFill) {
-      progressFill.style.width = `${(step / formSteps.length) * 100}%`;
-    }
+    connectors.forEach((node, index) => {
+      const isActive = index < step - 1;
+      node.classList.toggle("bg-primary-600", isActive);
+      node.classList.toggle("bg-slate-200", !isActive);
+    });
 
     if (progressBar) {
       progressBar.setAttribute("aria-valuenow", String(step));
@@ -106,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   populateStates();
-  toggleStep(1);
+  toggleStep(Number(form.querySelector("[data-signup-panel]:not(.hidden)")?.dataset.step || 1));
 
   function populateStates() {
     if (!stateSelect) {

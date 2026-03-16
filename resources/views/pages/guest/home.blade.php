@@ -4,7 +4,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
-            <div id="heroTrack" class="flex h-full w-full transition-transform duration-700 ease-out">
+            <div id="heroTrack" class="flex h-full w-full translate-x-0 transition-transform duration-700 ease-out">
                 @foreach ($heroSlides ?? [] as $slide)
                     <article class="relative h-full w-full shrink-0">
                         <img
@@ -16,7 +16,7 @@
                         >
                         <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/60 to-slate-900/30"></div>
 
-                        <div class="container relative z-10 grid min-h-[calc(100vh-88px)] grid-cols-1 gap-8 py-10 pb-24 md:py-14 lg:grid-cols-12">
+                        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 grid min-h-[calc(100vh-88px)] grid-cols-1 gap-8 py-10 pb-24 md:py-14 lg:grid-cols-12">
                             <div class="flex flex-col justify-center lg:col-span-7">
                                 <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
                                 <h1 class="mt-5 max-w-3xl text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
@@ -43,7 +43,7 @@
 
         {{-- Dots + Icon Arrows --}}
         <div class="pointer-events-none absolute bottom-5 left-0 right-0 z-20 sm:bottom-6">
-            <div class="container flex items-center justify-between gap-3">
+            <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between gap-3">
                 <div id="heroDots" class="pointer-events-auto flex items-center gap-2">
                     @foreach ($heroSlides ?? [] as $slide)
                         <button
@@ -79,7 +79,7 @@
     {{-- STATS / SOCIAL PROOF STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="border-b border-slate-100 bg-white py-8">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 ">
             <dl class="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 @foreach ([
                     ['value' => '5,000+', 'label' => 'Products Listed', 'icon' => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'],
@@ -107,11 +107,11 @@
     {{-- CORE PRODUCT CATEGORIES (with hover overlay + count badge) --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="bg-slate-50 py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 ">
             <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
             <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-5">
                 @forelse (($productCategories ?? collect()) as $category)
-                    <article class="home-card group">
+                    <article class="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
                         {{-- Image with gradient overlay on hover --}}
                         <div class="relative overflow-hidden rounded-2xl">
                             <img
@@ -148,7 +148,7 @@
                         </div>
                     </article>
                 @empty
-                    <article class="home-panel sm:col-span-2 xl:col-span-5">
+                    <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:col-span-2 xl:col-span-5">
                         <h3 class="text-lg font-semibold text-slate-900">Categories will appear here</h3>
                         <p class="mt-2 text-sm text-slate-600">No home page categories are available right now.</p>
                     </article>
@@ -161,10 +161,10 @@
     {{-- CLINICAL & BUSINESS SOLUTIONS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="bg-white py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 ">
             <x-ui.section-heading title="Clinical &amp; Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <article class="home-panel">
+                <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                     <x-badge variant="info">B2B Operations</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Distributor, Lab, and Hospital Enablement</h3>
                     <p class="mt-2 text-sm text-slate-600">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
@@ -172,7 +172,7 @@
                         <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])">B2B Login</x-ui.action-link>
                     </div>
                 </article>
-                <article class="home-panel">
+                <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                     <x-badge variant="success">B2C Access</x-badge>
                     <h3 class="mt-3 text-xl font-semibold text-slate-900">Retail and Independent Care Buyers</h3>
                     <p class="mt-2 text-sm text-slate-600">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
@@ -188,7 +188,7 @@
     {{-- PARTNER / BRAND TRUST BAR --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="border-y border-slate-100 bg-slate-50 py-8">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 ">
             <p class="mb-6 text-center text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Trusted by leading healthcare institutions &amp; diagnostic brands</p>
             <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10">
                 @foreach ([
@@ -219,7 +219,7 @@
     {{-- SAME-DAY DELIVERY + NEWSLETTER --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="bg-slate-50 py-12 md:py-16">
-        <div class="container grid grid-cols-1 gap-5 xl:grid-cols-12">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 grid grid-cols-1 gap-5 xl:grid-cols-12">
             <article class="rounded-3xl bg-gradient-to-r from-primary-600 to-primary-700 p-6 text-white shadow-sm xl:col-span-7 md:p-8">
                 <h2 class="text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
                 <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
@@ -229,15 +229,15 @@
                 </div>
             </article>
 
-            <article class="home-panel xl:col-span-5">
+            <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
                 <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
                     <div>
                         <label for="newsletterEmail" class="mb-2 block text-sm font-semibold text-slate-700">Work Email</label>
-                        <input id="newsletterEmail" type="email" class="home-input" placeholder="you@organization.com" required>
+                        <input id="newsletterEmail" type="email" class="block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10" placeholder="you@organization.com" required>
                     </div>
-                    <button type="submit" id="newsletterSubmitBtn" class="home-primary-button w-full">Subscribe</button>
+                    <button type="submit" id="newsletterSubmitBtn" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20">Subscribe</button>
                     <p id="newsletterStatus" class="min-h-[1.25rem] text-sm font-medium text-slate-600"></p>
                 </form>
             </article>
@@ -248,7 +248,7 @@
     {{-- WHY BIOGENIX --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="bg-white py-12 md:py-16">
-        <div class="container grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
             <article class="min-h-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-xl md:min-h-[22rem] lg:col-span-6">
                 <img src="{{ asset('storage/slides/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
             </article>
@@ -262,7 +262,7 @@
                         ['title' => 'Compliance-Ready', 'copy' => 'Quality-first processes aligned to regulated healthcare operations.', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
                         ['title' => 'Consultative Service', 'copy' => 'Pre-sale and post-sale support for clinical and procurement teams.', 'icon' => 'M8 10h8M8 14h5M12 3c4.97 0 9 3.58 9 8 0 1.95-.78 3.74-2.07 5.16L20 21l-5.04-1.68A10.5 10.5 0 0 1 12 20c-4.97 0-9-3.58-9-8s4.03-9 9-9Z'],
                     ] as $value)
-                        <article class="home-panel group flex gap-3.5">
+                        <article class="group flex gap-3.5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                             <span class="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 transition group-hover:bg-primary-600 group-hover:text-white">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="{{ $value['icon'] }}" />
@@ -283,7 +283,7 @@
     {{-- TESTIMONIALS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="bg-slate-50 py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 ">
             <x-ui.section-heading title="What Our Clients Say" subtitle="Trusted by procurement heads, lab managers, and healthcare institutions across India." />
             <div class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
                 @foreach ([
@@ -312,7 +312,7 @@
                         'color'   => 'bg-violet-600',
                     ],
                 ] as $testimonial)
-                    <article class="home-panel flex flex-col gap-4">
+                    <article class="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                         {{-- Stars --}}
                         <div class="flex items-center gap-0.5">
                             @for ($s = 0; $s < $testimonial['rating']; $s++)
@@ -345,7 +345,7 @@
     {{-- INSIGHTS & UPDATES (with icon thumbnails) --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="bg-white py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 ">
             <x-ui.section-heading title="Insights &amp; Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
             <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 @foreach ([
@@ -377,7 +377,7 @@
                         'color'  => 'bg-violet-50 text-violet-600',
                     ],
                 ] as $insight)
-                    <article class="home-panel group flex flex-col gap-4">
+                    <article class="group flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                         {{-- Icon thumbnail --}}
                         <div class="flex items-center gap-4">
                             <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl {{ $insight['color'] }} transition group-hover:scale-110">
@@ -404,7 +404,7 @@
     {{-- FINAL CTA STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="bg-slate-950 py-12 text-white md:py-14">
-        <div class="container text-center">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 text-center">
             <h2 class="text-2xl font-semibold text-white md:text-3xl">Need a faster procurement decision?</h2>
             <p class="mx-auto mt-3 max-w-3xl text-sm text-slate-200 md:text-base">
                 Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
@@ -429,6 +429,7 @@
         let index      = 0;
         let intervalId = null;
         const total    = dots.length;
+        const trackPositions = ['translate-x-0', '-translate-x-full', '-translate-x-[200%]', '-translate-x-[300%]', '-translate-x-[400%]', '-translate-x-[500%]'];
 
         function paintDots() {
             dots.forEach(function (dot, dotIndex) {
@@ -441,7 +442,10 @@
 
         function moveTo(target) {
             index = (target + total) % total;
-            if (track) track.style.transform = 'translateX(-' + (index * 100) + '%)';
+            if (track) {
+                track.classList.remove(...trackPositions);
+                track.classList.add(trackPositions[index] || 'translate-x-0');
+            }
             paintDots();
         }
 
@@ -528,3 +532,4 @@
     });
 </script>
 @endpush
+

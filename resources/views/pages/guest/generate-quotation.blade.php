@@ -29,7 +29,7 @@
         <span class="font-semibold text-slate-700">Order / Generate Quote</span>
     </nav>
 
-    <section class="section-stack">
+    <section class="space-y-4">
         <div class="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-primary-950 p-5 text-white shadow-xl md:p-8">
             <div class="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-end">
                 <div class="lg:col-span-8">
@@ -50,13 +50,13 @@
         </div>
     </section>
 
-    <section class="section-stack">
+    <section class="space-y-4">
         <x-ui.section-heading title="Product Selection" subtitle="Choose product, quantity, and recipient information." />
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-start">
             <div class="lg:col-span-8">
                 <x-ui.surface-card class="{{ $formCardClass }}">
                     @if ($errors->any())
-                        <div class="errors mb-4">
+                        <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-800">
                             <ul class="list-disc pl-5">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -316,7 +316,7 @@
             }
 
             summaryBody.innerHTML =
-                '<div class="animate-pulse-quick rounded-xl border border-primary-100 bg-primary-50 p-4">' +
+                '<div class="animate-pulse rounded-xl border border-primary-100 bg-primary-50 p-4">' +
                 '<div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-600">Items Selected:</span><span class="font-bold text-slate-900">' + itemCount + '</span></div>' +
                 '<div class="flex items-center justify-between"><span class="text-sm font-semibold text-slate-800">Estimated MRP Total:</span><span class="text-lg font-bold text-primary-700">' + formatMoney(currency, total) + '</span></div>' +
                 '</div>' +

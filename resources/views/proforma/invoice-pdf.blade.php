@@ -3,98 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ $proforma->pi_number }}</title>
-    <style>
-        @page {
-            size: {{ strtoupper(config('invoice.pdf.paper', 'a4')) }};
-            margin: {{ config('invoice.pdf.margin_top', '10mm') }} {{ config('invoice.pdf.margin_right', '10mm') }} {{ config('invoice.pdf.margin_bottom', '12mm') }} {{ config('invoice.pdf.margin_left', '10mm') }};
-        }
-
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            color: #111827;
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 12px;
-            line-height: 1.45;
-        }
-
-        .title {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0 0 4px;
-        }
-
-        .muted {
-            color: #4b5563;
-        }
-
-        .section {
-            margin-top: 18px;
-        }
-
-        .box {
-            border: 1px solid #d1d5db;
-            padding: 12px;
-        }
-
-        .header-table,
-        .info-table,
-        .items-table,
-        .totals-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .header-table td,
-        .info-table td,
-        .items-table th,
-        .items-table td,
-        .totals-table td {
-            border: 1px solid #d1d5db;
-            padding: 8px;
-            vertical-align: top;
-        }
-
-        .header-table td,
-        .info-table td,
-        .totals-table td {
-            border-color: #e5e7eb;
-        }
-
-        .items-table th {
-            background: #f3f4f6;
-            font-weight: 700;
-            text-align: left;
-        }
-
-        .right { text-align: right; }
-        .center { text-align: center; }
-        .bold { font-weight: 700; }
-        .logo {
-            max-width: 120px;
-            height: auto;
-        }
-        .label {
-            display: inline-block;
-            min-width: 90px;
-            font-weight: 700;
-        }
-        .totals-wrap {
-            width: 42%;
-            margin-left: auto;
-            margin-top: 12px;
-        }
-        .grand-total td {
-            background: #111827;
-            color: #fff;
-            font-weight: 700;
-        }
-        .small-line {
-            margin: 0 0 4px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ \Illuminate\Support\Facades\Vite::asset('resources/css/app.css') }}">
 </head>
-<body>
+<body class="m-0 bg-white font-sans text-[12px] leading-[1.45] text-slate-900">
 @php
     $currency = $proforma->currency ?: config('invoice.pdf.currency', 'INR');
     $sellerName = config('invoice.company.name');
@@ -169,158 +80,160 @@
     }
 @endphp
 
-<table class="header-table">
-    <tr>
-        <td style="width:18%;" class="center">
-            @if($logoDataUri)
-                <img src="{{ $logoDataUri }}" alt="Logo" class="logo">
-            @else
-                <div class="bold">LOGO</div>
-            @endif
-        </td>
-        <td style="width:82%;">
-            <p class="title">{{ $documentTitle }}</p>
-            <p class="small-line bold">{{ $sellerName }}</p>
-            @foreach($sellerAddressLines as $line)
-                <p class="small-line muted">{{ $line }}</p>
-            @endforeach
-            <p class="small-line"><span class="label">GSTIN</span>{{ $sellerGstin }}</p>
-            <p class="small-line"><span class="label">State Code</span>{{ $sellerStateCode }}</p>
-        </td>
-    </tr>
-</table>
-
-<table class="info-table section">
-    <tr>
-        <td style="width:50%;">
-            <p class="small-line bold">Billing To</p>
-            <p class="small-line">{{ $billingName }}</p>
-            @foreach($billingLines as $line)
-                <p class="small-line muted">{{ $line }}</p>
-            @endforeach
-            <p class="small-line"><span class="label">GST</span>{{ $billingGstin ?: '-' }}</p>
-            <p class="small-line"><span class="label">Kind Attn</span>{{ $kindAttn ?: '-' }}</p>
-            <p class="small-line"><span class="label">Contact</span>{{ $attnContact ?: '-' }}</p>
-        </td>
-        <td style="width:50%;">
-            <p class="small-line bold">Shipping To</p>
-            <p class="small-line">{{ $shippingName }}</p>
-            @foreach($shippingLines as $line)
-                <p class="small-line muted">{{ $line }}</p>
-            @endforeach
-            <p class="small-line"><span class="label">GST</span>{{ $shippingGstin ?: '-' }}</p>
-            <p class="small-line"><span class="label">PI Number</span>{{ $proforma->pi_number }}</p>
-            <p class="small-line"><span class="label">Date</span>{{ $dateDisplay }}</p>
-            <p class="small-line"><span class="label">Dated</span>{{ $datedDisplay }}</p>
-            <p class="small-line"><span class="label">Enquiry No.</span>{{ $enquiryNo }}</p>
-        </td>
-    </tr>
-</table>
-
-<table class="items-table section">
-    <thead>
+<div class="p-5">
+    <table class="w-full border-collapse">
         <tr>
-            <th style="width:5%;">#</th>
-            <th style="width:12%;">SKU</th>
-            <th style="width:23%;">Product</th>
-            <th style="width:12%;">Variant</th>
-            <th style="width:10%;">Price Type</th>
-            <th style="width:8%;" class="center">Qty</th>
-            <th style="width:10%;" class="right">Unit Price</th>
-            <th style="width:8%;" class="right">GST</th>
-            <th style="width:12%;" class="right">Line Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($proforma->items as $item)
-            <tr>
-                <td class="center">{{ $loop->iteration }}</td>
-                <td>{{ $item->sku ?: '-' }}</td>
-                <td>
-                    <div class="bold">{{ $item->product_name }}</div>
-                    @if($item->line_subtotal)
-                        <div class="muted">Base: {{ $currency }} {{ number_format((float) $item->line_subtotal, 2) }}</div>
-                    @endif
-                    @if($item->line_discount_amount)
-                        <div class="muted">Discount: {{ $currency }} {{ number_format((float) $item->line_discount_amount, 2) }}</div>
-                    @endif
-                </td>
-                <td>{{ $item->variant_name ?: '-' }}</td>
-                <td>{{ strtoupper($item->price_type ?: '-') }}</td>
-                <td class="center">{{ number_format((float) $item->quantity, 0) }}</td>
-                <td class="right">{{ $currency }} {{ number_format((float) $item->unit_price, 2) }}</td>
-                <td class="right">{{ $currency }} {{ number_format((float) $item->line_tax_amount, 2) }}</td>
-                <td class="right">{{ $currency }} {{ number_format((float) $item->line_total, 2) }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-
-<div class="totals-wrap">
-    <table class="totals-table">
-        <tr>
-            <td class="bold">Total Quantity</td>
-            <td class="right">{{ number_format($qtyTotal, 0) }}</td>
-        </tr>
-        <tr>
-            <td class="bold">Subtotal</td>
-            <td class="right">{{ $currency }} {{ number_format($subtotal, 2) }}</td>
-        </tr>
-        <tr>
-            <td class="bold">GST Total</td>
-            <td class="right">{{ $currency }} {{ number_format($gstTotal, 2) }}</td>
-        </tr>
-        <tr>
-            <td class="bold">Discount Total</td>
-            <td class="right">{{ $currency }} {{ number_format($discountTotal, 2) }}</td>
-        </tr>
-        @if($freight != 0)
-            <tr>
-                <td class="bold">Freight</td>
-                <td class="right">{{ $currency }} {{ number_format($freight, 2) }}</td>
-            </tr>
-        @endif
-        @if($freightTax != 0)
-            <tr>
-                <td class="bold">Freight Tax</td>
-                <td class="right">{{ $currency }} {{ number_format($freightTax, 2) }}</td>
-            </tr>
-        @endif
-        @if($roundOff != 0)
-            <tr>
-                <td class="bold">Round Off</td>
-                <td class="right">{{ $currency }} {{ number_format($roundOff, 2) }}</td>
-            </tr>
-        @endif
-        <tr class="grand-total">
-            <td>Grand Total</td>
-            <td class="right">{{ $currency }} {{ number_format($grandTotal, 2) }}</td>
+            <td class="w-[18%] border border-slate-200 p-2.5 align-top text-center">
+                @if($logoDataUri)
+                    <img src="{{ $logoDataUri }}" alt="Logo" class="mx-auto max-h-16 w-auto">
+                @else
+                    <div class="font-bold">LOGO</div>
+                @endif
+            </td>
+            <td class="w-[82%] border border-slate-200 p-2.5 align-top">
+                <p class="mb-1 text-[22px] font-bold text-slate-950">{{ $documentTitle }}</p>
+                <p class="mb-1 font-bold">{{ $sellerName }}</p>
+                @foreach($sellerAddressLines as $line)
+                    <p class="mb-1 text-slate-600">{{ $line }}</p>
+                @endforeach
+                <p class="mb-1"><span class="inline-block w-24 font-bold">GSTIN</span>{{ $sellerGstin }}</p>
+                <p><span class="inline-block w-24 font-bold">State Code</span>{{ $sellerStateCode }}</p>
+            </td>
         </tr>
     </table>
-</div>
 
-<div class="section box">
-    <p class="small-line bold">{{ $amountInWordsLabel }}</p>
-    <p class="small-line">{{ $amountWords ?: '-' }}</p>
-</div>
+    <table class="mt-4 w-full border-collapse">
+        <tr>
+            <td class="w-1/2 border border-slate-200 p-2.5 align-top">
+                <p class="mb-1 font-bold">Billing To</p>
+                <p class="mb-1">{{ $billingName }}</p>
+                @foreach($billingLines as $line)
+                    <p class="mb-1 text-slate-600">{{ $line }}</p>
+                @endforeach
+                <p class="mb-1"><span class="inline-block w-24 font-bold">GST</span>{{ $billingGstin ?: '-' }}</p>
+                <p class="mb-1"><span class="inline-block w-24 font-bold">Kind Attn</span>{{ $kindAttn ?: '-' }}</p>
+                <p><span class="inline-block w-24 font-bold">Contact</span>{{ $attnContact ?: '-' }}</p>
+            </td>
+            <td class="w-1/2 border border-slate-200 p-2.5 align-top">
+                <p class="mb-1 font-bold">Shipping To</p>
+                <p class="mb-1">{{ $shippingName }}</p>
+                @foreach($shippingLines as $line)
+                    <p class="mb-1 text-slate-600">{{ $line }}</p>
+                @endforeach
+                <p class="mb-1"><span class="inline-block w-24 font-bold">GST</span>{{ $shippingGstin ?: '-' }}</p>
+                <p class="mb-1"><span class="inline-block w-24 font-bold">PI Number</span>{{ $proforma->pi_number }}</p>
+                <p class="mb-1"><span class="inline-block w-24 font-bold">Date</span>{{ $dateDisplay }}</p>
+                <p class="mb-1"><span class="inline-block w-24 font-bold">Dated</span>{{ $datedDisplay }}</p>
+                <p><span class="inline-block w-24 font-bold">Enquiry No.</span>{{ $enquiryNo }}</p>
+            </td>
+        </tr>
+    </table>
 
-<div class="section box">
-    <p class="small-line bold">{{ $termsHeading }}</p>
-    @foreach($termsItems as $termIndex => $termText)
-        <p class="small-line">{{ $termIndex + 1 }}. {{ $termText }}</p>
-    @endforeach
-</div>
+    <table class="mt-4 w-full border-collapse">
+        <thead>
+            <tr class="bg-slate-100 text-left">
+                <th class="w-[5%] border border-slate-300 p-2 font-bold">#</th>
+                <th class="w-[12%] border border-slate-300 p-2 font-bold">SKU</th>
+                <th class="w-[23%] border border-slate-300 p-2 font-bold">Product</th>
+                <th class="w-[12%] border border-slate-300 p-2 font-bold">Variant</th>
+                <th class="w-[10%] border border-slate-300 p-2 font-bold">Price Type</th>
+                <th class="w-[8%] border border-slate-300 p-2 text-center font-bold">Qty</th>
+                <th class="w-[10%] border border-slate-300 p-2 text-right font-bold">Unit Price</th>
+                <th class="w-[8%] border border-slate-300 p-2 text-right font-bold">GST</th>
+                <th class="w-[12%] border border-slate-300 p-2 text-right font-bold">Line Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($proforma->items as $item)
+                <tr>
+                    <td class="border border-slate-300 p-2 text-center align-top">{{ $loop->iteration }}</td>
+                    <td class="border border-slate-300 p-2 align-top">{{ $item->sku ?: '-' }}</td>
+                    <td class="border border-slate-300 p-2 align-top">
+                        <div class="font-bold">{{ $item->product_name }}</div>
+                        @if($item->line_subtotal)
+                            <div class="mt-1 text-slate-600">Base: {{ $currency }} {{ number_format((float) $item->line_subtotal, 2) }}</div>
+                        @endif
+                        @if($item->line_discount_amount)
+                            <div class="mt-1 text-slate-600">Discount: {{ $currency }} {{ number_format((float) $item->line_discount_amount, 2) }}</div>
+                        @endif
+                    </td>
+                    <td class="border border-slate-300 p-2 align-top">{{ $item->variant_name ?: '-' }}</td>
+                    <td class="border border-slate-300 p-2 align-top">{{ strtoupper($item->price_type ?: '-') }}</td>
+                    <td class="border border-slate-300 p-2 text-center align-top">{{ number_format((float) $item->quantity, 0) }}</td>
+                    <td class="border border-slate-300 p-2 text-right align-top">{{ $currency }} {{ number_format((float) $item->unit_price, 2) }}</td>
+                    <td class="border border-slate-300 p-2 text-right align-top">{{ $currency }} {{ number_format((float) $item->line_tax_amount, 2) }}</td>
+                    <td class="border border-slate-300 p-2 text-right align-top">{{ $currency }} {{ number_format((float) $item->line_total, 2) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-<div class="section box">
-    <p class="small-line bold">{{ $bankHeading }}</p>
-    @foreach($bankLines as $bankLine)
-        <p class="small-line">{{ $bankLine }}</p>
-    @endforeach
-</div>
+    <div class="mt-4 ml-auto w-[42%]">
+        <table class="w-full border-collapse">
+            <tr>
+                <td class="border border-slate-200 p-2 font-bold">Total Quantity</td>
+                <td class="border border-slate-200 p-2 text-right">{{ number_format($qtyTotal, 0) }}</td>
+            </tr>
+            <tr>
+                <td class="border border-slate-200 p-2 font-bold">Subtotal</td>
+                <td class="border border-slate-200 p-2 text-right">{{ $currency }} {{ number_format($subtotal, 2) }}</td>
+            </tr>
+            <tr>
+                <td class="border border-slate-200 p-2 font-bold">GST Total</td>
+                <td class="border border-slate-200 p-2 text-right">{{ $currency }} {{ number_format($gstTotal, 2) }}</td>
+            </tr>
+            <tr>
+                <td class="border border-slate-200 p-2 font-bold">Discount Total</td>
+                <td class="border border-slate-200 p-2 text-right">{{ $currency }} {{ number_format($discountTotal, 2) }}</td>
+            </tr>
+            @if($freight != 0)
+                <tr>
+                    <td class="border border-slate-200 p-2 font-bold">Freight</td>
+                    <td class="border border-slate-200 p-2 text-right">{{ $currency }} {{ number_format($freight, 2) }}</td>
+                </tr>
+            @endif
+            @if($freightTax != 0)
+                <tr>
+                    <td class="border border-slate-200 p-2 font-bold">Freight Tax</td>
+                    <td class="border border-slate-200 p-2 text-right">{{ $currency }} {{ number_format($freightTax, 2) }}</td>
+                </tr>
+            @endif
+            @if($roundOff != 0)
+                <tr>
+                    <td class="border border-slate-200 p-2 font-bold">Round Off</td>
+                    <td class="border border-slate-200 p-2 text-right">{{ $currency }} {{ number_format($roundOff, 2) }}</td>
+                </tr>
+            @endif
+            <tr class="bg-slate-900 text-white">
+                <td class="border border-slate-900 p-2 font-bold">Grand Total</td>
+                <td class="border border-slate-900 p-2 text-right font-bold">{{ $currency }} {{ number_format($grandTotal, 2) }}</td>
+            </tr>
+        </table>
+    </div>
 
-<div class="section right muted">
-    <p class="small-line">{{ $autoGeneratedText }}</p>
-    <p class="small-line">{{ $signatureNote }}</p>
+    <div class="mt-4 rounded-lg border border-slate-300 p-3">
+        <p class="mb-1 font-bold">{{ $amountInWordsLabel }}</p>
+        <p>{{ $amountWords ?: '-' }}</p>
+    </div>
+
+    <div class="mt-4 rounded-lg border border-slate-300 p-3">
+        <p class="mb-1 font-bold">{{ $termsHeading }}</p>
+        @foreach($termsItems as $termIndex => $termText)
+            <p class="mb-1">{{ $termIndex + 1 }}. {{ $termText }}</p>
+        @endforeach
+    </div>
+
+    <div class="mt-4 rounded-lg border border-slate-300 p-3">
+        <p class="mb-1 font-bold">{{ $bankHeading }}</p>
+        @foreach($bankLines as $bankLine)
+            <p class="mb-1">{{ $bankLine }}</p>
+        @endforeach
+    </div>
+
+    <div class="mt-4 text-right text-slate-600">
+        <p class="mb-1">{{ $autoGeneratedText }}</p>
+        <p>{{ $signatureNote }}</p>
+    </div>
 </div>
 </body>
 </html>

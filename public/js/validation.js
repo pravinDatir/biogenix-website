@@ -9,6 +9,8 @@ const ValidationMessages = {
   pincode: "Enter a valid 6-digit pincode"
 };
 
+const errorInputClasses = ["border-rose-300", "focus:border-rose-400", "focus:ring-rose-200"];
+
 /* ===============================
    HELPERS
    =============================== */
@@ -29,22 +31,40 @@ function isValidPincode(value) {
   return /^\d{6}$/.test(value); // exactly 6 digits
 }
 
-function showError(input, messageKey) {
-  const group = input.closest(".form-group");
-  const errorEl = group?.querySelector(".error");
+function getFieldGroup(input) {
+  return input.closest("[data-field-group]") || input.closest(".form-group");
+}
 
-  input.classList.add("error-border");
+function getErrorElement(group) {
+  return group?.querySelector("[data-field-error]") || group?.querySelector(".error");
+}
+
+function showError(input, messageKey) {
+  const group = getFieldGroup(input);
+  const errorEl = getErrorElement(group);
+
+  input.classList.add(...errorInputClasses);
+  input.setAttribute("aria-invalid", "true");
+
   if (errorEl) {
     errorEl.textContent = ValidationMessages[messageKey] || "";
+    errorEl.classList.remove("hidden");
   }
 }
 
 function clearError(input) {
-  const group = input.closest(".form-group");
-  const errorEl = group?.querySelector(".error");
+  const group = getFieldGroup(input);
+  const errorEl = getErrorElement(group);
 
-  input.classList.remove("error-border");
-  if (errorEl) errorEl.textContent = "";
+  input.classList.remove(...errorInputClasses);
+  input.removeAttribute("aria-invalid");
+
+  if (errorEl) {
+    errorEl.textContent = "";
+    if (errorEl.hasAttribute("data-field-error")) {
+      errorEl.classList.add("hidden");
+    }
+  }
 }
 
 /**
@@ -150,11 +170,15 @@ function validatePasswordMatch(passId, confirmId) {
   clearError(confirm);
 
   if (pass.value !== confirm.value) {
-    const group = confirm.closest(".form-group");
-    const errorEl = group?.querySelector(".error");
+    const group = getFieldGroup(confirm);
+    const errorEl = getErrorElement(group);
 
-    confirm.classList.add("error-border");
-    if (errorEl) errorEl.textContent = "Passwords do not match";
+    confirm.classList.add(...errorInputClasses);
+    confirm.setAttribute("aria-invalid", "true");
+    if (errorEl) {
+      errorEl.textContent = "Passwords do not match";
+      errorEl.classList.remove("hidden");
+    }
 
     return false;
   }
@@ -174,15 +198,23 @@ function setupPasswordToggle(inputId, toggleId) {
 
   toggleBtn.addEventListener("click", () => {
     const input = document.getElementById(inputId);
+    if (!input) return;
 
-    if (input.type === "password") {
-      input.type = "text";
-      input.classList.add("is-password-visible");
-      toggleBtn.setAttribute("aria-label", "Hide password");
-    } else {
-      input.type = "password";
-      input.classList.remove("is-password-visible");
-      toggleBtn.setAttribute("aria-label", "Show password");
+    input.type = input.type === "password" ? "text" : "password";
+
+    const passwordVisible = input.type === "text";
+    const hiddenIcon = toggleBtn.querySelector("[data-password-hidden-icon]");
+    const visibleIcon = toggleBtn.querySelector("[data-password-visible-icon]");
+
+    toggleBtn.setAttribute("aria-label", passwordVisible ? "Hide password" : "Show password");
+    toggleBtn.setAttribute("aria-pressed", passwordVisible ? "true" : "false");
+
+    if (hiddenIcon) {
+      hiddenIcon.classList.toggle("hidden", passwordVisible);
+    }
+
+    if (visibleIcon) {
+      visibleIcon.classList.toggle("hidden", !passwordVisible);
     }
   });
 }

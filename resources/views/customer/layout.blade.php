@@ -12,7 +12,7 @@
     <div class="mx-auto w-full max-w-none px-4 py-4 sm:px-6 md:py-6 lg:px-8 xl:px-10">
         @if (! $isMinimal)
             <x-ui.breadcrumb />
-            <section class="animate-entrance hero-premium mb-6 md:mb-8">
+            <section class="mb-6 rounded-[2rem] border border-slate-200/80 bg-[radial-gradient(circle_at_top_right,rgba(47,143,255,0.18),transparent_26%),linear-gradient(135deg,#ffffff_0%,#f8fbff_55%,#eef5fd_100%)] p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] md:mb-8 md:p-8">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div class="max-w-3xl">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
@@ -37,7 +37,7 @@
             </section>
         @endif
 
-        <div class="animate-entrance-delay-1">
+        <div>
             @yield('customer_content')
         </div>
     </div>

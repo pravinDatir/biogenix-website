@@ -25,7 +25,7 @@
             <!-- KPI Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                 <!-- Card 1 -->
-                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('adminPanel.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-[#eef1f6] text-[#091b3f]">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 00-2-2m4-10a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2V9z"></path></svg>
@@ -42,7 +42,7 @@
                 </a>
 
                 <!-- Card 2 -->
-                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('adminPanel.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -59,7 +59,7 @@
                 </a>
 
                 <!-- Card 3 -->
-                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('adminPanel.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-50 text-amber-500">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v1l2 2m-3 5h3m-3 4h3"></path></svg>
@@ -73,7 +73,7 @@
                 </a>
 
                 <!-- Card 4 -->
-                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('adminPanel.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
@@ -104,15 +104,15 @@
                             </div>
                         </div>
                         <!-- Toggle -->
-                        <div class="bg-[#f2f5fa] rounded-lg p-1 flex items-center shadow-inner self-start">
-                            <button class="px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800">Weekly</button>
-                            <button class="px-3 lg:px-4 py-1.5 text-[11px] font-bold text-[#091b3f] bg-white rounded-md shadow-sm">Monthly</button>
-                            <button class="px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800">Yearly</button>
+                        <div id="chartToggle" class="bg-[#f2f5fa] rounded-lg p-1 flex items-center shadow-inner self-start">
+                            <button data-period="weekly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800">Weekly</button>
+                            <button data-period="monthly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-[#091b3f] bg-white rounded-md shadow-sm">Monthly</button>
+                            <button data-period="yearly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800">Yearly</button>
                         </div>
                     </div>
 
                     <!-- Fake Chart Area -->
-                    <div class="mt-8 flex-1 grid grid-cols-7 gap-2 lg:gap-4 items-end px-1 lg:px-2 pt-10 min-h-[150px]">
+                    <div id="chartBars" class="mt-8 flex-1 grid grid-cols-7 gap-2 lg:gap-4 items-end px-1 lg:px-2 pt-10 min-h-[150px]">
                         <div class="w-full bg-[#e8eef6] rounded-t-sm h-[30%]"></div>
                         <div class="w-full bg-[#e8eef6] rounded-t-sm h-[45%]"></div>
                         <div class="w-full bg-[#e8eef6] rounded-t-sm h-[35%]"></div>
@@ -146,7 +146,7 @@
                                 <span class="text-slate-500">62%</span>
                             </div>
                             <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="bg-[#091b3f] h-2 rounded-full" style="width: 62%"></div>
+                                <div class="h-2 w-[62%] rounded-full bg-[#091b3f]"></div>
                             </div>
                         </div>
 
@@ -157,7 +157,7 @@
                                 <span class="text-slate-500">28%</span>
                             </div>
                             <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: 28%"></div>
+                                <div class="h-2 w-[28%] rounded-full bg-blue-500"></div>
                             </div>
                         </div>
 
@@ -168,7 +168,7 @@
                                 <span class="text-slate-500">10%</span>
                             </div>
                             <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="bg-emerald-500 h-2 rounded-full" style="width: 10%"></div>
+                                <div class="h-2 w-[10%] rounded-full bg-emerald-500"></div>
                             </div>
                         </div>
                     </div>
@@ -189,7 +189,7 @@
             <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mt-6">
                 <div class="px-5 lg:px-7 py-5 lg:py-6 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-900">Priority Orders</h3>
-                    <a href="{{ route('adminPanel.orders') }}" class="text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2">View All Orders</a>
+                    <a href="{{ route('adminPanel.orders') }}" class="ajax-link text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2">View All Orders</a>
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -219,7 +219,14 @@
                                     <span class="inline-flex items-center px-2 py-1 bg-amber-100/50 text-amber-700 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">Dispatching</span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <button class="text-slate-400 hover:text-slate-700"><svg class="h-5 w-5 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg></button>
+                                    <div class="relative inline-block">
+                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg></button>
+                                        <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
+                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
+                                            <button onclick="AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-9012.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             
@@ -237,7 +244,14 @@
                                     <span class="inline-flex items-center px-2 py-1 bg-blue-100/50 text-blue-700 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">In Transit</span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <button class="text-slate-400 hover:text-slate-700"><svg class="h-5 w-5 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg></button>
+                                    <div class="relative inline-block">
+                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
+                                        <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
+                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -255,7 +269,14 @@
                                     <span class="inline-flex items-center px-2 py-1 bg-emerald-100/50 text-emerald-700 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">Delivered</span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <button class="text-slate-400 hover:text-slate-700"><svg class="h-5 w-5 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg></button>
+                                    <div class="relative inline-block">
+                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
+                                        <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
+                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -265,3 +286,32 @@
             </div>
 
 @endsection
+
+@push('scripts')
+<script>
+// ─── Revenue Toggle ───
+const chartData = {
+    weekly: [30, 45, 35, 55, 40, 60, 85],
+    monthly: [50, 65, 40, 75, 55, 80, 90],
+    yearly: [70, 55, 80, 60, 75, 85, 95]
+};
+
+document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.chart-toggle-btn').forEach(b => {
+            b.classList.remove('text-[#091b3f]', 'bg-white', 'shadow-sm');
+            b.classList.add('text-slate-500');
+        });
+        btn.classList.remove('text-slate-500');
+        btn.classList.add('text-[#091b3f]', 'bg-white', 'shadow-sm');
+
+        const bars = document.querySelectorAll('#chartBars > div');
+        const data = chartData[btn.dataset.period];
+        bars.forEach((bar, i) => {
+            bar.style.transition = 'height 0.4s ease';
+            bar.style.height = data[i] + '%';
+        });
+    });
+});
+</script>
+@endpush

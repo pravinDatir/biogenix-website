@@ -1,10 +1,15 @@
 @php
     $showSuccessState = request()->boolean('sent') || filled(session('status')) || filled(session('success'));
+    $kickerClass = 'inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary-700';
+    $labelClass = 'text-sm font-semibold text-slate-700';
+    $inputClass = 'h-14 w-full rounded-2xl border border-slate-300 bg-white px-12 text-base font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/10';
+    $linkClass = 'font-semibold text-primary-700 no-underline transition hover:text-primary-600';
+    $submitClass = 'inline-flex h-14 w-full items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(37,99,235,0.7)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
 @endphp
 
 <div class="mx-auto w-full max-w-xl py-4 md:py-8">
-    <section class="auth-stage">
-        <div class="auth-panel px-5 py-7 sm:px-6 sm:py-8">
+    <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_60px_-30px_rgba(15,23,42,0.32)]">
+        <div class="bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(252,253,255,1)_100%)] px-5 py-7 sm:px-6 sm:py-8">
             <div class="mx-auto w-full max-w-md text-center">
                 <div class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary-50 text-primary-700 shadow-sm">
                     @if ($showSuccessState)
@@ -25,9 +30,9 @@
                 </div>
 
                 @if ($showSuccessState)
-                    <p class="page-kicker mt-5">Reset Link Sent</p>
-                    <h1 class="auth-title mt-3">Check your email</h1>
-                    <p class="auth-copy mx-auto max-w-sm">
+                    <p class="{{ $kickerClass }} mt-5">Reset Link Sent</p>
+                    <h1 class="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-950 md:text-4xl">Check your email</h1>
+                    <p class="mx-auto mt-4 max-w-sm text-sm leading-7 text-slate-500 md:text-base">
                         We sent a password reset link to your registered email address. Follow the instructions in your inbox to secure your account.
                     </p>
 
@@ -38,9 +43,9 @@
                     <div class="mt-6 border-t border-slate-200 pt-5">
                         <p class="text-sm leading-6 text-slate-400">Didn't receive the email?</p>
                         <div class="mt-2 inline-flex flex-wrap items-center justify-center gap-3 text-sm font-semibold text-slate-500">
-                            <a href="{{ route('forgot.password') }}" class="auth-link">Resend link</a>
+                            <a href="{{ route('forgot.password') }}" class="{{ $linkClass }}">Resend link</a>
                             <span class="text-slate-300">|</span>
-                            <a href="{{ route('contact') }}" class="auth-link">Contact support</a>
+                            <a href="{{ route('contact') }}" class="{{ $linkClass }}">Contact support</a>
                         </div>
                     </div>
 
@@ -52,22 +57,22 @@
                             </svg>
                         </div>
                         <div class="mt-3 rounded-2xl bg-white px-4 py-3 shadow-sm">
-                            <p class="page-kicker text-primary-700">Security Tip</p>
+                            <p class="{{ $kickerClass }} bg-white px-0 py-0 text-primary-700">Security Tip</p>
                             <p class="mt-1.5 text-sm leading-6 text-slate-700">Biogenix will never ask for your password over email or phone.</p>
                         </div>
                     </div>
                 @else
-                    <p class="page-kicker mt-5">Account Recovery</p>
-                    <h1 class="auth-title mt-3">Forgot your password?</h1>
-                    <p class="auth-copy mx-auto max-w-sm">
+                    <p class="{{ $kickerClass }} mt-5">Account Recovery</p>
+                    <h1 class="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-950 md:text-4xl">Forgot your password?</h1>
+                    <p class="mx-auto mt-4 max-w-sm text-sm leading-7 text-slate-500 md:text-base">
                         Enter the email address associated with your Biogenix account and we will send you a secure reset link.
                     </p>
 
-                    <form id="forgotPasswordForm" method="POST" action="{{ route('password.email') }}" data-success-url="{{ route('forgot.password', ['sent' => 1]) }}" class="auth-form mt-6 text-left" novalidate>
+                    <form id="forgotPasswordForm" method="POST" action="{{ route('password.email') }}" data-success-url="{{ route('forgot.password', ['sent' => 1]) }}" class="mt-6 grid gap-5 text-left" novalidate>
                         @csrf
 
-                        <div class="auth-field">
-                            <label for="forgotEmail" class="auth-label">Work Email</label>
+                        <div class="grid gap-2" data-field-group>
+                            <label for="forgotEmail" class="{{ $labelClass }}">Work Email</label>
                             <div class="relative">
                                 <svg class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M4 6h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"></path>
@@ -78,14 +83,15 @@
                                     id="forgotEmail"
                                     name="email"
                                     value="{{ old('email') }}"
-                                    class="auth-input auth-input--icon"
+                                    class="{{ $inputClass }}"
                                     placeholder="name@biogenix.com"
                                     autocomplete="email"
                                 >
                             </div>
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
 
-                        <button type="submit" id="forgotSubmitBtn" class="auth-submit">
+                        <button type="submit" id="forgotSubmitBtn" class="{{ $submitClass }}">
                             Send Reset Link
                         </button>
                     </form>
@@ -100,7 +106,7 @@
                         </a>
                         <p class="mt-3 text-sm leading-6 text-slate-400">
                             Having trouble?
-                            <a href="{{ route('contact') }}" class="auth-link">Contact support</a>
+                            <a href="{{ route('contact') }}" class="{{ $linkClass }}">Contact support</a>
                         </p>
                     </div>
                 @endif

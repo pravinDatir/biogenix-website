@@ -36,7 +36,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
     <div class="min-h-screen">
         <header class="border-b border-slate-200 bg-white/95 backdrop-blur">
             <div class="mx-auto flex w-full max-w-none items-center gap-6 px-4 py-4 sm:px-6 lg:px-8 xl:px-10">

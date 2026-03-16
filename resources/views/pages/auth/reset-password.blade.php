@@ -1,6 +1,14 @@
-<div class="auth-shell">
-    <section class="auth-stage mx-auto max-w-xl">
-        <div class="auth-panel px-5 py-7 sm:px-6 sm:py-8">
+@php
+    $kickerClass = 'inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary-700';
+    $fieldClass = 'grid gap-2';
+    $labelClass = 'text-sm font-semibold text-slate-700';
+    $inputClass = 'h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-base font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/10';
+    $submitClass = 'inline-flex h-14 w-full items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(37,99,235,0.7)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
+@endphp
+
+<div class="mx-auto w-full max-w-xl py-4 md:py-8">
+    <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_60px_-30px_rgba(15,23,42,0.32)]">
+        <div class="bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(252,253,255,1)_100%)] px-5 py-7 sm:px-6 sm:py-8">
             <div class="mx-auto w-full max-w-md">
                 <div class="text-center">
                     <div class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary-50 text-primary-700 shadow-sm">
@@ -8,66 +16,72 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                     </div>
-                    <p class="page-kicker mt-5">Account Recovery</p>
-                    <h1 class="auth-title mt-3">Set a new password</h1>
-                    <p class="auth-copy mx-auto max-w-sm text-center">
+                    <p class="{{ $kickerClass }} mt-5">Account Recovery</p>
+                    <h1 class="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-950 md:text-4xl">Set a new password</h1>
+                    <p class="mx-auto mt-4 max-w-sm text-center text-sm leading-7 text-slate-500 md:text-base">
                         Create a strong password for your account and use it for future sign-ins.
                     </p>
                 </div>
 
-                <form id="resetPasswordForm" method="POST" action="{{ route('password.update') }}" class="auth-form mt-6" novalidate>
+                <form id="resetPasswordForm" method="POST" action="{{ route('password.update') }}" class="mt-6 grid gap-5" novalidate>
                     @csrf
                     <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-                    <div class="auth-field">
-                        <label for="email" class="auth-label">Email Address</label>
+                    <div class="{{ $fieldClass }}" data-field-group>
+                        <label for="email" class="{{ $labelClass }}">Email Address</label>
                         <input
                             id="email"
                             name="email"
                             type="email"
-                            class="auth-input @error('email') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                            class="{{ $inputClass }} @error('email') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
                             value="{{ old('email', $request->email) }}"
                             autocomplete="email"
                             required
                         >
                         @error('email')
                             <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @else
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         @enderror
                     </div>
 
-                    <div class="auth-field">
-                        <label for="password" class="auth-label">New Password</label>
+                    <div class="{{ $fieldClass }}" data-field-group>
+                        <label for="password" class="{{ $labelClass }}">New Password</label>
                         <input
                             id="password"
                             name="password"
                             type="password"
-                            class="auth-input @error('password') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                            class="{{ $inputClass }} @error('password') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
                             placeholder="Minimum 8 characters"
                             autocomplete="new-password"
                             required
                         >
                         @error('password')
                             <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @else
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         @enderror
                     </div>
 
-                    <div class="auth-field">
-                        <label for="password_confirmation" class="auth-label">Confirm Password</label>
+                    <div class="{{ $fieldClass }}" data-field-group>
+                        <label for="password_confirmation" class="{{ $labelClass }}">Confirm Password</label>
                         <input
                             id="password_confirmation"
                             name="password_confirmation"
                             type="password"
-                            class="auth-input @error('password_confirmation') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
+                            class="{{ $inputClass }} @error('password_confirmation') border-rose-300 focus:border-rose-400 focus:ring-rose-200 @enderror"
                             placeholder="Re-enter password"
                             autocomplete="new-password"
                             required
                         >
                         @error('password_confirmation')
                             <p class="text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @else
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         @enderror
                     </div>
 
-                    <button id="resetPasswordSubmitBtn" class="auth-submit" type="submit">
+                    <button id="resetPasswordSubmitBtn" class="{{ $submitClass }}" type="submit">
                         Reset Password
                     </button>
                 </form>

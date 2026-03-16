@@ -81,17 +81,18 @@
                     <span id="shippingProgressBadge" class="inline-flex w-fit items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white">Calculating...</span>
                 </div>
                 {{-- Bar --}}
-                <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-emerald-200">
-                    <div
-                        id="shippingProgressBar"
-                        class="h-full rounded-full bg-emerald-500 transition-all duration-700 ease-out"
-                        style="width: 0%"
-                        aria-valuenow="0"
-                        aria-valuemin="0"
-                        aria-valuemax="{{ $freeShippingThreshold }}"
-                        role="progressbar"
-                        aria-label="Free shipping progress"
-                    ></div>
+                <div
+                    id="shippingProgressBar"
+                    class="mt-3 flex gap-1"
+                    aria-valuenow="0"
+                    aria-valuemin="0"
+                    aria-valuemax="{{ $freeShippingThreshold }}"
+                    role="progressbar"
+                    aria-label="Free shipping progress"
+                >
+                    @for ($segment = 1; $segment <= 12; $segment++)
+                        <span data-progress-segment class="h-2.5 flex-1 rounded-full bg-emerald-200 transition-all duration-500"></span>
+                    @endfor
                 </div>
             </div>
 
@@ -124,11 +125,11 @@
                                 {{-- Background circle --}}
                                 <div class="absolute inset-0 rounded-full bg-slate-100"></div>
                                 {{-- Floating dots (CSS animation via inline style) --}}
-                                <span class="absolute left-3 top-3 h-3 w-3 rounded-full bg-primary-200" style="animation: cartBounce 2.2s ease-in-out infinite;"></span>
-                                <span class="absolute right-4 top-6 h-2 w-2 rounded-full bg-primary-300" style="animation: cartBounce 2.8s ease-in-out 0.4s infinite;"></span>
-                                <span class="absolute bottom-5 left-6 h-2 w-2 rounded-full bg-emerald-300" style="animation: cartBounce 2.5s ease-in-out 0.8s infinite;"></span>
+                                <span class="absolute left-3 top-3 h-3 w-3 rounded-full bg-primary-200 animate-bounce [animation-duration:2.2s]"></span>
+                                <span class="absolute right-4 top-6 h-2 w-2 rounded-full bg-primary-300 animate-bounce [animation-duration:2.8s] [animation-delay:0.4s]"></span>
+                                <span class="absolute bottom-5 left-6 h-2 w-2 rounded-full bg-emerald-300 animate-bounce [animation-duration:2.5s] [animation-delay:0.8s]"></span>
 
-                                <svg class="relative z-10 h-20 w-20 text-slate-300" style="animation: cartBounce 3s ease-in-out infinite;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.3">
+                                <svg class="relative z-10 h-20 w-20 animate-bounce text-slate-300 [animation-duration:3s]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.3">
                                     <circle cx="9" cy="21" r="1.6" stroke-width="1.5"/>
                                     <circle cx="17" cy="21" r="1.6" stroke-width="1.5"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
@@ -252,14 +253,6 @@
         </div>
     </div>
 
-    {{-- Keyframe animations injected once --}}
-    <style>
-        @keyframes cartBounce {
-            0%, 100% { transform: translateY(0px); }
-            50%       { transform: translateY(-8px); }
-        }
-    </style>
-
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -275,6 +268,7 @@
                 /* ── Free Shipping Progress ── */
                 const FREE_THRESHOLD       = {{ $freeShippingThreshold }};
                 const progressBar          = document.getElementById('shippingProgressBar');
+                const progressSegments     = progressBar ? Array.from(progressBar.querySelectorAll('[data-progress-segment]')) : [];
                 const progressMsg          = document.getElementById('shippingProgressMsg');
                 const progressBadge        = document.getElementById('shippingProgressBadge');
 
@@ -298,8 +292,8 @@
                 /* ── formatInr ── */
                 const formatInr = function (value) {
                     const n = Number(value);
-                    if (!Number.isFinite(n)) return '<span class="currency-symbol">Rs.</span> 0.00';
-                    return '<span class="currency-symbol">Rs.</span> ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    if (!Number.isFinite(n)) return 'Rs. 0.00';
+                    return 'Rs. ' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 };
 
                 /* ── parseVariant ── */
@@ -313,20 +307,27 @@
                     if (!progressBar || !progressMsg || !progressBadge) return;
                     const pct     = Math.min(100, (subtotal / FREE_THRESHOLD) * 100);
                     const remaining = Math.max(0, FREE_THRESHOLD - subtotal);
-                    progressBar.style.width = pct + '%';
                     progressBar.setAttribute('aria-valuenow', Math.round(pct));
 
-                    if (remaining <= 0) {
+                    const activeSegmentCount = Math.max(0, Math.ceil((pct / 100) * progressSegments.length));
+                    const unlocked = remaining <= 0;
+
+                    progressSegments.forEach(function (segment, index) {
+                        const active = index < activeSegmentCount;
+                        segment.classList.toggle('bg-emerald-500', active && unlocked);
+                        segment.classList.toggle('bg-primary-500', active && !unlocked);
+                        segment.classList.toggle('bg-emerald-200', !active);
+                    });
+
+                    if (unlocked) {
                         progressMsg.textContent = '🎉 You\'ve unlocked FREE same-day delivery!';
                         progressBadge.textContent = 'FREE Delivery';
                         progressBadge.className = 'inline-flex w-fit items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white';
-                        progressBar.className = 'h-full rounded-full bg-emerald-500 transition-all duration-700 ease-out';
                     } else {
                         const fmt = remaining.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
                         progressMsg.textContent = 'Add Rs. ' + fmt + ' more for FREE delivery';
                         progressBadge.textContent = Math.round(pct) + '% there';
                         progressBadge.className = 'inline-flex w-fit items-center rounded-full bg-slate-700 px-3 py-1 text-xs font-bold text-white';
-                        progressBar.className = 'h-full rounded-full bg-primary-500 transition-all duration-700 ease-out';
                     }
                 }
 
@@ -595,9 +596,9 @@
                         emptyState.classList.remove('hidden');
                         emptyState.classList.add('flex');
                         if (itemCount) itemCount.textContent = '0 items';
-                        if (subtotalEl) subtotalEl.innerHTML = '<span class="currency-symbol">Rs.</span> 0.00';
-                        if (taxEl)      taxEl.innerHTML      = '<span class="currency-symbol">Rs.</span> 0.00';
-                        if (totalEl)    totalEl.innerHTML    = '<span class="currency-symbol">Rs.</span> 0.00';
+                        if (subtotalEl) subtotalEl.innerHTML = 'Rs. 0.00';
+                        if (taxEl)      taxEl.innerHTML      = 'Rs. 0.00';
+                        if (totalEl)    totalEl.innerHTML    = 'Rs. 0.00';
                         if (checkoutButton) checkoutButton.classList.add('opacity-70');
                         updateShippingProgress(0);
                         renderSaved();

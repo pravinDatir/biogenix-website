@@ -1,4 +1,4 @@
-<footer class="relative mt-14 overflow-hidden border-t border-white/10 bg-slate-950 text-white">
+<footer id="siteFooter" class="relative mt-14 overflow-hidden border-t border-white/10 bg-slate-950 text-white transition-[padding] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-400/60 to-transparent"></div>
     <div class="pointer-events-none absolute -left-24 top-10 h-56 w-56 rounded-full bg-primary-500/15 blur-3xl"></div>
     <div class="pointer-events-none absolute right-0 top-0 h-64 w-64 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.22),transparent_58%)]"></div>
@@ -114,8 +114,7 @@
     id="backToTopBtn"
     type="button"
     aria-label="Back to top"
-    style="opacity:0;pointer-events:none;"
-    class="fixed bottom-6 right-6 z-[999] inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg ring-1 ring-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:bg-primary-600 hover:text-white hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
+    class="fixed bottom-6 right-6 z-[999] inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 opacity-0 shadow-lg ring-1 ring-slate-900/5 pointer-events-none transition-all duration-300 hover:-translate-y-1 hover:bg-primary-600 hover:text-white hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
 >
     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
@@ -133,13 +132,12 @@
             var shouldShow = window.scrollY > 300;
             if (shouldShow === visible) return;
             visible = shouldShow;
-            if (visible) {
-                btn.style.opacity = '1';
-                btn.style.pointerEvents = 'auto';
-            } else {
-                btn.style.opacity = '0';
-                btn.style.pointerEvents = 'none';
-            }
+            btn.classList.toggle('opacity-0', !visible);
+            btn.classList.toggle('pointer-events-none', !visible);
+            btn.classList.toggle('translate-y-2', !visible);
+            btn.classList.toggle('opacity-100', visible);
+            btn.classList.toggle('pointer-events-auto', visible);
+            btn.classList.toggle('translate-y-0', visible);
         }
 
         window.addEventListener('scroll', syncBtn, { passive: true });

@@ -5,8 +5,8 @@
 @endphp
 
 @if (! $productExists)
-    <div class="page-frame py-8 md:py-10">
-        <div class="page-frame__inner">
+    <div class="w-screen bg-slate-50 py-8 md:py-10 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
+        <div class="mx-auto w-full px-4 py-6 md:px-6 md:py-8">
             <x-ui.empty-state
                 icon="product"
                 title="Product unavailable"
@@ -36,7 +36,7 @@
                 $integerPart = $remaining . ',' . $lastThree;
             }
 
-            return ($negative ? '-' : '') . '<span class="currency-symbol">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+            return ($negative ? '-' : '') . '<span class="text-base font-medium opacity-60">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
         };
 
         $productTitle = trim((string) ($product->name ?? 'Product Details'));
@@ -47,18 +47,12 @@
         $imageUrl = asset($product->image_path ?: 'storage/slides/logo.jpg');
         $galleryImages = collect(['Main View', 'Pack View', 'Bench View', 'Workflow'])
             ->map(fn (string $label) => ['label' => $label, 'src' => $imageUrl]);
-        $basePrice = $product->visible_base_price !== null ? (float) $product->visible_base_price : null;
         $currentPrice = $product->visible_price !== null ? (float) $product->visible_price : null;
-        $displayPrice = $currentPrice ?? $basePrice;
-        $discountAmount = max(0, (float) ($product->visible_discount_amount ?? 0));
-        $hasVisibleDiscount = $basePrice !== null && $currentPrice !== null && $discountAmount > 0 && $basePrice > $currentPrice;
+        $listPrice = $currentPrice !== null ? round($currentPrice * 1.16, 2) : null;
         $reviewCount = max(28, ((int) ($product->id ?? 1) * 9) + 24);
         $ratingValue = number_format(4.7 + ((((int) ($product->id ?? 1)) % 3) * 0.1), 1);
-        // Step 3: split the saved comma-separated badges so the detail page uses product-managed labels.
-        $productBadges = collect(explode(',', (string) ($product->badges ?? '')))
-            ->map(fn (string $badge): string => trim($badge))
-            ->filter()
-            ->values();
+        $primaryBadge = filled($applicationLabel) ? $applicationLabel : 'Premium Series';
+        $secondaryBadge = ((int) ($product->id ?? 1) % 2 === 0) ? 'Clinical Ready' : 'Best Seller';
         $stockStatus = trim((string) ($product->stock_status ?? 'Out of Stock'));
         $brochure = $product->brochure_path ?? $product->brochure_url ?? null;
         $brochureUrl = filled($brochure)
@@ -93,9 +87,9 @@
             ['title' => 'Maintenance Schedule', 'meta' => 'Standard care checklist', 'href' => $brochureUrl ?: '#', 'icon' => 'calendar'],
         ];
         $bulkTierRows = [
-            ['label' => '1 - 2 Units', 'discount' => 'None', 'price' => $displayPrice, 'min' => 1, 'max' => 2, 'discount_value' => 0],
-            ['label' => '3 - 5 Units', 'discount' => '5% Off', 'price' => $displayPrice !== null ? round($displayPrice * 0.95, 2) : null, 'min' => 3, 'max' => 5, 'discount_value' => 5],
-            ['label' => '6+ Units', 'discount' => '12% Off', 'price' => $displayPrice !== null ? round($displayPrice * 0.88, 2) : null, 'min' => 6, 'max' => null, 'discount_value' => 12],
+            ['label' => '1 - 2 Units', 'discount' => 'None', 'price' => $currentPrice, 'min' => 1, 'max' => 2, 'discount_value' => 0],
+            ['label' => '3 - 5 Units', 'discount' => '5% Off', 'price' => $currentPrice !== null ? round($currentPrice * 0.95, 2) : null, 'min' => 3, 'max' => 5, 'discount_value' => 5],
+            ['label' => '6+ Units', 'discount' => '12% Off', 'price' => $currentPrice !== null ? round($currentPrice * 0.88, 2) : null, 'min' => 6, 'max' => null, 'discount_value' => 12],
         ];
         $relatedProducts = collect($related_products ?? [])->filter();
         $compactCardClass = 'rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm md:p-5';
@@ -113,10 +107,10 @@
         $sectionHeadingClass = 'text-xl font-semibold text-slate-950';
     @endphp
 
-    <div class="page-frame product-detail-shell -mt-6 py-4 md:-mt-8 md:py-6">
-        <div id="uiToastHost" class="ui-toast-host" aria-live="polite" aria-atomic="true"></div>
-        <div class="page-frame__inner">
-            <a href="{{ $backUrl }}" class="page-back-link mb-4">
+    <div class="-mt-6 w-screen bg-slate-50 py-4 md:-mt-8 md:py-6 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
+        <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
+        <div class="mx-auto w-full px-4 py-6 md:px-6 md:py-8">
+            <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition duration-200 hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m15 18-6-6 6-6"></path>
                 </svg>
@@ -135,11 +129,11 @@
                 <span class="text-slate-700">{{ $productTitle }}</span>
             </div>
 
-            <section class="product-detail-stage">
-                <div class="product-detail-media-column">
+            <section class="mt-4 grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:items-start">
+                <div class="space-y-3 self-start">
                     <div class="{{ $compactCardClass }}">
-                        <div class="product-gallery-panel group">
-                            <img id="catalogProductMainImage" src="{{ $galleryImages->first()['src'] }}" alt="{{ $productTitle }}" class="product-visual-stage-lg w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-[1.04]" loading="lazy" decoding="async">
+                        <div class="group relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_40%),linear-gradient(135deg,#ffffff_0%,#eef4ff_100%)]">
+                            <img id="catalogProductMainImage" src="{{ $galleryImages->first()['src'] }}" alt="{{ $productTitle }}" class="h-80 w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-[1.04] sm:h-96 xl:h-[32rem]" loading="lazy" decoding="async">
                             <button id="productImageZoomBtn" type="button" class="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-primary-700" aria-label="Zoom image">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="11" cy="11" r="7"></circle>
@@ -153,7 +147,7 @@
 
                     <div class="grid grid-cols-4 gap-3">
                         @foreach ($galleryImages as $galleryImage)
-                            <button type="button" class="catalog-gallery-thumb {{ $loop->first ? 'border-primary-600 bg-white ring-2 ring-primary-600/20 shadow-lg' : 'border-slate-200 bg-white' }} rounded-2xl border p-2 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary-600 hover:shadow-md" data-image="{{ $galleryImage['src'] }}" data-alt="{{ $productTitle . ' ' . $galleryImage['label'] }}">
+                            <button type="button" class="{{ $loop->first ? 'border-primary-600 bg-white ring-2 ring-primary-600/20 shadow-lg' : 'border-slate-200 bg-white' }} rounded-2xl border p-2 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary-600 hover:shadow-md" data-gallery-thumb data-image="{{ $galleryImage['src'] }}" data-alt="{{ $productTitle . ' ' . $galleryImage['label'] }}">
                                 <img src="{{ $galleryImage['src'] }}" alt="{{ $galleryImage['label'] }}" class="h-20 w-full rounded-xl object-cover sm:h-24" loading="lazy" decoding="async">
                                 <span class="mt-2 block px-1 text-left text-xs font-medium text-slate-400">{{ $galleryImage['label'] }}</span>
                             </button>
@@ -161,13 +155,12 @@
                     </div>
                 </div>
 
-                <div class="product-detail-content">
+                <div class="space-y-4 self-start">
                     <div class="space-y-3.5">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div class="flex flex-wrap items-center gap-2">
-                                @foreach ($productBadges as $productBadge)
-                                    <x-ui.status-badge type="product" :value="$productBadge" :label="$productBadge" />
-                                @endforeach
+                                <x-ui.status-badge type="product" :value="$primaryBadge" :label="$primaryBadge" />
+                                <x-ui.status-badge type="product" :value="$secondaryBadge" :label="$secondaryBadge" />
                             </div>
                             {{-- ══ Share + Wishlist Buttons ══ --}}
                             <div class="flex items-center gap-2">
@@ -228,16 +221,11 @@
                             <div>
                                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Market Retail Price (MRP)</p>
                                 <div class="mt-3 flex flex-wrap items-baseline gap-3">
-                                    @if ($hasVisibleDiscount)
-                                        <span class="text-sm font-medium text-slate-400 line-through">{!! $formatInr($basePrice) !!}</span>
-                                        <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($currentPrice) !!}</span>
-                                    @else
-                                        <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($displayPrice) !!}</span>
+                                    <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($currentPrice) !!}</span>
+                                    @if ($listPrice !== null)
+                                        <span class="text-sm font-medium text-slate-400 line-through">{!! $formatInr($listPrice) !!}</span>
                                     @endif
                                 </div>
-                                @if ($hasVisibleDiscount)
-                                    <p class="mt-2 text-sm font-medium text-emerald-700">You save {!! $formatInr($discountAmount) !!}</p>
-                                @endif
                                 <p class="mt-2 text-sm font-medium text-slate-500">Inclusive of enterprise-grade packaging and compliance-ready dispatch.</p>
                             </div>
 
@@ -257,14 +245,14 @@
                                         </svg>
                                     </span>
                                     <div class="space-y-1">
-                                        <p class="text-base font-medium text-slate-900">{{ auth()->check() ? 'Account-aware pricing controls are active' : 'Login to Checkout' }}</p>
-                                        <p class="text-sm leading-6 text-slate-500">{{ auth()->check() ? 'This product follows your current account visibility and quotation rules.' : 'Login to place your order, view account-based pricing, and continue with cart or quote.' }}</p>
+                                        <p class="text-base font-medium text-slate-900">{{ auth()->check() ? 'Account-aware pricing controls are active' : 'Unlock wholesale pricing and bulk contract rates' }}</p>
+                                        <p class="text-sm leading-6 text-slate-500">{{ auth()->check() ? 'This product follows your current account visibility and quotation rules.' : 'Login reveals B2B price ladders, contract terms, and customer-specific discounts.' }}</p>
                                     </div>
                                 </div>
                                 
                                 @guest
                                     <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">
-                                        Login to Continue
+                                        Login to See B2B Price
                                     </a>
                                 @endguest
                             </div>
@@ -274,16 +262,16 @@
                             <div class="max-w-48 space-y-3">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Quantity</p>
                                 <div class="{{ $qtyPickerClass }}">
-                                    <button type="button" class="catalog-qty-btn {{ $qtyButtonClass }}" data-direction="-1">-</button>
+                                    <button type="button" class="{{ $qtyButtonClass }}" data-qty-button data-direction="-1">-</button>
                                     <span id="catalogQuantityValue" class="text-base font-medium text-slate-900 transition duration-150">1</span>
-                                    <button type="button" class="catalog-qty-btn {{ $qtyButtonClass }}" data-direction="1">+</button>
+                                    <button type="button" class="{{ $qtyButtonClass }}" data-qty-button data-direction="1">+</button>
                                 </div>
                             </div>
 
                             <div class="{{ $estimateClass }}">
                                 <div class="flex items-center justify-between gap-3 text-sm font-medium text-slate-600">
                                     <span>Estimated total</span>
-                                    <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{!! $formatInr($displayPrice) !!}</span>
+                                    <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{!! $formatInr($currentPrice) !!}</span>
                                 </div>
                                 <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
                                     <span id="detailTierLabel">Tier: {{ $bulkTierRows[0]['label'] }}</span>
@@ -325,7 +313,7 @@
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
                                 @guest
-                                    <a href="{{ route('checkout.page') }}" class="{{ $secondaryButtonClass }} orange_button js-buy-now sm:col-span-2" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
+                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ff5f00] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e25500] sm:col-span-2">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
@@ -342,7 +330,7 @@
                                         <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="1">
 
                                         {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
-                                        <button type="submit" class="{{ $secondaryButtonClass }} orange_button">
+                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ff5f00] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e25500]">
                                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M5 12h14"></path>
                                                 <path d="m12 5 7 7-7 7"></path>
@@ -541,7 +529,7 @@
 
                 @if ($relatedProducts->isNotEmpty())
                     <div class="relative mt-4 overflow-hidden">
-                        <div id="relatedCarouselTrack" class="flex gap-4 overflow-x-auto scroll-smooth pb-2 scrollbar-hide" style="-webkit-overflow-scrolling:touch">
+                        <div id="relatedCarouselTrack" class="flex gap-4 overflow-x-auto scroll-smooth pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                             @foreach ($relatedProducts as $relatedProduct)
                                 @php
                                     $relatedImage = asset($relatedProduct->primaryImage?->file_path ?: 'storage/slides/logo.jpg');
@@ -596,14 +584,14 @@
         </div>
     </div>
 
-    <div id="productImageLightbox" class="product-lightbox" aria-hidden="true">
-        <button type="button" class="product-lightbox__backdrop" data-lightbox-close aria-label="Close image preview"></button>
-        <div class="product-lightbox__panel" role="dialog" aria-modal="true" aria-label="Product image preview">
-            <div class="product-lightbox__bar">
-                <p id="productImageLightboxTitle" class="product-lightbox__title">{{ $productTitle }}</p>
-                <button type="button" class="product-lightbox__close" data-lightbox-close>Close</button>
+    <div id="productImageLightbox" class="fixed inset-0 z-[100] flex items-center justify-center p-5 opacity-0 pointer-events-none transition-opacity duration-200" aria-hidden="true">
+        <button type="button" class="absolute inset-0 border-0 bg-slate-950/60 backdrop-blur-xl" data-lightbox-close aria-label="Close image preview"></button>
+        <div class="relative w-full max-w-[980px] overflow-hidden rounded-[28px] border border-white/20 bg-white/95 shadow-[0_36px_110px_rgba(15,23,42,0.35)]" role="dialog" aria-modal="true" aria-label="Product image preview">
+            <div class="flex items-center justify-between gap-3 border-b border-slate-200/90 px-4 py-3">
+                <p id="productImageLightboxTitle" class="max-w-[70ch] overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold text-slate-900">{{ $productTitle }}</p>
+                <button type="button" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-[13px] font-bold text-slate-700 transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" data-lightbox-close>Close</button>
             </div>
-            <img id="productImageLightboxImage" src="" alt="" class="product-lightbox__image" loading="lazy" decoding="async">
+            <img id="productImageLightboxImage" src="" alt="" class="max-h-[80vh] w-full object-contain bg-slate-50" loading="lazy" decoding="async">
         </div>
     </div>
 
@@ -611,7 +599,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const mainImage = document.getElementById('catalogProductMainImage');
-                const thumbs = Array.from(document.querySelectorAll('.catalog-gallery-thumb'));
+                const thumbs = Array.from(document.querySelectorAll('[data-gallery-thumb]'));
                 const quantityValue = document.getElementById('catalogQuantityValue');
                 const toastHost = document.getElementById('uiToastHost');
                 const lightbox = document.getElementById('productImageLightbox');
@@ -626,7 +614,6 @@
                 let quantity = 1;
 
                 const loginUrl = @json(route('login'));
-                const checkoutUrl = @json(route('checkout.page'));
                 const isAuthenticated = @json(auth()->check());
 
                 const showToast = function (options) {
@@ -640,23 +627,25 @@
                     const primaryAction = options && options.primary ? options.primary : null;
 
                     const toast = document.createElement('div');
-                    toast.className = 'ui-toast';
+                    toast.className = 'pointer-events-auto flex w-full max-w-[560px] items-start gap-3 rounded-[18px] border border-white/80 bg-white/92 px-4 py-3 shadow-[0_28px_70px_rgba(15,23,42,0.12)] transition duration-200';
 
                     const icon = document.createElement('div');
-                    icon.className = variant === 'warn' ? 'ui-toast__icon ui-toast__icon--warn' : 'ui-toast__icon';
+                    icon.className = variant === 'warn'
+                        ? 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-orange-50 text-orange-600'
+                        : 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-blue-50 text-primary-600';
                     icon.innerHTML = variant === 'warn'
                         ? '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M12 9v4\"></path><path d=\"M12 17h.01\"></path><path d=\"M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z\"></path></svg>'
                         : '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M20 6 9 17l-5-5\"></path></svg>';
 
                     const body = document.createElement('div');
-                    body.className = 'ui-toast__body';
+                    body.className = 'min-w-0 flex-1';
 
                     const titleEl = document.createElement('div');
-                    titleEl.className = 'ui-toast__title';
+                    titleEl.className = 'text-sm font-bold leading-[1.2] text-slate-900';
                     titleEl.textContent = title;
 
                     const messageEl = document.createElement('div');
-                    messageEl.className = 'ui-toast__message';
+                    messageEl.className = 'mt-1.5 text-[13px] font-medium leading-6 text-slate-500';
                     messageEl.textContent = message;
 
                     body.appendChild(titleEl);
@@ -665,11 +654,11 @@
                     }
 
                     const actions = document.createElement('div');
-                    actions.className = 'ui-toast__actions';
+                    actions.className = 'flex shrink-0 items-center gap-2';
 
                     if (primaryAction && primaryAction.href && primaryAction.label) {
                         const primary = document.createElement('a');
-                        primary.className = 'ui-toast__btn ui-toast__btn--primary';
+                        primary.className = 'rounded-xl bg-primary-600 px-3 py-2 text-[13px] font-bold text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:bg-primary-700';
                         primary.href = String(primaryAction.href);
                         primary.textContent = String(primaryAction.label);
                         actions.appendChild(primary);
@@ -677,7 +666,7 @@
 
                     const dismiss = document.createElement('button');
                     dismiss.type = 'button';
-                    dismiss.className = 'ui-toast__btn';
+                    dismiss.className = 'rounded-xl border border-slate-300 bg-white px-3 py-2 text-[13px] font-bold text-slate-700 transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700';
                     dismiss.textContent = 'Dismiss';
                     dismiss.addEventListener('click', function () {
                         toast.remove();
@@ -690,8 +679,7 @@
                     toastHost.appendChild(toast);
 
                     window.setTimeout(function () {
-                        toast.style.opacity = '0';
-                        toast.style.transform = 'translateY(10px) scale(0.98)';
+                        toast.classList.add('translate-y-2', 'scale-[0.98]', 'opacity-0');
                         window.setTimeout(function () {
                             toast.remove();
                         }, 220);
@@ -837,9 +825,10 @@
 
                     lightboxImage.src = mainImage.src;
                     lightboxImage.alt = mainImage.alt || 'Product image';
-                    lightbox.classList.add('is-open');
+                    lightbox.classList.remove('pointer-events-none', 'opacity-0');
+                    lightbox.classList.add('pointer-events-auto', 'opacity-100');
                     lightbox.setAttribute('aria-hidden', 'false');
-                    document.body.style.overflow = 'hidden';
+                    document.body.classList.add('overflow-hidden');
                 };
 
                 const closeLightbox = function () {
@@ -847,9 +836,10 @@
                         return;
                     }
 
-                    lightbox.classList.remove('is-open');
+                    lightbox.classList.remove('pointer-events-auto', 'opacity-100');
+                    lightbox.classList.add('pointer-events-none', 'opacity-0');
                     lightbox.setAttribute('aria-hidden', 'true');
-                    document.body.style.overflow = '';
+                    document.body.classList.remove('overflow-hidden');
 
                     if (lightboxImage) {
                         lightboxImage.src = '';
@@ -871,7 +861,7 @@
                     });
 
                     document.addEventListener('keydown', function (event) {
-                        if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+                        if (event.key === 'Escape' && lightbox.classList.contains('opacity-100')) {
                             closeLightbox();
                         }
                     });
@@ -901,7 +891,7 @@
                     });
                 });
 
-                document.querySelectorAll('.catalog-qty-btn').forEach(function (button) {
+                document.querySelectorAll('[data-qty-button]').forEach(function (button) {
                     button.addEventListener('click', function () {
                         quantity = Math.max(1, quantity + Number(button.dataset.direction || 0));
                         syncSelectedQuantity();
@@ -979,22 +969,6 @@
                             target.removeAttribute('aria-busy');
                             target.classList.remove('opacity-80');
                         }
-                    });
-                });
-
-                const buyNowButtons = Array.from(document.querySelectorAll('.js-buy-now'));
-                buyNowButtons.forEach(function (button) {
-                    button.addEventListener('click', function (event) {
-                        // Step 1: keep the guest buy-now item in the same local cart so checkout can read it immediately.
-                        if (!window.CartStore) {
-                            return;
-                        }
-
-                        event.preventDefault();
-                        syncLocalCart(event.currentTarget, quantity);
-
-                        // Step 2: move the shopper straight to checkout after the selected item is saved.
-                        window.location.href = checkoutUrl;
                     });
                 });
 
@@ -1188,8 +1162,4 @@
         </script>
     @endpush
 
-    <style>
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-    </style>
 @endif
