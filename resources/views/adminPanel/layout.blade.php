@@ -76,6 +76,16 @@
                 const newContent = doc.getElementById('admin-main-content');
                 if (newContent) {
                     mainContent.innerHTML = newContent.innerHTML;
+                    
+                    // Force execution of inline scripts loaded via innerHTML
+                    const scripts = mainContent.querySelectorAll('script');
+                    scripts.forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
+
                     // Update URL silently
                     window.history.pushState({}, '', link.href);
                     // Update page title

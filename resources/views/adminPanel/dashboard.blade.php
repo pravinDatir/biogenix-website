@@ -25,7 +25,7 @@
             <!-- KPI Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                 <!-- Card 1 -->
-                <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px]">
+                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-[#eef1f6] text-[#091b3f]">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 00-2-2m4-10a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2V9z"></path></svg>
@@ -39,10 +39,10 @@
                         <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Total Orders</p>
                         <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">1,284</h3>
                     </div>
-                </div>
+                </a>
 
                 <!-- Card 2 -->
-                <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px]">
+                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -56,10 +56,10 @@
                         <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Today's Orders</p>
                         <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">142</h3>
                     </div>
-                </div>
+                </a>
 
                 <!-- Card 3 -->
-                <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px]">
+                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-50 text-amber-500">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v1l2 2m-3 5h3m-3 4h3"></path></svg>
@@ -70,10 +70,10 @@
                         <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Pending Dispatch</p>
                         <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">48</h3>
                     </div>
-                </div>
+                </a>
 
                 <!-- Card 4 -->
-                <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px]">
+                <a href="{{ route('adminPanel.orders') }}" class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
@@ -84,7 +84,7 @@
                         <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Same-day Delivery</p>
                         <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">12</h3>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Charts Row -->
@@ -189,19 +189,19 @@
             <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mt-6">
                 <div class="px-5 lg:px-7 py-5 lg:py-6 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-900">Priority Orders</h3>
-                    <a href="#" class="text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2">View All Orders</a>
+                    <a href="{{ route('adminPanel.orders') }}" class="text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2">View All Orders</a>
                 </div>
                 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-slate-50/50">
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Order ID</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Client</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Biogenic Type</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Value</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Status</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Action</th>
+                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Order ID</th>
+                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Client</th>
+                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Biogenic Type</th>
+                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Value</th>
+                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Status</th>
+                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100/80 text-[12px] lg:text-[13px] font-semibold text-slate-900">
