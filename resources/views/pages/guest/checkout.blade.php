@@ -38,6 +38,9 @@
         $buttonSecondaryClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50';
         $inputClass = 'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 placeholder-slate-400 outline-none transition focus:border-primary-400 focus:bg-white focus:ring-2 focus:ring-primary-600/15';
         $labelClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500';
+        $savedAddressCollection = collect($savedAddresses ?? []);
+        $selectedAddress = $savedAddressCollection->firstWhere('is_default_shipping', true) ?? $savedAddressCollection->first();
+        $selectedAddressId = $selectedAddress?->id;
     @endphp
 
     <div class="{{ $pageWrapClass }}">
@@ -104,6 +107,58 @@
                         </div>
 
                         <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                            @auth
+                                @forelse ($savedAddressCollection as $savedAddress)
+                                    @php
+                                        $isSelectedAddress = (int) $savedAddress->id === (int) $selectedAddressId;
+                                        $addressTitle = trim((string) ($savedAddress->city . ', ' . $savedAddress->state));
+                                        $addressLines = collect([
+                                            $savedAddress->line1,
+                                            $savedAddress->line2,
+                                            trim($savedAddress->city . ', ' . $savedAddress->state . ' ' . $savedAddress->postal_code),
+                                            $savedAddress->country,
+                                        ])->filter();
+                                    @endphp
+                                    <button
+                                        type="button"
+                                        class="{{ $selectionCardBaseClass }} {{ $isSelectedAddress ? $selectionCardActiveClass : $selectionCardInactiveClass }}"
+                                        data-address-card
+                                        data-selected="{{ $isSelectedAddress ? 'true' : 'false' }}"
+                                    >
+                                        <span class="{{ $isSelectedAddress ? $iconTilePrimaryClass : $iconTileNeutralClass }}">
+                                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                                                <path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M9 21v-6h6v6"></path>
+                                            </svg>
+                                        </span>
+                                        <span class="text-base font-semibold text-slate-950">{{ $addressTitle !== '' ? $addressTitle : 'Saved Address' }}</span>
+                                        <span class="text-sm leading-7 text-slate-500">
+                                            @foreach ($addressLines as $addressLine)
+                                                {{ $addressLine }}@if (! $loop->last)<br>@endif
+                                            @endforeach
+                                        </span>
+                                        <span class="mt-auto pt-3 text-sm {{ $isSelectedAddress ? 'font-semibold text-primary-700' : 'font-medium text-slate-400' }}">
+                                            {{ $isSelectedAddress ? 'Selected' : 'Available address' }}
+                                        </span>
+                                        @if ($isSelectedAddress)
+                                            <span class="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-primary-700 shadow-sm">
+                                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>
+                                            </span>
+                                        @endif
+                                    </button>
+                                @empty
+                                    <div class="sm:col-span-2 xl:col-span-3 rounded-[24px] border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-slate-500">
+                                        <p class="text-base font-semibold text-slate-900">No saved addresses found</p>
+                                        <p class="mt-2 text-sm leading-6">This account does not have any addresses in the saved address book yet.</p>
+                                    </div>
+                                @endforelse
+                            @else
+                                <div class="sm:col-span-2 xl:col-span-3 rounded-[24px] border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-slate-500">
+                                    <p class="text-base font-semibold text-slate-900">Saved addresses are available after login</p>
+                                    <p class="mt-2 text-sm leading-6">Guest checkout is using the current cart only, so no account address book is loaded here.</p>
+                                </div>
+                            @endauth
+
+                            @if (false)
                             <button
                                 type="button"
                                 class="{{ $selectionCardBaseClass }} {{ $selectionCardActiveClass }}"
@@ -200,6 +255,7 @@
                             </div>
                         </div>
 
+                            @endif
                         {{-- GST / PAN Field --}}
                         <div class="mt-5 rounded-[20px] border border-slate-200 bg-slate-50 p-4 md:p-5">
                             <div class="flex items-center gap-2 mb-3">
@@ -419,7 +475,7 @@
                                 <span id="couponDiscountAmount" class="font-semibold text-emerald-700">– Rs. 0.00</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span>GST (18%)</span>
+                                <span>GST</span>
                                 <span id="checkoutTax" class="font-medium text-slate-900">Rs. 0.00</span>
                             </div>
                             <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-semibold text-slate-950">
@@ -647,7 +703,8 @@
 
                 const renderSummaryRow = function (item) {
                     const quantity = Math.max(1, Number(item.quantity || 1));
-                    const total    = getLineTotal(item);
+                    // Step 1: show the product line price before GST so it stays aligned with the subtotal.
+                    const subtotal = getLineSubtotal(item);
                     const image    = String(item.image || 'https://via.placeholder.com/96x96?text=Bio');
                     const name     = String(item.name || 'Product');
                     const model    = String(item.model || 'N/A');
@@ -660,7 +717,7 @@
                                 <p class="truncate text-sm font-semibold text-slate-900">${name}</p>
                                 <p class="mt-1 text-xs text-slate-500">Qty: ${quantity} | ${model}</p>
                             </div>
-                            <span class="text-sm font-semibold text-primary-700">${formatInr(total)}</span>
+                            <span class="text-sm font-semibold text-primary-700">${formatInr(subtotal)}</span>
                         </div>
                     `;
                 };

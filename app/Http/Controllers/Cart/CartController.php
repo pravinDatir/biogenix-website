@@ -36,9 +36,13 @@ class CartController extends Controller
         // Step 1: load the current cart once so the checkout page opens with the latest backend data.
         $initialCart = $this->loadCurrentCartForPage($request, $cartService);
 
-        // Step 2: return the checkout page with the current cart seed for the storefront view.
+        // Step 2: load the saved checkout addresses for the current account from the user_address table.
+        $savedAddresses = $this->loadSavedAddressesForCheckout($request);
+
+        // Step 3: return the checkout page with both cart data and saved address data.
         return view('pages.guest.checkout', [
             'initialCart' => $initialCart,
+            'savedAddresses' => $savedAddresses,
         ]);
     }
 
@@ -265,6 +269,30 @@ class CartController extends Controller
 
             // Step 3: keep the page usable even when the cart seed cannot be prepared.
             return null;
+        }
+    }
+
+    // This loads saved user addresses for the checkout address selector.
+    protected function loadSavedAddressesForCheckout(Request $request)
+    {
+        // Step 1: keep the address list empty for guests because user_address rows belong to logged-in accounts only.
+        if (! $request->user()) {
+            return collect();
+        }
+
+        try {
+            // Step 2: load default shipping first so checkout opens with the most useful saved address selected.
+            return $request->user()
+                ->addresses()
+                ->orderByDesc('is_default_shipping')
+                ->orderByDesc('is_default_billing')
+                ->orderByDesc('id')
+                ->get();
+        } catch (Throwable $exception) {
+            Log::error('Failed to load checkout addresses.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
+
+            // Step 3: keep checkout usable even when saved addresses cannot be loaded.
+            return collect();
         }
     }
 

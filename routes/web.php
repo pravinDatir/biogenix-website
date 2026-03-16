@@ -47,8 +47,6 @@ Route::view('/adminPanel/pricing', 'adminPanel.pricing')->name('adminPanel.prici
 Route::view('/adminPanel/pi-quotation', 'adminPanel.pi-quotation')->name('adminPanel.pi-quotation.index');
 Route::view('/adminPanel/pi-quotation/create', 'adminPanel.pi-quotation-create')->name('adminPanel.pi-quotation.create');
 Route::view('/adminPanel/orders', 'adminPanel.orders')->name('adminPanel.orders');
-Route::get('/cart', function () { return redirect()->route('products.index'); })->name('cart.page');
-Route::view('/checkout', 'pages.guest.checkout')->name('checkout.page');
 
 Route::middleware('auth')->prefix('orders')->name('orders.')->group(function (): void {
     Route::get('/', [OrderController::class, 'showOrderCrud'])->name('index');
