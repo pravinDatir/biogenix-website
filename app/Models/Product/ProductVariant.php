@@ -5,6 +5,7 @@ namespace App\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Pricing\ProductBulkPrice;
 
 class ProductVariant extends Model
 {
@@ -15,6 +16,10 @@ class ProductVariant extends Model
         'technical_specification_json',
         'min_order_quantity',
         'max_order_quantity',
+        'b2c_min_order_quantity',
+        'b2c_max_order_quantity',
+        'b2b_min_order_quantity',
+        'b2b_max_order_quantity',
         'lot_size',
         'model_number',
         'catalog_number',
@@ -29,6 +34,10 @@ class ProductVariant extends Model
             'technical_specification_json' => 'array',
             'min_order_quantity' => 'integer',
             'max_order_quantity' => 'integer',
+            'b2c_min_order_quantity' => 'integer',
+            'b2c_max_order_quantity' => 'integer',
+            'b2b_min_order_quantity' => 'integer',
+            'b2b_max_order_quantity' => 'integer',
             'lot_size' => 'integer',
             'stock_quantity' => 'integer',
             'is_active' => 'boolean',
@@ -45,6 +54,12 @@ class ProductVariant extends Model
     public function prices(): HasMany
     {
         return $this->hasMany(ProductPrice::class, 'product_variant_id');
+    }
+
+    // This loads all bulk pricing slabs linked to the variant.
+    public function bulkPrices(): HasMany
+    {
+        return $this->hasMany(ProductBulkPrice::class, 'product_variant_id');
     }
 
     // This loads legacy attribute rows for the variant.

@@ -8,6 +8,7 @@ use App\Http\Controllers\Authorization\ImpersonationController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
 use App\Http\Controllers\Invoice\ProformaInvoiceController;
 use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Product\ProductCrudController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SupportTicket\SupportTicketController;
 use Illuminate\Support\Facades\Route;
@@ -28,12 +29,6 @@ Route::get('/products/{productId}', [ProductController::class, 'productDetails']
  // for testing PI flow only, will be removed later.
 Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page');
 
- Route::get('/products-crud', [ProductController::class, 'showCrudProduct'])->name('products.crud.index');
- Route::post('/products-crud', [ProductController::class, 'addProduct'])->name('products.crud.store');
- Route::get('/products-crud/{productId}', [ProductController::class, 'getProductById'])->name('products.crud.show');
- Route::put('/products-crud/{productId}', [ProductController::class, 'updateProductById'])->name('products.crud.update');
- Route::delete('/products-crud/{productId}', [ProductController::class, 'deleteProductById'])->name('products.crud.destroy');
-
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
 Route::view('/pi-quotation', 'pi-quotation.generate')->name('pi-quotation.generate');
@@ -45,8 +40,10 @@ Route::view('/adminPanel/pi-quotation', 'adminPanel.pi-quotation')->name('adminP
 Route::view('/adminPanel/pi-quotation/create', 'adminPanel.pi-quotation-create')->name('adminPanel.pi-quotation.create');
 Route::view('/adminPanel/orders', 'adminPanel.orders')->name('adminPanel.orders');
 Route::view('/adminPanel/orders/view', 'adminPanel.order-details')->name('adminPanel.orders.view');
-Route::get('/cart', function () { return redirect()->route('products.index'); })->name('cart.page');
-Route::view('/checkout', 'pages.guest.checkout')->name('checkout.page');
+Route::get('/cart', [CartController::class, 'showCustomerCartPage'])->name('cart.page');
+Route::get('/checkout', [CartController::class, 'showCustomerCheckoutPage'])->name('checkout.page');
+Route::middleware('auth')->post('/checkout', [CartController::class, 'submitCustomerCheckoutOrder'])->name('checkout.submit');
+Route::middleware('auth')->post('/checkout/buy-now', [CartController::class, 'startImmediateCheckout'])->name('checkout.buy-now');
 
 Route::middleware('auth')->prefix('orders')->name('orders.')->group(function (): void {
     Route::get('/', [OrderController::class, 'showOrderCrud'])->name('index');

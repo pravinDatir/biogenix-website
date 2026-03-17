@@ -492,6 +492,7 @@
                                     type="text"
                                     class="{{ $inputClass }} min-w-0 flex-1 bg-white uppercase"
                                     placeholder="Enter code (e.g. BIO10)"
+                                    value="{{ old('coupon_code') }}"
                                     autocomplete="off"
                                 >
                                 <button
@@ -502,7 +503,13 @@
                                     Apply
                                 </button>
                             </div>
-                            <p id="couponMsg" class="mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500"></p>
+                            <p id="couponMsg" class="mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500">
+                                @error('coupon_code')
+                                    {{ $message }}
+                                @else
+                                    Coupon validation happens during final order placement.
+                                @enderror
+                            </p>
                         </div>
 
                         @guest
@@ -517,6 +524,11 @@
                         @auth
                             {{-- Step 1: submit the current cart through the controller so checkout follows the standard MVC flow. --}}
                             <form method="POST" action="{{ route('checkout.submit') }}" class="mt-5" onsubmit="
+                                const couponField = document.getElementById('checkoutCouponCodeField');
+                                const couponInput = document.getElementById('couponInput');
+                                if (couponField && couponInput) {
+                                    couponField.value = (couponInput.value || '').trim().toUpperCase();
+                                }
                                 const btn = this.querySelector('button[type=submit]');
                                 btn.disabled = true;
                                 btn.innerHTML = `
@@ -530,7 +542,10 @@
                             ">
                                 @csrf
 
-                                {{-- Step 2: keep the submit action simple because the backend cart already holds the current checkout items. --}}
+                                {{-- Step 2: submit the current coupon code to backend checkout so the final discount stays server-validated. --}}
+                                <input type="hidden" name="coupon_code" id="checkoutCouponCodeField" value="{{ old('coupon_code') }}">
+
+                                {{-- Step 3: keep the submit action simple because the backend cart already holds the current checkout items. --}}
                                 <button type="submit" class="{{ $buttonPrimaryClass }} w-full gap-2 transition-all">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -647,34 +662,20 @@
                 const couponInput       = document.getElementById('couponInput');
                 const couponApplyBtn    = document.getElementById('couponApplyBtn');
                 const couponMsg         = document.getElementById('couponMsg');
-                const couponDiscountRow = document.getElementById('couponDiscountRow');
-                const couponDiscountAmt = document.getElementById('couponDiscountAmount');
-                const VALID_COUPONS     = { 'BIO10': 0.10, 'SAVE5': 0.05, 'LABFIRST': 0.15 };
-                var appliedDiscount = 0;
+                const couponCodeField   = document.getElementById('checkoutCouponCodeField');
 
                 if (couponApplyBtn && couponInput) {
                     couponApplyBtn.addEventListener('click', function () {
                         const code = (couponInput.value || '').trim().toUpperCase();
                         couponInput.value = code;
+                        if (couponCodeField) couponCodeField.value = code;
                         if (!code) {
                             couponMsg.textContent = 'Please enter a coupon code.';
                             couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500';
                             return;
                         }
-                        if (VALID_COUPONS[code] !== undefined) {
-                            appliedDiscount = VALID_COUPONS[code];
-                            couponMsg.textContent = '✓ Coupon applied — ' + (appliedDiscount * 100) + '% off!';
-                            couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-emerald-700';
-                            if (couponDiscountRow) couponDiscountRow.classList.remove('hidden');
-                            if (couponDiscountRow) couponDiscountRow.classList.add('flex');
-                        } else {
-                            appliedDiscount = 0;
-                            couponMsg.textContent = '✗ Invalid or expired coupon code.';
-                            couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-rose-600';
-                            if (couponDiscountRow) couponDiscountRow.classList.add('hidden');
-                            if (couponDiscountRow) couponDiscountRow.classList.remove('flex');
-                        }
-                        render();
+                        couponMsg.textContent = 'Coupon saved. It will be validated during final order placement.';
+                        couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-emerald-700';
                     });
                 }
 
@@ -781,18 +782,9 @@
                         if (summaryItems) summaryItems.insertAdjacentHTML('beforeend', renderSummaryRow(item));
                     });
 
-                    const discount = subtotal * appliedDiscount;
-                    const discountedSubtotal = Math.max(0, subtotal - discount);
-                    const taxAfterDiscount = subtotal > 0 ? (discountedSubtotal / subtotal) * tax : 0;
-                    const totalAfterDiscount = discountedSubtotal + taxAfterDiscount;
-
                     if (subtotalEl) subtotalEl.innerHTML = formatInr(subtotal);
-                    if (taxEl) taxEl.innerHTML = formatInr(taxAfterDiscount);
-                    if (totalEl) totalEl.innerHTML = formatInr(totalAfterDiscount);
-
-                    if (couponDiscountAmt && discount > 0) {
-                        couponDiscountAmt.innerHTML = '– ' + formatInr(discount);
-                    }
+                    if (taxEl) taxEl.innerHTML = formatInr(tax);
+                    if (totalEl) totalEl.innerHTML = formatInr(total);
                 };
 
                 /* ── address selection ── */

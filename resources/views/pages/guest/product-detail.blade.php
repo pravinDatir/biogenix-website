@@ -48,7 +48,10 @@
         $galleryImages = collect(['Main View', 'Pack View', 'Bench View', 'Workflow'])
             ->map(fn (string $label) => ['label' => $label, 'src' => $imageUrl]);
         $currentPrice = $product->visible_price !== null ? (float) $product->visible_price : null;
-        $listPrice = $currentPrice !== null ? round($currentPrice * 1.16, 2) : null;
+        // Step 1: keep the saved base price ready so the detail page can show the real MRP from backend data.
+        $basePrice = $product->visible_base_price !== null ? (float) $product->visible_base_price : $currentPrice;
+        $savedDiscountAmount = round((float) ($product->visible_discount_amount ?? 0), 2);
+        $showMrpStrikethrough = $basePrice !== null && $currentPrice !== null && $basePrice > $currentPrice;
         $reviewCount = max(28, ((int) ($product->id ?? 1) * 9) + 24);
         $ratingValue = number_format(4.7 + ((((int) ($product->id ?? 1)) % 3) * 0.1), 1);
         $primaryBadge = filled($applicationLabel) ? $applicationLabel : 'Premium Series';
@@ -86,11 +89,15 @@
             ['title' => 'User Manual', 'meta' => 'Installation and usage guide', 'href' => $brochureUrl ?: '#', 'icon' => 'book'],
             ['title' => 'Maintenance Schedule', 'meta' => 'Standard care checklist', 'href' => $brochureUrl ?: '#', 'icon' => 'calendar'],
         ];
-        $bulkTierRows = [
-            ['label' => '1 - 2 Units', 'discount' => 'None', 'price' => $currentPrice, 'min' => 1, 'max' => 2, 'discount_value' => 0],
-            ['label' => '3 - 5 Units', 'discount' => '5% Off', 'price' => $currentPrice !== null ? round($currentPrice * 0.95, 2) : null, 'min' => 3, 'max' => 5, 'discount_value' => 5],
-            ['label' => '6+ Units', 'discount' => '12% Off', 'price' => $currentPrice !== null ? round($currentPrice * 0.88, 2) : null, 'min' => 6, 'max' => null, 'discount_value' => 12],
-        ];
+        // Step 3: use the live database-driven pricing ladder instead of hardcoded bulk pricing rows.
+        $bulkTierRows = collect($product->bulk_price_tiers ?? [])->values();
+        if ($bulkTierRows->isEmpty()) {
+            $bulkTierRows = collect([
+                ['label' => 'Standard Price', 'discount' => 'Current Price', 'price' => $currentPrice, 'min' => 1, 'max' => null, 'discount_value' => 0],
+            ]);
+        }
+        $selectedTierRow = $bulkTierRows->first();
+        $bestBulkTier = $bulkTierRows->sortByDesc('discount_value')->first();
         $relatedProducts = collect($related_products ?? [])->filter();
         $compactCardClass = 'rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm md:p-5';
         $sectionCardClass = 'rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm md:p-6';
@@ -222,11 +229,17 @@
                                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Market Retail Price (MRP)</p>
                                 <div class="mt-3 flex flex-wrap items-baseline gap-3">
                                     <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($currentPrice) !!}</span>
-                                    @if ($listPrice !== null)
-                                        <span class="text-sm font-medium text-slate-400 line-through">{!! $formatInr($listPrice) !!}</span>
+                                    @if ($showMrpStrikethrough)
+                                        <span class="text-sm font-medium text-slate-400 line-through">{!! $formatInr($basePrice) !!}</span>
                                     @endif
                                 </div>
-                                <p class="mt-2 text-sm font-medium text-slate-500">Inclusive of enterprise-grade packaging and compliance-ready dispatch.</p>
+                                <p class="mt-2 text-sm font-medium text-slate-500">
+                                    @if ($savedDiscountAmount > 0)
+                                        You save {!! $formatInr($savedDiscountAmount) !!} on the current visible price.
+                                    @else
+                                        Current visible price is ready for checkout and quotation.
+                                    @endif
+                                </p>
                             </div>
 
                             <div class="rounded-2xl border border-primary-100 bg-primary-50 px-4 py-3">
@@ -268,14 +281,14 @@
                                 </div>
                             </div>
 
-                            <div class="{{ $estimateClass }}">
+                                <div class="{{ $estimateClass }}">
                                 <div class="flex items-center justify-between gap-3 text-sm font-medium text-slate-600">
                                     <span>Estimated total</span>
                                     <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{!! $formatInr($currentPrice) !!}</span>
                                 </div>
                                 <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
-                                    <span id="detailTierLabel">Tier: {{ $bulkTierRows[0]['label'] }}</span>
-                                    <span id="detailTierDiscount">{{ $bulkTierRows[0]['discount'] }}</span>
+                                    <span id="detailTierLabel">Tier: {{ $selectedTierRow['label'] }}</span>
+                                    <span id="detailTierDiscount">{{ $selectedTierRow['discount'] }}</span>
                                 </div>
                             </div>
 
@@ -401,7 +414,7 @@
                 <div class="{{ $sectionCardClass }}">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <h2 class="{{ $sectionHeadingClass }}">Bulk Tier Pricing</h2>
-                        <x-ui.status-badge id="bulkTierHint" type="cart" value="best_value_on_6_units" label="Best value on 6+ units" />
+                        <x-ui.status-badge id="bulkTierHint" type="cart" value="best_value_tier" :label="$bestBulkTier ? 'Best value on ' . $bestBulkTier['label'] : 'Current price available'" />
                     </div>
                     <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200">
                         <div class="grid grid-cols-3 bg-slate-50 px-5 py-3 table-label">

@@ -35,11 +35,7 @@ class ProformaInvoiceController extends Controller
     }
 
     // This creates a proforma invoice from the submitted form.
-    public function store(
-        Request $request,
-        DataVisibilityService $dataVisibilityService,
-        ProformaInvoiceService $proformaInvoiceService,
-    ): Response|RedirectResponse {
+    public function store( Request $request, DataVisibilityService $dataVisibilityService,  ProformaInvoiceService $proformaInvoiceService,  ): Response|RedirectResponse {
         try {
             // Step 1: validate the PI form with multiple item rows.
             $validated = $request->validate([

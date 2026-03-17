@@ -9,9 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsurePermission
 {
-    /**
-     * Handle an incoming request.
-     */
+    // This checks if the authenticated user has the required permission to access a route.
     public function handle(Request $request, Closure $next, string $permission): Response
     {
         $user = $request->user();

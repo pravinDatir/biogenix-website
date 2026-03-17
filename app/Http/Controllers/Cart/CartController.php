@@ -74,10 +74,15 @@ class CartController extends Controller
     public function submitCustomerCheckoutOrder(Request $request, CartService $cartService): RedirectResponse
     {
         try {
-            // Step 1: convert the current cart into a submitted order using the shared cart service.
-            $submittedOrder = $cartService->checkoutCart([], $request->user());
+            // Step 1: validate the optional checkout coupon before the shared checkout flow starts.
+            $validatedCheckout = $request->validate([
+                'coupon_code' => ['nullable', 'string', 'max:50'],
+            ]);
 
-            // Step 2: send the customer to confirmation with the newly created order summary in session.
+            // Step 2: convert the current cart into a submitted order using the shared cart service.
+            $submittedOrder = $cartService->checkoutCart($validatedCheckout, $request->user());
+
+            // Step 3: send the customer to confirmation with the newly created order summary in session.
             return redirect()
                 ->route('order.confirmation')
                 ->with('recentCheckoutOrder', $submittedOrder['order'])
@@ -85,7 +90,7 @@ class CartController extends Controller
         } catch (Throwable $exception) {
             Log::error('Failed to submit customer checkout order.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
 
-            // Step 3: send the customer back to checkout with a business-friendly error message when submission fails.
+            // Step 4: send the customer back to checkout with a business-friendly error message when submission fails.
             return $this->redirectBackWithBusinessMessage($exception, 'Unable to place your order right now.');
         }
     }

@@ -7,7 +7,7 @@ use App\Models\Authorization\DelegatedAdminScope;
 use App\Models\Authorization\User;
 use App\Models\Invoice\ProformaInvoice;
 use App\Models\Product\Product;
-use App\Models\Product\ProductPrice;
+use App\Services\Pricing\PriceService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -16,6 +16,7 @@ class DataVisibilityService
 {
     public function __construct(
         protected RolePermissionService $rolePermissionService,
+        protected PriceService $priceService,
     ) {
     }
 
@@ -46,7 +47,9 @@ class DataVisibilityService
     public function visibleProductQuery(?User $user): Builder
     {
         try {
-            $allowedPriceTypes = $this->pricePriority($user);
+            // Business step: read the visible price ladder once so the storefront query only considers purchasable products.
+            $allowedPriceTypes = $this->priceService->visiblePriceTypes($user);
+            $genericPriceTypes = array_values(array_filter($allowedPriceTypes, fn ($type) => $type !== 'company_price'));
 
             return Product::query()
                 ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
@@ -62,11 +65,29 @@ class DataVisibilityService
                 ])
                 ->where('is_active', true)
                 ->whereIn('visibility_scope', $this->productScopes($user))
-                ->whereHas('variants', function (Builder $variantQuery) use ($allowedPriceTypes): void {
+                ->whereHas('variants', function (Builder $variantQuery) use ($genericPriceTypes, $user): void {
                     $variantQuery->where('is_active', true)
-                        ->whereHas('prices', function (Builder $priceQuery) use ($allowedPriceTypes): void {
+                        ->whereHas('prices', function (Builder $priceQuery) use ($genericPriceTypes, $user): void {
                             $priceQuery->where('is_active', true)
-                                ->whereIn('price_type', $allowedPriceTypes);
+                                ->where(function (Builder $visiblePriceQuery) use ($genericPriceTypes, $user): void {
+                                    // Business step: generic price rows are shared price ladders for all qualifying shoppers.
+                                    if ($genericPriceTypes !== []) {
+                                        $visiblePriceQuery->where(function (Builder $genericPriceQuery) use ($genericPriceTypes): void {
+                                            $genericPriceQuery
+                                                ->whereNull('company_id')
+                                                ->whereIn('price_type', $genericPriceTypes);
+                                        });
+                                    }
+
+                                    // Business step: company prices are only visible when the logged-in B2B shopper belongs to that company.
+                                    if ($user && $user->isB2b() && $user->company_id) {
+                                        $visiblePriceQuery->orWhere(function (Builder $companyPriceQuery) use ($user): void {
+                                            $companyPriceQuery
+                                                ->where('price_type', 'company_price')
+                                                ->where('company_id', $user->company_id);
+                                        });
+                                    }
+                                });
                         });
                 });
         } catch (Throwable $exception) {
@@ -76,61 +97,11 @@ class DataVisibilityService
     }
 
     // This resolves the first visible price for a product after user type and company rules are applied.
-    public function resolvePrice(int $productId, ?User $user): ?array
+    public function resolvePrice(int $productId, ?User $user, int $quantity = 1, ?string $couponCode = null): ?array
     {
         try {
-            // Step 1: read price rows and the sellable variant rules together because buying rules belong to the variant, not to the company price row.
-            $baseQuery = ProductPrice::query()
-                ->join('product_variants', 'product_variants.id', '=', 'product_prices.product_variant_id')
-                ->where('product_variants.product_id', $productId)
-                ->where('product_variants.is_active', true)
-                ->where('product_prices.is_active', true)
-                ->select([
-                    'product_prices.amount',
-                    'product_prices.DiscountType as discount_type',
-                    'product_prices.Discount as discount_value',
-                    'product_prices.gst_rate',
-                    'product_prices.tax_amount',
-                    'product_prices.price_after_gst',
-                    'product_prices.currency',
-                    'product_prices.price_type',
-                    'product_variants.id as product_variant_id',
-                    'product_variants.sku as variant_sku',
-                    'product_variants.variant_name',
-                    'product_variants.min_order_quantity',
-                    'product_variants.max_order_quantity',
-                    'product_variants.lot_size',
-                ]);
-
-            // Step 2: honour company-specific price first whenever the logged-in B2B user has a negotiated company price.
-            if ($user && $user->isB2b() && $user->company_id) {
-                $companyPrice = (clone $baseQuery)
-                    ->where('product_prices.price_type', 'company_price')
-                    ->where('product_prices.company_id', $user->company_id)
-                    ->orderBy('product_variants.id')
-                    ->orderBy('product_prices.id')
-                    ->first();
-
-                if ($companyPrice) {
-                    return $this->formatResolvedPrice($companyPrice, $productId, $user);
-                }
-            }
-
-            // Step 3: fall back through the normal role-based price order until one visible price is found.
-            foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'company_price')) as $priceType) {
-                $price = (clone $baseQuery)
-                    ->where('product_prices.price_type', $priceType)
-                    ->whereNull('product_prices.company_id')
-                    ->orderBy('product_variants.id')
-                    ->orderBy('product_prices.id')
-                    ->first();
-
-                if ($price) {
-                    return $this->formatResolvedPrice($price, $productId, $user);
-                }
-            }
-
-            return null;
+            // Business step: delegate the final pricing decision to the shared pricing service so every flow uses one rule engine.
+            return $this->priceService->resolveProductPrice($productId, $user, $quantity, $couponCode);
         } catch (Throwable $exception) {
             Log::error('Failed to resolve product price.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
@@ -138,61 +109,11 @@ class DataVisibilityService
     }
 
     // This resolves the first visible price for one exact product variant.
-    public function resolveVariantPrice(int $productVariantId, ?User $user): ?array
+    public function resolveVariantPrice(int $productVariantId, ?User $user, int $quantity = 1, ?string $couponCode = null): ?array
     {
         try {
-            // Step 1: build the exact selected variant query and keep variant quantity rules on the same payload.
-            $baseQuery = ProductPrice::query()
-                ->join('product_variants', 'product_variants.id', '=', 'product_prices.product_variant_id')
-                ->where('product_variants.id', $productVariantId)
-                ->where('product_variants.is_active', true)
-                ->where('product_prices.is_active', true)
-                ->select([
-                    'product_prices.amount',
-                    'product_prices.DiscountType as discount_type',
-                    'product_prices.Discount as discount_value',
-                    'product_prices.gst_rate',
-                    'product_prices.tax_amount',
-                    'product_prices.price_after_gst',
-                    'product_prices.currency',
-                    'product_prices.price_type',
-                    'product_variants.product_id',
-                    'product_variants.id as product_variant_id',
-                    'product_variants.sku as variant_sku',
-                    'product_variants.variant_name',
-                    'product_variants.min_order_quantity',
-                    'product_variants.max_order_quantity',
-                    'product_variants.lot_size',
-                ]);
-
-            // Step 2: check company-specific price first for B2B users.
-            if ($user && $user->isB2b() && $user->company_id) {
-                $companyPrice = (clone $baseQuery)
-                    ->where('product_prices.price_type', 'company_price')
-                    ->where('product_prices.company_id', $user->company_id)
-                    ->orderBy('product_prices.id')
-                    ->first();
-
-                if ($companyPrice) {
-                    return $this->formatResolvedPrice($companyPrice, (int) $companyPrice->product_id, $user);
-                }
-            }
-
-            // Step 3: resolve the first matching non-company price by current price priority.
-            foreach (array_values(array_filter($this->pricePriority($user), fn ($type) => $type !== 'company_price')) as $priceType) {
-                $price = (clone $baseQuery)
-                    ->where('product_prices.price_type', $priceType)
-                    ->whereNull('product_prices.company_id')
-                    ->orderBy('product_prices.id')
-                    ->first();
-
-                if ($price) {
-                    return $this->formatResolvedPrice($price, (int) $price->product_id, $user);
-                }
-            }
-
-            // Step 4: return null when no visible price exists for the variant.
-            return null;
+            // Business step: delegate the final variant price to the shared pricing service so cart, PI, and order flows stay aligned.
+            return $this->priceService->resolveVariantPrice($productVariantId, $user, $quantity, $couponCode);
         } catch (Throwable $exception) {
             Log::error('Failed to resolve variant price.', ['product_variant_id' => $productVariantId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
@@ -328,31 +249,8 @@ class DataVisibilityService
     protected function pricePriority(?User $user): array
     {
         try {
-            if (! $user) {
-                return ['retail', 'public'];
-            }
-
-            if ($this->isFullAdmin($user) || $this->isDelegatedAdmin($user)) {
-                return ['company_price', 'logged_in', 'dealer', 'institutional', 'retail', 'public'];
-            }
-
-            if ($user->isB2c()) {
-                return ['logged_in', 'retail', 'public'];
-            }
-
-            if ($user->isB2b()) {
-                if (in_array($user->b2b_type, ['dealer', 'distributor'], true)) {
-                    return ['company_price', 'dealer', 'logged_in', 'public', 'retail'];
-                }
-
-                if (in_array($user->b2b_type, ['lab', 'hospital'], true)) {
-                    return ['company_price', 'institutional', 'logged_in', 'public', 'retail'];
-                }
-
-                return ['company_price', 'dealer', 'institutional', 'logged_in', 'public', 'retail'];
-            }
-
-            return ['retail', 'public'];
+            // Business step: reuse the shared pricing service so visibility and final pricing stay on the same ladder definition.
+            return $this->priceService->visiblePriceTypes($user);
         } catch (Throwable $exception) {
             Log::error('Failed to resolve price priority.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
@@ -403,82 +301,4 @@ class DataVisibilityService
         }
     }
 
-    // This formats the resolved price row into the response shape expected by callers.
-    protected function formatResolvedPrice(object $price, int $productId, ?User $user): array
-    {
-        try {
-            // Read the saved base price before any discount is applied.
-            $baseAmount = round((float) $price->amount, 2);
-
-            // Calculate the usable discount values from the configured type and value.
-            $discountDetails = $this->getDiscountDetails($baseAmount, $price->discount_type ?? null, $price->discount_value ?? null);
-
-            // Recalculate tax on the discounted base price so the totals stay correct.
-            $gstRate = round((float) $price->gst_rate, 2);
-            $taxAmount = round(($discountDetails['final_amount'] * $gstRate) / 100, 2);
-            $priceAfterGst = round($discountDetails['final_amount'] + $taxAmount, 2);
-
-            // Keep the buy-rule values from the selected sellable variant so every downstream flow follows one source of truth.
-            $minOrderQuantity = max(1, (int) $price->min_order_quantity);
-            $maxOrderQuantity = $price->max_order_quantity === null ? null : (int) $price->max_order_quantity;
-            $lotSize = max(1, (int) $price->lot_size);
-
-            return [
-                'base_amount' => $baseAmount,
-                'amount' => $discountDetails['final_amount'],
-                'gst_rate' => $gstRate,
-                'tax_amount' => $taxAmount,
-                'price_after_gst' => $priceAfterGst,
-                'currency' => (string) $price->currency,
-                'discount_type' => $discountDetails['discount_type'],
-                'discount_value' => $discountDetails['discount_value'],
-                'discount_amount' => $discountDetails['discount_amount'],
-                'min_order_quantity' => $minOrderQuantity,
-                'max_order_quantity' => $maxOrderQuantity,
-                'lot_size' => $lotSize,
-                'price_type' => (string) $price->price_type,
-                'product_variant_id' => (int) $price->product_variant_id,
-                'variant_sku' => (string) $price->variant_sku,
-                'variant_name' => (string) $price->variant_name,
-            ];
-        } catch (Throwable $exception) {
-            Log::error('Failed to format resolved price.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This calculates one safe discount result from the configured discount type and value.
-    protected function getDiscountDetails(float $baseAmount, mixed $discountType, mixed $discountValue): array
-    {
-        // Keep the stored discount type limited to the supported values only.
-        $finalDiscountType = strtolower(trim((string) $discountType));
-
-        if (! in_array($finalDiscountType, ['cash', 'percent'], true)) {
-            $finalDiscountType = 'cash';
-        }
-
-        // Ignore negative discounts and keep the saved value easy to reason about.
-        $finalDiscountValue = round(max(0, (float) $discountValue), 2);
-
-        // Convert percentage discounts into their matching amount from the base price.
-        if ($finalDiscountType === 'percent') {
-            $finalDiscountValue = min($finalDiscountValue, 100);
-            $discountAmount = round(($baseAmount * $finalDiscountValue) / 100, 2);
-        } else {
-            $discountAmount = $finalDiscountValue;
-        }
-
-        // Never allow the discount to reduce the price below zero.
-        $discountAmount = min($discountAmount, $baseAmount);
-
-        // This is the final base price that the customer should pay before GST.
-        $finalAmount = round($baseAmount - $discountAmount, 2);
-
-        return [
-            'discount_type' => $finalDiscountType,
-            'discount_value' => $finalDiscountValue,
-            'discount_amount' => $discountAmount,
-            'final_amount' => $finalAmount,
-        ];
-    }
 }

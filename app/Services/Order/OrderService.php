@@ -295,7 +295,7 @@ class OrderService
                     ]);
                 }
 
-                $price = $this->dataVisibilityService->resolvePrice($productId, $user);
+                $price = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity);
 
                 if (! $price) {
                     throw ValidationException::withMessages([
@@ -383,20 +383,28 @@ class OrderService
         try {
             // Step 1: calculate the row totals from the resolved current price.
             $unitPrice = round((float) ($price['amount'] ?? 0), 4);
+            $unitBasePrice = round((float) ($price['base_amount'] ?? $unitPrice), 4);
             $unitTaxAmount = round((float) ($price['tax_amount'] ?? 0), 4);
             $unitPriceAfterGst = round((float) ($price['price_after_gst'] ?? 0), 4);
             $subtotalAmount = round($unitPrice * $quantity, 4);
             $taxAmount = round($unitTaxAmount * $quantity, 4);
-            $discountAmount = 0.0000;
+            $discountAmount = round((float) ($price['discount_amount'] ?? 0) * $quantity, 4);
             $totalAmount = round($unitPriceAfterGst * $quantity, 4);
 
             // Step 2: keep the extra pricing fields inside the item snapshot.
             $itemSnapshot = [
                 'currency' => $price['currency'] ?? 'INR',
                 'price_type' => $price['price_type'] ?? null,
+                'base_unit_price' => $unitBasePrice,
+                'pricing_stage' => $price['pricing_stage'] ?? 'base_price',
                 'gst_rate' => round((float) ($price['gst_rate'] ?? 0), 4),
                 'unit_tax_amount' => $unitTaxAmount,
                 'unit_price_after_gst' => $unitPriceAfterGst,
+                'unit_discount_amount' => round((float) ($price['discount_amount'] ?? 0), 4),
+                'product_discount_amount' => round((float) ($price['product_discount_amount'] ?? 0), 4),
+                'bulk_discount_amount' => round((float) ($price['bulk_discount_amount'] ?? 0), 4),
+                'coupon_discount_amount' => round((float) ($price['coupon_discount_amount'] ?? 0), 4),
+                'applied_coupon_code' => $price['applied_coupon_code'] ?? null,
                 'min_order_quantity' => (int) ($price['min_order_quantity'] ?? 1),
                 'max_order_quantity' => $price['max_order_quantity'] === null ? null : (int) $price['max_order_quantity'],
                 'lot_size' => (int) ($price['lot_size'] ?? 1),

@@ -24,6 +24,12 @@ return new class extends Migration
             $table->json('technical_specification_json')->nullable();
             $table->unsignedInteger('min_order_quantity')->default(1);
             $table->unsignedInteger('max_order_quantity')->nullable();
+            // Business B2C quantity limits let retail buyers follow smaller order rules on the same sellable variant.
+            $table->unsignedInteger('b2c_min_order_quantity')->nullable();
+            $table->unsignedInteger('b2c_max_order_quantity')->nullable();
+            // Business B2B quantity limits let trade buyers follow larger quantity rules on the same sellable variant.
+            $table->unsignedInteger('b2b_min_order_quantity')->nullable();
+            $table->unsignedInteger('b2b_max_order_quantity')->nullable();
             $table->unsignedInteger('lot_size')->default(1);
             $table->string('model_number')->nullable();
             $table->string('catalog_number')->nullable();

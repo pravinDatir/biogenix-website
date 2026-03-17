@@ -8,6 +8,7 @@ use App\Models\Cart\CartItem;
 use App\Models\Order\Order;
 use App\Models\Product\ProductVariant;
 use App\Services\Authorization\DataVisibilityService;
+use App\Services\Pricing\PriceService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,7 @@ class CartService
 {
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
+        protected PriceService $priceService,
     ) {
     }
 
@@ -47,14 +49,6 @@ class CartService
             $productVariantId = $this->resolveRequestedVariantId($validatedCartItem, $user);
 
             // Step 3: resolve the visible live price for the selected variant.
-            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice($productVariantId, $user);
-
-            if (! $resolvedVariantPrice) {
-                throw ValidationException::withMessages([
-                    'product_variant_id' => 'The selected product variant is not available for this user.',
-                ]);
-            }
-
             // Step 4: load any existing cart row for the same selected variant.
             $cartItem = $cart->items()
                 ->where('product_variant_id', $productVariantId)
@@ -66,10 +60,19 @@ class CartService
                 ? ((int) $cartItem->quantity + $requestedQuantity)
                 : $requestedQuantity;
 
-            // Step 6: validate the final quantity against live price rules.
+            // Step 6: resolve the final live price using the full requested cart quantity so bulk rules stay accurate.
+            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice($productVariantId, $user, $finalQuantity);
+
+            if (! $resolvedVariantPrice) {
+                throw ValidationException::withMessages([
+                    'product_variant_id' => 'The selected product variant is not available for this user.',
+                ]);
+            }
+
+            // Step 7: validate the final quantity against live price rules.
             $this->validateCartQuantity($finalQuantity, $resolvedVariantPrice);
 
-            // Step 7: update the old cart row or create a new one.
+            // Step 8: update the old cart row or create a new one.
             if ($cartItem) {
                 $cartItem->update([
                     'quantity' => $finalQuantity,
@@ -81,12 +84,12 @@ class CartService
                 ]);
             }
 
-            // Step 8: keep the cart currency aligned with the current resolved price.
+            // Step 9: keep the cart currency aligned with the current resolved price.
             $cart->update([
                 'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
             ]);
 
-            // Step 9: log the successful add-to-cart action.
+            // Step 10: log the successful add-to-cart action.
             Log::info('Product added to cart successfully.', [
                 'user_id' => $user->id,
                 'cart_id' => $cart->id,
@@ -94,7 +97,7 @@ class CartService
                 'quantity' => $finalQuantity,
             ]);
 
-            // Step 10: return the refreshed cart payload.
+            // Step 11: return the refreshed cart payload.
             return $this->buildCartResponse($this->findCartForUser($user), $user);
         } catch (Throwable $exception) {
             Log::error('Failed to add product to cart.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
@@ -110,7 +113,8 @@ class CartService
             $cartItem = $this->findCartItemForUser($cartItemId, $user);
 
             // Step 2: resolve the live current price for the selected variant.
-            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user);
+            $updatedQuantity = (int) $validatedCartItem['quantity'];
+            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, $updatedQuantity);
 
             if (! $resolvedVariantPrice) {
                 throw ValidationException::withMessages([
@@ -119,7 +123,6 @@ class CartService
             }
 
             // Step 3: validate the requested replacement quantity.
-            $updatedQuantity = (int) $validatedCartItem['quantity'];
             $this->validateCartQuantity($updatedQuantity, $resolvedVariantPrice);
 
             // Step 4: save the new quantity and keep the cart currency aligned.
@@ -201,13 +204,24 @@ class CartService
                 ]);
             }
 
-            // Step 2: prepare final order item rows using the live current price.
-            $preparedOrderItems = $this->prepareCheckoutOrderItems($cart, $user);
+            // Step 2: validate the coupon up front so the final checkout flow only continues with a real active offer.
+            $validatedCoupon = $this->priceService->validateCouponCode($validatedCartCheckout['coupon_code'] ?? null);
+            $couponCode = $validatedCoupon?->code;
 
-            // Step 3: calculate final order totals from the prepared order item rows.
+            // Step 3: prepare final order item rows using the live current quantity-aware price.
+            $preparedOrderItems = $this->prepareCheckoutOrderItems($cart, $user, $couponCode);
+
+            // Step 4: stop the checkout when the entered coupon is real but not applicable to the current cart items.
+            if ($couponCode && collect($preparedOrderItems)->sum(fn (array $preparedOrderItem) => (float) ($preparedOrderItem['item_snapshot']['coupon_discount_amount'] ?? 0) * (int) ($preparedOrderItem['quantity'] ?? 1)) <= 0) {
+                throw ValidationException::withMessages([
+                    'coupon_code' => 'The selected coupon does not apply to the current cart.',
+                ]);
+            }
+
+            // Step 5: calculate final order totals from the prepared order item rows.
             $orderTotals = $this->calculateCheckoutTotals($validatedCartCheckout, $preparedOrderItems);
 
-            // Step 4: create the order and clear the cart inside one transaction.
+            // Step 6: create the order and clear the cart inside one transaction.
             $order = DB::transaction(function () use ($cart, $user, $validatedCartCheckout, $preparedOrderItems, $orderTotals): Order {
                 $order = Order::query()->create([
                     'placed_by_user_id' => $user->id,
@@ -227,9 +241,14 @@ class CartService
                     'cancelled_at' => null,
                 ]);
 
+                $createdOrderItems = [];
+
                 foreach ($preparedOrderItems as $preparedOrderItem) {
-                    $order->items()->create($preparedOrderItem);
+                    $createdOrderItems[] = $order->items()->create($preparedOrderItem);
                 }
+
+                // Step 7: store the final discount breakdown so operations can trace why the final order value changed.
+                $this->storeCheckoutDiscountLines($order, collect($createdOrderItems), $preparedOrderItems);
 
                 $cart->items()->delete();
                 $cart->delete();
@@ -245,13 +264,13 @@ class CartService
                     ->findOrFail($order->id);
             });
 
-            // Step 5: log the successful checkout action with the final order id.
+            // Step 8: log the successful checkout action with the final order id.
             Log::info('Cart checked out successfully.', [
                 'user_id' => $user->id,
                 'order_id' => $order->id,
             ]);
 
-            // Step 6: return the final order summary as JSON-ready data.
+            // Step 9: return the final order summary as JSON-ready data.
             return [
                 'order' => [
                     'id' => $order->id,
@@ -473,7 +492,7 @@ class CartService
             $imagePath = $product?->primaryImage?->file_path;
 
             // Step 2: resolve the live current price for the selected variant.
-            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user);
+            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, (int) $cartItem->quantity);
 
             if (! $resolvedVariantPrice) {
                 throw ValidationException::withMessages([
@@ -502,11 +521,13 @@ class CartService
                 'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
                 'price_type' => $resolvedVariantPrice['price_type'] ?? null,
                 'unit_price' => $unitPrice,
+                'base_unit_price' => round((float) ($resolvedVariantPrice['base_amount'] ?? $unitPrice), 4),
                 'gst_rate' => round((float) ($resolvedVariantPrice['gst_rate'] ?? 0), 4),
                 'tax_amount' => $lineTaxAmount,
                 'unit_price_after_gst' => $unitPriceAfterGst,
                 'line_subtotal' => $lineSubtotal,
                 'line_total' => $lineTotal,
+                'discount_amount' => round((float) ($resolvedVariantPrice['discount_amount'] ?? 0) * (int) $cartItem->quantity, 4),
                 'min_order_quantity' => (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1),
                 'max_order_quantity' => $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'],
                 'lot_size' => (int) ($resolvedVariantPrice['lot_size'] ?? 1),
@@ -551,7 +572,7 @@ class CartService
     }
 
     // This prepares final order item rows from the current cart during checkout.
-    protected function prepareCheckoutOrderItems(Cart $cart, User $user): array
+    protected function prepareCheckoutOrderItems(Cart $cart, User $user, ?string $couponCode = null): array
     {
         try {
             // Step 1: prepare an array that will hold all final order item rows.
@@ -568,7 +589,7 @@ class CartService
                     ]);
                 }
 
-                $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user);
+                $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, (int) $cartItem->quantity, $couponCode);
 
                 if (! $resolvedVariantPrice) {
                     throw ValidationException::withMessages([
@@ -579,11 +600,13 @@ class CartService
                 $this->validateCartQuantity((int) $cartItem->quantity, $resolvedVariantPrice);
 
                 $unitPrice = round((float) ($resolvedVariantPrice['amount'] ?? 0), 4);
+                $unitBasePrice = round((float) ($resolvedVariantPrice['base_amount'] ?? $unitPrice), 4);
                 $unitTaxAmount = round((float) ($resolvedVariantPrice['tax_amount'] ?? 0), 4);
                 $unitPriceAfterGst = round((float) ($resolvedVariantPrice['price_after_gst'] ?? 0), 4);
                 $subtotalAmount = round($unitPrice * (int) $cartItem->quantity, 4);
                 $taxAmount = round($unitTaxAmount * (int) $cartItem->quantity, 4);
                 $totalAmount = round($unitPriceAfterGst * (int) $cartItem->quantity, 4);
+                $lineDiscountAmount = round((float) ($resolvedVariantPrice['discount_amount'] ?? 0) * (int) $cartItem->quantity, 4);
 
                 $preparedOrderItems[] = [
                     'product_id' => $product->id,
@@ -595,7 +618,7 @@ class CartService
                     'quantity' => (int) $cartItem->quantity,
                     'unit_price' => $unitPrice,
                     'subtotal_amount' => $subtotalAmount,
-                    'discount_amount' => 0.0000,
+                    'discount_amount' => $lineDiscountAmount,
                     'tax_amount' => $taxAmount,
                     'total_amount' => $totalAmount,
                     'sort_order' => $index,
@@ -603,9 +626,16 @@ class CartService
                         'source' => 'cart_checkout',
                         'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
                         'price_type' => $resolvedVariantPrice['price_type'] ?? null,
+                        'base_unit_price' => $unitBasePrice,
+                        'pricing_stage' => $resolvedVariantPrice['pricing_stage'] ?? 'base_price',
                         'gst_rate' => round((float) ($resolvedVariantPrice['gst_rate'] ?? 0), 4),
                         'unit_tax_amount' => $unitTaxAmount,
                         'unit_price_after_gst' => $unitPriceAfterGst,
+                        'unit_discount_amount' => round((float) ($resolvedVariantPrice['discount_amount'] ?? 0), 4),
+                        'product_discount_amount' => round((float) ($resolvedVariantPrice['product_discount_amount'] ?? 0), 4),
+                        'bulk_discount_amount' => round((float) ($resolvedVariantPrice['bulk_discount_amount'] ?? 0), 4),
+                        'coupon_discount_amount' => round((float) ($resolvedVariantPrice['coupon_discount_amount'] ?? 0), 4),
+                        'applied_coupon_code' => $resolvedVariantPrice['applied_coupon_code'] ?? null,
                         'min_order_quantity' => (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1),
                         'max_order_quantity' => $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'],
                         'lot_size' => (int) ($resolvedVariantPrice['lot_size'] ?? 1),
@@ -645,6 +675,7 @@ class CartService
                 'source' => 'cart_checkout',
                 'currency' => $currency,
                 'items_count' => count($preparedOrderItems),
+                'coupon_code' => $validatedCartCheckout['coupon_code'] ?? null,
                 'subtotal_amount' => $subtotalAmount,
                 'tax_amount' => $taxAmount,
                 'discount_amount' => $discountAmount,
@@ -655,6 +686,12 @@ class CartService
                 'total_amount' => $totalAmount,
                 'price_types' => collect($preparedOrderItems)
                     ->map(fn (array $preparedOrderItem) => $preparedOrderItem['item_snapshot']['price_type'] ?? null)
+                    ->filter()
+                    ->unique()
+                    ->values()
+                    ->all(),
+                'pricing_stages' => collect($preparedOrderItems)
+                    ->map(fn (array $preparedOrderItem) => $preparedOrderItem['item_snapshot']['pricing_stage'] ?? null)
                     ->filter()
                     ->unique()
                     ->values()
@@ -676,6 +713,69 @@ class CartService
         } catch (Throwable $exception) {
             Log::error('Failed to calculate checkout totals.', ['error' => $exception->getMessage()]);
             throw $exception;
+        }
+    }
+
+    // This stores the item-level discount reasons created during checkout for downstream audit and support use.
+    protected function storeCheckoutDiscountLines(Order $order, $createdOrderItems, array $preparedOrderItems): void
+    {
+        // Step 1: stop early when there are no created items to map against the prepared payload.
+        if ($createdOrderItems->isEmpty()) {
+            return;
+        }
+
+        $discountRows = [];
+
+        // Step 2: build one readable discount row per applied pricing rule on each order item.
+        foreach ($createdOrderItems as $index => $createdOrderItem) {
+            $itemSnapshot = $preparedOrderItems[$index]['item_snapshot'] ?? [];
+
+            if (($itemSnapshot['product_discount_amount'] ?? 0) > 0) {
+                $discountRows[] = [
+                    'order_id' => $order->id,
+                    'order_item_id' => $createdOrderItem->id,
+                    'discount_type' => 'product_discount',
+                    'discount_code' => null,
+                    'discount_name' => 'Product Discount',
+                    'discount_rate' => null,
+                    'discount_amount' => round((float) $itemSnapshot['product_discount_amount'] * (int) $createdOrderItem->quantity, 4),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            if (($itemSnapshot['bulk_discount_amount'] ?? 0) > 0) {
+                $discountRows[] = [
+                    'order_id' => $order->id,
+                    'order_item_id' => $createdOrderItem->id,
+                    'discount_type' => 'bulk',
+                    'discount_code' => null,
+                    'discount_name' => 'Bulk Price Benefit',
+                    'discount_rate' => null,
+                    'discount_amount' => round((float) $itemSnapshot['bulk_discount_amount'] * (int) $createdOrderItem->quantity, 4),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            if (($itemSnapshot['coupon_discount_amount'] ?? 0) > 0) {
+                $discountRows[] = [
+                    'order_id' => $order->id,
+                    'order_item_id' => $createdOrderItem->id,
+                    'discount_type' => 'coupon',
+                    'discount_code' => $itemSnapshot['applied_coupon_code'] ?? null,
+                    'discount_name' => 'Coupon Discount',
+                    'discount_rate' => null,
+                    'discount_amount' => round((float) $itemSnapshot['coupon_discount_amount'] * (int) $createdOrderItem->quantity, 4),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        // Step 3: insert all discount lines together so checkout keeps one simple write operation.
+        if ($discountRows !== []) {
+            DB::table('order_discount_lines')->insert($discountRows);
         }
     }
 }

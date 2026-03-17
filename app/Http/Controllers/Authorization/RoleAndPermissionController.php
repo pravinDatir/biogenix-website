@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Authorization;
 
 use App\Http\Controllers\Controller;
-use App\Services\Authorization\RoleAndPermissionService;
+use App\Services\Authorization\RolePermissionAdminCrudService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,11 +13,11 @@ use Throwable;
 class RoleAndPermissionController extends Controller
 {
     // This renders the role management page and optional edit state.
-    public function getRole(Request $request, RoleAndPermissionService $roleAndPermissionService, ?int $roleId = null): View
+    public function getRole(Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService, ?int $roleId = null): View
     {
         try {
             // Step 1: load the list page and optional editing role.
-            return view('admin.roles.index', $roleAndPermissionService->rolePageData(
+            return view('admin.roles.index', $rolePermissionAdminCrudService->rolePageData(
                 $roleId,
                 $request->integer('edit_permission_id') ?: null,
             ));
@@ -35,14 +35,14 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and stores a new role.
-    public function addRole(Request $request, RoleAndPermissionService $roleAndPermissionService): RedirectResponse
+    public function addRole(Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted role fields.
             $validated = $this->validateRolePayload($request);
 
             // Step 2: create the role and redirect back to the list page.
-            $roleAndPermissionService->addRole($validated);
+            $rolePermissionAdminCrudService->addRole($validated);
 
             return redirect()->route('admin.roles.index')
                 ->with('status', 'Role added successfully.');
@@ -54,14 +54,14 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and updates one role.
-    public function updateRole(int $roleId, Request $request, RoleAndPermissionService $roleAndPermissionService): RedirectResponse
+    public function updateRole(int $roleId, Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted role fields.
             $validated = $this->validateRolePayload($request);
 
             // Step 2: update the selected role and stay in edit mode.
-            $roleAndPermissionService->updateRole($roleId, $validated);
+            $rolePermissionAdminCrudService->updateRole($roleId, $validated);
 
             return redirect()->route('admin.roles.show', $roleId)
                 ->with('status', 'Role updated successfully.');
@@ -73,11 +73,11 @@ class RoleAndPermissionController extends Controller
     }
 
     // This deletes one role row.
-    public function deleteRole(int $roleId, RoleAndPermissionService $roleAndPermissionService): RedirectResponse
+    public function deleteRole(int $roleId, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: delete the selected role and return to the list page.
-            $roleAndPermissionService->deleteRole($roleId);
+            $rolePermissionAdminCrudService->deleteRole($roleId);
 
             return redirect()->route('admin.roles.index')
                 ->with('status', 'Role deleted successfully.');
@@ -89,14 +89,14 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and stores a new permission.
-    public function createPermission(Request $request, RoleAndPermissionService $roleAndPermissionService): RedirectResponse
+    public function createPermission(Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted permission fields.
             $validated = $this->validatePermissionPayload($request);
 
             // Step 2: create the permission and return to the list page.
-            $roleAndPermissionService->createPermission($validated);
+            $rolePermissionAdminCrudService->createPermission($validated);
 
             return redirect()->route('admin.roles.index')
                 ->with('status', 'Permission added successfully.');
@@ -108,14 +108,14 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and updates one permission.
-    public function updatePermission(int $permissionId, Request $request, RoleAndPermissionService $roleAndPermissionService): RedirectResponse
+    public function updatePermission(int $permissionId, Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted permission fields.
             $validated = $this->validatePermissionPayload($request);
 
             // Step 2: update the selected permission and stay in permission edit mode.
-            $roleAndPermissionService->updatePermission($permissionId, $validated);
+            $rolePermissionAdminCrudService->updatePermission($permissionId, $validated);
 
             return redirect()->route('admin.roles.index', ['edit_permission_id' => $permissionId])
                 ->with('status', 'Permission updated successfully.');
@@ -127,11 +127,11 @@ class RoleAndPermissionController extends Controller
     }
 
     // This deletes one permission row.
-    public function deletePermission(int $permissionId, RoleAndPermissionService $roleAndPermissionService): RedirectResponse
+    public function deletePermission(int $permissionId, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: delete the selected permission and return to the list page.
-            $roleAndPermissionService->deletePermission($permissionId);
+            $rolePermissionAdminCrudService->deletePermission($permissionId);
 
             return redirect()->route('admin.roles.index')
                 ->with('status', 'Permission deleted successfully.');
@@ -143,7 +143,7 @@ class RoleAndPermissionController extends Controller
     }
 
     // This saves all checked permissions for the selected role.
-    public function upsertPermissionsForRole(int $roleId, Request $request, RoleAndPermissionService $roleAndPermissionService): RedirectResponse
+    public function upsertPermissionsForRole(int $roleId, Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the checkbox array from the role-permission form.
@@ -153,7 +153,7 @@ class RoleAndPermissionController extends Controller
             ]);
 
             // Step 2: sync checked permissions for the selected role.
-            $roleAndPermissionService->upsertPermissionsForRole(
+            $rolePermissionAdminCrudService->upsertPermissionsForRole(
                 $roleId,
                 $validated['permission_ids'] ?? [],
             );

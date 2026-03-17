@@ -114,7 +114,7 @@ class ProformaInvoiceService
                     ]);
                 }
 
-                $price = $this->dataVisibilityService->resolvePrice($productId, $user);
+                $price = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity);
 
                 if (! $price) {
                     throw ValidationException::withMessages([
@@ -284,17 +284,18 @@ class ProformaInvoiceService
     protected function buildPreparedItem(object $visibleProduct, array $price, int $quantity): array
     {
         try {
-            // Step 1: calculate line-level pricing values from the selected price row.
-            $discountPercent = 2.00;
+            // Step 1: calculate line-level pricing values from the shared resolved price so PI follows the same rules as cart and checkout.
             $unitPrice = (float) ($price['amount'] ?? 0);
+            $baseAmount = (float) ($price['base_amount'] ?? $unitPrice);
             $unitTaxAmount = (float) ($price['tax_amount'] ?? 0);
             $unitPriceAfterGst = (float) ($price['price_after_gst'] ?? 0);
-            $unitDiscountAmount = round(($unitPriceAfterGst * $discountPercent) / 100, 2);
+            $unitDiscountAmount = round((float) ($price['discount_amount'] ?? 0), 2);
+            $discountPercent = $baseAmount > 0 ? round(($unitDiscountAmount / $baseAmount) * 100, 2) : 0.00;
             $lineSubtotal = round($unitPrice * $quantity, 2);
             $lineTaxAmount = round($unitTaxAmount * $quantity, 2);
             $linePriceAfterGst = round($unitPriceAfterGst * $quantity, 2);
             $lineDiscountAmount = round($unitDiscountAmount * $quantity, 2);
-            $lineTotal = round($linePriceAfterGst - $lineDiscountAmount, 2);
+            $lineTotal = $linePriceAfterGst;
 
             // Step 2: return the full PI item payload used by the create transaction.
             return [

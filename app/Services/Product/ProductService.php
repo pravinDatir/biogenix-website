@@ -13,6 +13,7 @@ use App\Models\Product\Subcategory;
 use App\Models\Product\UserActivityLog;
 use App\Models\Product\VariantAttribute;
 use App\Services\Authorization\DataVisibilityService;
+use App\Services\Pricing\PriceService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -27,6 +28,7 @@ class ProductService
 {
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
+        protected PriceService $priceService,
     ) {
     }
 
@@ -387,7 +389,10 @@ class ProductService
             $product = $this->attachResolvedPriceData($product, $user);
 
             // Step 2: attach the visible variant technical specs so the detail page can read them directly from database content.
-            return $this->attachVisibleVariantTechnicalSpecifications($product);
+            $product = $this->attachVisibleVariantTechnicalSpecifications($product);
+
+            // Step 3: attach the visible bulk pricing ladder so the product detail page uses live database pricing slabs.
+            return $this->attachVisibleVariantBulkPriceTiers($product, $user);
         } catch (Throwable $exception) {
             Log::error('Failed to load visible product.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
@@ -412,6 +417,23 @@ class ProductService
 
         // Step 4: attach the saved variant specs directly to the product payload for the Blade view.
         $product->technical_specification_json = $visibleVariant?->technical_specification_json ?? [];
+
+        return $product;
+    }
+
+    // This attaches the live bulk pricing ladder for the currently visible variant.
+    protected function attachVisibleVariantBulkPriceTiers(object $product, ?User $user): object
+    {
+        // Step 1: default the detail page ladder to an empty collection when no visible variant exists.
+        $product->bulk_price_tiers = collect();
+
+        // Step 2: stop early when the current product view has no visible sellable variant.
+        if (! filled($product->visible_variant_id ?? null)) {
+            return $product;
+        }
+
+        // Step 3: read the database-driven pricing ladder for the visible variant from the shared pricing service.
+        $product->bulk_price_tiers = $this->priceService->listBulkPriceTiers((int) $product->visible_variant_id, $user);
 
         return $product;
     }
