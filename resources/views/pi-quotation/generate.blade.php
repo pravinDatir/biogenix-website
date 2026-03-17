@@ -148,7 +148,7 @@
                         class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">
                 </li>
             </ol>
-            <button id="addTermBtn" type="button" class="mt-3 text-xs font-semibold text-blue-600 hover:underline cursor-pointer">+ Add Term</button>
+            </ol>
         </div>
 
         {{-- Summary / Totals --}}
@@ -594,17 +594,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ─── Freight input recalc ───
     document.getElementById('freightCharges').addEventListener('input', recalcTotals);
-
-    // ─── Add Term button ───
-    document.getElementById('addTermBtn').addEventListener('click', function () {
-        var list = document.getElementById('termsList');
-        var count = list.querySelectorAll('li').length + 1;
-        var li = document.createElement('li');
-        li.className = 'flex items-baseline gap-2 text-sm text-slate-700';
-        li.innerHTML = '<span class="shrink-0 font-bold text-[#e65100]">' + count + '.</span>' +
-            '<input type="text" value="" placeholder="Enter term..." class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">';
-        list.appendChild(li);
-    });
 
     // ─── Generate PDF (placeholder) ───
     document.getElementById('generatePdfBtn').addEventListener('click', function () {
