@@ -93,6 +93,22 @@
         text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
     }
 
+    .home-hero-focus-card {
+        width: 100%;
+        border-radius: 1.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: linear-gradient(180deg, rgba(7, 17, 31, 0.56), rgba(7, 17, 31, 0.78));
+        box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+        padding: 1.25rem;
+        backdrop-filter: blur(18px);
+    }
+
+    .home-hero-focus-title,
+    .home-hero-focus-copy,
+    .home-hero-focus-meta {
+        text-shadow: 0 10px 26px rgba(0, 0, 0, 0.42);
+    }
+
     .home-route-visual {
         position: relative;
         overflow: hidden;
@@ -418,6 +434,7 @@
         opacity: 0;
         transform: translateY(24px);
         transition: opacity 0.8s ease, transform 0.8s ease;
+        will-change: opacity, transform;
     }
 
     .home-reveal.is-visible {
@@ -484,22 +501,22 @@
                             </div>
 
                             <div class="home-reveal flex items-end lg:col-span-5">
-                                <div class="w-full rounded-[1.75rem] border border-white/14 bg-white/10 p-5 backdrop-blur-xl">
+                                <div class="home-hero-focus-card">
                                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Featured Focus</p>
-                                    <h2 class="mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
-                                    <p class="mt-3 text-sm text-slate-100">Biogenix combines category expertise with enterprise-ready support to improve continuity across procurement and delivery operations.</p>
+                                    <h2 class="home-hero-focus-title mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
+                                    <p class="home-hero-focus-copy mt-3 text-sm text-slate-100">Biogenix combines category expertise with enterprise-ready support to improve continuity across procurement and delivery operations.</p>
                                     <div class="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
                                         <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
                                             <p class="text-xl font-semibold text-white">24h</p>
-                                            <p class="text-xs uppercase tracking-[0.18em] text-white/60">Dispatch promise</p>
+                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Dispatch promise</p>
                                         </div>
                                         <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
                                             <p class="text-xl font-semibold text-white">200+</p>
-                                            <p class="text-xs uppercase tracking-[0.18em] text-white/60">Institutional clients</p>
+                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Institutional clients</p>
                                         </div>
                                         <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
                                             <p class="text-xl font-semibold text-white">98%</p>
-                                            <p class="text-xs uppercase tracking-[0.18em] text-white/60">Satisfaction score</p>
+                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Satisfaction score</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1058,23 +1075,41 @@
         }
 
         const revealItems = Array.from(document.querySelectorAll('.home-reveal'));
-        if ('IntersectionObserver' in window && revealItems.length) {
-            const revealObserver = new IntersectionObserver(function (entries, observer) {
-                entries.forEach(function (entry) {
-                    if (!entry.isIntersecting) return;
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                });
-            }, { threshold: 0.18 });
+        let revealFrameId = null;
+
+        // This keeps section animation active while the user scrolls through the page.
+        function refreshRevealItems() {
+            revealFrameId = null;
+
+            if (!revealItems.length) {
+                return;
+            }
+
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            const visibleTopLimit = viewportHeight * 0.9;
+            const visibleBottomLimit = viewportHeight * 0.08;
 
             revealItems.forEach(function (item) {
-                revealObserver.observe(item);
-            });
-        } else {
-            revealItems.forEach(function (item) {
-                item.classList.add('is-visible');
+                const rect = item.getBoundingClientRect();
+                const isVisible = rect.top <= visibleTopLimit && rect.bottom >= visibleBottomLimit;
+
+                item.classList.toggle('is-visible', isVisible);
             });
         }
+
+        // This avoids repeated layout work when scroll fires many times quickly.
+        function queueRevealRefresh() {
+            if (revealFrameId !== null) {
+                return;
+            }
+
+            revealFrameId = window.requestAnimationFrame(refreshRevealItems);
+        }
+
+        queueRevealRefresh();
+        window.addEventListener('load', queueRevealRefresh);
+        window.addEventListener('resize', queueRevealRefresh);
+        window.addEventListener('scroll', queueRevealRefresh, { passive: true });
 
         /* ─── Newsletter ─── */
         const newsletterForm   = document.getElementById('newsletterForm');
