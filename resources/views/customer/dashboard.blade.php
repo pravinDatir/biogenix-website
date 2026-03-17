@@ -58,9 +58,9 @@
 @section('customer_content')
     <div class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         @foreach ($stats as $stat)
-            <div class="stat-card">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md">
                 <div class="flex items-start justify-between">
-                    <p class="eyebrow text-slate-400">{{ $stat['label'] }}</p>
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">{{ $stat['label'] }}</p>
                     @if (isset($stat['trend']))
                         <div @class([
                             'flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase transition-transform group-hover:scale-110',
@@ -89,9 +89,9 @@
 
     <div class="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <x-ui.surface-card title="Recent Activity" subtitle="Static timeline blocks for later replacement with role-scoped event data.">
-            <div class="timeline">
+            <div class="space-y-4">
                 @foreach ($activity as $item)
-                    <article class="timeline-item">
+                    <article class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <h3 class="text-base font-semibold text-slate-900">{{ $item['title'] }}</h3>
                             <x-badge variant="info">{{ $item['time'] }}</x-badge>

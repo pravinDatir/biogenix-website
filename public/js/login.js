@@ -54,10 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
 /* Show authentication error under password only */
 function showAuthError(message) {
   const passwordInput = document.getElementById("loginPassword");
+  if (!passwordInput) return;
 
-  passwordInput.classList.add("error-border");
+  passwordInput.classList.add("border-rose-300", "focus:border-rose-400", "focus:ring-rose-200");
+  passwordInput.setAttribute("aria-invalid", "true");
 
-  const group = passwordInput.closest(".form-group");
-  const errorEl = group.querySelector(".error");
-  errorEl.textContent = message;
+  const group = (typeof getFieldGroup === "function" ? getFieldGroup(passwordInput) : passwordInput.closest("[data-field-group]")) || passwordInput.parentElement;
+  const errorEl = group?.querySelector("[data-field-error]") || group?.querySelector(".error");
+
+  if (errorEl) {
+    errorEl.textContent = message;
+    errorEl.classList.remove("hidden");
+  }
 }

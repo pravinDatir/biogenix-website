@@ -50,7 +50,7 @@
 @section('customer_minimal', 'minimal')
 
 @section('customer_content')
-<div class="mx-auto w-full max-w-[1120px] pb-12">
+<div class="mx-auto w-full max-w-[1456px] pb-12">
     <div class="rounded-[34px] border border-slate-200 bg-white/70 p-4 shadow-sm sm:p-5">
         <div class="grid w-full gap-8 lg:grid-cols-[15.5rem_minmax(0,1fr)]">
             @include('customer.partials.account-sidebar', ['portal' => $portal, 'active' => 'support'])

@@ -6,7 +6,7 @@
             
             <!-- Breadcrumb -->
             <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-                <a href="{{ route('adminPanel.dashboard') }}" class="hover:text-slate-900 transition flex items-center gap-1.5">
+                <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
                     Admin
                 </a>
                 <span class="mx-2 text-slate-300">/</span>
@@ -20,7 +20,7 @@
                     <p class="text-sm text-slate-500 mt-1">Manage your biogenix inventory and product listings.</p>
                 </div>
                 
-                <a href="{{ route('adminPanel.products.create') }}" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0">
+                <a href="{{ route('adminPanel.products.create') }}" class="ajax-link bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>

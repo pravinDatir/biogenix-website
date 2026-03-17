@@ -1,189 +1,219 @@
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/pages/signup.css') }}?v=20260315-3">
-<style>
-    .signup-page .password-wrapper {
-        position: relative;
-        display: block;
-    }
+@php
+    $initialStep = $errors->hasAny(['address_1', 'address_2', 'city', 'pincode', 'state']) || filled(old('address_1')) || filled(old('city')) || filled(old('pincode')) || filled(old('state')) ? 2 : 1;
+    $currentLabel = $initialStep === 2 ? 'Address' : 'Personal Details';
+    $labelClass = 'text-sm font-semibold text-slate-700';
+    $inputClass = 'h-12 w-full rounded-2xl border border-slate-300 bg-white px-4 text-sm font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/10';
+    $buttonPrimaryClass = 'inline-flex h-12 items-center justify-center rounded-2xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-[0_16px_35px_-18px_rgba(37,99,235,0.7)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
+    $buttonSecondaryClass = 'inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50';
+@endphp
 
-    .signup-page .password-wrapper input {
-        padding-right: 40px !important;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") !important;
-        background-repeat: no-repeat !important;
-        background-position: right 12px center !important;
-        background-size: 16px 16px !important;
-    }
+<div class="relative overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
+    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[24rem] bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.18),transparent_38%),radial-gradient(circle_at_top_right,rgba(14,165,233,0.12),transparent_30%)]"></div>
+    <div class="pointer-events-none absolute left-1/2 top-24 -z-10 h-72 w-72 -translate-x-[120%] rounded-full bg-primary-100/70 blur-3xl"></div>
+    <div class="pointer-events-none absolute right-0 top-10 -z-10 h-80 w-80 translate-x-1/3 rounded-full bg-sky-100/70 blur-3xl"></div>
 
-    .signup-page .password-wrapper input.is-password-visible {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l18 18'/%3E%3Cpath d='M10.7 5.1A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a18.8 18.8 0 0 1-3.2 3.9'/%3E%3Cpath d='M6.6 6.6C4.2 8.3 2 12 2 12s3.6 7 10 7c1.9 0 3.6-.5 5.1-1.3'/%3E%3Cpath d='M9.9 9.9a3 3 0 0 0 4.2 4.2'/%3E%3C/svg%3E") !important;
-    }
-
-    .signup-page .password-wrapper .toggle-password {
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 40px !important;
-        height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: 0 !important;
-        appearance: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        opacity: 0 !important;
-        cursor: pointer !important;
-    }
-</style>
-@endpush
-
-<div class="signup-page">
-    <div class="signup-orb signup-orb--left"></div>
-    <div class="signup-orb signup-orb--right"></div>
-
-    <section class="signup-shell">
-        <div class="signup-card">
-            <form id="signupForm" method="POST" action="{{ route('register') }}" class="signup-form" novalidate>
+    <section class="mx-auto w-full max-w-4xl">
+        <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_28px_80px_-36px_rgba(15,23,42,0.35)]">
+            <form id="signupForm" method="POST" action="{{ route('register') }}" class="grid gap-8 px-5 py-7 sm:px-8 sm:py-9" novalidate>
                 @csrf
                 <input type="hidden" name="user_type" value="b2c">
                 <input type="hidden" name="country" value="India">
 
-                <div class="signup-card-head">
-                    <h1 class="signup-title">Sign Up</h1>
-                    <div class="mt-2 text-center">
+                <div class="space-y-4 text-center">
+                    <div class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary-700">
+                        Personal Account
+                    </div>
+                    <div class="space-y-3">
+                        <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Sign Up</h1>
+                        <p class="mx-auto max-w-2xl text-sm leading-7 text-slate-500 sm:text-base">
+                            Create your Biogenix account to browse products, request quotations, and manage your orders with a cleaner checkout flow.
+                        </p>
                         <p class="text-sm text-slate-600">
-                            Are you a business owner or a healthcare professional?</br>
-                            <a href="{{ route('b2b.signup') }}" class="font-semibold text-primary-700 hover:text-primary-600">
+                            Are you a business owner or a healthcare professional?
+                            <a href="{{ route('b2b.signup') }}" class="font-semibold text-primary-700 no-underline transition hover:text-primary-600">
                                 Register for a B2B Account
                             </a>
                         </p>
                     </div>
                 </div>
 
-                <div class="signup-progress" aria-label="Signup progress">
-                    <div class="signup-progress-meta">
-                        <span class="signup-progress-caption">Step <span id="signupCurrentStep">1</span> of 2</span>
-                        <span id="signupCurrentLabel" class="signup-progress-current">Personal Details</span>
+                <div class="rounded-3xl border border-slate-200 bg-slate-50/80 px-4 py-5 sm:px-5" aria-label="Signup progress">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step <span id="signupCurrentStep">{{ $initialStep }}</span> of 2</span>
+                        <span id="signupCurrentLabel" class="text-sm font-semibold text-slate-800">{{ $currentLabel }}</span>
                     </div>
-                    <div id="signupProgressBar" class="signup-progress-bar" role="progressbar" aria-valuemin="1" aria-valuemax="2" aria-valuenow="1">
-                        <span id="signupProgressFill" class="signup-progress-fill"></span>
-                    </div>
-                    <div class="stepper">
-                        <div class="step active">
-                            <span class="step-number">1</span>
-                            <span class="step-text">Personal Details</span>
-                        </div>
-                        <div class="step">
-                            <span class="step-number">2</span>
-                            <span class="step-text">Address</span>
+
+                    <div id="signupProgressBar" class="mt-4" role="progressbar" aria-valuemin="1" aria-valuemax="2" aria-valuenow="{{ $initialStep }}">
+                        <div class="flex items-center gap-3">
+                            @foreach (['Personal Details', 'Address'] as $index => $stepLabel)
+                                @php
+                                    $stepNumber = $index + 1;
+                                    $isCurrent = $stepNumber === $initialStep;
+                                    $isActive = $stepNumber <= $initialStep;
+                                @endphp
+                                <div class="flex flex-1 items-center gap-3 @if($stepNumber === 2) justify-end text-right @endif">
+                                    <div
+                                        data-signup-step
+                                        data-step-index="{{ $stepNumber }}"
+                                        class="@if($stepNumber === 2) ml-auto @endif flex min-w-0 items-center gap-3 rounded-2xl border px-3 py-3 transition sm:px-4 {{ $isCurrent ? 'border-primary-200 bg-primary-50/80 shadow-sm' : 'border-slate-200 bg-white' }}"
+                                    >
+                                        <span
+                                            data-signup-step-circle
+                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold transition {{ $isActive ? 'border-primary-600 bg-primary-600 text-white' : 'border-slate-300 bg-white text-slate-400' }}"
+                                        >
+                                            <span data-signup-step-number>{{ $stepNumber }}</span>
+                                        </span>
+                                        <div class="min-w-0">
+                                            <p
+                                                data-signup-step-caption
+                                                class="text-[11px] font-semibold uppercase tracking-[0.18em] transition {{ $isActive ? 'text-primary-600' : 'text-slate-400' }}"
+                                            >
+                                                Step {{ $stepNumber }}
+                                            </p>
+                                            <p data-signup-step-label class="truncate text-sm font-semibold transition {{ $isActive ? 'text-slate-900' : 'text-slate-500' }}">
+                                                {{ $stepLabel }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    @if ($stepNumber === 1)
+                                        <div
+                                            data-signup-connector
+                                            class="hidden h-0.5 flex-1 rounded-full transition sm:block {{ $initialStep > 1 ? 'bg-primary-600' : 'bg-slate-200' }}"
+                                        ></div>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
                 @if ($errors->any())
-                    <div class="signup-alert" role="alert">
-                        <strong>Check the form and try again.</strong>
+                    <div class="flex flex-col gap-1 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700" role="alert">
+                        <strong class="font-semibold">Check the form and try again.</strong>
                         <span>{{ $errors->first() }}</span>
                     </div>
                 @endif
 
-                <div class="form-step active" data-step="1">
-                    <div class="signup-grid signup-grid--two">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}" placeholder="Aarav">
-                            <span class="error"></span>
+                <div data-signup-panel data-step="1" class="grid gap-6 @if($initialStep !== 1) hidden @endif">
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <div class="grid gap-2" data-field-group>
+                            <label for="firstName" class="{{ $labelClass }}">First Name</label>
+                            <input type="text" id="firstName" name="first_name" value="{{ old('first_name') }}" class="{{ $inputClass }}" placeholder="Aarav">
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}" placeholder="Sharma">
-                            <span class="error"></span>
+                        <div class="grid gap-2" data-field-group>
+                            <label for="lastName" class="{{ $labelClass }}">Last Name</label>
+                            <input type="text" id="lastName" name="last_name" value="{{ old('last_name') }}" class="{{ $inputClass }}" placeholder="Sharma">
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="signupEmail">Email</label>
-                        <input type="email" id="signupEmail" name="email" value="{{ old('email') }}" placeholder="you@example.com" autocomplete="email">
-                        <span class="error"></span>
+                    <div class="grid gap-2" data-field-group>
+                        <label for="signupEmail" class="{{ $labelClass }}">Email</label>
+                        <input type="email" id="signupEmail" name="email" value="{{ old('email') }}" class="{{ $inputClass }}" placeholder="you@example.com" autocomplete="email">
+                        <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                     </div>
 
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="text" id="phone" name="phone" maxlength="10" value="{{ old('phone') }}" placeholder="10-digit mobile number" inputmode="numeric">
-                        <span class="error"></span>
+                    <div class="grid gap-2" data-field-group>
+                        <label for="phone" class="{{ $labelClass }}">Phone Number</label>
+                        <input type="text" id="phone" name="phone" maxlength="10" value="{{ old('phone') }}" class="{{ $inputClass }}" placeholder="10-digit mobile number" inputmode="numeric">
+                        <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                     </div>
 
-                    <div class="signup-grid signup-grid--two">
-                        <div class="form-group">
-                            <label for="signupPassword">Password</label>
-                            <div class="password-wrapper">
-                                <input type="password" id="signupPassword" name="password" placeholder="Minimum 8 characters" autocomplete="new-password">
-                                <button type="button" id="toggleSignupPassword" class="toggle-password" aria-label="Show password"></button>
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <div class="grid gap-2" data-field-group>
+                            <label for="signupPassword" class="{{ $labelClass }}">Password</label>
+                            <div class="relative">
+                                <input type="password" id="signupPassword" name="password" class="{{ $inputClass }} pr-12" placeholder="Minimum 8 characters" autocomplete="new-password">
+                                <button type="button" id="toggleSignupPassword" class="absolute inset-y-0 right-0 inline-flex w-12 items-center justify-center text-slate-400 transition hover:text-slate-600" aria-label="Show password" aria-pressed="false">
+                                    <svg data-password-hidden-icon class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg data-password-visible-icon class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="m3 3 18 18"></path>
+                                        <path d="M10.6 10.7a3 3 0 0 0 4.2 4.2"></path>
+                                        <path d="M9.9 5.2A10.5 10.5 0 0 1 12 5c6 0 9.5 7 9.5 7a18.8 18.8 0 0 1-3.2 3.9"></path>
+                                        <path d="M6.2 6.2C3.9 7.9 2.5 12 2.5 12s3.5 7 9.5 7c1.7 0 3.2-.4 4.6-1.1"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <span class="error"></span>
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm Password</label>
-                            <div class="password-wrapper">
-                                <input type="password" id="confirmPassword" name="password_confirmation" placeholder="Repeat your password" autocomplete="new-password">
-                                <button type="button" id="toggleConfirmPassword" class="toggle-password" aria-label="Show password"></button>
+                        <div class="grid gap-2" data-field-group>
+                            <label for="confirmPassword" class="{{ $labelClass }}">Confirm Password</label>
+                            <div class="relative">
+                                <input type="password" id="confirmPassword" name="password_confirmation" class="{{ $inputClass }} pr-12" placeholder="Repeat your password" autocomplete="new-password">
+                                <button type="button" id="toggleConfirmPassword" class="absolute inset-y-0 right-0 inline-flex w-12 items-center justify-center text-slate-400 transition hover:text-slate-600" aria-label="Show password" aria-pressed="false">
+                                    <svg data-password-hidden-icon class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg data-password-visible-icon class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="m3 3 18 18"></path>
+                                        <path d="M10.6 10.7a3 3 0 0 0 4.2 4.2"></path>
+                                        <path d="M9.9 5.2A10.5 10.5 0 0 1 12 5c6 0 9.5 7 9.5 7a18.8 18.8 0 0 1-3.2 3.9"></path>
+                                        <path d="M6.2 6.2C3.9 7.9 2.5 12 2.5 12s3.5 7 9.5 7c1.7 0 3.2-.4 4.6-1.1"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <span class="error"></span>
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
                     </div>
 
-                    <div class="signup-actions signup-actions--single">
-                        <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+                    <div class="flex justify-end">
+                        <button type="button" class="{{ $buttonPrimaryClass }} min-w-[8rem]" id="nextBtn">Next</button>
                     </div>
                 </div>
 
-                <div class="form-step" data-step="2">
-                    <div class="form-group">
-                        <label for="addressLine1">Flat / House / Building</label>
-                        <input type="text" id="addressLine1" name="address_1" value="{{ old('address_1') }}" placeholder="Flat number, house, or building name">
-                        <span class="error"></span>
+                <div data-signup-panel data-step="2" class="grid gap-6 @if($initialStep !== 2) hidden @endif">
+                    <div class="grid gap-2" data-field-group>
+                        <label for="addressLine1" class="{{ $labelClass }}">Flat / House / Building</label>
+                        <input type="text" id="addressLine1" name="address_1" value="{{ old('address_1') }}" class="{{ $inputClass }}" placeholder="Flat number, house, or building name">
+                        <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                     </div>
 
-                    <div class="form-group">
-                        <label for="addressLine2">Area / Street / Sector</label>
-                        <input type="text" id="addressLine2" name="address_2" value="{{ old('address_2') }}" placeholder="Street, area, sector, or landmark">
-                        <span class="error"></span>
+                    <div class="grid gap-2" data-field-group>
+                        <label for="addressLine2" class="{{ $labelClass }}">Area / Street / Sector</label>
+                        <input type="text" id="addressLine2" name="address_2" value="{{ old('address_2') }}" class="{{ $inputClass }}" placeholder="Street, area, sector, or landmark">
+                        <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                     </div>
 
-                    <div class="signup-grid signup-grid--two">
-                        <div class="form-group">
-                            <label for="city">Town / City</label>
-                            <input type="text" id="city" name="city" value="{{ old('city') }}" placeholder="Mumbai">
-                            <span class="error"></span>
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <div class="grid gap-2" data-field-group>
+                            <label for="city" class="{{ $labelClass }}">Town / City</label>
+                            <input type="text" id="city" name="city" value="{{ old('city') }}" class="{{ $inputClass }}" placeholder="Mumbai">
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="pincode">Pincode</label>
-                            <input type="text" id="pincode" name="pincode" value="{{ old('pincode') }}" placeholder="400001" inputmode="numeric">
-                            <span class="error"></span>
+                        <div class="grid gap-2" data-field-group>
+                            <label for="pincode" class="{{ $labelClass }}">Pincode</label>
+                            <input type="text" id="pincode" name="pincode" value="{{ old('pincode') }}" class="{{ $inputClass }}" placeholder="400001" inputmode="numeric">
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
                     </div>
 
-                    <div class="signup-grid signup-grid--two">
-                        <div class="form-group">
-                            <label for="state">State / UT</label>
-                            <select id="state" name="state" data-old-value="{{ old('state') }}">
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <div class="grid gap-2" data-field-group>
+                            <label for="state" class="{{ $labelClass }}">State / UT</label>
+                            <select id="state" name="state" data-old-value="{{ old('state') }}" class="{{ $inputClass }}">
                                 <option value="">Select State / UT</option>
                             </select>
-                            <span class="error"></span>
+                            <p data-field-error class="hidden text-sm font-medium text-rose-600"></p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="countryDisplay">Country</label>
-                            <input type="text" id="countryDisplay" value="India" disabled>
+                        <div class="grid gap-2">
+                            <label for="countryDisplay" class="{{ $labelClass }}">Country</label>
+                            <input type="text" id="countryDisplay" value="India" disabled class="{{ $inputClass }} cursor-not-allowed bg-slate-100 text-slate-500">
                         </div>
                     </div>
 
-                    <div class="signup-actions">
-                        <button type="button" class="btn btn-outline" id="backBtn">Back</button>
-                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <button type="button" class="{{ $buttonSecondaryClass }}" id="backBtn">Back</button>
+                        <button type="submit" class="{{ $buttonPrimaryClass }}" id="signupSubmitBtn">Sign Up</button>
                     </div>
                 </div>
             </form>

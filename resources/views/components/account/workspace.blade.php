@@ -17,7 +17,7 @@
     $gridClass = $framed
         ? 'grid w-full gap-8 lg:grid-cols-[15.5rem_minmax(0,1fr)]'
         : 'grid w-full gap-8 px-4 pb-12 sm:px-6 lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:px-6 xl:px-0';
-    $outerClass = $framed ? 'mx-auto w-full max-w-[1120px] pb-12' : 'mx-auto w-full max-w-[1120px]';
+    $outerClass = $framed ? 'mx-auto w-full max-w-[1456px] pb-12' : 'mx-auto w-full max-w-[1456px]';
 @endphp
 
 <div class="{{ $outerClass }}">

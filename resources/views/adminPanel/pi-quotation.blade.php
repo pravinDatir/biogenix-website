@@ -8,7 +8,7 @@
 
     <!-- Breadcrumb -->
     <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-        <a href="{{ route('adminPanel.dashboard') }}" class="hover:text-slate-900 transition flex items-center gap-1.5">
+        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
             Admin
         </a>
         <span class="mx-2 text-slate-300">/</span>
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Add Button -->
-            <a href="{{ route('adminPanel.pi-quotation.create') }}" class="inline-flex shrink-0 items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#091b3f] hover:bg-[#112347] transition shadow-[0_2px_10px_-3px_rgba(6,81,237,0.2)] gap-2">
+            <a href="{{ route('adminPanel.pi-quotation.create') }}" class="ajax-link inline-flex shrink-0 items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#091b3f] hover:bg-[#112347] transition shadow-[0_2px_10px_-3px_rgba(6,81,237,0.2)] gap-2">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                 Create New PI
             </a>

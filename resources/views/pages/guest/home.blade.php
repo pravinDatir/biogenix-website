@@ -450,7 +450,7 @@
     <section class="home-hero relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
         <div class="home-hero-track-overlay absolute inset-0 opacity-30"></div>
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
-            <div id="heroTrack" class="flex h-full w-full transition-transform duration-700 ease-out">
+            <div id="heroTrack" class="flex h-full w-full translate-x-0 transition-transform duration-700 ease-out">
                 @foreach ($heroSlides ?? [] as $slide)
                     <article class="relative h-full w-full shrink-0">
                         <img
@@ -462,7 +462,7 @@
                         >
                         <div class="absolute inset-0 bg-[radial-gradient(circle_at_22%_28%,rgba(7,17,31,0.28),transparent_22%),linear-gradient(105deg,rgba(7,17,31,0.98)_10%,rgba(7,17,31,0.84)_44%,rgba(7,17,31,0.62)_62%,rgba(7,17,31,0.9)_100%)]"></div>
 
-                        <div class="container relative z-10 grid min-h-[calc(100vh-88px)] grid-cols-1 gap-8 py-10 pb-28 md:py-14 lg:grid-cols-12">
+                        <div class="relative z-10 mx-auto grid min-h-[calc(100vh-88px)] w-full max-w-none grid-cols-1 gap-8 px-4 py-10 pb-28 sm:px-6 md:py-14 lg:grid-cols-12 lg:px-8 xl:px-10">
                             <div class="home-reveal flex flex-col justify-center lg:col-span-7">
                                 <div class="home-hero-copy-shell">
                                     <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
@@ -512,7 +512,7 @@
 
         {{-- Dots + Icon Arrows --}}
         <div class="pointer-events-none absolute bottom-5 left-0 right-0 z-20 sm:bottom-6">
-            <div class="container flex items-center justify-between gap-3">
+            <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between gap-3">
                 <div id="heroDots" class="pointer-events-auto flex items-center gap-2">
                     @foreach ($heroSlides ?? [] as $slide)
                         <button
@@ -548,7 +548,7 @@
     {{-- STATS / SOCIAL PROOF STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-stats border-b border-transparent bg-transparent py-8">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <dl class="home-stats-shell grid grid-cols-2 gap-6 rounded-[2rem] px-5 py-6 sm:grid-cols-4 sm:px-6">
                 @foreach ([
                     ['value' => '5,000+', 'label' => 'Products Listed', 'icon' => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'],
@@ -576,7 +576,7 @@
     {{-- CORE PRODUCT CATEGORIES (with hover overlay + count badge) --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-categories bg-transparent py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
             </div>
@@ -629,7 +629,7 @@
     {{-- CLINICAL & BUSINESS SOLUTIONS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-solutions py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <x-ui.section-heading title="Clinical &amp; Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
             </div>
@@ -670,7 +670,7 @@
     {{-- PARTNER / BRAND TRUST BAR --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-trust border-y border-slate-100 py-8">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <p class="mb-6 text-center text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Trusted by leading healthcare institutions &amp; diagnostic brands</p>
             <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10">
                 @foreach ([
@@ -701,7 +701,7 @@
     {{-- SAME-DAY DELIVERY + NEWSLETTER --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-newsletter bg-transparent py-12 md:py-16">
-        <div class="container grid grid-cols-1 gap-5 xl:grid-cols-12">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
             <article class="home-delivery-card home-reveal rounded-3xl p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8">
                 <div class="home-delivery-content">
                     <span class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow local support</span>
@@ -720,9 +720,9 @@
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
                     <div>
                         <label for="newsletterEmail" class="mb-2 block text-sm font-semibold text-slate-700">Work Email</label>
-                        <input id="newsletterEmail" type="email" class="home-input" placeholder="you@organization.com" required>
+                        <input id="newsletterEmail" type="email" class="block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10" placeholder="you@organization.com" required>
                     </div>
-                    <button type="submit" id="newsletterSubmitBtn" class="home-primary-button w-full">Subscribe</button>
+                    <button type="submit" id="newsletterSubmitBtn" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20">Subscribe</button>
                     <p id="newsletterStatus" class="min-h-[1.25rem] text-sm font-medium text-slate-600"></p>
                 </form>
             </article>
@@ -733,7 +733,7 @@
     {{-- WHY BIOGENIX --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-why bg-transparent py-12 md:py-16">
-        <div class="container grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-12 lg:px-8 xl:px-10">
             <article class="home-reveal min-h-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-xl md:min-h-[22rem] lg:col-span-6">
                 <img src="{{ asset('storage/slides/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
             </article>
@@ -747,7 +747,7 @@
                         ['title' => 'Compliance-Ready', 'copy' => 'Quality-first processes aligned to regulated healthcare operations.', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
                         ['title' => 'Consultative Service', 'copy' => 'Pre-sale and post-sale support for clinical and procurement teams.', 'icon' => 'M8 10h8M8 14h5M12 3c4.97 0 9 3.58 9 8 0 1.95-.78 3.74-2.07 5.16L20 21l-5.04-1.68A10.5 10.5 0 0 1 12 20c-4.97 0-9-3.58-9-8s4.03-9 9-9Z'],
                     ] as $value)
-                        <article class="home-panel group flex gap-3.5">
+                        <article class="group flex gap-3.5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                             <span class="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 transition group-hover:bg-primary-600 group-hover:text-white">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="{{ $value['icon'] }}" />
@@ -768,7 +768,7 @@
     {{-- TESTIMONIALS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-testimonials bg-transparent py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <x-ui.section-heading title="What Our Clients Say" subtitle="Trusted by procurement heads, lab managers, and healthcare institutions across India." />
             </div>
@@ -832,7 +832,7 @@
     {{-- INSIGHTS & UPDATES (with icon thumbnails) --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-insights bg-transparent py-12 md:py-16">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <x-ui.section-heading title="Insights &amp; Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
             </div>
@@ -893,7 +893,7 @@
     {{-- FINAL CTA STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-cta py-12 text-white md:py-14">
-        <div class="container text-center">
+        <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <h2 class="font-['Sora'] text-2xl font-semibold text-white md:text-4xl">Need a faster procurement decision?</h2>
                 <p class="mx-auto mt-3 max-w-3xl text-sm text-slate-200 md:text-base">

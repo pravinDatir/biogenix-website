@@ -16,7 +16,7 @@
     <link rel="icon" type="image/jpeg" href="{{ asset('storage/slides/logo.jpg') }}?v=20260309">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
     <div class="min-h-screen">
         <header class="border-b border-slate-200 bg-white/95 backdrop-blur">
             <div class="mx-auto flex w-full max-w-none flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8 xl:px-10">

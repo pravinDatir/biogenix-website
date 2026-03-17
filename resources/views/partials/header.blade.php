@@ -54,7 +54,7 @@
             @foreach ($navItems as $nav)
                 <a
                     href="{{ $nav['href'] }}"
-                    class="relative rounded-lg px-3 py-2 text-sm font-medium text-slate-600 no-underline transition hover:bg-slate-100 hover:text-slate-900 {{ $currentRoute === $nav['route'] ? 'nav-link-active' : '' }}"
+                    class="relative rounded-lg px-3 py-2 text-sm font-medium no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
                 >
                     {{ $nav['label'] }}
                 </a>

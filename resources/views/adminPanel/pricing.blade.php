@@ -8,7 +8,7 @@
 
     <!-- Breadcrumb -->
     <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-        <a href="{{ route('adminPanel.dashboard') }}" class="hover:text-slate-900 transition flex items-center gap-1.5">
+        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
             Admin
         </a>
         <span class="mx-2 text-slate-300">/</span>
@@ -22,10 +22,10 @@
             <p class="text-sm text-slate-500 mt-1 max-w-2xl">Manage global price matrices, quantity-based discounts, and custom overrides for Biogenix products.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-            <button class="px-5 py-2.5 rounded-lg text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm">
+            <button onclick="AdminConfirm.show({title:'Discard Draft?',message:'All unsaved pricing changes will be lost.',confirmText:'Discard',danger:true}).then(r=>{if(r)AdminToast.show('Draft discarded','info')})" class="px-5 py-2.5 rounded-lg text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm">
                 Discard Draft
             </button>
-            <button class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20">
+            <button onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Pricing changes published successfully!','success')},1500)" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20">
                 Publish Changes
             </button>
         </div>

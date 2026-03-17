@@ -12,7 +12,7 @@
     <section class="relative overflow-hidden bg-slate-900 py-16 text-white md:py-24">
         <img src="{{ asset('storage/slides/image3.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-r from-primary-950/90 via-slate-900/80 to-slate-900/40"></div>
-        <div class="container relative z-10 text-center">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
                 <a href="{{ route('home') }}">Home</a>
                 <span>/</span>
@@ -29,7 +29,7 @@
     </section>
 
     <section class="bg-slate-50 py-12 md:py-20">
-        <div class="container grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8 xl:px-10">
             <div class="flex flex-col justify-center space-y-8 lg:col-span-5">
                 <div>
                     <h2 class="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">Why book a meeting?</h2>
@@ -178,7 +178,7 @@
     </section>
 
     <section class="bg-white py-14 md:py-18">
-        <div class="container">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Meeting Formats" subtitle="Pick a format that fits your objective: commercial, technical, or strategic." />
             <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
                 @foreach ([
@@ -186,7 +186,7 @@
                     ['title' => 'Solution Deep Dive (30-40 min)', 'copy' => 'Technical deep dive with specs, compatibility, validation approach, and QA expectations.'],
                     ['title' => 'Procurement Alignment (25-30 min)', 'copy' => 'Commercial and logistics review: SLAs, delivery windows, payment terms, and governance.'],
                 ] as $format)
-                    <article class="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl animate-rise md:p-8">
+                    <article class="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl md:p-8">
                         <h3 class="text-xl font-semibold text-slate-900">{{ $format['title'] }}</h3>
                         <p class="mt-3 text-sm leading-6 text-slate-600">{{ $format['copy'] }}</p>
                     </article>
@@ -196,7 +196,7 @@
     </section>
 
     <section class="bg-slate-50 py-14 md:py-18">
-        <div class="container grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:items-center lg:px-8 xl:px-10">
             <div class="space-y-4 lg:col-span-6">
                 <x-ui.section-heading title="Pre-Read & Checklist" subtitle="Arrive prepared and get more value from your slot." />
                 <ul class="space-y-3 text-sm text-slate-700">
@@ -211,7 +211,7 @@
                 </div>
             </div>
             <div class="lg:col-span-6">
-                <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm animate-rise md:p-8">
+                <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
                     <div class="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-primary-50 opacity-60 blur-3xl"></div>
                     <h3 class="text-2xl font-bold text-slate-900">What we'll bring</h3>
                     <div class="mt-4 space-y-3 text-sm text-slate-700">
@@ -228,7 +228,7 @@
     </section>
 
     <section class="bg-white py-12 md:py-16">
-        <div class="container text-center">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 text-center">
             <h2 class="text-3xl font-semibold tracking-tight text-slate-950">Need immediate assistance?</h2>
             <p class="mx-auto mt-2 max-w-2xl text-base leading-8 text-slate-600">If your request is urgent, skip the meeting booking and talk to our support desk right now.</p>
             <div class="mt-6 flex justify-center gap-4">

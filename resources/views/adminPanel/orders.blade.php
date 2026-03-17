@@ -21,6 +21,10 @@
             <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Order Management</h1>
             <p class="text-sm text-slate-500 mt-1">Review and track medical supply chain operations across all regions.</p>
         </div>
+        <button id="exportCsvBtn" onclick="exportOrdersCSV()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition shadow-sm shrink-0">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            Export CSV
+        </button>
     </div>
 
     <!-- Main Card container matching Dashboard specifications -->
@@ -36,29 +40,29 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input type="text" placeholder="Search Order ID, Client, or SKU..." class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                <input id="orderSearch" type="text" placeholder="Search Order ID, Client, or SKU..." class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
             </div>
 
             <!-- Status Pills -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
-                <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-[#091b3f] text-white">All Orders</a>
-                <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Pending</a>
-                <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Processing</a>
-                <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Dispatched</a>
-                <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Delivered</a>
-                <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Cancelled</a>
+            <div id="statusPills" class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
+                <button data-status="all" class="status-pill active inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-[#091b3f] text-white">All Orders</button>
+                <button data-status="Pending" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Pending</button>
+                <button data-status="Processing" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Processing</button>
+                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Dispatched</button>
+                <button data-status="Delivered" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Delivered</button>
+                <button data-status="Cancelled" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Cancelled</button>
             </div>
         </div>
 
         <!-- Table -->
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse whitespace-nowrap">
+            <table id="ordersTable" class="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Order ID</th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Customer Name</th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Date</th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Total Amount</th>
+                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="id">Order ID <span class="sort-icon">↕</span></th>
+                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="customer">Customer Name <span class="sort-icon">↕</span></th>
+                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="date">Date <span class="sort-icon">↕</span></th>
+                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="amount">Total Amount <span class="sort-icon">↕</span></th>
                         <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Payment Status</th>
                         <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Fulfillment</th>
                         <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
@@ -91,9 +95,9 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </button>
+                                </a>
                                 <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
@@ -129,9 +133,9 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </button>
+                                </a>
                                 <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
@@ -167,9 +171,9 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </button>
+                                </a>
                                 <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
@@ -205,9 +209,9 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.943 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </button>
+                                </a>
                                 <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
@@ -243,9 +247,9 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </button>
+                                </a>
                                 <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
@@ -261,8 +265,8 @@
 
         <!-- Pagination -->
         <div class="px-5 lg:px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-[13px] text-slate-500 font-medium">
-                Showing 1-5 of 48 results
+            <p id="orderCount" class="text-[13px] text-slate-500 font-medium">
+                Showing 5 of 5 results
             </p>
             <div class="flex items-center gap-2">
                 <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition">
@@ -284,3 +288,75 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+// ─── Status pill filter ───
+document.querySelectorAll('.status-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+        document.querySelectorAll('.status-pill').forEach(p => {
+            p.classList.remove('bg-[#091b3f]', 'text-white', 'active');
+            p.classList.add('bg-slate-50', 'text-slate-600', 'border', 'border-slate-200');
+        });
+        pill.classList.remove('bg-slate-50', 'text-slate-600', 'border', 'border-slate-200');
+        pill.classList.add('bg-[#091b3f]', 'text-white', 'active');
+        filterOrders();
+    });
+});
+
+// ─── Search filter ───
+document.getElementById('orderSearch')?.addEventListener('input', filterOrders);
+
+function filterOrders() {
+    const search = (document.getElementById('orderSearch')?.value || '').toLowerCase();
+    const activeStatus = document.querySelector('.status-pill.active')?.dataset.status || 'all';
+    const rows = document.querySelectorAll('#ordersTable tbody tr');
+    let visible = 0;
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const fulfillment = row.querySelector('td:nth-child(6)')?.textContent.trim() || '';
+        const matchSearch = !search || text.includes(search);
+        const matchStatus = activeStatus === 'all' || fulfillment === activeStatus;
+        row.style.display = (matchSearch && matchStatus) ? '' : 'none';
+        if (matchSearch && matchStatus) visible++;
+    });
+    const countEl = document.getElementById('orderCount');
+    if (countEl) countEl.textContent = `Showing ${visible} of ${rows.length} results`;
+}
+
+// ─── Column sorting ───
+document.querySelectorAll('#ordersTable th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+        const key = th.dataset.sort;
+        const tbody = document.querySelector('#ordersTable tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const asc = th.classList.toggle('sort-asc');
+        rows.sort((a, b) => {
+            let va, vb;
+            if (key === 'id') { va = a.cells[0].textContent; vb = b.cells[0].textContent; }
+            else if (key === 'customer') { va = a.cells[1].textContent.trim(); vb = b.cells[1].textContent.trim(); }
+            else if (key === 'date') { va = new Date(a.cells[2].textContent.trim()); vb = new Date(b.cells[2].textContent.trim()); return asc ? va - vb : vb - va; }
+            else if (key === 'amount') { va = parseFloat(a.cells[3].textContent.replace(/[^0-9.]/g,'')); vb = parseFloat(b.cells[3].textContent.replace(/[^0-9.]/g,'')); return asc ? va - vb : vb - va; }
+            return asc ? va.localeCompare(vb) : vb.localeCompare(va);
+        });
+        rows.forEach(r => tbody.appendChild(r));
+        document.querySelectorAll('#ordersTable .sort-icon').forEach(s => s.textContent = '↕');
+        th.querySelector('.sort-icon').textContent = asc ? '↑' : '↓';
+    });
+});
+
+// ─── Export CSV ───
+function exportOrdersCSV() {
+    const rows = document.querySelectorAll('#ordersTable tbody tr');
+    let csv = 'Order ID,Customer,Date,Amount,Payment,Fulfillment\n';
+    rows.forEach(row => {
+        if (row.style.display === 'none') return;
+        const cells = row.querySelectorAll('td');
+        csv += `${cells[0].textContent.trim()},"${cells[1].textContent.trim().replace(/\s+/g,' ')}",${cells[2].textContent.trim()},${cells[3].textContent.trim()},${cells[4].textContent.trim()},${cells[5].textContent.trim()}\n`;
+    });
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'orders_export.csv'; a.click();
+    AdminToast.show('Orders exported successfully!', 'success');
+}
+</script>
+@endpush
