@@ -5,7 +5,7 @@
     <div class="mx-auto flex w-full max-w-[96rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         
         {{-- Mobile sidebar toggle --}}
-        <button id="mobile-sidebar-toggle" class="fixed bottom-6 left-6 z-[999] lg:hidden h-12 w-12 rounded-full bg-[#091b3f] text-white shadow-lg flex items-center justify-center hover:bg-slate-800 transition">
+        <button id="mobile-sidebar-toggle" class="fixed bottom-6 left-6 z-[999] lg:hidden h-12 w-12 rounded-full bg-[#091b3f] text-white shadow-lg flex items-center justify-center hover:bg-slate-800 transition cursor-pointer">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
 
@@ -42,7 +42,7 @@
 </div>
 
 {{-- Scroll-to-top button --}}
-<button id="admin-scroll-top" class="fixed bottom-6 right-6 z-[990] h-10 w-10 rounded-full bg-[#091b3f] text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-slate-700 translate-y-4">
+<button id="admin-scroll-top" class="fixed bottom-6 right-6 z-[990] h-10 w-10 rounded-full bg-[#091b3f] text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-slate-700 translate-y-4 cursor-pointer">
     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
 </button>
 

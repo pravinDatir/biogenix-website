@@ -40,7 +40,7 @@ window.AdminToast = {
         toast.innerHTML = `
             <div class="flex-shrink-0 mt-0.5">${this.icons[type] || this.icons.info}</div>
             <p class="text-[13px] font-semibold text-slate-800 leading-relaxed flex-1">${message}</p>
-            <button class="flex-shrink-0 mt-0.5 text-slate-400 hover:text-slate-600 transition" onclick="this.closest('.admin-toast').classList.add('removing');setTimeout(()=>this.closest('.admin-toast').remove(),300)">
+            <button class="flex-shrink-0 mt-0.5 text-slate-400 hover:text-slate-600 transition cursor-pointer" onclick="this.closest('.admin-toast').classList.add('removing');setTimeout(()=>this.closest('.admin-toast').remove(),300)">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         `;

@@ -13,8 +13,8 @@
                 </div>
             </div>
             <div class="flex justify-end gap-3 mt-6">
-                <button id="confirm-cancel-btn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition">Cancel</button>
-                <button id="confirm-action-btn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 transition shadow-sm">Confirm</button>
+                <button id="confirm-cancel-btn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
+                <button id="confirm-action-btn" class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 transition shadow-sm cursor-pointer">Confirm</button>
             </div>
         </div>
     </div>
