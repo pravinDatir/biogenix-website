@@ -40,6 +40,11 @@ Route::view('/adminPanel/pi-quotation', 'adminPanel.pi-quotation')->name('adminP
 Route::view('/adminPanel/pi-quotation/create', 'adminPanel.pi-quotation-create')->name('adminPanel.pi-quotation.create');
 Route::view('/adminPanel/orders', 'adminPanel.orders')->name('adminPanel.orders');
 Route::view('/adminPanel/orders/view', 'adminPanel.order-details')->name('adminPanel.orders.view');
+Route::view('/adminPanel/customers', 'adminPanel.customers')->name('adminPanel.customers');
+Route::view('/adminPanel/customer-directory', 'adminPanel.customer-directory')->name('adminPanel.customer-directory');
+Route::view('/adminPanel/role-permission', 'adminPanel.role-permission')->name('adminPanel.role-permission');
+Route::view('/adminPanel/support-tickets', 'adminPanel.support-tickets')->name('adminPanel.support-tickets');
+Route::view('/adminPanel/ui-fields-modification', 'adminPanel.ui-fields-modification')->name('adminPanel.ui-fields-modification');
 Route::get('/cart', [CartController::class, 'showCustomerCartPage'])->name('cart.page');
 Route::get('/checkout', [CartController::class, 'showCustomerCheckoutPage'])->name('checkout.page');
 Route::middleware('auth')->post('/checkout', [CartController::class, 'submitCustomerCheckoutOrder'])->name('checkout.submit');
