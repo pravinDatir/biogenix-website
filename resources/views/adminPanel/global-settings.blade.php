@@ -3,100 +3,118 @@
 @section('title', 'Global Settings - Biogenix Admin')
 
 @section('admin_content')
+@php
+    $themeModes = [
+        [
+            'title' => 'Light Mode',
+            'selected' => true,
+            'icon_type' => 'sun',
+        ],
+        [
+            'title' => 'Dark Mode',
+            'selected' => false,
+            'icon_type' => 'moon',
+        ],
+        [
+            'title' => 'System Default',
+            'selected' => false,
+            'icon_type' => 'system',
+        ],
+    ];
+@endphp
 
-<div class="space-y-10 pb-20 relative min-h-[calc(100vh-100px)] flex flex-col">
-
-    {{-- ─── Page Header ─── --}}
-    <div class="mb-2">
-        <h1 class="text-3xl font-extrabold text-[#0f172a] tracking-tight">General Configuration</h1>
-        <p class="text-sm text-slate-500 mt-1">Manage your organization's theme preferences and portal appearance.</p>
+<div class="min-h-[calc(100vh-8rem)] space-y-8 pb-24">
+    <div>
+        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">General Configuration</h2>
+        <p class="mt-1 text-sm text-slate-500">Manage your organization's theme preferences and portal appearance.</p>
     </div>
 
-    {{-- ─── Settings Sections ─── --}}
-    <div class="space-y-10 flex-1">
-        
-        {{-- Theme Mode Section --}}
-        <section>
-            <div class="flex items-center gap-2 mb-4">
-                <svg class="h-5 w-5 text-[#091b3f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-                <h2 class="text-[17px] font-extrabold text-[#0f172a]">Theme Mode</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {{-- Active Light Mode Card --}}
-                <div class="bg-[#f8fafc]/50 border-2 border-[#091b3f] rounded-xl p-6 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm relative transition duration-200">
-                    <svg class="h-7 w-7 text-[#0f172a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <span class="text-[13px] font-bold text-[#0f172a]">Light Mode</span>
-                </div>
+    <section class="space-y-4">
+        <div class="flex items-center gap-2">
+            <svg class="h-5 w-5 text-[#091b3f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a1 1 0 011 1v1.05a7.002 7.002 0 015.95 5.95H20a1 1 0 110 2h-1.05a7.002 7.002 0 01-5.95 5.95V20a1 1 0 11-2 0v-1.05a7.002 7.002 0 01-5.95-5.95H4a1 1 0 110-2h1.05a7.002 7.002 0 015.95-5.95V4a1 1 0 011-1zm0 6a3 3 0 100 6 3 3 0 000-6z" />
+            </svg>
+            <h3 class="text-base font-bold text-slate-900">Theme Mode</h3>
+        </div>
 
-                {{-- Inactive Dark Mode Card --}}
-                <div class="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-6 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm transition duration-200 group">
-                    <svg class="h-7 w-7 text-slate-700 group-hover:text-slate-900 transition" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                    </svg>
-                    <span class="text-[13px] font-bold text-slate-700 group-hover:text-slate-900 transition">Dark Mode</span>
-                </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:gap-6">
+            @foreach ($themeModes as $mode)
+                <button
+                    type="button"
+                    class="flex min-h-[128px] flex-col items-center justify-center gap-4 rounded-2xl p-6 text-center transition
+                    {{ $mode['selected']
+                        ? 'border-2 border-[#091b3f] bg-slate-50/60 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.12)]'
+                        : 'border border-slate-200 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:border-slate-300 hover:bg-slate-50/40'
+                    }}">
+                    @if ($mode['icon_type'] === 'sun')
+                        <svg class="h-8 w-8 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1.5m0 15V21m9-9h-1.5M4.5 12H3m15.364 6.364-1.06-1.06M6.696 6.696 5.636 5.636m12.728 0-1.06 1.06M6.696 17.304l-1.06 1.06M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    @elseif ($mode['icon_type'] === 'moon')
+                        <svg class="h-8 w-8 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                        </svg>
+                    @else
+                        <svg class="h-8 w-8 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1.25-3H4.5l2.75-2.125L6 11.5l3 1.875 3-1.875-1.25 3.375L13.5 17H9.75z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 7h6v10h-6zM4 7h6v10H4z" />
+                        </svg>
+                    @endif
 
-                {{-- Inactive System Default Card --}}
-                <div class="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-6 flex flex-col items-center justify-center gap-3 cursor-pointer shadow-sm transition duration-200 group">
-                    <svg class="h-7 w-7 text-slate-700 group-hover:text-slate-900 transition" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.228l-1.002 1.336A1 1 0 0110.97 18H9.03a1 1 0 01-.8-.4l-1.002-1.336H5a2 2 0 01-2-2V5zm12 8V5H5v8h10z" clip-rule="evenodd" />
-                        <path d="M9 10a1 1 0 100-2 1 1 0 000 2z" />
-                    </svg>
-                    <span class="text-[13px] font-bold text-slate-700 group-hover:text-slate-900 transition">System Default</span>
-                </div>
-            </div>
-        </section>
+                    <span class="text-[13px] font-bold text-slate-900">{{ $mode['title'] }}</span>
+                </button>
+            @endforeach
+        </div>
+    </section>
 
-        {{-- Portal Color Theme Section --}}
-        <section>
-            <div class="flex items-center gap-2 mb-4">
-                <svg class="h-5 w-5 text-[#091b3f] -rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-                <h2 class="text-[17px] font-extrabold text-[#0f172a]">Portal Color Theme</h2>
-            </div>
-            
-            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-x-auto">
-                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-5">Select a preset palette</p>
-                
-                <div class="flex flex-nowrap items-center gap-6 sm:gap-8 min-w-max">
-                    {{-- Active Biogenix Blue --}}
-                    <div class="border border-[#091b3f] rounded-lg p-2.5 flex items-center gap-3 cursor-pointer bg-slate-50/50">
-                        <div class="w-7 h-7 rounded-full bg-[#091b3f] ring-2 ring-white shadow-sm flex-shrink-0"></div>
-                        <span class="text-[13px] font-bold text-[#091b3f] pr-1">Biogenix Blue</span>
+    <section class="space-y-4">
+        <div class="flex items-center gap-2">
+            <svg class="h-5 w-5 -rotate-45 text-[#091b3f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            <h3 class="text-base font-bold text-slate-900">Portal Color Theme</h3>
+        </div>
+
+        <div class="rounded-2xl border border-slate-100 bg-white p-6 lg:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+            <p class="mb-6 text-[11px] font-bold uppercase tracking-widest text-slate-400">Select a preset palette</p>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 lg:gap-6">
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border-2 border-[#091b3f] bg-white p-3.5 text-left shadow-sm">
+                    <div class="relative h-8 w-8 flex-shrink-0 rounded-full bg-[#1f3a8a]">
+                        <span class="absolute inset-[-5px] rounded-full border-2 border-[#091b3f]"></span>
+                        <span class="absolute inset-[-9px] rounded-full border border-[#c7d2fe]"></span>
                     </div>
+                    <span class="text-[13px] font-bold text-[#091b3f]">Biogenix Blue</span>
+                </button>
 
-                    {{-- Inactive Forest Green --}}
-                    <div class="p-2.5 flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition rounded-lg group">
-                        <div class="w-7 h-7 rounded-full bg-[#047857] shadow-sm flex-shrink-0 group-hover:ring-2 ring-transparent transition"></div>
-                        <span class="text-[13px] font-bold text-slate-600 group-hover:text-slate-900 transition">Forest Green</span>
-                    </div>
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-[#0f766e] shadow-sm"></span>
+                    <span class="text-[13px] font-bold text-slate-700">Forest Green</span>
+                </button>
 
-                    {{-- Inactive Modern Indigo --}}
-                    <div class="p-2.5 flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition rounded-lg group">
-                        <div class="w-7 h-7 rounded-full bg-[#4f46e5] shadow-sm flex-shrink-0 group-hover:ring-2 ring-transparent transition"></div>
-                        <span class="text-[13px] font-bold text-slate-600 group-hover:text-slate-900 transition">Modern Indigo</span>
-                    </div>
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-[#4338ca] shadow-sm"></span>
+                    <span class="text-[13px] font-bold text-slate-700">Modern Indigo</span>
+                </button>
 
-                    {{-- Inactive Midnight Black --}}
-                    <div class="p-2.5 flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition rounded-lg group">
-                        <div class="w-7 h-7 rounded-full bg-[#0f172a] shadow-sm flex-shrink-0 group-hover:ring-2 ring-transparent transition"></div>
-                        <span class="text-[13px] font-bold text-slate-600 group-hover:text-slate-900 transition">Midnight Black</span>
-                    </div>
-                </div>
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-[#111827] shadow-sm"></span>
+                    <span class="text-[13px] font-bold text-slate-700">Midnight Black</span>
+                </button>
             </div>
-        </section>
-        
+        </div>
+    </section>
+
+    <div class="sticky bottom-0 z-10 -mx-4 border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:-mx-12 xl:px-12 2xl:-mx-16 2xl:px-16">
+        <div class="flex items-center justify-end gap-4">
+            <button type="button" class="text-[13px] font-bold text-slate-600 transition hover:text-slate-900">
+                Discard Changes
+            </button>
+            <button type="button" class="inline-flex items-center justify-center rounded-xl bg-[#091b3f] px-8 py-3 text-[13px] font-bold text-white shadow-[0_6px_18px_-6px_rgba(9,27,63,0.45)] transition hover:bg-[#112347]">
+                Save Changes
+            </button>
+        </div>
     </div>
-
-    {{-- ─── Bottom Actions ─── --}}
-    <!-- Actions removed as requested -->
-
 </div>
 
 @endsection
