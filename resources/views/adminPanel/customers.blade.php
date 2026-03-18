@@ -6,7 +6,7 @@
 
     {{-- Breadcrumb --}}
     <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition">Admin</a>
+        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition cursor-pointer">Admin</a>
         <span class="mx-2 text-slate-300">/</span>
         <span class="text-slate-900 font-semibold">Customer Management</span>
     </nav>
@@ -27,7 +27,7 @@
                 </div>
                 <input id="global-customer-search" type="text" placeholder="Global search..." class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
             </div>
-            <button id="btn-add-customer" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0">
+            <button id="btn-add-customer" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -45,7 +45,7 @@
                 </svg>
                 <span class="text-sm font-bold text-amber-800">Pending User Verifications (3)</span>
             </div>
-            <button class="text-[12px] font-bold text-amber-700 hover:text-amber-900 transition">View All Pending</button>
+            <button class="text-[12px] font-bold text-amber-700 hover:text-amber-900 transition cursor-pointer">View All Pending</button>
         </div>
         <div class="space-y-2.5" id="pending-list">
 
@@ -59,8 +59,8 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button onclick="handleVerification(this, 'approve', 1)" class="px-4 py-1.5 bg-[#091b3f] hover:bg-[#112347] text-white text-[12px] font-bold rounded-lg transition">Approve</button>
-                    <button onclick="handleVerification(this, 'reject', 1)" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12px] font-bold rounded-lg transition">Reject</button>
+                    <button onclick="handleVerification(this, 'approve', 1)" class="px-4 py-1.5 bg-[#091b3f] hover:bg-[#112347] text-white text-[12px] font-bold rounded-lg transition cursor-pointer">Approve</button>
+                    <button onclick="handleVerification(this, 'reject', 1)" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12px] font-bold rounded-lg transition cursor-pointer">Reject</button>
                 </div>
             </div>
 
@@ -74,8 +74,8 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button onclick="handleVerification(this, 'approve', 2)" class="px-4 py-1.5 bg-[#091b3f] hover:bg-[#112347] text-white text-[12px] font-bold rounded-lg transition">Approve</button>
-                    <button onclick="handleVerification(this, 'reject', 2)" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12px] font-bold rounded-lg transition">Reject</button>
+                    <button onclick="handleVerification(this, 'approve', 2)" class="px-4 py-1.5 bg-[#091b3f] hover:bg-[#112347] text-white text-[12px] font-bold rounded-lg transition cursor-pointer">Approve</button>
+                    <button onclick="handleVerification(this, 'reject', 2)" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12px] font-bold rounded-lg transition cursor-pointer">Reject</button>
                 </div>
             </div>
 
@@ -89,8 +89,8 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button onclick="handleVerification(this, 'approve', 3)" class="px-4 py-1.5 bg-[#091b3f] hover:bg-[#112347] text-white text-[12px] font-bold rounded-lg transition">Approve</button>
-                    <button onclick="handleVerification(this, 'reject', 3)" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12px] font-bold rounded-lg transition">Reject</button>
+                    <button onclick="handleVerification(this, 'approve', 3)" class="px-4 py-1.5 bg-[#091b3f] hover:bg-[#112347] text-white text-[12px] font-bold rounded-lg transition cursor-pointer">Approve</button>
+                    <button onclick="handleVerification(this, 'reject', 3)" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[12px] font-bold rounded-lg transition cursor-pointer">Reject</button>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
                     <p class="text-[12px] text-slate-500 font-medium mt-0.5">ID: #CUST-99021</p>
                     <span class="mt-2 inline-flex items-center px-2.5 py-1 bg-[#091b3f] text-white text-[10px] font-bold rounded-full">CURRENT: B2B</span>
                     <div class="mt-3">
-                        <button id="change-selection-btn" class="text-[12px] font-bold text-[#091b3f] hover:underline focus:outline-none">Change Selection</button>
+                        <button id="change-selection-btn" class="text-[12px] font-bold text-[#091b3f] hover:underline focus:outline-none cursor-pointer">Change Selection</button>
                     </div>
                 </div>
             </div>
@@ -127,7 +127,7 @@
                     <p class="text-[11px] text-slate-400 italic mt-1.5">Financial limit specifically for B2B wholesale accounts.</p>
                 </div>
                 <div class="mt-4 flex justify-end">
-                    <button id="btn-update-params" onclick="updateParameters()" class="bg-[#091b3f] hover:bg-[#112347] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-[#091b3f]/20 transition">Update Parameters</button>
+                    <button id="btn-update-params" onclick="updateParameters()" class="bg-[#091b3f] hover:bg-[#112347] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-[#091b3f]/20 transition cursor-pointer">Update Parameters</button>
                 </div>
             </div>
         </div>
@@ -158,7 +158,7 @@
                     </div>
                 </div>
                 {{-- Filters button --}}
-                <button id="btn-filters" class="flex items-center gap-1.5 bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2 hover:border-slate-300 transition">
+                <button id="btn-filters" class="flex items-center gap-1.5 bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2 hover:border-slate-300 transition cursor-pointer">
                     <svg class="h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
                     </svg>
@@ -210,7 +210,7 @@
                             default  => 'bg-[#f1f5f9] text-[#64748b]',
                         };
                     @endphp
-                    <tr class="hover:bg-slate-50/50 transition-colors group customer-row" data-name="{{ strtolower($c['name']) }}" data-category="{{ $c['category'] }}">
+                    <tr class="hover:bg-slate-50/50 transition-colors group customer-row cursor-pointer" data-name="{{ strtolower($c['name']) }}" data-category="{{ $c['category'] }}">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="h-8 w-8 rounded-full text-white flex items-center justify-center text-[10px] font-black shrink-0" style="background-color: {{ $c['color'] }}">{{ $c['initials'] }}</div>
@@ -226,7 +226,7 @@
                         </td>
                         <td class="px-6 py-4 text-[13px] text-slate-500 font-medium">{{ $c['date'] }}</td>
                         <td class="px-6 py-4 text-right">
-                            <button onclick="openManageModal('{{ $c['name'] }}')" class="text-[13px] font-bold text-[#091b3f] hover:text-[#4f46e5] transition">Manage</button>
+                            <button onclick="openManageModal('{{ $c['name'] }}')" class="text-[13px] font-bold text-[#091b3f] hover:text-[#4f46e5] transition cursor-pointer">Manage</button>
                         </td>
                     </tr>
                     @endforeach
@@ -238,7 +238,7 @@
         {{-- View More & Pagination --}}
         <div class="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-                <a href="{{ route('adminPanel.customer-directory') }}" class="ajax-link text-[13px] font-bold text-[#091b3f] hover:underline flex items-center gap-1">
+                <a href="{{ route('adminPanel.customer-directory') }}" class="ajax-link text-[13px] font-bold text-[#091b3f] hover:underline flex items-center gap-1 cursor-pointer">
                     View More Records
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -247,17 +247,17 @@
                 <p class="text-[12px] text-slate-400 mt-0.5">Showing 1 to 8 of 248 customers</p>
             </div>
             <div class="flex items-center gap-2">
-                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition">
+                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <div class="flex font-semibold text-[13px]">
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-[#091b3f] text-white">1</button>
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200">2</button>
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200">3</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-[#091b3f] text-white cursor-pointer">1</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">2</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">3</button>
                     <span class="h-9 w-9 flex items-center justify-center text-slate-400">…</span>
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200">31</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">31</button>
                 </div>
-                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition">
+                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
@@ -266,11 +266,11 @@
 
     {{-- ─── Manage Customer Modal ─── --}}
     <div id="manage-customer-modal" class="fixed inset-0 z-[1000] flex items-center justify-center hidden" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeManageModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="closeManageModal()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 animate-fade-in">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-lg font-extrabold text-[#0f172a]" id="modal-customer-name">Manage Customer</h3>
-                <button onclick="closeManageModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center">
+                <button onclick="closeManageModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -279,9 +279,9 @@
                 <div>
                     <label class="block text-[12px] font-bold text-slate-600 mb-1.5">Account Status</label>
                     <div class="flex gap-2">
-                        <button onclick="setStatus(this,'Active')" class="status-btn flex-1 py-2 rounded-lg text-[12px] font-bold border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition">Active</button>
-                        <button onclick="setStatus(this,'Suspended')" class="status-btn flex-1 py-2 rounded-lg text-[12px] font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 transition">Suspended</button>
-                        <button onclick="setStatus(this,'Inactive')" class="status-btn flex-1 py-2 rounded-lg text-[12px] font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 transition">Inactive</button>
+                        <button onclick="setStatus(this,'Active')" class="status-btn flex-1 py-2 rounded-lg text-[12px] font-bold border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition cursor-pointer">Active</button>
+                        <button onclick="setStatus(this,'Suspended')" class="status-btn flex-1 py-2 rounded-lg text-[12px] font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 transition cursor-pointer">Suspended</button>
+                        <button onclick="setStatus(this,'Inactive')" class="status-btn flex-1 py-2 rounded-lg text-[12px] font-bold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 transition cursor-pointer">Inactive</button>
                     </div>
                 </div>
                 {{-- Category --}}
@@ -300,19 +300,19 @@
                 </div>
             </div>
             <div class="mt-5 flex gap-3 justify-end">
-                <button onclick="closeManageModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition">Cancel</button>
-                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition">Save Changes</button>
+                <button onclick="closeManageModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
+                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition cursor-pointer">Save Changes</button>
             </div>
         </div>
     </div>
 
     {{-- ─── Add Customer Modal ─── --}}
     <div id="add-customer-modal" class="fixed inset-0 z-[1000] flex items-center justify-center hidden" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAddCustomerModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="closeAddCustomerModal()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 animate-fade-in">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-lg font-extrabold text-[#0f172a]">Add New Customer</h3>
-                <button onclick="closeAddCustomerModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center">
+                <button onclick="closeAddCustomerModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -339,8 +339,8 @@
                 </div>
             </div>
             <div class="mt-5 flex gap-3 justify-end">
-                <button onclick="closeAddCustomerModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition">Cancel</button>
-                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition">Create Customer</button>
+                <button onclick="closeAddCustomerModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
+                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition cursor-pointer">Create Customer</button>
             </div>
         </div>
     </div>

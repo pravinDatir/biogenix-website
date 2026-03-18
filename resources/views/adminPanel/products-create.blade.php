@@ -6,30 +6,35 @@
 
 <div class="space-y-6">
 
-    <!-- Breadcrumb -->
-    <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
+    <!-- Back Arrow + Breadcrumb -->
+    <div class="flex items-center gap-3 mb-4">
+        <a href="{{ route('adminPanel.products') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to Products">
+            <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </a>
+        <nav class="flex text-[13px] text-slate-500 font-medium">
         <a href="#" class="hover:text-slate-900 transition flex items-center gap-1.5">
             Catalog
         </a>
         <span class="mx-2 text-slate-300">›</span>
-        <a href="{{ route('adminPanel.products') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
+        <a href="{{ route('adminPanel.products') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
             Products
         </a>
         <span class="mx-2 text-slate-300">›</span>
-        <span class="text-slate-900 font-semibold">Add New Product</span>
+        <span class="text-slate-900 font-semibold cursor-pointer">Add New Product</span>
     </nav>
+    </div>
 
     <!-- Header Actions -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div>
             <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Add New Product</h1>
             <p class="text-sm text-slate-500 mt-1">Configure product details, visibility, and pricing for the Biogenix catalog.</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('adminPanel.products') }}" class="ajax-link px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm">
+            <a href="{{ route('adminPanel.products') }}" class="ajax-link px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
                 Cancel
             </a>
-            <button id="saveProductBtn" type="button" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20">
+            <button id="saveProductBtn" type="button" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 cursor-pointer">
                 Save Product
             </button>
         </div>
@@ -146,11 +151,11 @@
                     <div class="flex flex-wrap gap-2 pt-2">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eef2ff] text-[#4f46e5] rounded-lg text-[11px] font-bold">
                             Biotechnology 
-                            <button type="button" class="hover:text-indigo-800 transition"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                            <button type="button" class="hover:text-indigo-800 transition cursor-pointer"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
                         </span>
                         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eef2ff] text-[#4f46e5] rounded-lg text-[11px] font-bold">
                             Reagents
-                            <button type="button" class="hover:text-indigo-800 transition"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                            <button type="button" class="hover:text-indigo-800 transition cursor-pointer"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
                         </span>
                     </div>
 
@@ -215,7 +220,7 @@
                     </div>
                     <h3 class="text-base font-bold text-[#0f172a]">Product Specifications</h3>
                 </div>
-                <button id="addSpecBtn" type="button" class="text-[12px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5">
+                <button id="addSpecBtn" type="button" class="text-[12px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5 cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                     Add Specification
                 </button>
@@ -232,7 +237,7 @@
                         <label class="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Attribute Value</label>
                         <input type="text" placeholder="-20°C to 4°C" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
-                    <button type="button" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100">
+                    <button type="button" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100 cursor-pointer">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                 </div>
@@ -260,7 +265,7 @@
                         </div>
                         <p class="text-[15px] font-bold text-slate-900 mb-1">Drag and drop images here</p>
                         <p class="text-[12px] font-medium text-slate-500 mb-4">PNG, JPG or WEBP up to 10MB each</p>
-                        <button type="button" class="px-5 py-2.5 rounded-lg text-[13px] font-bold text-[#091b3f] bg-white border border-slate-200 hover:border-[#091b3f] shadow-sm transition">
+                        <button type="button" class="px-5 py-2.5 rounded-lg text-[13px] font-bold text-[#091b3f] bg-white border border-slate-200 hover:border-[#091b3f] shadow-sm transition cursor-pointer">
                             Browse Files
                         </button>
                     </div>
@@ -271,7 +276,7 @@
                         <div class="h-24 w-24 rounded-xl border-2 border-slate-200 bg-[#7baaa5] flex items-center justify-center overflow-hidden relative group">
                             <!-- Dummy box object -->
                             <div class="w-8 h-12 bg-white rounded shadow-sm flex items-center justify-center text-[5px] font-bold">Biogenix</div>
-                            <button class="absolute top-1.5 right-1.5 h-6 w-6 rounded bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                            <button class="absolute top-1.5 right-1.5 h-6 w-6 rounded bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm cursor-pointer"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                         </div>
                         
                         <!-- Add more square -->
@@ -292,7 +297,7 @@
                             <input type="url" placeholder="YouTube or Vimeo URL" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl pl-10 pr-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                         
-                        <button type="button" class="text-[12px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5 py-1">
+                        <button type="button" class="text-[12px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5 py-1 cursor-pointer">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                             Add another link
                         </button>
@@ -317,7 +322,7 @@
                         </div>
                         <p class="text-[13px] font-bold text-slate-900 mb-1">Upload Technical Datasheets</p>
                         <p class="text-[11px] font-medium text-slate-500 mb-3">PDF, DOCX or PPT up to 20MB each</p>
-                        <button type="button" class="px-4 py-2 rounded-lg text-[12px] font-bold text-slate-700 bg-white border border-slate-200 hover:border-[#091b3f] shadow-sm transition">
+                        <button type="button" class="px-4 py-2 rounded-lg text-[12px] font-bold text-slate-700 bg-white border border-slate-200 hover:border-[#091b3f] shadow-sm transition cursor-pointer">
                             Browse Documents
                         </button>
                     </div>
@@ -336,7 +341,7 @@
                                 <p class="text-[11px] font-semibold text-slate-400 mt-0.5">1.2 MB</p>
                             </div>
                         </div>
-                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                     </div>
 
                     <div class="flex items-center justify-between px-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl">
@@ -349,7 +354,7 @@
                                 <p class="text-[11px] font-semibold text-slate-400 mt-0.5">850 KB</p>
                             </div>
                         </div>
-                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                     </div>
 
                 </div>
@@ -434,7 +439,7 @@ document.getElementById('addSpecBtn')?.addEventListener('click', () => {
             <label class="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Attribute Value</label>
             <input type="text" placeholder="12 months" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
         </div>
-        <button type="button" onclick="this.parentElement.remove()" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100">
+        <button type="button" onclick="this.parentElement.remove()" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100 cursor-pointer">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
         </button>
     `;
@@ -473,7 +478,7 @@ function handleImageFiles() {
             thumb.className = 'h-24 w-24 rounded-xl border-2 border-slate-200 overflow-hidden relative group';
             thumb.innerHTML = `
                 <img src="${e.target.result}" class="w-full h-full object-cover" alt="preview">
-                <button type="button" onclick="this.parentElement.remove()" class="absolute top-1.5 right-1.5 h-6 w-6 rounded bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm">
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-1.5 right-1.5 h-6 w-6 rounded bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm cursor-pointer">
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
             `;

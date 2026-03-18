@@ -6,13 +6,13 @@
 
     {{-- Back Arrow + Breadcrumb --}}
     <div class="flex items-center gap-3 mb-4">
-        <a href="{{ route('adminPanel.support-tickets') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0" title="Back to Support Tickets">
+        <a href="{{ route('adminPanel.support-tickets') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to Support Tickets">
             <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         </a>
         <nav class="flex items-center text-[11px] font-bold uppercase tracking-widest text-slate-400 gap-2">
-            <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-700 transition">Configuration</a>
+            <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-700 transition cursor-pointer">Configuration</a>
             <svg class="h-3 w-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-            <a href="{{ route('adminPanel.support-tickets') }}" class="ajax-link hover:text-slate-700 transition">Support Ticket System</a>
+            <a href="{{ route('adminPanel.support-tickets') }}" class="ajax-link hover:text-slate-700 transition cursor-pointer">Support Ticket System</a>
             <svg class="h-3 w-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             <span class="text-slate-600">UI Fields Modification</span>
         </nav>
@@ -25,10 +25,10 @@
             <p class="text-sm text-slate-500 mt-1">Customize ticket forms, define custom fields, and set global data validation rules.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-            <button id="btn-discard" class="px-5 py-2.5 rounded-lg text-sm font-bold border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition">
+            <button id="btn-discard" class="px-5 py-2.5 rounded-lg text-sm font-bold border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer">
                 Discard Changes
             </button>
-            <button id="btn-save-config" onclick="saveConfiguration()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20">
+            <button id="btn-save-config" onclick="saveConfiguration()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 cursor-pointer">
                 Save Configuration
             </button>
         </div>
@@ -65,7 +65,7 @@
                     @endphp
 
                     @foreach($stdFields as $i => $f)
-                    <tr class="hover:bg-slate-50/50 transition-colors">
+                    <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <svg class="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -87,7 +87,7 @@
                             @if($f['locked'])
                                 <span class="text-[11px] font-bold text-slate-400 italic tracking-wide">SYSTEM LOCK</span>
                             @else
-                                <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition ml-auto" title="Settings">
+                                <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition ml-auto cursor-pointer" title="Settings">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     </svg>
@@ -112,7 +112,7 @@
                     <h2 class="text-[15px] font-extrabold text-[#0f172a]">Custom Attributes</h2>
                     <p class="text-[13px] text-slate-500 mt-0.5">Define additional metadata for specific ticket types.</p>
                 </div>
-                <button id="btn-add-attr" onclick="openAddAttributeModal()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-4 py-2 rounded-lg text-[13px] font-bold flex items-center gap-2 shrink-0">
+                <button id="btn-add-attr" onclick="openAddAttributeModal()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-4 py-2 rounded-lg text-[13px] font-bold flex items-center gap-2 shrink-0 cursor-pointer">
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     Add New Attribute
                 </button>
@@ -137,10 +137,10 @@
                             <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Visible</span>
                             <input type="checkbox" checked class="h-4 w-4 rounded border-slate-300 accent-[#091b3f] cursor-pointer">
                         </div>
-                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition" title="Delete">
+                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition cursor-pointer" title="Delete">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
-                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition" title="Edit">
+                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition cursor-pointer" title="Edit">
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                         </button>
                     </div>
@@ -163,10 +163,10 @@
                             <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Visible</span>
                             <input type="checkbox" checked class="h-4 w-4 rounded border-slate-300 accent-[#091b3f] cursor-pointer">
                         </div>
-                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition" title="Delete">
+                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition cursor-pointer" title="Delete">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
-                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition" title="Edit">
+                        <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition cursor-pointer" title="Edit">
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                         </button>
                     </div>
@@ -218,29 +218,29 @@
                 <div class="flex flex-wrap gap-2" id="file-formats-list">
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#f0f3f8] text-slate-800 rounded-lg text-[12px] font-bold border border-slate-200">
                         .PDF
-                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5">
+                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5 cursor-pointer">
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </span>
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#f0f3f8] text-slate-800 rounded-lg text-[12px] font-bold border border-slate-200">
                         .JPG
-                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5">
+                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5 cursor-pointer">
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </span>
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#f0f3f8] text-slate-800 rounded-lg text-[12px] font-bold border border-slate-200">
                         .PNG
-                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5">
+                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5 cursor-pointer">
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </span>
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-[#f0f3f8] text-slate-800 rounded-lg text-[12px] font-bold border border-slate-200">
                         .LOG
-                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5">
+                        <button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5 cursor-pointer">
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
                     </span>
-                    <button id="btn-add-format" onclick="addFormat()" class="inline-flex items-center gap-1 px-2.5 py-1 border border-dashed border-slate-300 text-slate-400 rounded-lg text-[12px] font-bold hover:border-[#091b3f] hover:text-[#091b3f] transition">
+                    <button id="btn-add-format" onclick="addFormat()" class="inline-flex items-center gap-1 px-2.5 py-1 border border-dashed border-slate-300 text-slate-400 rounded-lg text-[12px] font-bold hover:border-[#091b3f] hover:text-[#091b3f] transition cursor-pointer">
                         + Add
                     </button>
                 </div>
@@ -250,11 +250,11 @@
 
     {{-- ─── Add Attribute Modal ─── --}}
     <div id="add-attr-modal" class="fixed inset-0 z-[1000] flex items-center justify-center hidden">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAddAttributeModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="closeAddAttributeModal()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6" style="animation: attr-fade 0.2s ease-out forwards;">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-[15px] font-extrabold text-[#0f172a]">Add Custom Attribute</h3>
-                <button onclick="closeAddAttributeModal()" class="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition">
+                <button onclick="closeAddAttributeModal()" class="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -283,8 +283,8 @@
                 </div>
             </div>
             <div class="mt-5 flex gap-3 justify-end">
-                <button onclick="closeAddAttributeModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition">Cancel</button>
-                <button onclick="createAttribute()" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition">Add Attribute</button>
+                <button onclick="closeAddAttributeModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
+                <button onclick="createAttribute()" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition cursor-pointer">Add Attribute</button>
             </div>
         </div>
     </div>
@@ -351,10 +351,10 @@
                     <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Visible</span>
                     <input type="checkbox" ${visible ? 'checked' : ''} class="h-4 w-4 rounded border-slate-300 accent-[#091b3f] cursor-pointer">
                 </div>
-                <button onclick="this.closest('[data-attr-id]').remove()" class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition">
+                <button onclick="this.closest('[data-attr-id]').remove()" class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>
-                <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition">
+                <button class="h-7 w-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                 </button>
             </div>`;
@@ -378,7 +378,7 @@
         const addBtn = document.getElementById('btn-add-format');
         const span = document.createElement('span');
         span.className = 'inline-flex items-center gap-1 px-2.5 py-1 bg-[#f0f3f8] text-slate-800 rounded-lg text-[12px] font-bold border border-slate-200';
-        span.innerHTML = `${val}<button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
+        span.innerHTML = `${val}<button onclick="removeFormat(this)" class="text-slate-400 hover:text-rose-500 transition ml-0.5 cursor-pointer"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
         list.insertBefore(span, addBtn);
     };
 

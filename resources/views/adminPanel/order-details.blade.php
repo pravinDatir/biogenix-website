@@ -10,14 +10,14 @@
     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-2">
         <div>
             <nav class="flex text-[13px] text-slate-500 font-medium mb-3">
-                <a href="{{ route('adminPanel.orders') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
+                <a href="{{ route('adminPanel.orders') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
                     Orders
                 </a>
                 <span class="mx-2 text-slate-300">/</span>
                 <span class="text-slate-900 font-semibold">#ORD-7742</span>
             </nav>
             <div class="flex items-center gap-4">
-                <a href="{{ route('adminPanel.orders') }}" class="ajax-link h-10 w-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition shadow-sm">
+                <a href="{{ route('adminPanel.orders') }}" class="ajax-link h-10 w-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition shadow-sm cursor-pointer">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </a>
                 <div>
@@ -30,11 +30,11 @@
             </div>
         </div>
         <div class="flex flex-wrap items-center gap-3 self-start sm:self-end mt-2 sm:mt-0">
-            <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition shadow-sm">
+            <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition shadow-sm cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
                 Print Invoice
             </button>
-            <button id="saveChangesBtn" onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Changes saved successfully!','success')},1200)" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] text-white hover:bg-slate-800 transition shadow-sm">
+            <button id="saveChangesBtn" onclick="AdminBtnLoading.start(this);setTimeout(()= class="cursor-pointer">{AdminBtnLoading.stop(this);AdminToast.show('Changes saved successfully!','success')},1200)" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] text-white hover:bg-slate-800 transition shadow-sm">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
                 Save Changes
             </button>
@@ -70,7 +70,7 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100 border-b border-slate-100 bg-white">
                             <!-- Item 1 -->
-                            <tr class="hover:bg-slate-50/30 transition-colors">
+                            <tr class="hover:bg-slate-50/30 transition-colors cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4 flex items-center gap-4">
                                     <div class="h-12 w-12 rounded-xl bg-[#f8fafc] border border-slate-100 flex items-center justify-center flex-shrink-0">
                                         <svg class="h-6 w-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -83,7 +83,7 @@
                                 <td class="px-5 lg:px-6 py-4 text-[14px] font-extrabold text-[#0f172a] text-right">$300.00</td>
                             </tr>
                             <!-- Item 2 -->
-                            <tr class="hover:bg-slate-50/30 transition-colors">
+                            <tr class="hover:bg-slate-50/30 transition-colors cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4 flex items-center gap-4">
                                     <div class="h-12 w-12 rounded-xl bg-[#f8fafc] border border-slate-100 flex items-center justify-center flex-shrink-0">
                                         <svg class="h-6 w-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -96,7 +96,7 @@
                                 <td class="px-5 lg:px-6 py-4 text-[14px] font-extrabold text-[#0f172a] text-right">$250.00</td>
                             </tr>
                             <!-- Item 3 -->
-                            <tr class="hover:bg-slate-50/30 transition-colors">
+                            <tr class="hover:bg-slate-50/30 transition-colors cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4 flex items-center gap-4">
                                     <div class="h-12 w-12 rounded-xl bg-[#f8fafc] border border-slate-100 flex items-center justify-center flex-shrink-0">
                                         <svg class="h-6 w-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -233,13 +233,13 @@
                                 </div>
                                 <input id="trackingInput" type="text" placeholder="Enter tracking number (e.g. 1Z9...)" class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl pl-10 pr-4 py-3 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                             </div>
-                            <button type="button" onclick="const v=document.getElementById('trackingInput').value;if(v){navigator.clipboard.writeText(v);AdminToast.show('Tracking code copied!','success')}else{AdminToast.show('Enter a tracking code first','info')}" class="h-[46px] w-[46px] flex-shrink-0 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-[#091b3f] transition flex items-center justify-center" title="Copy tracking code">
+                            <button type="button" onclick="const v=document.getElementById('trackingInput').value;if(v){navigator.clipboard.writeText(v);AdminToast.show('Tracking code copied!','success')}else{AdminToast.show('Enter a tracking code first','info')}" class="h-[46px] w-[46px] flex-shrink-0 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-[#091b3f] transition flex items-center justify-center cursor-pointer" title="Copy tracking code">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                             </button>
                         </div>
                     </div>
 
-                    <button id="updateStatusBtn" onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Order status updated successfully!','success')},1000)" class="w-full py-3 rounded-xl text-[13px] font-bold bg-[#eff6ff] text-[#091b3f] hover:bg-[#e0efff] transition">
+                    <button id="updateStatusBtn" onclick="AdminBtnLoading.start(this);setTimeout(()= class="cursor-pointer">{AdminBtnLoading.stop(this);AdminToast.show('Order status updated successfully!','success')},1000)" class="w-full py-3 rounded-xl text-[13px] font-bold bg-[#eff6ff] text-[#091b3f] hover:bg-[#e0efff] transition">
                         Update Status
                     </button>
                 </div>
@@ -249,7 +249,7 @@
             <div class="bg-white rounded-[20px] shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden relative">
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                     <h2 class="text-[15px] font-extrabold text-slate-900">Customer Info</h2>
-                    <a href="#" onclick="event.preventDefault();document.getElementById('customerEditModal').classList.remove('hidden')" class="text-[13px] font-bold text-[#091b3f] hover:underline">Edit</a>
+                    <a href="#" onclick="event.preventDefault();document.getElementById('customerEditModal').classList.remove('hidden')" class="text-[13px] font-bold text-[#091b3f] hover:underline cursor-pointer">Edit</a>
                 </div>
                 <div class="p-5 lg:p-6 space-y-5">
                     
@@ -310,11 +310,11 @@
 
 <!-- Customer Edit Modal -->
 <div id="customerEditModal" class="hidden fixed inset-0 z-[1000] flex items-center justify-center">
-    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
+    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="this.parentElement.classList.add('hidden')"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 z-10">
         <div class="flex items-center justify-between mb-5">
             <h3 class="text-lg font-bold text-[#0f172a]">Edit Customer Info</h3>
-            <button onclick="this.closest('#customerEditModal').classList.add('hidden')" class="h-8 w-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition">
+            <button onclick="this.closest('#customerEditModal').classList.add('hidden')" class="h-8 w-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
@@ -339,8 +339,8 @@ United States</textarea>
             </div>
         </div>
         <div class="flex items-center gap-3 mt-6">
-            <button onclick="this.closest('#customerEditModal').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">Cancel</button>
-            <button onclick="this.closest('#customerEditModal').classList.add('hidden');AdminToast.show('Customer info updated!','success')" class="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#091b3f] hover:bg-slate-800 transition">Save Changes</button>
+            <button onclick="this.closest('#customerEditModal').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition cursor-pointer">Cancel</button>
+            <button onclick="this.closest('#customerEditModal').classList.add('hidden');AdminToast.show('Customer info updated!','success')" class="flex-1 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#091b3f] hover:bg-slate-800 transition cursor-pointer">Save Changes</button>
         </div>
     </div>
 </div>

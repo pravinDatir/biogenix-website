@@ -6,12 +6,12 @@
 
     {{-- Breadcrumb --}}
     <nav class="flex items-center text-[13px] text-slate-500 font-medium mb-3">
-        <a href="{{ route('adminPanel.customers') }}" class="ajax-link mr-3 h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition" title="Go Back">
+        <a href="{{ route('adminPanel.customers') }}" class="ajax-link mr-3 h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition cursor-pointer" title="Go Back">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <a href="{{ route('adminPanel.customers') }}" class="ajax-link hover:text-slate-900 transition">Customer Management</a>
+        <a href="{{ route('adminPanel.customers') }}" class="ajax-link hover:text-slate-900 transition cursor-pointer">Customer Management</a>
         <span class="mx-2 text-slate-300">›</span>
         <span class="text-[#091b3f] font-bold">Customer Directory</span>
     </nav>
@@ -23,11 +23,11 @@
             <p class="text-[13.5px] text-slate-500 mt-1">Manage and monitor all B2B and Retail customer records from a central location.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-            <button class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition">
+            <button class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer">
                 <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4H4"/></svg>
                 Export CSV
             </button>
-            <button id="btn-add-customer" onclick="openAddCustomerModal()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2">
+            <button id="btn-add-customer" onclick="openAddCustomerModal()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 Add Customer
             </button>
@@ -116,7 +116,7 @@
                         $dotColor = $c['status'] === 'Active' ? 'bg-emerald-500' : 'bg-slate-300';
                         $statusTextColor = $c['status'] === 'Active' ? 'text-emerald-600' : 'text-slate-500';
                     @endphp
-                    <tr class="hover:bg-slate-50/50 transition-colors directory-row" data-name="{{ strtolower($c['name']) }}" data-email="{{ strtolower($c['email']) }}">
+                    <tr class="hover:bg-slate-50/50 transition-colors directory-row cursor-pointer" data-name="{{ strtolower($c['name']) }}" data-email="{{ strtolower($c['email']) }}">
                         <td class="px-6 py-4">
                             <span class="text-[13px] font-semibold text-[#0f172a]">{{ $c['name'] }}</span>
                         </td>
@@ -136,7 +136,7 @@
                             <span class="text-[13px] text-slate-500">{{ $c['date'] }}</span>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button onclick="openManageModal('{{ $c['name'] }}')" class="text-[12px] font-bold text-[#091b3f] hover:text-[#4f46e5] hover:underline transition pr-2">Manage</button>
+                            <button onclick="openManageModal('{{ $c['name'] }}')" class="text-[12px] font-bold text-[#091b3f] hover:text-[#4f46e5] hover:underline transition pr-2 cursor-pointer">Manage</button>
                         </td>
                     </tr>
                     @endforeach
@@ -151,17 +151,17 @@
                 <p class="text-[12.5px] text-slate-500">Showing <span class="font-bold text-slate-700">1</span> to <span class="font-bold text-slate-700">30</span> of <span class="font-bold text-slate-700">248</span> records</p>
             </div>
             <div class="flex items-center gap-1.5">
-                <button class="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 hover:text-slate-600 transition">
+                <button class="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 hover:text-slate-600 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <div class="flex items-center font-bold text-[12.5px] gap-1.5 mx-1">
-                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-[#091b3f] text-white shadow-sm">1</button>
-                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-white text-slate-600 hover:bg-slate-50 hover:text-[#091b3f] border border-slate-200 transition">2</button>
-                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-white text-slate-600 hover:bg-slate-50 hover:text-[#091b3f] border border-slate-200 transition">3</button>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-[#091b3f] text-white shadow-sm cursor-pointer">1</button>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-white text-slate-600 hover:bg-slate-50 hover:text-[#091b3f] border border-slate-200 transition cursor-pointer">2</button>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-white text-slate-600 hover:bg-slate-50 hover:text-[#091b3f] border border-slate-200 transition cursor-pointer">3</button>
                     <span class="h-8 w-8 flex items-center justify-center text-slate-400 font-normal tracking-widest">...</span>
-                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-white text-slate-600 hover:bg-slate-50 hover:text-[#091b3f] border border-slate-200 transition">9</button>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-lg bg-white text-slate-600 hover:bg-slate-50 hover:text-[#091b3f] border border-slate-200 transition cursor-pointer">9</button>
                 </div>
-                <button class="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-[#091b3f] transition">
+                <button class="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-[#091b3f] transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
@@ -171,11 +171,11 @@
 
     {{-- Add/Manage Modals (reused from customers page) --}}
     <div id="add-customer-modal" class="fixed inset-0 z-[1000] flex items-center justify-center hidden" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeAddCustomerModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="closeAddCustomerModal()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 animate-fade-in">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-lg font-extrabold text-[#0f172a]">Add New Customer</h3>
-                <button onclick="closeAddCustomerModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center">
+                <button onclick="closeAddCustomerModal()" class="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -198,8 +198,8 @@
                 </div>
             </div>
             <div class="mt-5 flex gap-3 justify-end">
-                <button onclick="closeAddCustomerModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition">Cancel</button>
-                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition">Create Customer</button>
+                <button onclick="closeAddCustomerModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
+                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition cursor-pointer">Create Customer</button>
             </div>
         </div>
     </div>

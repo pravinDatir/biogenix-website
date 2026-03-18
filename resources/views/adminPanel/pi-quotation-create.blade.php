@@ -1,9 +1,35 @@
-﻿@extends('adminPanel.layout')
+@extends('adminPanel.layout')
 
 @section('title', 'Generate PI Quotation - Biogenix Admin')
 
 @section('admin_content')
 <div class="w-full py-8">
+
+    <!-- Back Arrow + Breadcrumb -->
+    <div class="flex items-center gap-3 mb-4">
+        <a href="{{ route('adminPanel.pi-quotation.index') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to Quotations">
+            <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </a>
+        <nav class="flex text-[13px] text-slate-500 font-medium">
+            <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
+                Admin
+            </a>
+            <span class="mx-2 text-slate-300">/</span>
+            <a href="{{ route('adminPanel.pi-quotation.index') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
+                Quotation / PI
+            </a>
+            <span class="mx-2 text-slate-300">/</span>
+            <span class="text-slate-900 font-semibold cursor-pointer">Generate PI Quotation</span>
+        </nav>
+    </div>
+
+    {{-- ─── Page Header ─── --}}
+    <div class="mb-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Generate PI Quotation</h1>
+            <p class="text-sm text-slate-500 mt-1">Create a new Proforma Invoice with product and billing details.</p>
+        </div>
+    </div>
 
     {{-- â•â•â• PI Header Info â•â•â• --}}
     <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -49,7 +75,7 @@
             <div class="flex items-center gap-2 select-none">
                 <span class="text-sm font-semibold text-slate-600">Same as Billing</span>
                 <button id="toggleTrack" type="button" role="switch" aria-checked="false"
-                    class="relative h-6 w-[42px] rounded-full bg-slate-300 transition-colors duration-200">
+                    class="relative h-6 w-[42px] rounded-full bg-slate-300 transition-colors duration-200 cursor-pointer">
                     <span id="toggleThumb"
                         class="absolute left-[3px] top-[3px] h-[18px] w-[18px] translate-x-0 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-transform duration-200"></span>
                 </button>
@@ -96,7 +122,7 @@
                 <h2 class="text-lg font-bold tracking-tight text-slate-900">Product Details</h2>
             </div>
             <button id="addProductRow" type="button"
-                class="inline-flex items-center gap-1.5 rounded-xl bg-[#e65100] px-4 py-2 text-[0.82rem] font-bold text-white shadow-[0_2px_8px_rgba(230,81,0,0.2)] transition-colors hover:bg-[#bf360c]">
+                class="inline-flex items-center gap-1.5 rounded-xl bg-[#e65100] px-4 py-2 text-[0.82rem] font-bold text-white shadow-[0_2px_8px_rgba(230,81,0,0.2)] transition-colors hover:bg-[#bf360c] cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
                 Add Product Row
             </button>
@@ -188,7 +214,7 @@
             </div>
 
             <button id="generatePdfBtn" type="button"
-                class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e3a5f] px-5 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(30,58,95,0.25)] transition-transform transition-colors hover:-translate-y-px hover:bg-[#15294a]">
+                class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e3a5f] px-5 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(30,58,95,0.25)] transition-transform transition-colors hover:-translate-y-px hover:bg-[#15294a] cursor-pointer">
                 <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
                 Generate PDF
             </button>
@@ -209,7 +235,7 @@
 
             {{-- Close button --}}
             <button id="modalCloseBtn" type="button"
-                class="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-100">
+                class="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-100 cursor-pointer">
                 <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
 
@@ -307,11 +333,11 @@
             {{-- Buttons --}}
             <div class="mt-6 flex justify-end gap-3">
                 <button id="modalCancelBtn" type="button"
-                    class="h-11 rounded-xl border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50">
+                    class="h-11 rounded-xl border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 cursor-pointer">
                     Cancel
                 </button>
                 <button id="modalAddBtn" type="button"
-                    class="inline-flex h-11 items-center gap-2 rounded-xl bg-[#e65100] px-7 text-sm font-bold text-white shadow-[0_2px_10px_rgba(230,81,0,0.25)] transition-colors hover:bg-[#bf360c]">
+                    class="inline-flex h-11 items-center gap-2 rounded-xl bg-[#e65100] px-7 text-sm font-bold text-white shadow-[0_2px_10px_rgba(230,81,0,0.25)] transition-colors hover:bg-[#bf360c] cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
                     Add to Invoice
                 </button>
@@ -385,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '<td class="row-value px-2 py-2 text-right text-[0.85rem] text-slate-600">' + formatNum(value) + '</td>' +
             '<td class="row-gst-val px-2 py-2 text-center text-[0.85rem] text-slate-800">' + data.gst + '</td>' +
             '<td class="row-total px-2 py-2 text-right text-sm font-bold text-slate-800">' + formatNum(total) + '</td>' +
-            '<td class="px-2 py-2 text-center"><button type="button" class="del-row-btn inline-flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-colors hover:bg-rose-50"><svg class="h-[15px] w-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td>';
+            '<td class="px-2 py-2 text-center"><button type="button" class="del-row-btn inline-flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-colors hover:bg-rose-50 cursor-pointer"><svg class="h-[15px] w-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td>';
 
         // Store data attributes for calc
         tr.setAttribute('data-qty', data.qty);

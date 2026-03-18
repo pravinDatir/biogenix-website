@@ -105,9 +105,9 @@
                         </div>
                         <!-- Toggle -->
                         <div id="chartToggle" class="bg-[#f2f5fa] rounded-lg p-1 flex items-center shadow-inner self-start">
-                            <button data-period="weekly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800">Weekly</button>
-                            <button data-period="monthly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-[#091b3f] bg-white rounded-md shadow-sm">Monthly</button>
-                            <button data-period="yearly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800">Yearly</button>
+                            <button data-period="weekly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800 cursor-pointer">Weekly</button>
+                            <button data-period="monthly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-[#091b3f] bg-white rounded-md shadow-sm cursor-pointer">Monthly</button>
+                            <button data-period="yearly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800 cursor-pointer">Yearly</button>
                         </div>
                     </div>
 
@@ -189,7 +189,7 @@
             <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mt-6">
                 <div class="px-5 lg:px-7 py-5 lg:py-6 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-900">Priority Orders</h3>
-                    <a href="{{ route('adminPanel.orders') }}" class="ajax-link text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2">View All Orders</a>
+                    <a href="{{ route('adminPanel.orders') }}" class="ajax-link text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2 cursor-pointer">View All Orders</a>
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -205,7 +205,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100/80 text-[12px] lg:text-[13px] font-semibold text-slate-900">
-                            <tr class="hover:bg-slate-50/50 transition-colors">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-9012</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -220,17 +220,17 @@
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
                                     <div class="relative inline-block">
-                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg></button>
+                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition cursor-pointer"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg></button>
                                         <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
-                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
-                                            <button onclick="AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-9012.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
+                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
+                                            <button onclick="AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-9012.',confirmText:'Cancel Order'}).then(r= class="cursor-pointer">{if(r)AdminToast.show('Order cancelled','success')})" class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-slate-50/50 transition-colors">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8994</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -245,17 +245,17 @@
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
                                     <div class="relative inline-block">
-                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
+                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition cursor-pointer"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
                                         <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
-                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
+                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
 
-                            <tr class="hover:bg-slate-50/50 transition-colors">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8851</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -270,11 +270,11 @@
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
                                     <div class="relative inline-block">
-                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
+                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition cursor-pointer"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
                                         <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
-                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
+                                            <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
+                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
                                         </div>
                                     </div>
                                 </td>

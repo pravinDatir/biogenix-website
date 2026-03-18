@@ -8,7 +8,7 @@
 
     <!-- Breadcrumb -->
     <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
+        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
             Admin
         </a>
         <span class="mx-2 text-slate-300">/</span>
@@ -22,10 +22,10 @@
             <p class="text-sm text-slate-500 mt-1 max-w-2xl">Manage global price matrices, quantity-based discounts, and custom overrides for Biogenix products.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-            <button onclick="AdminConfirm.show({title:'Discard Draft?',message:'All unsaved pricing changes will be lost.',confirmText:'Discard',danger:true}).then(r=>{if(r)AdminToast.show('Draft discarded','info')})" class="px-5 py-2.5 rounded-lg text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm">
+            <button onclick="AdminConfirm.show({title:'Discard Draft?',message:'All unsaved pricing changes will be lost.',confirmText:'Discard',danger:true}).then(r=>{if(r)AdminToast.show('Draft discarded','info')})" class="px-5 py-2.5 rounded-lg text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
                 Discard Draft
             </button>
-            <button onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Pricing changes published successfully!','success')},1500)" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20">
+            <button onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Pricing changes published successfully!','success')},1500)" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 cursor-pointer">
                 Publish Changes
             </button>
         </div>
@@ -130,7 +130,7 @@
                 </svg>
                 <h2 class="text-lg font-bold text-[#0f172a]">Quantity Slab Discounts</h2>
             </div>
-            <button type="button" class="text-[13px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5">
+            <button type="button" class="text-[13px] font-bold text-[#091b3f] hover:text-[#163471] transition flex items-center gap-1.5 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                 Add Slab
             </button>
@@ -151,7 +151,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100/60 text-[13px] font-bold text-slate-700">
                         <!-- Slab 1 -->
-                        <tr class="hover:bg-slate-50 transition">
+                        <tr class="hover:bg-slate-50 transition cursor-pointer">
                             <td class="px-6 py-5 text-slate-900">1 - 10 units</td>
                             <td class="px-6 py-5">0%</td>
                             <td class="px-6 py-5">0%</td>
@@ -160,11 +160,11 @@
                                 <span class="inline-flex items-center px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded">Standard</span>
                             </td>
                             <td class="px-6 py-5 text-right">
-                                <button class="text-slate-400 hover:text-slate-700 transition"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                <button class="text-slate-400 hover:text-slate-700 transition cursor-pointer"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
                             </td>
                         </tr>
                         <!-- Slab 2 -->
-                        <tr class="hover:bg-slate-50 transition">
+                        <tr class="hover:bg-slate-50 transition cursor-pointer">
                             <td class="px-6 py-5 text-slate-900">11 - 50 units</td>
                             <td class="px-6 py-5">2.5%</td>
                             <td class="px-6 py-5">5%</td>
@@ -173,11 +173,11 @@
                                 <span class="inline-flex items-center px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded">Bulk Tier 1</span>
                             </td>
                             <td class="px-6 py-5 text-right">
-                                <button class="text-slate-400 hover:text-slate-700 transition"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                <button class="text-slate-400 hover:text-slate-700 transition cursor-pointer"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
                             </td>
                         </tr>
                         <!-- Slab 3 -->
-                        <tr class="hover:bg-slate-50 transition">
+                        <tr class="hover:bg-slate-50 transition cursor-pointer">
                             <td class="px-6 py-5 text-slate-900">51 - 250 units</td>
                             <td class="px-6 py-5">5%</td>
                             <td class="px-6 py-5">10%</td>
@@ -186,11 +186,11 @@
                                 <span class="inline-flex items-center px-2 py-0.5 bg-fuchsia-100 text-fuchsia-700 text-[10px] font-bold rounded">Bulk Tier 2</span>
                             </td>
                             <td class="px-6 py-5 text-right">
-                                <button class="text-slate-400 hover:text-slate-700 transition"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                <button class="text-slate-400 hover:text-slate-700 transition cursor-pointer"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
                             </td>
                         </tr>
                         <!-- Slab 4 -->
-                        <tr class="hover:bg-slate-50 transition">
+                        <tr class="hover:bg-slate-50 transition cursor-pointer">
                             <td class="px-6 py-5 text-slate-900">251+ units</td>
                             <td class="px-6 py-5">10%</td>
                             <td class="px-6 py-5">15%</td>
@@ -199,7 +199,7 @@
                                 <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded">Enterprise</span>
                             </td>
                             <td class="px-6 py-5 text-right">
-                                <button class="text-slate-400 hover:text-slate-700 transition"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                <button class="text-slate-400 hover:text-slate-700 transition cursor-pointer"><svg class="h-4 w-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
                             </td>
                         </tr>
                     </tbody>
@@ -252,7 +252,7 @@
                     </div>
                 </div>
                 
-                <button class="w-full mt-auto py-2.5 rounded-lg text-[13px] font-bold text-slate-700 bg-[#f8fafc] hover:bg-slate-100 transition border border-slate-200">
+                <button class="w-full mt-auto py-2.5 rounded-lg text-[13px] font-bold text-slate-700 bg-[#f8fafc] hover:bg-slate-100 transition border border-slate-200 cursor-pointer">
                     Manage SKU Rules
                 </button>
             </div>
@@ -288,7 +288,7 @@
                     </div>
                 </div>
                 
-                <button class="w-full mt-auto py-2.5 rounded-lg text-[13px] font-bold text-slate-700 bg-[#f8fafc] hover:bg-slate-100 transition border border-slate-200">
+                <button class="w-full mt-auto py-2.5 rounded-lg text-[13px] font-bold text-slate-700 bg-[#f8fafc] hover:bg-slate-100 transition border border-slate-200 cursor-pointer">
                     Create Campaign
                 </button>
             </div>

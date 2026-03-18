@@ -6,7 +6,7 @@
 
     {{-- Breadcrumb --}}
     <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition">Admin</a>
+        <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition cursor-pointer">Admin</a>
         <span class="mx-2 text-slate-300">/</span>
         <span class="text-slate-900 font-semibold">Support Tickets</span>
     </nav>
@@ -17,7 +17,7 @@
             <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Support Ticket System</h1>
             <p class="text-sm text-slate-500 mt-1 max-w-lg">Centralized hub for managing, resolving, and tracking customer inquiries across Biogenix services.</p>
         </div>
-        <button id="btn-new-ticket" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0">
+        <button id="btn-new-ticket" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0 cursor-pointer">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>
@@ -81,18 +81,18 @@
                             @if($t['priority'])
                             <div class="flex items-center gap-1">
                                 <span class="inline-flex items-center px-2.5 py-1 {{ $t['priority_color'] }} text-[11px] font-bold rounded-full">{{ $t['priority'] }}</span>
-                                <button class="h-5 w-5 flex items-center justify-center rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                <button class="h-5 w-5 flex items-center justify-center rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer">
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
                             </div>
                             @else
-                            <button class="text-[11px] font-bold text-slate-400 border border-dashed border-slate-300 rounded-full px-2.5 py-1 hover:border-slate-400 hover:text-slate-600 transition">Add Priority</button>
+                            <button class="text-[11px] font-bold text-slate-400 border border-dashed border-slate-300 rounded-full px-2.5 py-1 hover:border-slate-400 hover:text-slate-600 transition cursor-pointer">Add Priority</button>
                             @endif
                         </td>
                         <td class="px-6 py-3.5">
                             <div class="flex items-center gap-1">
                                 <span class="inline-flex items-center px-2.5 py-1 {{ $t['status_color'] }} text-[11px] font-bold rounded-full">{{ $t['status'] }}</span>
-                                <button class="h-5 w-5 flex items-center justify-center rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition">
+                                <button class="h-5 w-5 flex items-center justify-center rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer">
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
                             </div>
@@ -117,7 +117,7 @@
                     <div>
                         <div class="flex items-center gap-2 mb-1">
                             <h2 class="text-[15px] font-extrabold text-[#0f172a]" id="detail-title">#TK-8821: Subscription Billing Issue</h2>
-                            <button class="h-6 w-6 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+                            <button class="h-6 w-6 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer">
                                 <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                             </button>
                         </div>
@@ -251,14 +251,14 @@
                 <textarea id="reply-input" rows="3" placeholder="Type your response here..." class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] text-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition resize-none placeholder:text-slate-400 font-medium"></textarea>
                 <div class="mt-3 flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" title="Attach file">
+                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Attach file">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                         </button>
-                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" title="Emoji">
+                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Emoji">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </button>
                     </div>
-                    <button id="btn-send-message" onclick="sendMessage()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2 rounded-lg text-[13px] font-bold shadow-sm shadow-[#091b3f]/20">Send Message</button>
+                    <button id="btn-send-message" onclick="sendMessage()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2 rounded-lg text-[13px] font-bold shadow-sm shadow-[#091b3f]/20 cursor-pointer">Send Message</button>
                 </div>
             </div>
         </div>
@@ -270,7 +270,7 @@
             <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-5">
                 <div class="flex items-center justify-between mb-4">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Support Categories</span>
-                    <button class="text-[12px] font-bold text-[#091b3f] hover:underline">Manage</button>
+                    <button class="text-[12px] font-bold text-[#091b3f] hover:underline cursor-pointer">Manage</button>
                 </div>
                 <div id="categories-list">
                     {{-- Simple rows with separator lines, matching the original design --}}
@@ -287,7 +287,7 @@
                         <span class="text-[11px] font-bold bg-slate-100 text-slate-600 rounded-full px-2.5 py-0.5 min-w-[28px] text-center">12</span>
                     </div>
                 </div>
-                <button id="btn-add-category" onclick="addCategory()" class="mt-3 w-full py-2 border border-dashed border-slate-200 rounded-xl text-[12px] font-semibold text-slate-400 hover:border-[#091b3f] hover:text-[#091b3f] transition flex items-center justify-center gap-1.5">
+                <button id="btn-add-category" onclick="addCategory()" class="mt-3 w-full py-2 border border-dashed border-slate-200 rounded-xl text-[12px] font-semibold text-slate-400 hover:border-[#091b3f] hover:text-[#091b3f] transition flex items-center justify-center gap-1.5 cursor-pointer">
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     + Add New Category
                 </button>
@@ -300,7 +300,7 @@
                     <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Configuration</span>
                 </div>
                 {{-- Only 1 configuration item as per the screenshot --}}
-                <a href="{{ route('adminPanel.ui-fields-modification') }}" class="ajax-link w-full text-left rounded-xl border border-slate-100 bg-[#f8fafc] hover:border-[#091b3f]/30 hover:bg-[#f0f3f8] transition px-4 py-3 group flex flex-col">
+                <a href="{{ route('adminPanel.ui-fields-modification') }}" class="ajax-link w-full text-left rounded-xl border border-slate-100 bg-[#f8fafc] hover:border-[#091b3f]/30 hover:bg-[#f0f3f8] transition px-4 py-3 group flex flex-col cursor-pointer">
                     <div class="flex items-center justify-between">
                         <span class="text-[13px] font-bold text-slate-900 group-hover:text-[#091b3f] transition">UI Fields Modification</span>
                         <svg class="h-3.5 w-3.5 text-slate-400 group-hover:text-[#091b3f] transition shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
@@ -314,11 +314,11 @@
 
     {{-- ─── New Ticket Modal ─── --}}
     <div id="new-ticket-modal" class="fixed inset-0 z-[1000] flex items-center justify-center hidden">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeNewTicketModal()"></div>
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="closeNewTicketModal()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 animate-ticket-fade">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-[15px] font-extrabold text-[#0f172a]">Create New Ticket</h3>
-                <button onclick="closeNewTicketModal()" class="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition">
+                <button onclick="closeNewTicketModal()" class="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -367,8 +367,8 @@
                 </div>
             </div>
             <div class="mt-5 flex gap-3 justify-end">
-                <button onclick="closeNewTicketModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition">Cancel</button>
-                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition">Create Ticket</button>
+                <button onclick="closeNewTicketModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
+                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition cursor-pointer">Create Ticket</button>
             </div>
         </div>
     </div>

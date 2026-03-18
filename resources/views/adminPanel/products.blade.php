@@ -6,7 +6,7 @@
             
             <!-- Breadcrumb -->
             <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-                <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5">
+                <a href="{{ route('adminPanel.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
                     Admin
                 </a>
                 <span class="mx-2 text-slate-300">/</span>
@@ -20,7 +20,7 @@
                     <p class="text-sm text-slate-500 mt-1">Manage your biogenix inventory and product listings.</p>
                 </div>
                 
-                <a href="{{ route('adminPanel.products.create') }}" class="ajax-link bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0">
+                <a href="{{ route('adminPanel.products.create') }}" class="ajax-link bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0 cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
@@ -70,7 +70,7 @@
                         <tbody class="divide-y divide-slate-100">
                             
                             <!-- Item 1 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="h-9 w-9 rounded-lg bg-[#f0f3f8] text-[#091b3f] flex items-center justify-center shrink-0">
@@ -99,14 +99,14 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
-                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                                     </div>
                                 </td>
                             </tr>
                             
                             <!-- Item 2 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="h-9 w-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
@@ -135,14 +135,14 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
-                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                                     </div>
                                 </td>
                             </tr>
                             
                             <!-- Item 3 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="h-9 w-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
@@ -171,14 +171,14 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
-                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                                     </div>
                                 </td>
                             </tr>
 
                             <!-- Item 4 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="h-9 w-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
@@ -207,14 +207,14 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
-                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                                     </div>
                                 </td>
                             </tr>
 
                             <!-- Item 5 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                                 <td class="px-5 lg:px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="h-9 w-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
@@ -243,8 +243,8 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
-                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg></button>
+                                        <button class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer" title="Delete"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                                     </div>
                                 </td>
                             </tr>
@@ -258,15 +258,15 @@
                         Showing 1-5 of 34 results
                     </p>
                     <div class="flex items-center gap-2">
-                        <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition">
+                        <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
                         </button>
                         <div class="flex font-semibold text-[13px]">
-                            <button class="h-9 w-9 flex items-center justify-center rounded bg-[#091b3f] text-white">1</button>
-                            <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200">2</button>
-                            <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200">3</button>
+                            <button class="h-9 w-9 flex items-center justify-center rounded bg-[#091b3f] text-white cursor-pointer">1</button>
+                            <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">2</button>
+                            <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">3</button>
                         </div>
-                        <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition">
+                        <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                         </button>
                     </div>

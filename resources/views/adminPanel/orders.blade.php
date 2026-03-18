@@ -21,7 +21,7 @@
             <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Order Management</h1>
             <p class="text-sm text-slate-500 mt-1">Review and track medical supply chain operations across all regions.</p>
         </div>
-        <button id="exportCsvBtn" onclick="exportOrdersCSV()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition shadow-sm shrink-0">
+        <button id="exportCsvBtn" onclick="exportOrdersCSV()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition shadow-sm shrink-0 cursor-pointer">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
             Export CSV
         </button>
@@ -45,12 +45,12 @@
 
             <!-- Status Pills -->
             <div id="statusPills" class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
-                <button data-status="all" class="status-pill active inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-[#091b3f] text-white">All Orders</button>
-                <button data-status="Pending" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Pending</button>
-                <button data-status="Processing" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Processing</button>
-                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Dispatched</button>
-                <button data-status="Delivered" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Delivered</button>
-                <button data-status="Cancelled" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition">Cancelled</button>
+                <button data-status="all" class="status-pill active inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-[#091b3f] text-white cursor-pointer">All Orders</button>
+                <button data-status="Pending" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Pending</button>
+                <button data-status="Processing" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Processing</button>
+                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Dispatched</button>
+                <button data-status="Delivered" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Delivered</button>
+                <button data-status="Cancelled" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Cancelled</button>
             </div>
         </div>
 
@@ -71,7 +71,7 @@
                 <tbody class="divide-y divide-slate-100">
                     
                     <!-- Row 1 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99281</span>
                         </td>
@@ -95,13 +95,13 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                 </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit Order">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </button>
                             </div>
@@ -109,7 +109,7 @@
                     </tr>
 
                     <!-- Row 2 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99280</span>
                         </td>
@@ -133,13 +133,13 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                 </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit Order">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </button>
                             </div>
@@ -147,7 +147,7 @@
                     </tr>
 
                     <!-- Row 3 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99279</span>
                         </td>
@@ -171,13 +171,13 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                 </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit Order">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </button>
                             </div>
@@ -185,7 +185,7 @@
                     </tr>
 
                     <!-- Row 4 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99278</span>
                         </td>
@@ -209,13 +209,13 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.943 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                 </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit Order">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </button>
                             </div>
@@ -223,7 +223,7 @@
                     </tr>
 
                     <!-- Row 5 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99277</span>
                         </td>
@@ -247,13 +247,13 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                 </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Download Invoice">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition" title="Edit Order">
+                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </button>
                             </div>
@@ -269,15 +269,15 @@
                 Showing 5 of 5 results
             </p>
             <div class="flex items-center gap-2">
-                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition">
+                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <div class="flex font-semibold text-[13px]">
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-[#091b3f] text-white">1</button>
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200">2</button>
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200">3</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-[#091b3f] text-white cursor-pointer">1</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">2</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">3</button>
                 </div>
-                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition">
+                <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </button>
             </div>
