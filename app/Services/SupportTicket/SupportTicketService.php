@@ -8,6 +8,7 @@ use App\Models\SupportTicket\SupportTicketAttachment;
 use App\Models\SupportTicket\SupportTicketComment;
 use App\Models\SupportTicket\SupportTicketHistory;
 use App\Services\Authorization\RolePermissionService;
+use App\Services\Utility\FileHandlingService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -27,6 +28,7 @@ class SupportTicketService
 
     public function __construct(
         protected RolePermissionService $rolePermissionService,
+        protected FileHandlingService $fileHandlingService,
     ) {
     }
 
@@ -427,7 +429,11 @@ class SupportTicketService
                     'support_ticket_id' => $ticketId,
                     'support_ticket_comment_id' => $commentId,
                     'original_file_name' => $attachment->getClientOriginalName(),
-                    'stored_file_path' => $attachment->store('support-tickets/'.$ticketId, 'public'),
+                    // Step 1: save support attachments through the shared file helper so future storage changes stay centralized.
+                    'stored_file_path' => $this->fileHandlingService->storeUploadedFile(
+                        $attachment,
+                        FileHandlingService::DOCUMENT_DIRECTORY.'/support-tickets/'.$ticketId,
+                    ),
                     'file_size' => (int) ($attachment->getSize() ?? 0),
                     'mime_type' => $attachment->getClientMimeType(),
                     'uploaded_by_user_id' => $actorUserId,

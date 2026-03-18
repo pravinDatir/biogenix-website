@@ -78,6 +78,12 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    // This loads all technical download files linked to the product.
+    public function technicalResources(): HasMany
+    {
+        return $this->hasMany(ProductTechnicalResource::class);
+    }
+
     // This loads the oldest variant, used as the default variant.
     public function defaultVariant(): HasOne
     {

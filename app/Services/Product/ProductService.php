@@ -8,20 +8,22 @@ use App\Models\Product\Category;
 use App\Models\Product\Product;
 use App\Models\Product\ProductImage;
 use App\Models\Product\ProductPrice;
+use App\Models\Product\ProductTechnicalResource;
 use App\Models\Product\ProductVariant;
 use App\Models\Product\Subcategory;
 use App\Models\Product\UserActivityLog;
 use App\Models\Product\VariantAttribute;
 use App\Services\Authorization\DataVisibilityService;
 use App\Services\Pricing\PriceService;
-use Illuminate\Http\UploadedFile;
+use App\Services\Utility\FileHandlingService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class ProductService
@@ -29,6 +31,7 @@ class ProductService
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
         protected PriceService $priceService,
+        protected FileHandlingService $fileHandlingService,
     ) {
     }
 
@@ -391,10 +394,56 @@ class ProductService
             // Step 2: attach the visible variant technical specs so the detail page can read them directly from database content.
             $product = $this->attachVisibleVariantTechnicalSpecifications($product);
 
-            // Step 3: attach the visible bulk pricing ladder so the product detail page uses live database pricing slabs.
+            // Step 3: attach the active technical download files so the detail page can render real product documents.
+            $product = $this->attachActiveTechnicalResources($product);
+
+            // Step 4: attach the visible bulk pricing ladder so the product detail page uses live database pricing slabs.
             return $this->attachVisibleVariantBulkPriceTiers($product, $user);
         } catch (Throwable $exception) {
             Log::error('Failed to load visible product.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This downloads one active technical resource after confirming the product is visible to the current viewer.
+    public function downloadTechnicalResourceForViewer(?User $user, int $productId, int $resourceId): StreamedResponse
+    {
+        try {
+            // Step 1: load the visible product using the same detail-page rules so hidden products cannot expose files.
+            $product = $this->getAccessibleProductByProductId($user, $productId);
+
+            if (! $product) {
+                throw new NotFoundHttpException('Technical resource not found.');
+            }
+
+            // Step 2: find the requested file inside the already-filtered product resource list.
+            $technicalResource = collect($product->technical_resources ?? [])
+                ->first(fn ($resource): bool => (int) ($resource->id ?? 0) === $resourceId);
+
+            if (! $technicalResource) {
+                throw new NotFoundHttpException('Technical resource not found.');
+            }
+
+            $storedFilePath = trim((string) ($technicalResource->stored_file_path ?? ''));
+
+            // Step 3: stop the download when the saved public document path no longer exists on disk.
+            if ($storedFilePath === '' || ! $this->fileHandlingService->fileExists($storedFilePath)) {
+                throw new NotFoundHttpException('Technical resource file is not available.');
+            }
+
+            // Step 4: return the file as a normal download so the browser saves the original uploaded document name.
+            return $this->fileHandlingService->downloadPublicFile(
+                $storedFilePath,
+                (string) ($technicalResource->original_file_name ?? basename($storedFilePath)),
+            );
+        } catch (Throwable $exception) {
+            Log::error('Failed to download product technical resource.', [
+                'product_id' => $productId,
+                'resource_id' => $resourceId,
+                'user_id' => $user?->id,
+                'error' => $exception->getMessage(),
+            ]);
+
             throw $exception;
         }
     }
@@ -417,6 +466,50 @@ class ProductService
 
         // Step 4: attach the saved variant specs directly to the product payload for the Blade view.
         $product->technical_specification_json = $visibleVariant?->technical_specification_json ?? [];
+
+        return $product;
+    }
+
+    // This attaches active product documents so the detail page can show real downloadable technical resources.
+    protected function attachActiveTechnicalResources(object $product): object
+    {
+        // Step 1: default the detail payload to an empty document list when no files exist yet.
+        $product->technical_resources = collect();
+
+        $visibleVariantId = filled($product->visible_variant_id ?? null)
+            ? (int) $product->visible_variant_id
+            : null;
+
+        // Step 2: load product-level files plus the current visible variant files in one simple query.
+        $product->technical_resources = ProductTechnicalResource::query()
+            ->select([
+                'id',
+                'product_id',
+                'product_variant_id',
+                'title',
+                'resource_type',
+                'description',
+                'stored_file_path',
+                'original_file_name',
+                'mime_type',
+                'file_size',
+                'sort_order',
+            ])
+            ->where('product_id', (int) $product->id)
+            ->where('is_active', true)
+            ->where(function ($builder) use ($visibleVariantId): void {
+                // Step 3: always keep product-level files available for every buyer who can view the product.
+                $builder->whereNull('product_variant_id');
+
+                // Step 4: include variant-level files only for the variant currently visible to the buyer.
+                if ($visibleVariantId !== null) {
+                    $builder->orWhere('product_variant_id', $visibleVariantId);
+                }
+            })
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get()
+            ->values();
 
         return $product;
     }

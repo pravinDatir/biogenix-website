@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Authorization\ImpersonationController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
 use App\Http\Controllers\Invoice\ProformaInvoiceController;
+use App\Http\Controllers\Invoice\QuotationController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Product\ProductCrudController;
 use App\Http\Controllers\Product\ProductController;
@@ -19,6 +20,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.page');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
+Route::get('/products/{productId}/technical-resources/{resourceId}/download', [ProductController::class, 'downloadTechnicalResource'])->name('products.technical-resources.download');
 
 // flow incomplete 
  // Preview-only customer workspace pages (UI shells)
@@ -31,7 +33,10 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
 
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
-Route::view('/pi-quotation', 'pi-quotation.generate')->name('pi-quotation.generate');
+Route::get('/generate-quote', [QuotationController::class, 'showGenerateQuotePage'])->name('quotation.create');
+Route::post('/generate-quote', [QuotationController::class, 'createQuotationAndDownloadPdf'])->name('quotation.store');
+Route::get('/pi-quotation', [ProformaInvoiceController::class, 'showPiQuotationRequestPage'])->name('pi-quotation.generate');
+Route::post('/pi-quotation', [ProformaInvoiceController::class, 'submitPiQuotationRequest'])->name('pi-quotation.store');
 Route::view('/adminPanel/dashboard', 'adminPanel.dashboard')->name('adminPanel.dashboard');
 Route::view('/adminPanel/products', 'adminPanel.products')->name('adminPanel.products');
 Route::view('/adminPanel/products/create', 'adminPanel.products-create')->name('adminPanel.products.create');

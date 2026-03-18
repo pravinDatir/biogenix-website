@@ -26,7 +26,7 @@
             <div class="relative flex items-center gap-3">
                 <div class="relative shrink-0">
                     <div class="h-11 w-11 overflow-hidden rounded-xl border-2 border-white/30 bg-white/20">
-                        <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Avatar" class="h-full w-full object-cover">
+                        <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Avatar" class="h-full w-full object-cover">
                     </div>
                     <span class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-primary-700 bg-emerald-400"></span>
                 </div>

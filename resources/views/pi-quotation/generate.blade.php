@@ -2,6 +2,29 @@
 
 @section('title', 'Generate PI Quotation')
 
+@php
+    $loggedInUser = auth()->user();
+    $productSearchCatalog = collect($products ?? [])->map(function ($product) {
+        $lotSize = max(1, (int) ($product->lot_size ?? 1));
+
+        return [
+            'id' => (int) $product->id,
+            'name' => (string) ($product->name ?? ''),
+            'sku' => (string) ($product->sku ?? ''),
+            'search_label' => trim((string) ($product->name ?? '').' '.(string) ($product->sku ?? '')),
+            'category_id' => (int) ($product->category_id ?? 0),
+            'category_name' => (string) ($product->category_name ?? optional($product->category)->name ?? ''),
+            'subcategory_id' => (int) ($product->subcategory_id ?? 0),
+            'subcategory_name' => (string) ($product->subcategory_name ?? optional($product->subcategory)->name ?? ''),
+            'pack_size' => $lotSize > 1 ? 'Lot of '.$lotSize : 'Standard Pack',
+            'min_order_quantity' => max(1, (int) ($product->min_order_quantity ?? 1)),
+            'lot_size' => $lotSize,
+            'rate' => round((float) ($product->visible_price ?? 0), 2),
+            'gst' => round((float) ($product->gst_rate ?? 0), 2),
+        ];
+    })->values()->all();
+@endphp
+
 @section('content')
 <div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
 
@@ -70,9 +93,13 @@
             </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-                <input id="contactPerson" type="text" placeholder="Contact Person"
+                <input id="contactPerson" type="text" value="{{ old('customer_name', $loggedInUser?->name) }}" placeholder="Contact Person"
+                    class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
+            </div>
+            <div>
+                <input id="customerEmail" type="email" value="{{ old('customer_email', $loggedInUser?->email) }}" placeholder="Customer Email"
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
             </div>
             <div>
@@ -80,7 +107,7 @@
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
             </div>
             <div>
-                <input id="deliveryPhone" type="text" placeholder="Delivery Contact / Phone"
+                <input id="deliveryPhone" type="text" value="{{ old('customer_phone', $loggedInUser?->phone) }}" placeholder="Delivery Contact / Phone"
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
             </div>
         </div>
@@ -187,10 +214,10 @@
                 <p class="mt-0.5 text-sm font-medium italic text-slate-700" id="sumAmountWords">Zero Only</p>
             </div>
 
-            <button id="generatePdfBtn" type="button"
+            <button id="requestPiBtn" type="button"
                 class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e3a5f] px-5 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(30,58,95,0.25)] transition-transform transition-colors hover:-translate-y-px hover:bg-[#15294a]">
                 <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                Generate PDF
+                Request Proforma Invoice
             </button>
         </div>
     </div>
@@ -199,6 +226,16 @@
 {{-- ═══════════════════════════════════════════════════════
      ADD PRODUCT MODAL
      ═══════════════════════════════════════════════════════ --}}
+<form id="piRequestForm" method="POST" action="{{ route('pi-quotation.store') }}" class="hidden">
+    @csrf
+    <input type="hidden" name="purpose" value="self">
+    <input type="hidden" name="customer_name" id="requestCustomerName">
+    <input type="hidden" name="customer_email" id="requestCustomerEmail">
+    <input type="hidden" name="customer_phone" id="requestCustomerPhone">
+    <input type="hidden" name="notes" id="requestNotes">
+    <div id="requestProductFields"></div>
+</form>
+
 <div id="addProductModal" class="fixed inset-0 z-[9999] hidden">
     {{-- Backdrop --}}
     <div id="modalBackdrop" class="absolute inset-0 bg-slate-950/55 opacity-0 backdrop-blur-[4px] transition-opacity duration-300"></div>
@@ -219,38 +256,55 @@
 
             {{-- Form fields --}}
             <div class="mt-6 grid gap-4 md:grid-cols-2">
-                {{-- Cat NO --}}
+                {{-- Category --}}
                 <div>
-                    <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Cat NO</label>
+                    <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Category</label>
                     <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                         </span>
-                        <input id="modalCatNo" type="text" placeholder="e.g., BG-9920"
-                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
+                        <select id="modalCategory" class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+
+                {{-- Subcategory --}}
+                <div>
+                    <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Subcategory</label>
+                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
+                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                        </span>
+                        <select id="modalSubcategory" class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none">
+                            <option value="">All Subcategories</option>
+                        </select>
                     </div>
                 </div>
 
                 {{-- Product Name --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Product Name</label>
-                    <div id="modalProductNameField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
-                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                        </span>
-                        <input id="modalProductName" type="text" placeholder="Search or select product"
-                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
+                    <div class="relative">
+                        <div id="modalProductNameField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
+                            <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                            </span>
+                            <input id="modalProductName" type="text" autocomplete="off" placeholder="Search or select product"
+                                class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
+                        </div>
+                        <div id="modalProductSuggestions" class="absolute left-0 right-0 top-[calc(100%+0.35rem)] z-20 hidden max-h-56 overflow-y-auto rounded-[12px] border border-slate-200 bg-white p-1 shadow-[0_16px_30px_rgba(15,23,42,0.14)]"></div>
                     </div>
                 </div>
 
-                {{-- Pack Size (read-only styled) --}}
+                {{-- Min Order Qty --}}
                 <div>
-                    <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Pack Size</label>
+                    <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Min Order Qty</label>
                     <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-slate-100">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 6v12M6 12h12"/></svg>
                         </span>
-                        <input id="modalPackSize" type="text" placeholder="e.g. Box of 5"
+                        <input id="modalMinOrderQty" type="number" readonly placeholder="Auto-filled"
                             class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none placeholder:text-slate-400">
                     </div>
                 </div>
@@ -258,12 +312,25 @@
                 {{-- Quantity --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Quantity</label>
-                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
+                    <div id="modalQtyField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
                         </span>
                         <input id="modalQty" type="number" min="1" value="1" placeholder="Enter qty"
                             class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
+                    </div>
+                    <p id="modalQtyError" class="mt-1 hidden text-[0.74rem] font-medium text-rose-600"></p>
+                </div>
+
+                {{-- Lot Size --}}
+                <div>
+                    <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Lot Size</label>
+                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-slate-100">
+                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                        </span>
+                        <input id="modalPackSize" type="text" readonly placeholder="Auto-filled"
+                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none placeholder:text-slate-400">
                     </div>
                 </div>
 
@@ -274,7 +341,7 @@
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
                         </span>
-                        <input id="modalRate" type="number" min="0" step="0.01" value="0" placeholder="&#8377; 0.00"
+                        <input id="modalRate" type="number" readonly min="0" step="0.01" value="0" placeholder="&#8377; 0.00"
                             class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none placeholder:text-slate-400">
                     </div>
                 </div>
@@ -282,10 +349,10 @@
                 {{-- GST % --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">GST (%)</label>
-                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
-                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-[0.82rem] font-bold text-slate-400">%</span>
-                        <input id="modalGst" type="number" min="0" max="100" step="0.01" value="18"
-                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none">
+                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-slate-100">
+                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-[0.82rem] font-bold text-slate-500">%</span>
+                        <input id="modalGst" type="number" readonly min="0" max="100" step="0.01" value="18"
+                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none">
                     </div>
                 </div>
             </div>
@@ -330,6 +397,23 @@ document.addEventListener('DOMContentLoaded', function () {
     var piNum = 'PI/' + fy + '-' + String(fy + 1).slice(2) + '/' + String(Math.floor(1000 + Math.random() * 9000));
     document.getElementById('piNumber').value = piNum;
     document.getElementById('piDate').value = now.toISOString().split('T')[0];
+
+    // Business step: keep a lightweight product catalog on the page so the popup can search visible products instantly.
+    var productCatalog = @json($productSearchCatalog);
+    var requestForm = document.getElementById('piRequestForm');
+    var requestProductFields = document.getElementById('requestProductFields');
+    var requestCustomerName = document.getElementById('requestCustomerName');
+    var requestCustomerEmail = document.getElementById('requestCustomerEmail');
+    var requestCustomerPhone = document.getElementById('requestCustomerPhone');
+    var requestNotes = document.getElementById('requestNotes');
+    var customerNameInput = document.getElementById('contactPerson');
+    var customerEmailInput = document.getElementById('customerEmail');
+    var customerPhoneInput = document.getElementById('deliveryPhone');
+    var customerGstinInput = document.getElementById('customerGstin');
+    var stateCodeInput = document.getElementById('piStateCode');
+    var piGstinInput = document.getElementById('piGstin');
+    var piDateInput = document.getElementById('piDate');
+    var piNumberInput = document.getElementById('piNumber');
 
     // ─── Same as Billing toggle ───
     var toggleTrack = document.getElementById('toggleTrack');
@@ -391,6 +475,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '<td class="px-2 py-2 text-center"><button type="button" class="del-row-btn inline-flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-colors hover:bg-rose-50"><svg class="h-[15px] w-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td>';
 
         // Store data attributes for calc
+        tr.setAttribute('data-product-id', data.productId || '');
         tr.setAttribute('data-qty', data.qty);
         tr.setAttribute('data-rate', data.rate);
         tr.setAttribute('data-gst', data.gst);
@@ -474,6 +559,77 @@ document.addEventListener('DOMContentLoaded', function () {
         return convert(Math.abs(Math.round(num)));
     }
 
+    // Business step: collect compact notes so the internal team can review delivery, tax, and commercial context from this request page.
+    function buildPiRequestNotes() {
+        var terms = Array.from(document.querySelectorAll('#termsList input')).map(function (input) {
+            return String(input.value || '').trim();
+        }).filter(Boolean);
+
+        var noteLines = [
+            'PI Header',
+            'PI Number: ' + String(piNumberInput.value || '').trim(),
+            'PI Date: ' + String(piDateInput.value || '').trim(),
+            'State Code: ' + String(stateCodeInput.value || '').trim(),
+            'GSTIN: ' + String(piGstinInput.value || '').trim(),
+            'Customer GSTIN: ' + String(customerGstinInput.value || '').trim(),
+            'Billing Address: ' + String(billingAddr.value || '').trim(),
+            'Shipping Address: ' + String(shippingAddr.value || '').trim(),
+            'Freight Charges: ' + String(document.getElementById('freightCharges').value || '0').trim(),
+            'Terms: ' + terms.join(' | '),
+        ].filter(function (line) {
+            return !line.endsWith(': ');
+        });
+
+        return noteLines.join("\n").slice(0, 1000);
+    }
+
+    // Business step: add one hidden request field so the backend receives product ids and quantities in standard form arrays.
+    function appendRequestField(name, value) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        requestProductFields.appendChild(input);
+    }
+
+    // Business step: submit the final PI request to the backend review flow instead of generating a PDF in the browser.
+    function submitPiRequest() {
+        var customerName = String(customerNameInput.value || '').trim();
+        var customerEmail = String(customerEmailInput.value || '').trim();
+        var customerPhone = String(customerPhoneInput.value || '').trim();
+        var rows = Array.from(tableBody.querySelectorAll('.product-row'));
+
+        if (!customerName) {
+            customerNameInput.focus();
+            alert('Please enter contact person name.');
+            return;
+        }
+
+        if (!customerEmail) {
+            customerEmailInput.focus();
+            alert('Please enter customer email.');
+            return;
+        }
+
+        if (rows.length === 0) {
+            alert('Please add at least one product to the PI request.');
+            return;
+        }
+
+        requestProductFields.innerHTML = '';
+
+        rows.forEach(function (row) {
+            appendRequestField('product_id[]', row.getAttribute('data-product-id') || '');
+            appendRequestField('quantity[]', row.getAttribute('data-qty') || '1');
+        });
+
+        requestCustomerName.value = customerName;
+        requestCustomerEmail.value = customerEmail;
+        requestCustomerPhone.value = customerPhone;
+        requestNotes.value = buildPiRequestNotes();
+        requestForm.submit();
+    }
+
     // ─── Modal logic ───
     var modal = document.getElementById('addProductModal');
     // Move modal to body to guarantee it breaks out of relative stacking contexts
@@ -485,16 +641,196 @@ document.addEventListener('DOMContentLoaded', function () {
     var cancelBtn = document.getElementById('modalCancelBtn');
     var addBtn = document.getElementById('modalAddBtn');
 
-    var mCatNo = document.getElementById('modalCatNo');
+    var mCategory = document.getElementById('modalCategory');
+    var mSubcategory = document.getElementById('modalSubcategory');
     var mProdName = document.getElementById('modalProductName');
     var mProdNameField = document.getElementById('modalProductNameField');
+    var mProductSuggestions = document.getElementById('modalProductSuggestions');
+    var mMinOrderQty = document.getElementById('modalMinOrderQty');
     var mPackSize = document.getElementById('modalPackSize');
+    var mQtyField = document.getElementById('modalQtyField');
+    var mQtyError = document.getElementById('modalQtyError');
     var mQty = document.getElementById('modalQty');
     var mRate = document.getElementById('modalRate');
     var mGst = document.getElementById('modalGst');
     var mTotal = document.getElementById('modalTotalAmount');
     var modalIsOpen = false;
     var closeTimer = null;
+    var selectedCatalogProduct = null;
+
+    // Business step: normalize search text once so product matching stays simple and consistent.
+    function normalizeProductSearchValue(value) {
+        return String(value || '').trim().toLowerCase();
+    }
+
+    // Business step: hide the popup suggestion panel when no search choices should be shown.
+    function hideProductSuggestions() {
+        mProductSuggestions.classList.add('hidden');
+        mProductSuggestions.innerHTML = '';
+    }
+
+    // Business step: keep the category filter simple by showing one clean option per visible category.
+    function renderCategoryOptions() {
+        var categories = productCatalog
+            .filter(function (product) {
+                return product.category_id && product.category_name;
+            })
+            .reduce(function (uniqueCategories, product) {
+                if (!uniqueCategories.some(function (category) { return category.id === product.category_id; })) {
+                    uniqueCategories.push({ id: product.category_id, name: product.category_name });
+                }
+
+                return uniqueCategories;
+            }, [])
+            .sort(function (left, right) {
+                return left.name.localeCompare(right.name);
+            });
+
+        mCategory.innerHTML = '<option value="">All Categories</option>' + categories.map(function (category) {
+            return '<option value="' + category.id + '">' + escHtml(category.name) + '</option>';
+        }).join('');
+    }
+
+    // Business step: keep subcategory choices aligned to the chosen category so the team can narrow products faster.
+    function renderSubcategoryOptions() {
+        var selectedCategoryId = parseInt(mCategory.value || '0', 10);
+        var sourceProducts = selectedCategoryId
+            ? productCatalog.filter(function (product) { return product.category_id === selectedCategoryId; })
+            : productCatalog;
+
+        var subcategories = sourceProducts
+            .filter(function (product) {
+                return product.subcategory_id && product.subcategory_name;
+            })
+            .reduce(function (uniqueSubcategories, product) {
+                if (!uniqueSubcategories.some(function (subcategory) { return subcategory.id === product.subcategory_id; })) {
+                    uniqueSubcategories.push({ id: product.subcategory_id, name: product.subcategory_name });
+                }
+
+                return uniqueSubcategories;
+            }, [])
+            .sort(function (left, right) {
+                return left.name.localeCompare(right.name);
+            });
+
+        mSubcategory.innerHTML = '<option value="">All Subcategories</option>' + subcategories.map(function (subcategory) {
+            return '<option value="' + subcategory.id + '">' + escHtml(subcategory.name) + '</option>';
+        }).join('');
+    }
+
+    // Business step: only narrow product choices when both category and subcategory are selected; otherwise keep the full visible list.
+    function getActiveCatalogProducts() {
+        var selectedCategoryId = parseInt(mCategory.value || '0', 10);
+        var selectedSubcategoryId = parseInt(mSubcategory.value || '0', 10);
+
+        if (!selectedCategoryId || !selectedSubcategoryId) {
+            return productCatalog;
+        }
+
+        return productCatalog.filter(function (product) {
+            return product.category_id === selectedCategoryId && product.subcategory_id === selectedSubcategoryId;
+        });
+    }
+
+    // Business step: show the minimum quantity rule directly in the popup so the requester knows the ordering threshold before saving.
+    function validateModalQuantity(showError) {
+        var quantity = parseInt(mQty.value || '0', 10);
+        var minimumQuantity = parseInt(mMinOrderQty.value || '1', 10);
+        var hasError = quantity > 0 && quantity < minimumQuantity;
+
+        mQtyField.classList.toggle('border-rose-400', hasError);
+        mQtyField.classList.toggle('ring-1', hasError);
+        mQtyField.classList.toggle('ring-rose-200', hasError);
+        mQtyError.classList.toggle('hidden', !hasError || !showError);
+        mQtyError.textContent = hasError ? 'Quantity must be at least ' + minimumQuantity + '.' : '';
+
+        return !hasError;
+    }
+
+    // Business step: return the visible products that match the typed name or catalogue number.
+    function searchCatalogProducts(searchValue) {
+        var normalizedSearchValue = normalizeProductSearchValue(searchValue);
+        var activeProducts = getActiveCatalogProducts();
+
+        if (!normalizedSearchValue) {
+            return activeProducts.slice(0, 8);
+        }
+
+        return activeProducts.filter(function (product) {
+            return normalizeProductSearchValue(product.name).includes(normalizedSearchValue)
+                || normalizeProductSearchValue(product.sku).includes(normalizedSearchValue)
+                || normalizeProductSearchValue(product.search_label).includes(normalizedSearchValue);
+        }).slice(0, 8);
+    }
+
+    // Business step: match the user entry against visible product name, catalogue number, or the combined label.
+    function findCatalogProduct(searchValue) {
+        var normalizedSearchValue = normalizeProductSearchValue(searchValue);
+
+        if (!normalizedSearchValue) {
+            return null;
+        }
+
+        return getActiveCatalogProducts().find(function (product) {
+            return normalizeProductSearchValue(product.name) === normalizedSearchValue
+                || normalizeProductSearchValue(product.sku) === normalizedSearchValue
+                || normalizeProductSearchValue(product.search_label) === normalizedSearchValue;
+        }) || null;
+    }
+
+    // Business step: fill the modal with the selected product so rate, GST, and pack size follow backend pricing data.
+    function applyCatalogProduct(product) {
+        if (!product) {
+            return;
+        }
+
+        mProdName.value = product.name || '';
+        mMinOrderQty.value = product.min_order_quantity || 1;
+        mPackSize.value = product.lot_size || 1;
+        mQty.min = product.min_order_quantity || 1;
+        if ((parseInt(mQty.value || '0', 10) || 0) < (product.min_order_quantity || 1)) {
+            mQty.value = product.min_order_quantity || 1;
+        }
+        mRate.value = product.rate || 0;
+        mGst.value = product.gst || 0;
+        validateModalQuantity(true);
+        updateModalTotal();
+    }
+
+    // Business step: show the best matching products so the team can pick the right item quickly in the popup.
+    function renderProductSuggestions(searchValue) {
+        var matches = searchCatalogProducts(searchValue);
+
+        if (matches.length === 0) {
+            hideProductSuggestions();
+            return;
+        }
+
+        mProductSuggestions.innerHTML = matches.map(function (product) {
+            return '<button type="button" class="product-suggestion-item flex w-full items-start justify-between rounded-[10px] px-3 py-2.5 text-left transition-colors hover:bg-slate-50" data-product-id="' + product.id + '">' +
+                '<span class="min-w-0">' +
+                    '<span class="block truncate text-sm font-semibold text-slate-800">' + escHtml(product.name) + '</span>' +
+                    '<span class="block truncate text-[0.76rem] text-slate-500">' + escHtml(product.sku || 'No catalogue number') + '</span>' +
+                '</span>' +
+                '<span class="ml-3 shrink-0 text-right">' +
+                    '<span class="block text-[0.76rem] font-semibold text-[#e65100]">' + escHtml(product.pack_size) + '</span>' +
+                    '<span class="block text-[0.76rem] text-slate-500">&#8377; ' + formatNum(product.rate) + '</span>' +
+                '</span>' +
+            '</button>';
+        }).join('');
+
+        mProductSuggestions.classList.remove('hidden');
+    }
+
+    // Business step: keep track of the chosen product so Add to Invoice uses the matched catalog item.
+    function syncSelectedCatalogProduct() {
+        selectedCatalogProduct = findCatalogProduct(mProdName.value);
+
+        if (selectedCatalogProduct) {
+            setProductNameError(false);
+            applyCatalogProduct(selectedCatalogProduct);
+        }
+    }
 
     function setProductNameError(hasError) {
         mProdNameField.classList.toggle('border-rose-400', hasError);
@@ -503,13 +839,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function openModal() {
-        mCatNo.value = '';
+        mCategory.value = '';
+        mSubcategory.value = '';
         mProdName.value = '';
-        mPackSize.value = '';
+        mMinOrderQty.value = '1';
+        mPackSize.value = '1';
         mQty.value = '1';
         mRate.value = '0';
         mGst.value = '18';
+        selectedCatalogProduct = null;
+        renderCategoryOptions();
+        renderSubcategoryOptions();
+        hideProductSuggestions();
         setProductNameError(false);
+        validateModalQuantity(false);
         updateModalTotal();
 
         clearTimeout(closeTimer);
@@ -535,6 +878,7 @@ document.addEventListener('DOMContentLoaded', function () {
         dialog.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
         dialog.classList.add('opacity-0', 'scale-95', 'translate-y-[10px]');
         document.body.classList.remove('overflow-hidden');
+        hideProductSuggestions();
         clearTimeout(closeTimer);
         closeTimer = setTimeout(function () {
             if (!modalIsOpen) {
@@ -552,11 +896,67 @@ document.addEventListener('DOMContentLoaded', function () {
         mTotal.textContent = '\u20B9 ' + formatNum(total);
     }
 
-    mQty.addEventListener('input', updateModalTotal);
+    mQty.addEventListener('input', function () {
+        updateModalTotal();
+        validateModalQuantity(true);
+    });
     mRate.addEventListener('input', updateModalTotal);
     mGst.addEventListener('input', updateModalTotal);
+    mCategory.addEventListener('change', function () {
+        // Business step: refresh the subcategory choices and product suggestions whenever the category filter changes.
+        mSubcategory.value = '';
+        selectedCatalogProduct = null;
+        renderSubcategoryOptions();
+        renderProductSuggestions(mProdName.value);
+    });
+    mSubcategory.addEventListener('change', function () {
+        // Business step: once both filters are selected, the popup should only suggest products from that exact branch.
+        selectedCatalogProduct = null;
+        renderProductSuggestions(mProdName.value);
+    });
     mProdName.addEventListener('input', function () {
+        // Business step: clear the previous selection while the user is typing a fresh product search.
+        selectedCatalogProduct = null;
         setProductNameError(false);
+
+        // Business step: when the user types, keep showing matching products from the visible catalog.
+        renderProductSuggestions(mProdName.value);
+
+        // Business step: when the typed value matches a visible product exactly, auto-fill the rest of the row details.
+        syncSelectedCatalogProduct();
+    });
+    mProdName.addEventListener('focus', function () {
+        // Business step: on focus, show the available products so the team can choose without typing the full name.
+        renderProductSuggestions(mProdName.value);
+    });
+    mProdName.addEventListener('change', syncSelectedCatalogProduct);
+    mProductSuggestions.addEventListener('click', function (event) {
+        // Business step: when the user clicks a suggested product, use that item as the invoice row source.
+        var suggestionButton = event.target.closest('.product-suggestion-item');
+
+        if (!suggestionButton) {
+            return;
+        }
+
+        var productId = parseInt(suggestionButton.getAttribute('data-product-id'), 10);
+        var matchedProduct = productCatalog.find(function (product) {
+            return product.id === productId;
+        }) || null;
+
+        if (!matchedProduct) {
+            return;
+        }
+
+        selectedCatalogProduct = matchedProduct;
+        applyCatalogProduct(matchedProduct);
+        hideProductSuggestions();
+        mQty.focus();
+    });
+    document.addEventListener('click', function (event) {
+        // Business step: close suggestions when the user clicks outside the search field area.
+        if (!event.target.closest('#modalProductNameField') && !event.target.closest('#modalProductSuggestions')) {
+            hideProductSuggestions();
+        }
     });
 
     document.getElementById('addProductRow').addEventListener('click', openModal);
@@ -566,22 +966,45 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modalIsOpen) closeModal(); });
 
     addBtn.addEventListener('click', function () {
-        var catNo = mCatNo.value.trim();
+        // Business step: resolve the final selected product one last time before the invoice row is added.
+        var matchedProduct = selectedCatalogProduct || findCatalogProduct(mProdName.value);
         var productName = mProdName.value.trim();
         var qty = parseFloat(mQty.value) || 1;
         var rate = parseFloat(mRate.value) || 0;
         var gst = parseFloat(mGst.value) || 0;
         var packSize = mPackSize.value.trim();
 
+        if (matchedProduct) {
+            selectedCatalogProduct = matchedProduct;
+            productName = matchedProduct.name || productName;
+            packSize = matchedProduct.pack_size || packSize;
+            rate = parseFloat(mRate.value) || matchedProduct.rate || 0;
+            gst = parseFloat(mGst.value) || matchedProduct.gst || 0;
+        }
+
+        if (!matchedProduct) {
+            setProductNameError(true);
+            mProdName.focus();
+            alert('Please select a product from the available search results.');
+            return;
+        }
+
         if (!productName) {
             setProductNameError(true);
             mProdName.focus();
             return;
         }
+
+        if (!validateModalQuantity(true)) {
+            mQty.focus();
+            return;
+        }
+
         setProductNameError(false);
 
         addRowToTable({
-            catNo: catNo,
+            productId: matchedProduct.id,
+            catNo: matchedProduct.sku || '',
             productName: productName,
             packSize: packSize,
             qty: qty,
@@ -596,13 +1019,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('freightCharges').addEventListener('input', recalcTotals);
 
     // ─── Generate PDF (placeholder) ───
-    document.getElementById('generatePdfBtn').addEventListener('click', function () {
-        if (window.BiogenixToast) {
-            window.BiogenixToast.show('PDF generation coming soon! All form data is captured.', 'info');
-        } else {
-            alert('PDF generation coming soon! All form data is captured.');
-        }
-    });
+    document.getElementById('requestPiBtn').addEventListener('click', submitPiRequest);
 
     // ─── Show empty message initially ───
     toggleEmptyMsg();

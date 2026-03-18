@@ -10,7 +10,7 @@
 
 <div>
     <section class="relative overflow-hidden bg-slate-900 py-16 text-white md:py-24">
-        <img src="{{ asset('storage/slides/image3.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+        <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-r from-primary-950/90 via-slate-900/80 to-slate-900/40"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
@@ -71,7 +71,7 @@
                 <div class="{{ $sectionCardClass }}">
                     <div class="flex items-center gap-4">
                         <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-slate-200">
-                            <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Expert" class="h-full w-full object-cover">
+                            <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Expert" class="h-full w-full object-cover">
                         </div>
                         <div>
                             <p class="text-sm font-semibold text-slate-900">Enterprise Sales Team</p>
@@ -206,7 +206,7 @@
                     <li class="flex gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>Have a preferred delivery city/region for accurate lead times.</li>
                 </ul>
                 <div class="mt-5 flex flex-wrap gap-3">
-                    <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Download PI Template</x-ui.action-link>
+                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5">Download PI Template</x-ui.action-link>
                     <x-ui.action-link :href="route('contact')" variant="secondary" class="min-h-11 px-5">Share Requirements</x-ui.action-link>
                 </div>
             </div>

@@ -25,7 +25,7 @@
 @section('customer_active', 'quotations')
 
 @section('customer_actions')
-    <x-ui.action-link :href="route('proforma.create')">Generate New PI</x-ui.action-link>
+    <x-ui.action-link :href="route('quotation.create')">Generate New Quotation</x-ui.action-link>
     <x-ui.action-link :href="route('proforma.index')" variant="secondary">View PI Library</x-ui.action-link>
 @endsection
 
@@ -71,7 +71,7 @@
                             <td class="px-4 py-4">
                                 <div class="flex flex-wrap gap-2">
                                     <a href="{{ route('proforma.index') }}" class="{{ $actionPrimaryClass }}">View PDFs</a>
-                                    <a href="{{ route('proforma.create') }}" class="{{ $actionSecondaryClass }}">Open Creator</a>
+                                    <a href="{{ route('quotation.create') }}" class="{{ $actionSecondaryClass }}">Open Creator</a>
                                 </div>
                             </td>
                         </tr>

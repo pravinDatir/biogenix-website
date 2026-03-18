@@ -8,9 +8,9 @@
         content="@yield('meta_description', 'Biogenix Healthcare Solutions - Precision diagnostics, innovative life science research tools, and medical instruments for laboratories and healthcare professionals.')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Biogenix')</title>
-    <link rel="icon" type="image/jpeg" href="{{ asset('storage/slides/logo.jpg') }}?v=20260309">
-    <link rel="shortcut icon" href="{{ asset('storage/slides/logo.jpg') }}?v=20260309">
-    <link rel="apple-touch-icon" href="{{ asset('storage/slides/logo.jpg') }}?v=20260309">
+    <link rel="icon" type="image/jpeg" href="{{ asset('upload/icons/logo.jpg') }}?v=20260309">
+    <link rel="shortcut icon" href="{{ asset('upload/icons/logo.jpg') }}?v=20260309">
+    <link rel="apple-touch-icon" href="{{ asset('upload/icons/logo.jpg') }}?v=20260309">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

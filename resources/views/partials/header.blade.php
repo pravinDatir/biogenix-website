@@ -11,7 +11,7 @@
     $navItems = [
         ['label' => 'Home', 'route' => 'home', 'href' => route('home')],
         ['label' => 'Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
-        ['label' => 'Generate Quote', 'route' => 'proforma.create', 'href' => route('proforma.create')],
+        ['label' => 'Generate Quote', 'route' => 'quotation.create', 'href' => route('quotation.create')],
         ['label' => 'PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
         ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
         ['label' => 'FAQ', 'route' => 'faq', 'href' => route('faq')],
@@ -21,7 +21,7 @@
     $mobileQuickActions = [
         ['label' => 'My Profile', 'href' => $profileHref, 'icon' => 'profile'],
         ['label' => 'View Cart', 'href' => '#', 'icon' => 'cart', 'onclick' => 'openCartSidebar'],
-        ['label' => 'Generate Quote', 'href' => route('proforma.create'), 'icon' => 'quote'],
+        ['label' => 'Generate Quote', 'href' => route('quotation.create'), 'icon' => 'quote'],
         ['label' => 'Support', 'href' => route('contact'), 'icon' => 'support'],
     ];
 @endphp
@@ -29,7 +29,7 @@
 <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
     <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 lg:px-8 xl:px-10">
         <a href="{{ route('home') }}" class="shrink-0">
-            <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-14 w-auto md:h-16">
+            <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-14 w-auto md:h-16">
         </a>
 
         {{-- Mobile hamburger --}}
@@ -125,7 +125,7 @@
     >
         <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('storage/slides/logo.jpg') }}" alt="Biogenix Logo" width="40" height="40" decoding="async" class="h-10 w-10 rounded-2xl object-cover">
+                <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="40" height="40" decoding="async" class="h-10 w-10 rounded-2xl object-cover">
                 <div>
                     <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-slate-950">Biogenix Menu</p>
                     <p class="text-xs font-medium text-slate-400">Mobile navigation</p>

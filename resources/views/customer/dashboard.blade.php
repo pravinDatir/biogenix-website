@@ -52,7 +52,7 @@
 
 @section('customer_actions')
     <x-ui.action-link :href="route('products.index')">Browse Catalog</x-ui.action-link>
-    <x-ui.action-link :href="route('proforma.create')" variant="secondary">Generate Quote</x-ui.action-link>
+    <x-ui.action-link :href="route('quotation.create')" variant="secondary">Generate Quote</x-ui.action-link>
 @endsection
 
 @section('customer_content')

@@ -53,9 +53,10 @@
                     <tbody class="divide-y divide-slate-100">
                         @forelse ($proformas as $pi)
                             @php
+                                $isPendingInternalReview = in_array(strtolower($pi->status), ['pending_review', 'requested', 'submitted'], true);
                                 $statusClass = match (strtolower($pi->status)) {
                                     'approved', 'active' => 'border-emerald-200 bg-emerald-50 text-emerald-700',
-                                    'pending', 'draft' => 'border-amber-200 bg-amber-50 text-amber-700',
+                                    'pending', 'draft', 'pending_review', 'requested', 'submitted' => 'border-amber-200 bg-amber-50 text-amber-700',
                                     'rejected', 'expired' => 'border-rose-200 bg-rose-50 text-rose-700',
                                     default => 'border-slate-200 bg-slate-50 text-slate-700',
                                 };
@@ -80,7 +81,11 @@
                                 <td class="{{ $tableCellClass }} font-semibold text-slate-950">INR {{ number_format($pi->total_amount, 2) }}</td>
                                 <td class="{{ $tableCellClass }}">{{ $pi->created_at }}</td>
                                 <td class="{{ $tableCellClass }}">
-                                    <a href="{{ route('proforma.download', $pi->id) }}" class="{{ $secondaryButtonClass }}">Download PDF</a>
+                                    @if ($isPendingInternalReview)
+                                        <span class="inline-flex h-10 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-4 text-sm font-semibold text-amber-700">Awaiting Internal Review</span>
+                                    @else
+                                        <a href="{{ route('proforma.download', $pi->id) }}" class="{{ $secondaryButtonClass }}">Download PDF</a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

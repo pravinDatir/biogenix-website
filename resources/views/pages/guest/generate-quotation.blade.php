@@ -1,4 +1,7 @@
 @php
+    // Business step: use one shared blade for both instant quotation and PI request flows.
+    $quotationFlowMode = $quotationFlowMode ?? 'quote';
+    $isPiRequestFlow = $quotationFlowMode === 'pi_request';
     $oldProductIds = old('product_id', $prefilledProductId ? [$prefilledProductId] : ['']);
     $oldQuantities = old('quantity', array_fill(0, max(1, count($oldProductIds)), 1));
     $pageShellClass = 'mx-auto w-full max-w-none space-y-8 px-4 py-6 sm:px-6 lg:px-8 xl:px-10';
@@ -10,6 +13,33 @@
     $buttonSecondaryClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70';
     $rowClass = 'space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-4';
     $previewClass = 'rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-600';
+    $pageBreadcrumbLabel = $isPiRequestFlow ? 'Generate PI Quotation' : 'Order / Generate Quote';
+    $pageBadgeLabel = $isPiRequestFlow ? 'Internal Review PI Flow' : 'MRP-Only Guest Flow';
+    $pageTitle = $isPiRequestFlow ? 'Generate PI Quotation' : 'Generate Quotation / PI';
+    $pageDescription = $isPiRequestFlow
+        ? 'Submit your PI request with product quantities and recipient details. Our team will verify price, discount, tax, stock, and delivery terms before issuing the final PI.'
+        : 'Select products, set quantities, and generate branded quotation PDFs using visible MRP values.';
+    $accessRulePrimary = $isPiRequestFlow
+        ? 'Submitted PI requests go to the internal team for verification before final issue.'
+        : 'Guests can generate and download quote documents.';
+    $accessRuleSecondary = $isPiRequestFlow
+        ? 'The final PI is generated after pricing, stock, tax, and delivery review.'
+        : 'Login is required for customer pricing and order placement.';
+    $sectionSubtitle = $isPiRequestFlow
+        ? 'Choose product, quantity, and recipient information for internal PI review.'
+        : 'Choose product, quantity, and recipient information.';
+    $formAction = $isPiRequestFlow ? route('pi-quotation.store') : route('quotation.store');
+    $purposeLabel = $isPiRequestFlow ? 'PI Purpose' : 'Quote Purpose';
+    $primarySubmitLabel = $isPiRequestFlow ? 'Submit PI Request' : 'Generate Quotation';
+    $showDownloadActions = ! $isPiRequestFlow;
+    $actionHelpText = $isPiRequestFlow
+        ? 'Your request will be reviewed internally before the final PI is issued.'
+        : 'Both actions use MRP-only values and server validation.';
+    $summaryTitle = $isPiRequestFlow ? 'Preview PI Request' : 'Preview Quote';
+    $summaryDescription = $isPiRequestFlow
+        ? 'Review recipient and estimated totals before sending the request for internal verification.'
+        : 'Review recipient and estimated MRP totals before generating PDF.';
+    $authSidebarLinkLabel = $isPiRequestFlow ? 'View Submitted PI Requests' : 'Download PDF (Recent Quotes)';
 
     if (! is_array($oldProductIds) || $oldProductIds === []) {
         $oldProductIds = [''];
@@ -26,24 +56,24 @@
         <span>/</span>
         <a href="{{ route('products.index') }}" class="hover:underline">Products</a>
         <span>/</span>
-        <span class="font-semibold text-slate-700">Order / Generate Quote</span>
+        <span class="font-semibold text-slate-700">{{ $pageBreadcrumbLabel }}</span>
     </nav>
 
     <section class="space-y-4">
         <div class="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-primary-950 p-5 text-white shadow-xl md:p-8">
             <div class="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-end">
                 <div class="lg:col-span-8">
-                    <x-badge variant="inverse">MRP-Only Guest Flow</x-badge>
-                    <h1 class="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl">Generate Quotation / PI</h1>
+                    <x-badge variant="inverse">{{ $pageBadgeLabel }}</x-badge>
+                    <h1 class="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl">{{ $pageTitle }}</h1>
                     <p class="mt-3 max-w-2xl text-base leading-8 text-slate-100">
-                        Select products, set quantities, and generate branded quotation PDFs using visible MRP values.
+                        {{ $pageDescription }}
                     </p>
                 </div>
                 <div class="lg:col-span-4">
                     <div class="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Access Rules</p>
-                        <p class="mt-2 text-sm text-slate-100">Guests can generate and download quote documents.</p>
-                        <p class="mt-1 text-sm text-slate-100">Login is required for customer pricing and order placement.</p>
+                        <p class="mt-2 text-sm text-slate-100">{{ $accessRulePrimary }}</p>
+                        <p class="mt-1 text-sm text-slate-100">{{ $accessRuleSecondary }}</p>
                     </div>
                 </div>
             </div>
@@ -51,7 +81,7 @@
     </section>
 
     <section class="space-y-4">
-        <x-ui.section-heading title="Product Selection" subtitle="Choose product, quantity, and recipient information." />
+        <x-ui.section-heading title="Product Selection" :subtitle="$sectionSubtitle" />
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-start">
             <div class="lg:col-span-8">
                 <x-ui.surface-card class="{{ $formCardClass }}">
@@ -65,7 +95,7 @@
                         </div>
                     @endif
 
-                    <form id="generateQuoteForm" method="POST" action="{{ route('proforma.store') }}" class="space-y-3">
+                    <form id="generateQuoteForm" method="POST" action="{{ $formAction }}" class="space-y-3">
                         @csrf
 
                         <div class="space-y-3">
@@ -122,7 +152,7 @@
 
                         <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                             <div class="space-y-2">
-                                <label for="purpose" class="text-sm font-semibold text-slate-700">Quote Purpose</label>
+                                <label for="purpose" class="text-sm font-semibold text-slate-700">{{ $purposeLabel }}</label>
                                 <select id="purpose" name="purpose" class="{{ $inputClass }} @error('purpose') border-red-500 ring-1 ring-red-100 @enderror" required>
                                     <option value="self" @selected(old('purpose') === 'self')>Self</option>
                                     <option value="other" @selected(old('purpose') === 'other')>Custom Recipient</option>
@@ -185,11 +215,13 @@
                         </div>
 
                         <div class="flex flex-wrap items-center gap-2 pt-1">
-                            <button type="submit" id="generateQuoteSubmitBtn" class="{{ $buttonPrimaryClass }} w-full sm:w-auto">Generate Quotation</button>
-                            <button type="submit" id="downloadQuoteSubmitBtn" name="download_pdf" value="1" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Download Branded PDF</button>
+                            <button type="submit" id="generateQuoteSubmitBtn" class="{{ $buttonPrimaryClass }} w-full sm:w-auto">{{ $primarySubmitLabel }}</button>
+                            @if ($showDownloadActions)
+                                <button type="submit" id="downloadQuoteSubmitBtn" name="download_pdf" value="1" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Download PDF</button>
+                            @endif
                             <button type="button" id="saveQuoteDraftBtn" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Save Draft</button>
                             <button type="button" id="clearQuoteDraftBtn" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Clear Draft</button>
-                            <p class="text-xs text-slate-500">Both actions use MRP-only values and server validation.</p>
+                            <p class="text-xs text-slate-500">{{ $actionHelpText }}</p>
                             <p id="quoteDraftStatus" class="w-full text-xs text-slate-500"></p>
                         </div>
                     </form>
@@ -198,8 +230,8 @@
 
             <div class="lg:col-span-4 lg:sticky lg:top-8 lg:self-start">
                 <x-ui.surface-card class="{{ $sidebarCardClass }}">
-                    <h3 class="text-lg font-semibold text-slate-900">Preview Quote</h3>
-                    <p class="mt-1 text-sm text-slate-600">Review recipient and estimated MRP totals before generating PDF.</p>
+                    <h3 class="text-lg font-semibold text-slate-900">{{ $summaryTitle }}</h3>
+                    <p class="mt-1 text-sm text-slate-600">{{ $summaryDescription }}</p>
                     <div id="quote-summary-body" class="mt-3 text-sm text-slate-600">
                         <div class="py-4 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50">
                             <svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -210,16 +242,22 @@
                     </div>
                     @guest
                         <div class="mt-4 border-t border-slate-200 pt-4">
-                            <div class="rounded-lg border border-primary-100 bg-primary-50 p-4">
-                                <p class="text-sm text-gray-700">Login to access personalized pricing and ordering features.</p>
-                                <a href="{{ route('login') }}" class="text-primary-700 font-medium hover:underline">Login Now</a>
-                            </div>
-                            <button type="button" id="downloadFromPreviewBtn" class="{{ $buttonSecondaryClass }} mt-3 w-full">Download Branded PDF</button>
+                            @if ($showDownloadActions)
+                                <div class="rounded-lg border border-primary-100 bg-primary-50 p-4">
+                                    <p class="text-sm text-gray-700">Login to access personalized pricing and ordering features.</p>
+                                    <a href="{{ route('login') }}" class="text-primary-700 font-medium hover:underline">Login Now</a>
+                                </div>
+                                <button type="button" id="downloadFromPreviewBtn" class="{{ $buttonSecondaryClass }} mt-3 w-full">Download PDF</button>
+                            @else
+                                <div class="rounded-lg border border-amber-100 bg-amber-50 p-4">
+                                    <p class="text-sm text-amber-900">Guest users can submit a PI request. The final PI will be issued after internal review.</p>
+                                </div>
+                            @endif
                         </div>
                     @endguest
                     @auth
                         <div class="mt-4 border-t border-slate-200 pt-4">
-                            <x-ui.action-link :href="route('proforma.index')" variant="secondary">Download Branded PDF (Recent Quotes)</x-ui.action-link>
+                            <x-ui.action-link :href="route('proforma.index')" variant="secondary">{{ $authSidebarLinkLabel }}</x-ui.action-link>
                         </div>
                     @endauth
                 </x-ui.surface-card>
@@ -241,7 +279,8 @@
         const addItemButton = document.getElementById('add-quote-item');
         const summaryBody = document.getElementById('quote-summary-body');
         const quoteDraftStatus = document.getElementById('quoteDraftStatus');
-        const draftKey = 'biogenix_quote_draft_v1';
+        // Business step: keep quotation drafts and PI request drafts separate in the browser so one flow does not overwrite the other.
+        const draftKey = @json($isPiRequestFlow ? 'biogenix_pi_request_draft_v1' : 'biogenix_quote_draft_v1');
         let activeSubmitBtn = null;
 
         [quoteSubmitBtn, downloadQuoteSubmitBtn].forEach(function (btn) {

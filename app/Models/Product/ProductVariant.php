@@ -62,6 +62,12 @@ class ProductVariant extends Model
         return $this->hasMany(ProductBulkPrice::class, 'product_variant_id');
     }
 
+    // This loads technical files that are specific to this variant configuration.
+    public function technicalResources(): HasMany
+    {
+        return $this->hasMany(ProductTechnicalResource::class, 'product_variant_id');
+    }
+
     // This loads legacy attribute rows for the variant.
     public function attributes(): HasMany
     {

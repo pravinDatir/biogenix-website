@@ -229,7 +229,7 @@
         inset: 0;
         background:
             linear-gradient(135deg, rgba(255, 106, 0, 0.96), rgba(255, 147, 71, 0.84)),
-            url('{{ asset('storage/slides/lucknow-map.svg') }}');
+            url('{{ asset('upload/corousel/lucknow-map.svg') }}');
         background-position: center, center;
         background-repeat: no-repeat, no-repeat;
         background-size: cover, cover;
@@ -488,7 +488,7 @@
 
                                     <div class="mt-8 flex flex-wrap items-center gap-3">
                                         <x-ui.action-link :href="route('products.index')" variant="secondary" class="min-h-11 px-5">Browse Catalog</x-ui.action-link>
-                                        <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                                        <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
                                         <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book Meeting</x-ui.action-link>
                                     </div>
 
@@ -638,7 +638,7 @@
                 @forelse (($productCategories ?? collect()) as $category)
                     @php
                         $tileClass = 'home-category-tile--standard';
-                        $imagePath = $category->default_image_path ?: 'storage/categories/image1.jpg';
+                        $imagePath = $category->default_image_path ?: 'upload/categories/image1.jpg';
                         $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
                     @endphp
                     <article class="home-category-tile home-reveal group {{ $tileClass }}">
@@ -689,7 +689,7 @@
             </div>
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
                 <article class="home-route-card home-reveal">
-                    <img src="{{ asset('storage/slides/image2.jpg') }}" alt="B2B healthcare procurement" loading="lazy" decoding="async">
+                    <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="B2B healthcare procurement" loading="lazy" decoding="async">
                     <span class="home-route-card__chip">B2B Operations</span>
                     <div class="home-route-card__content">
                         <div class="home-route-card__panel">
@@ -703,7 +703,7 @@
                     </div>
                 </article>
                 <article class="home-route-card home-reveal">
-                    <img src="{{ asset('storage/slides/image5.jpg') }}" alt="B2C healthcare retail buying" loading="lazy" decoding="async">
+                    <img src="{{ asset('upload/corousel/image5.jpg') }}" alt="B2C healthcare retail buying" loading="lazy" decoding="async">
                     <span class="home-route-card__chip">B2C Access</span>
                     <div class="home-route-card__content">
                         <div class="home-route-card__panel">
@@ -762,7 +762,7 @@
                     <h2 class="mt-4 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
                     <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
                     <div class="mt-5 flex flex-wrap gap-3">
-                        <x-ui.action-link :href="route('proforma.create')" variant="contrast" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                        <x-ui.action-link :href="route('quotation.create')" variant="contrast" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
                         <x-ui.action-link :href="route('contact')" variant="inverse" class="min-h-11 px-5">Talk to Support</x-ui.action-link>
                     </div>
                 </div>
@@ -789,7 +789,7 @@
     <section class="home-why bg-transparent py-12 md:py-16">
         <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-12 lg:px-8 xl:px-10">
             <article class="home-reveal min-h-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-xl md:min-h-[22rem] lg:col-span-6">
-                <img src="{{ asset('storage/slides/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
+                <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
             </article>
 
             <article class="home-reveal lg:col-span-6">
@@ -989,7 +989,7 @@
                     Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
                 </p>
                 <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                    <x-ui.action-link :href="route('proforma.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
                     <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book a Meeting</x-ui.action-link>
                 </div>
             </div>

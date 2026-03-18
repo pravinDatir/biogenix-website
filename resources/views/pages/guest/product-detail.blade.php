@@ -44,7 +44,7 @@
         $categoryLabel = trim((string) ($product->category_name ?? 'Laboratory Equipment'));
         $applicationLabel = trim((string) ($product->subcategory_name ?? 'Clinical Diagnostics'));
         $modelLabel = trim((string) ($product->visible_variant_sku ?? $product->sku ?? 'N/A'));
-        $imageUrl = asset($product->image_path ?: 'storage/slides/logo.jpg');
+        $imageUrl = asset($product->image_path ?: 'upload/icons/logo.jpg');
         $galleryImages = collect(['Main View', 'Pack View', 'Bench View', 'Workflow'])
             ->map(fn (string $label) => ['label' => $label, 'src' => $imageUrl]);
         $currentPrice = $product->visible_price !== null ? (float) $product->visible_price : null;
@@ -57,11 +57,7 @@
         $primaryBadge = filled($applicationLabel) ? $applicationLabel : 'Premium Series';
         $secondaryBadge = ((int) ($product->id ?? 1) % 2 === 0) ? 'Clinical Ready' : 'Best Seller';
         $stockStatus = trim((string) ($product->stock_status ?? 'Out of Stock'));
-        $brochure = $product->brochure_path ?? $product->brochure_url ?? null;
-        $brochureUrl = filled($brochure)
-            ? (Str::startsWith($brochure, ['http://', 'https://', '/']) ? $brochure : asset('storage/' . ltrim($brochure, '/')))
-            : null;
-        $quoteUrl = route('proforma.create', ['product_id' => $product->id]);
+        $quoteUrl = route('quotation.create', ['product_id' => $product->id]);
         $cartVariantId = $product->visible_variant_id ?? null;
         $loginUrl = route('login');
         // Step 1: read the business-owned overview directly from the product row for the detail section.
@@ -83,12 +79,34 @@
             ])
             ->filter(fn (array $row) => $row['label'] !== '' && $row['value'] !== '')
             ->values();
-        $resourceCards = [
-            ['title' => 'Certificate of Analysis', 'meta' => 'Batch-linked quality document', 'href' => $brochureUrl ?: '#', 'icon' => 'clipboard'],
-            ['title' => 'Safety Data Sheet', 'meta' => 'Handling and compliance reference', 'href' => $brochureUrl ?: '#', 'icon' => 'shield'],
-            ['title' => 'User Manual', 'meta' => 'Installation and usage guide', 'href' => $brochureUrl ?: '#', 'icon' => 'book'],
-            ['title' => 'Maintenance Schedule', 'meta' => 'Standard care checklist', 'href' => $brochureUrl ?: '#', 'icon' => 'calendar'],
-        ];
+        // Step 3: map backend technical resource rows into the detail-page card data used by the download section.
+        $technicalResources = collect($product->technical_resources ?? [])
+            ->map(function ($resource) use ($product) {
+                $resourceType = Str::lower(trim((string) ($resource->resource_type ?? 'document')));
+
+                $resourcePresentation = match ($resourceType) {
+                    'certificate_of_analysis' => ['meta' => 'Batch-linked quality document', 'icon' => 'clipboard'],
+                    'safety_data_sheet' => ['meta' => 'Handling and compliance reference', 'icon' => 'shield'],
+                    'user_manual' => ['meta' => 'Installation and usage guide', 'icon' => 'book'],
+                    'maintenance_schedule' => ['meta' => 'Standard care checklist', 'icon' => 'calendar'],
+                    default => ['meta' => 'Technical download for this product', 'icon' => 'book'],
+                };
+
+                // Step 4: keep the UI ready-to-render by attaching one standard download route per saved document.
+                return [
+                    'id' => (int) ($resource->id ?? 0),
+                    'title' => trim((string) ($resource->title ?? 'Technical Document')),
+                    'meta' => trim((string) ($resource->description ?? '')) ?: $resourcePresentation['meta'],
+                    'icon' => $resourcePresentation['icon'],
+                    'href' => route('products.technical-resources.download', [
+                        'productId' => $product->id,
+                        'resourceId' => $resource->id,
+                    ]),
+                ];
+            })
+            ->filter(fn (array $resource) => $resource['id'] > 0 && $resource['title'] !== '')
+            ->values();
+        $primaryTechnicalResource = $technicalResources->first();
         // Step 3: use the live database-driven pricing ladder instead of hardcoded bulk pricing rows.
         $bulkTierRows = collect($product->bulk_price_tiers ?? [])->values();
         if ($bulkTierRows->isEmpty()) {
@@ -383,9 +401,11 @@
                             <p id="pincodeResult" class="mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500"></p>
                         </div>
 
-                        <a href="{{ $brochureUrl ?: '#' }}" @if ($brochureUrl) target="_blank" rel="noopener" @endif data-download-label="Full Brochure" class="{{ $secondaryButtonClass }} js-download-resource mt-4 w-full">
-                            Download Full Brochure
-                        </a>
+                        @if ($primaryTechnicalResource)
+                            <a href="{{ $primaryTechnicalResource['href'] }}" data-download-label="{{ e((string) $primaryTechnicalResource['title']) }}" class="{{ $secondaryButtonClass }} js-download-resource mt-4 w-full">
+                                Download {{ $primaryTechnicalResource['title'] }}
+                            </a>
+                        @endif
                     </div>
 
                 </div>
@@ -470,11 +490,11 @@
                 <div id="sectionResources" class="{{ $sectionCardClass }} scroll-mt-16">
                     <div class="flex items-center justify-between gap-3">
                         <h3 class="{{ $sectionHeadingClass }}">Technical Resources</h3>
-                        <x-ui.status-badge type="product" value="resource_count" :label="count($resourceCards) . ' files'" />
+                        <x-ui.status-badge type="product" value="resource_count" :label="count($technicalResources) . ' files'" />
                     </div>
                     <div class="mt-5 space-y-3">
-                        @foreach ($resourceCards as $resource)
-                            <a href="{{ $resource['href'] }}" @if ($resource['href'] !== '#') target="_blank" rel="noopener" @endif data-download-label="{{ e((string) $resource['title']) }}" class="js-download-resource group flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 no-underline transition duration-200 hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:shadow-md">
+                        @forelse ($technicalResources as $resource)
+                            <a href="{{ $resource['href'] }}" data-download-label="{{ e((string) $resource['title']) }}" class="js-download-resource group flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 no-underline transition duration-200 hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:shadow-md">
                                 <div class="flex items-start gap-3">
                                     <span class="{{ $iconTilePrimaryClass }} mt-0.5 bg-white">
                                         @if ($resource['icon'] === 'clipboard')
@@ -494,7 +514,11 @@
                                 </div>
                                 <svg class="h-4 w-4 text-slate-400 transition group-hover:text-primary-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
                             </a>
-                        @endforeach
+                        @empty
+                            <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm font-medium leading-7 text-slate-500">
+                                Technical documents will appear here after the product team uploads them for this item.
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -545,7 +569,7 @@
                         <div id="relatedCarouselTrack" class="flex gap-4 overflow-x-auto scroll-smooth pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                             @foreach ($relatedProducts as $relatedProduct)
                                 @php
-                                    $relatedImage = asset($relatedProduct->primaryImage?->file_path ?: 'storage/slides/logo.jpg');
+                                    $relatedImage = asset($relatedProduct->primaryImage?->file_path ?: 'upload/icons/logo.jpg');
                                     $relatedPrice = $relatedProduct->visible_price !== null ? (float) $relatedProduct->visible_price : null;
                                     $relatedReviews = 38 + (((int) ($relatedProduct->id ?? 1)) * 3);
                                 @endphp

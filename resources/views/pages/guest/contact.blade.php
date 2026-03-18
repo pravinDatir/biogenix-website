@@ -11,7 +11,7 @@
 
 <div class="bg-slate-50">
     <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
-        <img src="{{ asset('storage/slides/image2.jpg') }}" alt="Contact Biogenix" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+        <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="Contact Biogenix" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/60 to-slate-900/40"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
@@ -97,7 +97,7 @@
                         </div>
 
                         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                            <x-ui.action-link :href="route('proforma.create')" class="w-full justify-center">Generate Quote</x-ui.action-link>
+                            <x-ui.action-link :href="route('quotation.create')" class="w-full justify-center">Generate Quote</x-ui.action-link>
                             <x-ui.action-link :href="route('faq')" variant="secondary" class="w-full justify-center">View FAQs</x-ui.action-link>
                         </div>
                     </div>

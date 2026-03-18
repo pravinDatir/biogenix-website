@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Models\Product\ProductVariant;
 use App\Services\Product\ProductService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class ProductController extends Controller
@@ -129,6 +131,24 @@ class ProductController extends Controller
             Log::error('Failed to load product details.', ['product_id' => $productId, 'error' => $exception->getMessage()]);
 
             return $this->viewWithError('prelogin.product-details', ['id' => $productId], $exception, 'Unable to load product details.');
+        }
+    }
+
+    // This downloads one product document after checking that the current viewer can access the product.
+    public function downloadTechnicalResource(int $productId, int $resourceId, Request $request, ProductService $productService): StreamedResponse|RedirectResponse
+    {
+        try {
+            // Step 1: ask the product service to validate visibility and stream the requested document.
+            return $productService->downloadTechnicalResourceForViewer($request->user(), $productId, $resourceId);
+        } catch (Throwable $exception) {
+            Log::error('Failed to download product technical resource.', [
+                'product_id' => $productId,
+                'resource_id' => $resourceId,
+                'error' => $exception->getMessage(),
+            ]);
+
+            // Step 2: return the shopper to the product page with a simple business-friendly error.
+            return $this->redirectBackWithError($exception, 'Unable to download the product document right now.');
         }
     }
 }

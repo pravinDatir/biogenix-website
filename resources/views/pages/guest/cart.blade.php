@@ -148,7 +148,7 @@
                                     </svg>
                                     Browse Products
                                 </a>
-                                <a href="{{ route('proforma.create') }}" class="{{ $buttonSecondaryClass }}">Generate Quote</a>
+                                <a href="{{ route('quotation.create') }}" class="{{ $buttonSecondaryClass }}">Generate Quote</a>
                             </div>
 
                             {{-- Wishlist / Saved Items count teaser --}}

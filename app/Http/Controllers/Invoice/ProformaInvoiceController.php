@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Invoice;
 
 use App\Http\Controllers\Controller;
+use App\Models\Authorization\User;
 use App\Services\Authorization\DataVisibilityService;
 use App\Services\Invoice\ProformaInvoiceService;
 use Illuminate\Http\RedirectResponse;
@@ -14,11 +15,11 @@ use Throwable;
 
 class ProformaInvoiceController extends Controller
 {
-    // This renders the PI create page with visible products.
+    // This renders the instant quotation page with visible products.
     public function create(Request $request, ProformaInvoiceService $proformaInvoiceService): View
     {
         try {
-            // Step 1: load PI create-page data with an optional prefilled product id.
+            // Step 1: load the quotation page data with an optional prefilled product id.
             return view('invoice.create', $proformaInvoiceService->createPageData(
                 $request->user(),
                 $request->integer('product_id'),
@@ -34,43 +35,44 @@ class ProformaInvoiceController extends Controller
         }
     }
 
-    // This creates a proforma invoice from the submitted form.
-    public function store( Request $request, DataVisibilityService $dataVisibilityService,  ProformaInvoiceService $proformaInvoiceService,  ): Response|RedirectResponse {
+    // This renders the PI request page so users can ask the team to issue a reviewed PI later.
+    public function showPiQuotationRequestPage(Request $request, ProformaInvoiceService $proformaInvoiceService): View
+    {
         try {
-            // Step 1: validate the PI form with multiple item rows.
-            $validated = $request->validate([
-                'product_id' => ['required', 'array', 'min:1'],
-                'product_id.*' => ['nullable', 'integer', 'exists:products,id'],
-                'quantity' => ['required', 'array', 'min:1'],
-                'quantity.*' => ['nullable', 'integer', 'min:1'],
-                'purpose' => ['required', 'in:self,other'],
-                'customer_name' => ['required', 'string', 'max:255'],
-                'customer_email' => ['required', 'email', 'max:255'],
-                'customer_phone' => ['nullable', 'string', 'max:40'],
-                'target_company_id' => ['nullable', 'integer', 'exists:companies,id'],
-                'notes' => ['nullable', 'string', 'max:1000'],
-            ]);
+            // Step 1: load the same visible product data so the request page follows the current pricing and product visibility rules.
+            return view('pi-quotation.generate', array_merge(
+                $proformaInvoiceService->createPageData(
+                    $request->user(),
+                    $request->integer('product_id'),
+                ),
+                [
+                    'quotationFlowMode' => 'pi_request',
+                ],
+            ));
+        } catch (Throwable $exception) {
+            Log::error('Failed to load PI request page.', ['error' => $exception->getMessage()]);
 
-            // Step 2: enforce purpose and company-access rules.
+            return $this->viewWithError('pi-quotation.generate', [
+                'products' => collect(),
+                'clientCompanies' => collect(),
+                'prefilledProductId' => $request->integer('product_id'),
+                'quotationFlowMode' => 'pi_request',
+            ], $exception, 'Unable to load PI request form.');
+        }
+    }
+
+    // This creates an instant quotation record and returns the branded PDF immediately.
+    public function store(Request $request, DataVisibilityService $dataVisibilityService, ProformaInvoiceService $proformaInvoiceService): Response|RedirectResponse
+    {
+        try {
+            // Step 1: validate the submitted request payload before any business checks run.
+            $validated = $this->validatePiPayload($request);
+
+            // Step 2: confirm the user is allowed to create the requested recipient scope.
             $user = $request->user();
+            $this->authorizePiTargetSelection($validated, $user, $dataVisibilityService);
 
-            if ($validated['purpose'] === 'other' && ! $dataVisibilityService->canGeneratePiForOther($user)) {
-                abort(403, 'You are not allowed to generate a PI for another customer.');
-            }
-
-            if ($user && $user->isB2c() && $validated['purpose'] !== 'self') {
-                abort(403, 'B2C users can only generate PI for self.');
-            }
-
-            if ($user && $user->isB2b() && $validated['purpose'] === 'other') {
-                $targetCompanyId = isset($validated['target_company_id']) ? (int) $validated['target_company_id'] : null;
-
-                if ($targetCompanyId && ! $dataVisibilityService->canAccessCompanyData($user, $targetCompanyId)) {
-                    abort(403, 'You can only generate PI for your own company or assigned clients.');
-                }
-            }
-
-            // Step 3: prepare all PI items and calculate the invoice totals.
+            // Step 3: prepare the visible items and calculate totals from the shared pricing engine.
             $preparedItems = $proformaInvoiceService->prepareProformaItems($validated, $user);
             $invoiceTotals = $proformaInvoiceService->calculateInvoiceTotals($preparedItems);
             $piNumber = $this->generatePiNumber();
@@ -101,6 +103,49 @@ class ProformaInvoiceController extends Controller
         }
     }
 
+    // This stores a PI generation request so the team can review quantities, price, tax, stock, and delivery terms before issuing the final PI.
+    public function submitPiQuotationRequest(Request $request, DataVisibilityService $dataVisibilityService, ProformaInvoiceService $proformaInvoiceService): RedirectResponse
+    {
+        try {
+            // Step 1: validate the submitted request payload before any business checks run.
+            $validated = $this->validatePiPayload($request);
+
+            // Step 2: confirm the user is allowed to create the requested recipient scope.
+            $user = $request->user();
+            $this->authorizePiTargetSelection($validated, $user, $dataVisibilityService);
+
+            // Step 3: prepare the visible items and calculate totals so the internal team receives a complete pricing snapshot.
+            $preparedItems = $proformaInvoiceService->prepareProformaItems($validated, $user);
+            $invoiceTotals = $proformaInvoiceService->calculateInvoiceTotals($preparedItems);
+            $requestReference = $this->generatePiRequestReference();
+
+            // Step 4: save the request in pending review status instead of issuing the final PI immediately.
+            $proformaInvoiceService->createPendingPiRequestWithItems(
+                $validated,
+                $user,
+                $preparedItems,
+                $invoiceTotals,
+                $requestReference,
+                $request->session()->getId(),
+            );
+
+            // Step 5: keep a simple activity record so the business team can trace who submitted the request.
+            $proformaInvoiceService->logPiRequestSubmitted(
+                $user,
+                $request->session()->getId(),
+                $request->path(),
+                $requestReference,
+            );
+
+            return redirect()->route('pi-quotation.generate')
+                ->with('status', "PI request {$requestReference} submitted successfully. Our team will review it and issue the final PI after verification.");
+        } catch (Throwable $exception) {
+            Log::error('Failed to submit PI request.', ['error' => $exception->getMessage()]);
+
+            return $this->redirectBackWithError($exception, 'Unable to submit PI request.');
+        }
+    }
+
     // This downloads an existing visible PI as a PDF file.
     public function download(int $proformaId, Request $request, ProformaInvoiceService $proformaInvoiceService): Response|RedirectResponse
     {
@@ -111,7 +156,13 @@ class ProformaInvoiceController extends Controller
 
             abort_if(! $proforma, 404);
 
-            // Step 2: return the invoice PDF download response.
+            // Step 2: allow download only after the request has moved past internal review.
+            if (! $proformaInvoiceService->isReadyForPdfDownload($proforma)) {
+                return redirect()->route('proforma.index')
+                    ->with('status', 'This PI request is still under internal review. PDF download will be available after the final PI is issued.');
+            }
+
+            // Step 3: return the invoice PDF download response.
             return $proformaInvoiceService->downloadProformaPdf($proforma);
         } catch (Throwable $exception) {
             Log::error('Failed to download PI.', ['proforma_id' => $proformaId, 'error' => $exception->getMessage()]);
@@ -137,6 +188,56 @@ class ProformaInvoiceController extends Controller
         }
     }
 
+    // This validates the shared PI and quotation payload so both flows follow the same business input rules.
+    protected function validatePiPayload(Request $request): array
+    {
+        try {
+            return $request->validate([
+                'product_id' => ['required', 'array', 'min:1'],
+                'product_id.*' => ['nullable', 'integer', 'exists:products,id'],
+                'quantity' => ['required', 'array', 'min:1'],
+                'quantity.*' => ['nullable', 'integer', 'min:1'],
+                'purpose' => ['required', 'in:self,other'],
+                'customer_name' => ['required', 'string', 'max:255'],
+                'customer_email' => ['required', 'email', 'max:255'],
+                'customer_phone' => ['nullable', 'string', 'max:40'],
+                'target_company_id' => ['nullable', 'integer', 'exists:companies,id'],
+                'notes' => ['nullable', 'string', 'max:1000'],
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to validate PI payload.', ['error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This applies the same recipient and company visibility checks for both instant quotes and PI requests.
+    protected function authorizePiTargetSelection(array $validated, ?User $user, DataVisibilityService $dataVisibilityService): void
+    {
+        try {
+            // Step 1: stop users from requesting other-customer documents when their account scope does not allow it.
+            if ($validated['purpose'] === 'other' && ! $dataVisibilityService->canGeneratePiForOther($user)) {
+                abort(403, 'You are not allowed to generate a PI for another customer.');
+            }
+
+            // Step 2: keep B2C accounts limited to self-flow requests only.
+            if ($user && $user->isB2c() && $validated['purpose'] !== 'self') {
+                abort(403, 'B2C users can only generate PI for self.');
+            }
+
+            // Step 3: when a B2B user selects another company, confirm that company is within their allowed visibility scope.
+            if ($user && $user->isB2b() && $validated['purpose'] === 'other') {
+                $targetCompanyId = isset($validated['target_company_id']) ? (int) $validated['target_company_id'] : null;
+
+                if ($targetCompanyId && ! $dataVisibilityService->canAccessCompanyData($user, $targetCompanyId)) {
+                    abort(403, 'You can only generate PI for your own company or assigned clients.');
+                }
+            }
+        } catch (Throwable $exception) {
+            Log::error('Failed to authorize PI target selection.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
     // This generates a simple unique PI number.
     protected function generatePiNumber(): string
     {
@@ -144,6 +245,17 @@ class ProformaInvoiceController extends Controller
             return 'PI-'.now()->format('YmdHis').'-'.str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
         } catch (Throwable $exception) {
             Log::error('Failed to generate PI number.', ['error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This generates a readable request reference that can be shared with the customer before the final PI is issued.
+    protected function generatePiRequestReference(): string
+    {
+        try {
+            return 'PI-REQ-'.now()->format('YmdHis').'-'.str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        } catch (Throwable $exception) {
+            Log::error('Failed to generate PI request reference.', ['error' => $exception->getMessage()]);
             throw $exception;
         }
     }

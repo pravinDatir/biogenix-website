@@ -37,7 +37,7 @@ Project: Laravel + Blade + Tailwind CSS (`biogenix-website-main`)
   - Quantity
   - Custom recipient
   - Preview summary
-  - Explicit **Download Branded PDF** actions in UI
+  - Explicit **Download  PDF** actions in UI
 - Restricted areas now show login messaging and CTA where relevant:
   - "Login to access this feature."
   - "Login to access personalized pricing and ordering features."

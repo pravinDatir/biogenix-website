@@ -5,6 +5,7 @@ namespace App\Services\Invoice;
 use App\Models\Authorization\Company;
 use App\Models\Authorization\User;
 use App\Models\Invoice\ProformaInvoice;
+use App\Models\Product\Product;
 use App\Models\Product\UserActivityLog;
 use App\Services\Authorization\DataVisibilityService;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -46,7 +47,12 @@ class ProformaInvoiceService
                     return $product;
                 });
 
-            // Step 2: load allowed client companies for B2B users only.
+            // Step 2: when pricing setup is still incomplete, keep the PI request page usable by loading active products with basic variant details.
+            if ($products->isEmpty()) {
+                $products = $this->loadFallbackQuotationProducts();
+            }
+
+            // Step 3: load allowed client companies for B2B users only.
             $clientCompanies = collect();
 
             if ($user && $user->isB2b()) {
@@ -62,7 +68,7 @@ class ProformaInvoiceService
                     ->get();
             }
 
-            // Step 3: return the PI page data.
+            // Step 4: return the PI page data.
             return [
                 'products' => $products,
                 'clientCompanies' => $clientCompanies,
@@ -83,6 +89,42 @@ class ProformaInvoiceService
                 ->first();
         } catch (Throwable $exception) {
             Log::error('Failed to load visible PI product.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This keeps the PI request page searchable even before the pricing master is fully configured.
+    protected function loadFallbackQuotationProducts()
+    {
+        try {
+            // Step 1: load active products with their first active sellable variant so the request page can still identify catalogue items.
+            return Product::query()
+                ->with([
+                    'variants' => fn ($builder) => $builder->where('is_active', true)->orderBy('id'),
+                ])
+                ->where('is_active', true)
+                ->orderBy('name')
+                ->get()
+                ->map(function (Product $product) {
+                    // Step 2: use the first active variant as the basic operational source for SKU and buying rules.
+                    $primaryVariant = $product->variants->first();
+
+                    $product->sku = $product->sku ?: ($primaryVariant?->sku ?? '');
+                    $product->visible_price = 0.0;
+                    $product->visible_currency = 'INR';
+                    $product->visible_price_type = 'manual_review';
+                    $product->gst_rate = 18.0;
+                    $product->tax_amount = 0.0;
+                    $product->price_after_gst = 0.0;
+                    $product->min_order_quantity = max(1, (int) ($primaryVariant?->min_order_quantity ?? 1));
+                    $product->max_order_quantity = $primaryVariant?->max_order_quantity;
+                    $product->lot_size = max(1, (int) ($primaryVariant?->lot_size ?? 1));
+
+                    return $product;
+                })
+                ->values();
+        } catch (Throwable $exception) {
+            Log::error('Failed to load fallback PI products.', ['error' => $exception->getMessage()]);
             throw $exception;
         }
     }
@@ -169,40 +211,46 @@ class ProformaInvoiceService
         string $guestSessionId,
     ): ProformaInvoice {
         try {
-            return DB::transaction(function () use ($validated, $user, $preparedItems, $invoiceTotals, $piNumber, $guestSessionId): ProformaInvoice {
-                // Step 1: create the PI header row with final invoice totals.
-                $proforma = ProformaInvoice::query()->create([
-                    'pi_number' => $piNumber,
-                    'requester_type' => $user ? 'user' : 'guest',
-                    'created_by_user_id' => $user?->id,
-                    'owner_user_id' => $user?->id,
-                    'owner_company_id' => $user?->company_id,
-                    'target_type' => $validated['purpose'],
-                    'target_name' => $validated['customer_name'],
-                    'target_email' => $validated['customer_email'],
-                    'target_phone' => $validated['customer_phone'] ?: null,
-                    'target_company_id' => isset($validated['target_company_id']) ? (int) $validated['target_company_id'] : null,
-                    'status' => 'draft',
-                    'currency' => $invoiceTotals['currency'],
-                    'subtotal' => $invoiceTotals['subtotal'],
-                    'tax_amount' => $invoiceTotals['tax_amount'],
-                    'discount_amount' => $invoiceTotals['discount_amount'],
-                    'price_after_gst' => $invoiceTotals['price_after_gst'],
-                    'total_amount' => $invoiceTotals['total_amount'],
-                    'guest_session_id' => $user ? null : $guestSessionId,
-                    'notes' => $validated['notes'] ?: null,
-                ]);
-
-                // Step 2: create one PI item row for each submitted product row.
-                foreach ($preparedItems as $preparedItem) {
-                    $proforma->items()->create($preparedItem);
-                }
-
-                // Step 3: return the PI with the data needed for PDF rendering.
-                return $this->loadProformaForPdf($proforma->id);
-            });
+            // Step 1: save the instantly generated quotation with a draft status so the PDF can be downloaded right away.
+            return $this->saveProformaSnapshotWithItems(
+                $validated,
+                $user,
+                $preparedItems,
+                $invoiceTotals,
+                $piNumber,
+                'draft',
+                $guestSessionId,
+                true,
+            );
         } catch (Throwable $exception) {
             Log::error('Failed to create PI.', ['pi_number' => $piNumber, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This stores a PI request in pending review status so the business team can verify it before issuing the final PI.
+    public function createPendingPiRequestWithItems(
+        array $validated,
+        ?User $user,
+        array $preparedItems,
+        array $invoiceTotals,
+        string $requestReference,
+        string $guestSessionId,
+    ): ProformaInvoice {
+        try {
+            // Step 1: save the request snapshot with pending review status instead of issuing the final PDF immediately.
+            return $this->saveProformaSnapshotWithItems(
+                $validated,
+                $user,
+                $preparedItems,
+                $invoiceTotals,
+                $requestReference,
+                'pending_review',
+                $guestSessionId,
+                false,
+            );
+        } catch (Throwable $exception) {
+            Log::error('Failed to create PI request.', ['request_reference' => $requestReference, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }
@@ -224,6 +272,27 @@ class ProformaInvoiceService
             ]);
         } catch (Throwable $exception) {
             Log::error('Failed to log PI generation.', ['session_id' => $sessionId, 'user_id' => $user?->id, 'pi_number' => $piNumber, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This stores PI request activity so the business team can later track request submission events.
+    public function logPiRequestSubmitted(?User $user, string $sessionId, string $path, string $requestReference): void
+    {
+        try {
+            UserActivityLog::query()->create([
+                'session_id' => $sessionId,
+                'user_id' => $user?->id,
+                'user_type' => $user?->user_type ?: 'guest',
+                'user_name' => $user?->name,
+                'user_email' => $user?->email,
+                'activity_type' => 'pi_request_submitted',
+                'path' => $path,
+                'payload' => ['request_reference' => $requestReference],
+                'created_at' => now(),
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to log PI request submission.', ['session_id' => $sessionId, 'user_id' => $user?->id, 'request_reference' => $requestReference, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }
@@ -276,6 +345,18 @@ class ProformaInvoiceService
             return $pdf->download($proforma->pi_number.'.pdf');
         } catch (Throwable $exception) {
             Log::error('Failed to build PI PDF.', ['proforma_id' => $proforma->id, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This tells the UI and controller whether a PI record is ready to be downloaded as a final document.
+    public function isReadyForPdfDownload(ProformaInvoice $proforma): bool
+    {
+        try {
+            // Step 1: pending review records are requests only, so they must stay non-downloadable until the team issues the final PI.
+            return ! in_array(strtolower((string) $proforma->status), ['pending_review', 'requested', 'submitted'], true);
+        } catch (Throwable $exception) {
+            Log::error('Failed to check PI download readiness.', ['proforma_id' => $proforma->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }
@@ -375,6 +456,66 @@ class ProformaInvoiceService
                 ->findOrFail($proformaId);
         } catch (Throwable $exception) {
             Log::error('Failed to load PI for PDF.', ['proforma_id' => $proformaId, 'error' => $exception->getMessage()]);
+            throw $exception;
+        }
+    }
+
+    // This saves one proforma snapshot with all items so both instant quotation and pending PI request flows share the same write logic.
+    protected function saveProformaSnapshotWithItems(
+        array $validated,
+        ?User $user,
+        array $preparedItems,
+        array $invoiceTotals,
+        string $documentReference,
+        string $status,
+        string $guestSessionId,
+        bool $loadPdfRelations,
+    ): ProformaInvoice {
+        try {
+            return DB::transaction(function () use ($validated, $user, $preparedItems, $invoiceTotals, $documentReference, $status, $guestSessionId, $loadPdfRelations): ProformaInvoice {
+                // Step 1: save the request or quotation header so the business team has the submitted customer and pricing snapshot.
+                $proforma = ProformaInvoice::query()->create([
+                    'pi_number' => $documentReference,
+                    'requester_type' => $user ? 'user' : 'guest',
+                    'created_by_user_id' => $user?->id,
+                    'owner_user_id' => $user?->id,
+                    'owner_company_id' => $user?->company_id,
+                    'target_type' => $validated['purpose'],
+                    'target_name' => $validated['customer_name'],
+                    'target_email' => $validated['customer_email'],
+                    'target_phone' => $validated['customer_phone'] ?: null,
+                    'target_company_id' => isset($validated['target_company_id']) ? (int) $validated['target_company_id'] : null,
+                    'status' => $status,
+                    'currency' => $invoiceTotals['currency'],
+                    'subtotal' => $invoiceTotals['subtotal'],
+                    'tax_amount' => $invoiceTotals['tax_amount'],
+                    'discount_amount' => $invoiceTotals['discount_amount'],
+                    'price_after_gst' => $invoiceTotals['price_after_gst'],
+                    'total_amount' => $invoiceTotals['total_amount'],
+                    'guest_session_id' => $user ? null : $guestSessionId,
+                    'notes' => $validated['notes'] ?: null,
+                ]);
+
+                // Step 2: save the submitted product lines so the team can review the exact requested quantities and pricing snapshot.
+                foreach ($preparedItems as $preparedItem) {
+                    $proforma->items()->create($preparedItem);
+                }
+
+                // Step 3: return the record in the shape needed by the calling flow.
+                if ($loadPdfRelations) {
+                    return $this->loadProformaForPdf($proforma->id);
+                }
+
+                return $proforma->load([
+                    'creator:id,name,email',
+                    'ownerUser:id,name,email',
+                    'ownerCompany:id,name,company_type',
+                    'targetCompany:id,name,company_type',
+                    'items' => fn ($query) => $query->orderBy('id'),
+                ]);
+            });
+        } catch (Throwable $exception) {
+            Log::error('Failed to save proforma snapshot.', ['document_reference' => $documentReference, 'status' => $status, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }

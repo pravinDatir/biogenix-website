@@ -15,7 +15,7 @@
         <div class="grid min-h-[40rem] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)]">
             <aside class="relative hidden overflow-hidden lg:flex lg:items-end lg:p-9">
                 <img
-                    src="{{ asset('storage/slides/home2.jpg') }}"
+                    src="{{ asset('upload/corousel/home2.jpg') }}"
                     alt="Biogenix laboratory"
                     class="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"

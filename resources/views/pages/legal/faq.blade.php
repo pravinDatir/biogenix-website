@@ -4,7 +4,7 @@
 
 <div class="min-h-screen bg-slate-50">
     <section class="relative overflow-hidden bg-slate-900 py-16 text-white lg:py-20">
-        <img src="{{ asset('storage/slides/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
+        <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-b from-primary-900/50 to-slate-950/80"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 text-center">
             <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
@@ -48,7 +48,7 @@
         <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                 @foreach ([
-                    ['title' => 'Ordering & Quotes', 'copy' => 'Generating PIs, approving B2B access, and seeing contract prices.', 'cta' => route('proforma.create')],
+                    ['title' => 'Ordering & Quotes', 'copy' => 'Generating PIs, approving B2B access, and seeing contract prices.', 'cta' => route('quotation.create')],
                     ['title' => 'Delivery & Logistics', 'copy' => 'Cold-chain handling, delivery timelines, and shipment visibility.', 'cta' => route('contact')],
                     ['title' => 'Support & Warranty', 'copy' => 'Ticket SLAs, escalation, and post-install validation support.', 'cta' => route('book-meeting')],
                 ] as $topic)
