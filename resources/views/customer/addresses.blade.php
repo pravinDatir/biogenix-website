@@ -3,7 +3,6 @@
 @php
     $portal = auth()->user()?->user_type ?? request('user_type', request('portal', 'b2c'));
     $portal = $portal === 'b2b' ? 'b2b' : 'b2c';
-    $backUrl = url()->previous() ?: route('customer.addresses.preview', ['user_type' => $portal]);
 @endphp
 
 @section('title', 'Edit Address')
@@ -14,17 +13,14 @@
     <x-account.workspace
         :portal="$portal"
         active="addresses"
-        :back-url="$backUrl"
-        back-label="Back"
-        eyebrow="Account / Addresses / Edit Address"
-        title="Edit Address"
-        description="Update your delivery and billing information."
+        title="Addresses"
+        description="Manage your delivery and billing addresses."
     >
         @include('customer.'.$portal.'.addresses-form')
 
         <x-slot:footer>
-            <button type="button" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/40">Cancel</button>
-            <button type="button" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/40">Save Changes</button>
+            <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none cursor-pointer">Cancel</button>
+            <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none cursor-pointer">Save Changes</button>
         </x-slot:footer>
     </x-account.workspace>
 @endsection

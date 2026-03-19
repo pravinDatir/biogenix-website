@@ -26,6 +26,7 @@ Route::get('/products/{productId}/technical-resources/{resourceId}/download', [P
  // Preview-only customer workspace pages (UI shells)
  Route::view('/customer/profile', 'customer.profile')->name('customer.profile.preview');
  Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
+ Route::view('/customer/orders', 'customer.orders')->name('customer.orders.preview');
  Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
 
  // for testing PI flow only, will be removed later.
