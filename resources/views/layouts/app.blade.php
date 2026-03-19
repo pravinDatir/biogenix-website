@@ -23,7 +23,7 @@
 
 <body class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_right_15%,rgba(14,165,233,0.12),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#eff5ff_100%)] font-sans text-slate-800 antialiased">
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
-    @php($loaderLogoPath = public_path('upload/icons/logo.jpg'))
+    @php($loaderLogoPath = public_path('upload/icons/biogenix3D.png'))
     @php($loaderLogoSrc = file_exists($loaderLogoPath) ? 'data:image/jpeg;base64,' . base64_encode(file_get_contents($loaderLogoPath)) : asset('upload/icons/logo.jpg'))
 
     <div id="toastContainer" class="pointer-events-none fixed right-4 top-5 z-[120] flex w-[min(calc(100vw-2rem),24rem)] flex-col gap-3 sm:right-6 sm:top-6"></div>
@@ -32,18 +32,18 @@
         <div class="h-full w-full bg-slate-950 flex items-center justify-center overflow-hidden relative">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_35%),radial-gradient(circle_at_bottom,rgba(34,197,94,0.12),transparent_30%)]"></div>
 
-            <div class="relative flex flex-col items-center gap-8">
+            <div class="relative flex flex-col items-center gap-0">
                 <div class="relative">
-                    <div class="absolute inset-[-12px] rounded-[2rem] bg-white/5 blur-xl"></div>
+                    <!-- <div class="absolute inset-[-12px] rounded-[2rem] bg-white/5 blur-xl"></div> -->
 
-                    <div class="relative rounded-[28px] bg-white shadow-2xl shadow-cyan-500/10 px-6 py-5 border border-white/60">
+                    <!-- <div class="relative rounded-[28px] bg-white shadow-2xl shadow-cyan-500/10 px-6 py-5 border border-white/60"> -->
                         <img
                             src="{{ $loaderLogoSrc }}"
                             alt="Biogenix"
                             class="w-[260px] max-w-[72vw] drop-shadow-sm"
                             decoding="sync"
                         >
-                    </div>
+                    <!-- </div> -->
                 </div>
 
                 <div class="flex flex-col items-center gap-3">
