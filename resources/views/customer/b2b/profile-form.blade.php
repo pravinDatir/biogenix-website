@@ -2,6 +2,10 @@
     $panelClass = 'rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] md:p-7';
     $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]';
     $labelClass = 'text-[13px] font-semibold text-slate-700';
+    $profileUser = $profileUser ?? auth()->user();
+    $profileCompany = $profileCompany ?? null;
+    $profileSummary = $profileSummary ?? ['orders_count' => 0, 'tickets_count' => 0, 'status_label' => 'Unknown'];
+    $hasGst = filled($profileCompany?->gst_number);
 @endphp
 
 {{-- Avatar & Quick Stats --}}
@@ -17,12 +21,12 @@
                 </button>
             </div>
             <div>
-                <h3 class="text-lg font-bold text-slate-900">Biogenix Solutions Pvt Ltd</h3>
-                <p class="mt-0.5 text-sm text-slate-500">prakhar@biogenix.com</p>
+                <h3 class="text-lg font-bold text-slate-900">{{ $profileCompany?->name ?? $profileUser?->name ?? 'Business Profile' }}</h3>
+                <p class="mt-0.5 text-sm text-slate-500">{{ $profileUser?->email ?? 'No email available' }}</p>
                 <div class="mt-2 flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                        GST Verified
+                    <span class="inline-flex items-center gap-1.5 rounded-full {{ $hasGst ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }} px-2.5 py-1 text-xs font-semibold">
+                        <span class="h-1.5 w-1.5 rounded-full {{ $hasGst ? 'bg-emerald-500' : 'bg-amber-500' }}"></span>
+                        {{ $hasGst ? 'GST Verified' : 'GST Pending' }}
                     </span>
                     <span class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-1 text-xs font-semibold text-primary-700">B2B Enterprise</span>
                 </div>
@@ -30,15 +34,15 @@
         </div>
         <div class="flex divide-x divide-slate-200 rounded-2xl border border-slate-200 bg-slate-50">
             <div class="px-5 py-3 text-center">
-                <p class="text-lg font-bold text-slate-900">47</p>
+                <p class="text-lg font-bold text-slate-900">{{ $profileSummary['orders_count'] }}</p>
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Orders</p>
             </div>
             <div class="px-5 py-3 text-center">
-                <p class="text-lg font-bold text-slate-900">5</p>
+                <p class="text-lg font-bold text-slate-900">{{ $profileSummary['tickets_count'] }}</p>
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tickets</p>
             </div>
             <div class="px-5 py-3 text-center">
-                <p class="text-lg font-bold text-emerald-600">Active</p>
+                <p class="text-lg font-bold {{ $profileSummary['status_label'] === 'Active' ? 'text-emerald-600' : 'text-amber-600' }}">{{ $profileSummary['status_label'] }}</p>
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Status</p>
             </div>
         </div>
@@ -60,26 +64,26 @@
     <div class="mt-6 grid gap-5 md:grid-cols-2">
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Company Name</label>
-            <input class="{{ $inputClass }}" value="Biogenix Solutions Pvt Ltd" placeholder="Company name">
+            <input name="company_name" class="{{ $inputClass }}" value="{{ old('company_name', $profileCompany?->name) }}" placeholder="Company name">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Legal Business Name</label>
-            <input class="{{ $inputClass }}" value="Biogenix Life Sciences Solutions" placeholder="Legal name">
+            <input name="legal_name" class="{{ $inputClass }}" value="{{ old('legal_name', $profileCompany?->legal_name) }}" placeholder="Legal name">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Registration Number (CIN)</label>
-            <input class="{{ $inputClass }}" value="U12345DL2023PTC123456" placeholder="CIN number">
+            <input name="registration_number" class="{{ $inputClass }}" value="{{ old('registration_number', $profileCompany?->registration_number) }}" placeholder="CIN number">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">GSTIN</label>
             <div class="relative">
                 <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                <input class="{{ $inputClass }} pl-11" value="07AAAAA0000A1Z5" placeholder="GST number">
+                <input name="gst_number" class="{{ $inputClass }} pl-11" value="{{ old('gst_number', $profileCompany?->gst_number) }}" placeholder="GST number">
             </div>
         </div>
         <div class="space-y-2 md:col-span-2">
             <label class="{{ $labelClass }}">PAN Number</label>
-            <input class="{{ $inputClass }} max-w-xl" value="ABCDE1234F" placeholder="PAN number">
+            <input name="pan_number" class="{{ $inputClass }} max-w-xl" value="{{ old('pan_number', $profileCompany?->pan_number) }}" placeholder="PAN number">
         </div>
     </div>
 </div>
@@ -99,24 +103,24 @@
     <div class="mt-6 grid gap-5 md:grid-cols-2">
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Contact Person Name</label>
-            <input class="{{ $inputClass }}" value="Prakhar Kapoor" placeholder="Full name">
+            <input name="name" class="{{ $inputClass }}" value="{{ old('name', $profileUser?->name) }}" placeholder="Full name">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Designation</label>
-            <input class="{{ $inputClass }}" value="Supply Chain Manager" placeholder="Job title">
+            <input name="designation" class="{{ $inputClass }}" value="{{ old('designation', $profileUser?->designation) }}" placeholder="Job title">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Email Address</label>
             <div class="relative">
                 <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <input class="{{ $inputClass }} pl-11" value="prakhar@biogenix.com" placeholder="Email">
+                <input name="email" class="{{ $inputClass }} pl-11" value="{{ old('email', $profileUser?->email) }}" placeholder="Email">
             </div>
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Mobile Number</label>
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center rounded-l-xl border-r border-slate-200 bg-slate-100 px-3 text-sm font-medium text-slate-500">+91</span>
-                <input class="{{ $inputClass }} pl-16" value="98765 43210" placeholder="Mobile number">
+                <input name="phone" class="{{ $inputClass }} pl-16" value="{{ old('phone', $profileUser?->phone) }}" placeholder="Mobile number">
             </div>
         </div>
     </div>

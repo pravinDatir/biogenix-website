@@ -9,6 +9,7 @@ use App\Http\Controllers\Authorization\RoleAndPermissionController;
 use App\Http\Controllers\Invoice\ProformaInvoiceController;
 use App\Http\Controllers\Invoice\QuotationController;
 use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Product\ProductCrudController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\SupportTicket\SupportTicketController;
@@ -24,7 +25,6 @@ Route::get('/products/{productId}/technical-resources/{resourceId}/download', [P
 
 // flow incomplete 
  // Preview-only customer workspace pages (UI shells)
- Route::view('/customer/profile', 'customer.profile')->name('customer.profile.preview');
  Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
  Route::view('/customer/orders', 'customer.orders')->name('customer.orders.preview');
  Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
@@ -115,6 +115,8 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->middleware('auth')->name('proforma.index');
     Route::get('/proforma/{proformaId}/download', [ProformaInvoiceController::class, 'download'])->middleware('auth')->name('proforma.download');
     Route::middleware('auth')->group(function (): void {
+        Route::get('/customer/profile', [ProfileController::class, 'showMyProfilePage'])->name('customer.profile.preview');
+        Route::post('/customer/profile', [ProfileController::class, 'updateMyProfileSection'])->name('customer.profile.update');
         Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
         Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
         Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');

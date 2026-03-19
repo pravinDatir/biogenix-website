@@ -2,6 +2,10 @@
     $panelClass = 'rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] md:p-7';
     $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]';
     $labelClass = 'text-[13px] font-semibold text-slate-700';
+    $profileUser = $profileUser ?? auth()->user();
+    $profileAddress = $profileAddress ?? null;
+    $profileSummary = $profileSummary ?? ['orders_count' => 0, 'tickets_count' => 0, 'status_label' => 'Unknown'];
+    $isVerified = ! empty($profileUser?->email_verified_at) || ($profileUser && $profileUser->status === 'active');
 @endphp
 
 {{-- Avatar & Quick Stats --}}
@@ -17,12 +21,12 @@
                 </button>
             </div>
             <div>
-                <h3 class="text-lg font-bold text-slate-900">Prakhar Kapoor</h3>
-                <p class="mt-0.5 text-sm text-slate-500">prakhar@example.com</p>
+                <h3 class="text-lg font-bold text-slate-900">{{ $profileUser?->name ?? 'Customer Profile' }}</h3>
+                <p class="mt-0.5 text-sm text-slate-500">{{ $profileUser?->email ?? 'No email available' }}</p>
                 <div class="mt-2 flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                        Verified
+                    <span class="inline-flex items-center gap-1.5 rounded-full {{ $isVerified ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }} px-2.5 py-1 text-xs font-semibold">
+                        <span class="h-1.5 w-1.5 rounded-full {{ $isVerified ? 'bg-emerald-500' : 'bg-amber-500' }}"></span>
+                        {{ $isVerified ? 'Verified' : 'Verification Pending' }}
                     </span>
                     <span class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-1 text-xs font-semibold text-primary-700">B2C Customer</span>
                 </div>
@@ -30,15 +34,15 @@
         </div>
         <div class="flex divide-x divide-slate-200 rounded-2xl border border-slate-200 bg-slate-50">
             <div class="px-5 py-3 text-center">
-                <p class="text-lg font-bold text-slate-900">12</p>
+                <p class="text-lg font-bold text-slate-900">{{ $profileSummary['orders_count'] }}</p>
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Orders</p>
             </div>
             <div class="px-5 py-3 text-center">
-                <p class="text-lg font-bold text-slate-900">3</p>
+                <p class="text-lg font-bold text-slate-900">{{ $profileSummary['tickets_count'] }}</p>
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tickets</p>
             </div>
             <div class="px-5 py-3 text-center">
-                <p class="text-lg font-bold text-emerald-600">Active</p>
+                <p class="text-lg font-bold {{ $profileSummary['status_label'] === 'Active' ? 'text-emerald-600' : 'text-amber-600' }}">{{ $profileSummary['status_label'] }}</p>
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Status</p>
             </div>
         </div>
@@ -60,20 +64,20 @@
     <div class="mt-6 grid gap-5 md:grid-cols-2">
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Full Name</label>
-            <input class="{{ $inputClass }}" value="Prakhar Kapoor" placeholder="Full name">
+            <input name="name" class="{{ $inputClass }}" value="{{ old('name', $profileUser?->name) }}" placeholder="Full name">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Mobile Number</label>
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center rounded-l-xl border-r border-slate-200 bg-slate-100 px-3 text-sm font-medium text-slate-500">+91</span>
-                <input class="{{ $inputClass }} pl-16" value="98765 43210" placeholder="Mobile number">
+                <input name="phone" class="{{ $inputClass }} pl-16" value="{{ old('phone', $profileUser?->phone) }}" placeholder="Mobile number">
             </div>
         </div>
         <div class="space-y-2 md:col-span-2">
             <label class="{{ $labelClass }}">Email Address</label>
             <div class="relative">
                 <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <input class="{{ $inputClass }} pl-11" value="prakhar@example.com" placeholder="Email">
+                <input name="email" class="{{ $inputClass }} pl-11" value="{{ old('email', $profileUser?->email) }}" placeholder="Email">
             </div>
             <p class="text-xs text-slate-400">This email will be used for account notifications and security updates.</p>
         </div>
@@ -95,23 +99,23 @@
     <div class="mt-6 grid gap-5 md:grid-cols-2">
         <div class="space-y-2 md:col-span-2">
             <label class="{{ $labelClass }}">Street Address</label>
-            <input class="{{ $inputClass }}" value="123 Medical Park Drive" placeholder="Street address">
+            <input name="address_line1" class="{{ $inputClass }}" value="{{ old('address_line1', $profileAddress?->line1) }}" placeholder="Street address">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">City</label>
-            <input class="{{ $inputClass }}" value="Lucknow" placeholder="City">
+            <input name="city" class="{{ $inputClass }}" value="{{ old('city', $profileAddress?->city) }}" placeholder="City">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">State / Province</label>
-            <input class="{{ $inputClass }}" value="Uttar Pradesh" placeholder="State">
+            <input name="state" class="{{ $inputClass }}" value="{{ old('state', $profileAddress?->state) }}" placeholder="State">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Postal Code</label>
-            <input class="{{ $inputClass }}" value="226010" placeholder="Postal code">
+            <input name="postal_code" class="{{ $inputClass }}" value="{{ old('postal_code', $profileAddress?->postal_code) }}" placeholder="Postal code">
         </div>
         <div class="space-y-2">
             <label class="{{ $labelClass }}">Country</label>
-            <input class="{{ $inputClass }}" value="India" placeholder="Country">
+            <input name="country" class="{{ $inputClass }}" value="{{ old('country', $profileAddress?->country) }}" placeholder="Country">
         </div>
     </div>
 </div>

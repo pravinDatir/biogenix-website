@@ -23,8 +23,82 @@
 
 <body class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_right_15%,rgba(14,165,233,0.12),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#eff5ff_100%)] font-sans text-slate-800 antialiased">
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
+    @php($loaderLogoPath = public_path('upload/icons/logo.jpg'))
+    @php($loaderLogoSrc = file_exists($loaderLogoPath) ? 'data:image/jpeg;base64,' . base64_encode(file_get_contents($loaderLogoPath)) : asset('upload/icons/logo.jpg'))
 
     <div id="toastContainer" class="pointer-events-none fixed right-4 top-5 z-[120] flex w-[min(calc(100vw-2rem),24rem)] flex-col gap-3 sm:right-6 sm:top-6"></div>
+
+    <div id="globalPageLoader" aria-hidden="true" class="fixed inset-x-0 bottom-0 top-[72px] z-40 opacity-100 visible transition-opacity duration-200">
+        <div class="h-full w-full bg-slate-950 flex items-center justify-center overflow-hidden relative">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_35%),radial-gradient(circle_at_bottom,rgba(34,197,94,0.12),transparent_30%)]"></div>
+
+            <div class="relative flex flex-col items-center gap-8">
+                <div class="relative">
+                    <div class="absolute inset-[-12px] rounded-[2rem] bg-white/5 blur-xl"></div>
+
+                    <div class="relative rounded-[28px] bg-white shadow-2xl shadow-cyan-500/10 px-6 py-5 border border-white/60">
+                        <img
+                            src="{{ $loaderLogoSrc }}"
+                            alt="Biogenix"
+                            class="w-[260px] max-w-[72vw] drop-shadow-sm"
+                            decoding="sync"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-emerald-400/95"></span>
+                        <span class="h-2.5 w-2.5 rounded-full bg-cyan-400/95"></span>
+                        <span class="h-2.5 w-2.5 rounded-full bg-amber-300/95"></span>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-white text-xl md:text-2xl font-semibold tracking-[0.24em] uppercase">
+                            Loading your store
+                        </p>
+                        <p class="mt-2 text-slate-300 text-sm md:text-base">
+                            Preparing a faster, smarter shopping experience...
+                        </p>
+                    </div>
+                </div>
+
+                <div class="w-72 max-w-[80vw]">
+                    <div class="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                        <div class="loader-bar h-full w-1/2 rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-amber-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        html {
+            scrollbar-gutter: stable both-edges;
+        }
+
+        html.biogenix-loading,
+        body.biogenix-loading {
+            overflow: hidden;
+        }
+
+        #globalPageLoader {
+            contain: layout paint style;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+
+        @keyframes loader {
+            0% { transform: translateX(-110%) scaleX(0.9); }
+            50% { transform: translateX(100%) scaleX(1); }
+            100% { transform: translateX(220%) scaleX(0.9); }
+        }
+
+        .loader-bar {
+            animation: loader 1.6s ease-in-out infinite;
+            will-change: transform;
+        }
+    </style>
 
     <div id="pageWrapper" class="flex min-h-screen flex-col">
         @include('partials.header')
@@ -153,6 +227,131 @@
     </div>
 
     <script>
+        (function () {
+            const loaderElement = document.getElementById('globalPageLoader');
+            const rootElement = document.documentElement;
+            const bodyElement = document.body;
+            let loaderStartedAt = Date.now();
+            let loaderFallbackTimer = null;
+
+            const showLoader = function () {
+                if (!loaderElement) {
+                    return;
+                }
+
+                // Business step: show the global loader immediately before a real page change starts.
+                loaderStartedAt = Date.now();
+                rootElement.classList.add('biogenix-loading');
+                bodyElement.classList.add('biogenix-loading');
+                loaderElement.classList.remove('opacity-0', 'invisible', 'pointer-events-none');
+                loaderElement.classList.add('opacity-100', 'visible');
+            };
+
+            const hideLoader = function () {
+                if (!loaderElement) {
+                    return;
+                }
+
+                // Business step: keep the loader visible for a very short minimum time so it fades out smoothly instead of flashing.
+                const visibleFor = Date.now() - loaderStartedAt;
+                const remainingDelay = Math.max(0, 260 - visibleFor);
+
+                window.clearTimeout(loaderFallbackTimer);
+                window.setTimeout(function () {
+                    rootElement.classList.remove('biogenix-loading');
+                    bodyElement.classList.remove('biogenix-loading');
+                    loaderElement.classList.remove('opacity-100', 'visible');
+                    loaderElement.classList.add('opacity-0', 'invisible', 'pointer-events-none');
+                }, remainingDelay);
+            };
+
+            const showLoaderForNavigation = function () {
+                showLoader();
+
+                // Business step: close the loader automatically if the page does not actually navigate, such as blocked downloads or interrupted submits.
+                window.clearTimeout(loaderFallbackTimer);
+                loaderFallbackTimer = window.setTimeout(function () {
+                    hideLoader();
+                }, 10000);
+            };
+
+            const isSelfNavigationForm = function (form) {
+                if (!(form instanceof HTMLFormElement)) {
+                    return false;
+                }
+
+                return !form.target || form.target === '_self';
+            };
+
+            const canSubmitWithoutBrowserValidationError = function (form) {
+                if (!(form instanceof HTMLFormElement)) {
+                    return false;
+                }
+
+                if (form.noValidate || typeof form.checkValidity !== 'function') {
+                    return true;
+                }
+
+                return form.checkValidity();
+            };
+
+            // Business step: remove the startup loader as soon as the current page is fully ready.
+            window.addEventListener('load', hideLoader, { once: true });
+            window.addEventListener('pageshow', hideLoader);
+
+            document.addEventListener('click', function (event) {
+                if (event.defaultPrevented) {
+                    return;
+                }
+
+                const link = event.target.closest('a[href]');
+                if (!link) {
+                    return;
+                }
+
+                if (link.hasAttribute('download') || link.target === '_blank') {
+                    return;
+                }
+
+                const href = link.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+                    return;
+                }
+
+                const targetUrl = new URL(link.href, window.location.origin);
+                if (targetUrl.origin !== window.location.origin) {
+                    return;
+                }
+
+                // Business step: show the loader for normal same-site navigation links.
+                showLoaderForNavigation();
+            });
+
+            document.addEventListener('submit', function (event) {
+                if (event.defaultPrevented) {
+                    return;
+                }
+
+                const form = event.target;
+                if (!isSelfNavigationForm(form) || !canSubmitWithoutBrowserValidationError(form)) {
+                    return;
+                }
+
+                // Business step: show the loader only for valid form submits that keep the user in the same browser tab.
+                showLoaderForNavigation();
+            });
+
+            document.addEventListener('invalid', function () {
+                // Business step: close the loader immediately when browser validation stops the submit on the same page.
+                hideLoader();
+            }, true);
+
+            window.BiogenixPageLoader = {
+                show: showLoaderForNavigation,
+                hide: hideLoader,
+            };
+        })();
+
         function dismissToast(toast) {
             if (!toast) return;
             toast.classList.add('translate-y-2', 'opacity-0');
