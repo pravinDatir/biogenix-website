@@ -12,7 +12,7 @@
     <div class="pointer-events-none absolute left-1/2 top-24 -z-10 h-72 w-72 -translate-x-[120%] rounded-full bg-primary-100/70 blur-3xl"></div>
     <div class="pointer-events-none absolute right-0 top-10 -z-10 h-80 w-80 translate-x-1/3 rounded-full bg-sky-100/70 blur-3xl"></div>
 
-    <section class="mx-auto w-full max-w-4xl">
+    <section class="mx-auto w-full max-w-2xl">
         <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_28px_80px_-36px_rgba(15,23,42,0.35)]">
             <form id="signupForm" method="POST" action="{{ route('register') }}" class="grid gap-8 px-5 py-7 sm:px-8 sm:py-9" novalidate>
                 @csrf
@@ -37,54 +37,39 @@
                     </div>
                 </div>
 
-                <div class="rounded-3xl border border-slate-200 bg-slate-50/80 px-4 py-5 sm:px-5" aria-label="Signup progress">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step <span id="signupCurrentStep">{{ $initialStep }}</span> of 2</span>
-                        <span id="signupCurrentLabel" class="text-sm font-semibold text-slate-800">{{ $currentLabel }}</span>
+                <div class="mb-4" aria-label="Signup progress">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-2.5">
+                        <span class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">Step <span id="signupCurrentStep">{{ $initialStep }}</span> of 2</span>
+                        <span id="signupCurrentLabel" class="text-[11px] font-bold uppercase tracking-[0.05em] text-primary-600">{{ $currentLabel }}</span>
                     </div>
 
-                    <div id="signupProgressBar" class="mt-4" role="progressbar" aria-valuemin="1" aria-valuemax="2" aria-valuenow="{{ $initialStep }}">
-                        <div class="flex items-center gap-3">
-                            @foreach (['Personal Details', 'Address'] as $index => $stepLabel)
-                                @php
-                                    $stepNumber = $index + 1;
-                                    $isCurrent = $stepNumber === $initialStep;
-                                    $isActive = $stepNumber <= $initialStep;
-                                @endphp
-                                <div class="flex flex-1 items-center gap-3 @if($stepNumber === 2) justify-end text-right @endif">
-                                    <div
-                                        data-signup-step
-                                        data-step-index="{{ $stepNumber }}"
-                                        class="@if($stepNumber === 2) ml-auto @endif flex min-w-0 items-center gap-3 rounded-2xl border px-3 py-3 transition sm:px-4 {{ $isCurrent ? 'border-primary-200 bg-primary-50/80 shadow-sm' : 'border-slate-200 bg-white' }}"
-                                    >
-                                        <span
-                                            data-signup-step-circle
-                                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold transition {{ $isActive ? 'border-primary-600 bg-primary-600 text-white' : 'border-slate-300 bg-white text-slate-400' }}"
-                                        >
-                                            <span data-signup-step-number>{{ $stepNumber }}</span>
-                                        </span>
-                                        <div class="min-w-0">
-                                            <p
-                                                data-signup-step-caption
-                                                class="text-[11px] font-semibold uppercase tracking-[0.18em] transition {{ $isActive ? 'text-primary-600' : 'text-slate-400' }}"
-                                            >
-                                                Step {{ $stepNumber }}
-                                            </p>
-                                            <p data-signup-step-label class="truncate text-sm font-semibold transition {{ $isActive ? 'text-slate-900' : 'text-slate-500' }}">
-                                                {{ $stepLabel }}
-                                            </p>
-                                        </div>
-                                    </div>
+                    <div id="signupProgressBar" class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mb-4 relative" role="progressbar" aria-valuemin="1" aria-valuemax="2" aria-valuenow="{{ $initialStep }}">
+                        <div id="signupProgressBarLine" class="absolute top-0 left-0 h-full bg-primary-600 rounded-full transition-all duration-300 ease-out" style="width: {{ $initialStep === 1 ? '50%' : '100%' }}"></div>
+                    </div>
 
-                                    @if ($stepNumber === 1)
-                                        <div
-                                            data-signup-connector
-                                            class="hidden h-0.5 flex-1 rounded-full transition sm:block {{ $initialStep > 1 ? 'bg-primary-600' : 'bg-slate-200' }}"
-                                        ></div>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        @foreach (['Personal Details', 'Address'] as $index => $stepLabel)
+                            @php
+                                $stepNumber = $index + 1;
+                                $isCurrent = $stepNumber === $initialStep;
+                                $isActive = $stepNumber <= $initialStep;
+                            @endphp
+                            <div
+                                data-signup-step
+                                data-step-index="{{ $stepNumber }}"
+                                class="flex items-center gap-3 rounded-xl border px-3.5 py-2.5 transition-colors duration-200 {{ $isCurrent ? 'border-primary-600 bg-white shadow-sm ring-1 ring-primary-600' : 'border-slate-200 bg-slate-50' }}"
+                            >
+                                <span
+                                    data-signup-step-circle
+                                    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold transition-colors duration-200 {{ $isActive ? 'bg-primary-600 text-white border-transparent' : 'bg-transparent border border-slate-300 text-slate-500' }}"
+                                >
+                                    <span data-signup-step-number>{{ $stepNumber }}</span>
+                                </span>
+                                <span data-signup-step-label class="text-xs font-bold transition-colors duration-200 {{ $isActive ? 'text-primary-600' : 'text-slate-500' }}">
+                                    {{ $stepLabel }}
+                                </span>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
 
@@ -223,4 +208,85 @@
 
 @push('scripts')
 <script src="{{ asset('js/signup.js') }}?v=20260315-3"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tab1 = document.querySelector('[data-step-index="1"]');
+        const barLine = document.getElementById('signupProgressBarLine');
+        const progressWrap = document.getElementById('signupProgressBar');
+        
+        if (progressWrap && barLine && tab1) {
+            
+            // Function to forcibly apply our custom step styles over what signup.js applies
+            const updateStepStyles = () => {
+                const currentStepStr = progressWrap.getAttribute('aria-valuenow');
+                const currentStep = currentStepStr ? parseInt(currentStepStr) : 1;
+                barLine.style.width = currentStep === 1 ? '50%' : '100%';
+                
+                document.querySelectorAll('[data-signup-step]').forEach((node, index) => {
+                    const stepNumber = index + 1;
+                    const isCurrent = stepNumber === currentStep;
+                    const isActive = stepNumber <= currentStep;
+                    
+                    if (isCurrent) {
+                        node.classList.add('border-primary-600', 'bg-white', 'ring-1', 'ring-primary-600');
+                        node.classList.remove('border-primary-200', 'bg-primary-50/80', 'border-slate-200', 'bg-slate-50', 'shadow-sm');
+                    } else {
+                        node.classList.add('border-slate-200', 'bg-slate-50');
+                        node.classList.remove('border-primary-600', 'ring-1', 'ring-primary-600', 'border-primary-200', 'bg-primary-50/80', 'bg-white', 'shadow-sm');
+                    }
+                    
+                    const circle = node.querySelector('[data-signup-step-circle]');
+                    if (circle) {
+                        if (isActive) {
+                            circle.classList.add('bg-primary-600', 'text-white', 'border-transparent');
+                            circle.classList.remove('bg-transparent', 'border', 'border-slate-300', 'text-slate-500', 'text-slate-400', 'bg-white');
+                        } else {
+                            circle.classList.add('bg-transparent', 'border', 'border-slate-300', 'text-slate-500');
+                            circle.classList.remove('bg-primary-600', 'text-white', 'border-transparent', 'text-slate-400', 'bg-white');
+                        }
+                    }
+                    
+                    const label = node.querySelector('[data-signup-step-label]');
+                    if (label) {
+                        if (isActive) {
+                            label.classList.add('text-primary-600');
+                            label.classList.remove('text-slate-500', 'text-slate-400', 'text-slate-900');
+                        } else {
+                            label.classList.add('text-slate-500');
+                            label.classList.remove('text-primary-600', 'text-slate-400', 'text-slate-900');
+                        }
+                    }
+                });
+            };
+
+            // Setup observer strictly to monitor aria-valuenow on progress step
+            const observer = new MutationObserver(updateStepStyles);
+            observer.observe(progressWrap, { attributes: true, attributeFilter: ['aria-valuenow'] });
+            
+            // Force apply initially (delay slightly so it reliably overrides signup.js DOMContentLoaded logic)
+            setTimeout(updateStepStyles, 50);
+
+            // Allow clicking tabs to navigate steps manually (if validation passes or moving backwards)
+            document.querySelectorAll('[data-signup-step]').forEach((tab) => {
+                tab.style.cursor = 'pointer';
+                tab.addEventListener('click', () => {
+                    const stepClicked = parseInt(tab.getAttribute('data-step-index'));
+                    const currentStepStr = progressWrap.getAttribute('aria-valuenow');
+                    const currentStep = currentStepStr ? parseInt(currentStepStr) : 1;
+                    
+                    if (stepClicked === currentStep) return;
+                    
+                    if (stepClicked === 2 && currentStep === 1) {
+                        // Allow 'Next' button to handle validation natively
+                        const nextBtn = document.getElementById('nextBtn');
+                        if(nextBtn) nextBtn.click();
+                    } else if (stepClicked === 1 && currentStep === 2) {
+                        const backBtn = document.getElementById('backBtn');
+                        if(backBtn) backBtn.click();
+                    }
+                });
+            });
+        }
+    });
+</script>
 @endpush
