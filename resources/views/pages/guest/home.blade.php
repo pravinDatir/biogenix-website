@@ -17,6 +17,63 @@
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.78));
         box-shadow: 0 24px 55px rgba(15, 23, 42, 0.07);
         backdrop-filter: blur(18px);
+        padding: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .home-page .home-panel {
+            padding: 2rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .home-page .home-panel {
+            padding: 2.5rem;
+        }
+    }
+
+    /* ─── Premium Testimonial Card ─── */
+    .testimonial-card {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+    }
+
+    .testimonial-card::before {
+        content: '“';
+        position: absolute;
+        top: -1rem;
+        right: 1.5rem;
+        font-family: 'Sora', serif;
+        font-size: 8rem;
+        font-weight: 800;
+        color: rgba(15, 23, 42, 0.04);
+        pointer-events: none;
+        z-index: -1;
+        line-height: 1;
+    }
+
+    .testimonial-author-badge {
+        position: relative;
+        display: inline-flex;
+        height: 3rem;
+        width: 3rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1rem;
+        font-weight: 700;
+        color: #fff;
+        box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.82);
+    }
+
+    /* ─── Premium Insight Card ─── */
+    .insight-card .insight-icon-shell {
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
+    }
+
+    .home-panel:hover .insight-icon-shell {
+        transform: scale(1.1) translateY(-2px);
     }
 
     .home-page .home-card {
@@ -834,7 +891,7 @@
                         'role'    => 'Lab Director, Apollo Diagnostics',
                         'rating'  => 5,
                         'initials'=> 'PM',
-                        'color'   => 'bg-primary-600',
+                        'color'   => 'from-blue-600 to-blue-700',
                     ],
                     [
                         'quote'   => 'The B2B portal is clean, fast, and the quotation workflow makes budget approvals painless. Highly recommended for hospital procurement.',
@@ -842,7 +899,7 @@
                         'role'    => 'Purchase Manager, Fortis Healthcare',
                         'rating'  => 5,
                         'initials'=> 'RK',
-                        'color'   => 'bg-emerald-600',
+                        'color'   => 'from-emerald-500 to-emerald-700',
                     ],
                     [
                         'quote'   => 'Excellent product range and responsive support. We\'ve consolidated three vendors into one with Biogenix as our primary diagnostics partner.',
@@ -850,30 +907,34 @@
                         'role'    => 'Operations Head, PathLab India',
                         'rating'  => 5,
                         'initials'=> 'SA',
-                        'color'   => 'bg-violet-600',
+                        'color'   => 'from-violet-500 to-violet-700',
                     ],
                 ] as $testimonial)
-                    <article class="home-panel home-reveal flex flex-col gap-4">
-                        {{-- Stars --}}
-                        <div class="flex items-center gap-0.5">
-                            @for ($s = 0; $s < $testimonial['rating']; $s++)
-                                <svg class="h-4 w-4 fill-amber-400 text-amber-400" viewBox="0 0 20 20">
-                                    <path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z" />
-                                </svg>
-                            @endfor
+                    <article class="home-panel home-reveal testimonial-card flex flex-col gap-6">
+                        <div class="flex items-center justify-between">
+                            {{-- Stars --}}
+                            <div class="flex items-center gap-0.5">
+                                @for ($s = 0; $s < $testimonial['rating']; $s++)
+                                    <svg class="h-4 w-4 fill-amber-400 text-amber-400" viewBox="0 0 20 20">
+                                        <path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z" />
+                                    </svg>
+                                @endfor
+                            </div>
                         </div>
+
                         {{-- Quote --}}
-                        <blockquote class="flex-1 text-sm leading-7 text-slate-600">
+                        <blockquote class="flex-1 text-base font-medium leading-relaxed text-slate-700 md:text-lg">
                             "{{ $testimonial['quote'] }}"
                         </blockquote>
+
                         {{-- Author --}}
-                        <div class="flex items-center gap-3 border-t border-slate-100 pt-4">
-                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full {{ $testimonial['color'] }} text-sm font-bold text-white">
+                        <div class="flex items-center gap-4">
+                            <span class="testimonial-author-badge bg-gradient-to-br {{ $testimonial['color'] }} shadow-lg">
                                 {{ $testimonial['initials'] }}
                             </span>
-                            <div>
-                                <p class="text-sm font-semibold text-slate-900">{{ $testimonial['name'] }}</p>
-                                <p class="text-xs text-slate-500">{{ $testimonial['role'] }}</p>
+                            <div class="flex flex-col">
+                                <p class="text-[15px] font-bold tracking-tight text-slate-900">{{ $testimonial['name'] }}</p>
+                                <p class="text-xs font-medium text-slate-500">{{ $testimonial['role'] }}</p>
                             </div>
                         </div>
                     </article>
@@ -888,7 +949,7 @@
     <section class="home-insights bg-transparent py-12 md:py-16">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
-                <x-ui.section-heading title="Insights &amp; Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
+                <x-ui.section-heading title="Insights & Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
             </div>
             <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 @foreach ([
@@ -899,7 +960,7 @@
                         'href'   => route('about'),
                         'action' => 'Explore Story',
                         'icon'   => 'M3 21h18M9 21V9m6 12V9M3 9l9-7 9 7',
-                        'color'  => 'bg-blue-50 text-blue-600',
+                        'color'  => 'bg-blue-50 text-blue-600 ring-blue-500/10',
                     ],
                     [
                         'title'  => 'Choosing the Right Reagent Mix',
@@ -908,7 +969,7 @@
                         'href'   => route('products.index'),
                         'action' => 'Browse Products',
                         'icon'   => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 12h6M9 16h4',
-                        'color'  => 'bg-emerald-50 text-emerald-600',
+                        'color'  => 'bg-emerald-50 text-emerald-600 ring-emerald-500/10',
                     ],
                     [
                         'title'  => 'Checklist for New Instrument Rollouts',
@@ -917,66 +978,34 @@
                         'href'   => route('contact'),
                         'action' => 'Talk to Team',
                         'icon'   => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-                        'color'  => 'bg-violet-50 text-violet-600',
+                        'color'  => 'bg-violet-50 text-violet-600 ring-violet-500/10',
                     ],
                 ] as $insight)
-                    <article class="home-panel home-reveal group flex flex-col gap-4">
-                        {{-- Icon thumbnail --}}
+                    <article class="home-panel home-reveal insight-card group flex flex-col gap-5">
                         <div class="flex items-center gap-4">
-                            <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl {{ $insight['color'] }} transition group-hover:scale-110">
-                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <span class="insight-icon-shell inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl {{ $insight['color'] }} ring-1 ring-inset">
+                                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="{{ $insight['icon'] }}" />
                                 </svg>
                             </span>
-                            <x-badge variant="default">{{ $insight['tag'] }}</x-badge>
+                            <x-badge variant="default" class="text-[11px] uppercase tracking-wider">{{ $insight['tag'] }}</x-badge>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-slate-900">{{ $insight['title'] }}</h3>
-                            <p class="mt-2 text-sm text-slate-600">{{ $insight['copy'] }}</p>
+                            <h3 class="font-['Sora'] text-xl font-semibold leading-snug text-slate-900 group-hover:text-primary-600 transition-colors">{{ $insight['title'] }}</h3>
+                            <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ $insight['copy'] }}</p>
                         </div>
-                        <x-ui.action-link :href="$insight['href']" variant="secondary" class="mt-auto w-fit">
-                            {{ $insight['action'] }}
-                        </x-ui.action-link>
+                        <div class="mt-auto pt-2">
+                            <x-ui.action-link :href="$insight['href']" variant="secondary" class="min-h-11 px-5 shadow-sm">
+                                {{ $insight['action'] }}
+                            </x-ui.action-link>
+                        </div>
                     </article>
                 @endforeach
             </div>
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    {{-- FREQUENTLY ASKED QUESTIONS --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-slate-50 py-12 md:py-16">
-        <div class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold tracking-tight text-slate-900">Frequently Asked Questions</h2>
-                <p class="mt-4 text-base text-slate-600">Got questions? We have answers. If you can't find what you're looking for, please <a href="{{ route('contact') }}" class="font-semibold text-primary-600 hover:text-primary-500">contact our support team</a>.</p>
-            </div>
-            <div class="mt-10 space-y-4">
-                @foreach ([
-                    ['q' => 'Do you ship to all locations in India?', 'a' => 'Yes, we provide pan-India delivery. We also offer same-day or next-day delivery in select regions, including Lucknow and surrounding areas, depending on product availability and current stock levels.'],
-                    ['q' => 'How can I request a bulk or institutional quotation?', 'a' => 'You can use the "Generate Quote" button available on most pages to instantly build an MRP quotation. For negotiated or institutional pricing, we recommend creating a B2B account or booking a meeting with our sales team.'],
-                    ['q' => 'Are your medical supplies and instruments certified?', 'a' => 'Absolutely. We only partner with leading brands and manufacturers. All our products comply with standard regulations such as ISO, CE Marking, and FDA where applicable.'],
-                    ['q' => 'What is your return or replacement policy?', 'a' => 'We offer replacements for items that arrive damaged, defective, or do not match the order description. Due to the sensitive nature of diagnostic supplies, returns for correctly fulfilled products are handled on a case-by-case basis. Please review our full return policy for details.'],
-                    ['q' => 'Do you provide post-installation support for instruments?', 'a' => 'Yes. For medium to large diagnostic instruments, we coordinate with manufacturer technicians to ensure proper installation, basic operational training, and support.'],
-                ] as $index => $faq)
-                    <details class="group rounded-3xl border border-slate-200 bg-white shadow-sm [&_summary::-webkit-details-marker]:hidden" {{ $index === 0 ? 'open' : '' }}>
-                        <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 rounded-3xl group-open:rounded-b-none">
-                            <h3 class="text-lg font-semibold">{{ $faq['q'] }}</h3>
-                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition-transform duration-300 group-open:-rotate-180 group-open:bg-primary-50 group-open:text-primary-600">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </span>
-                        </summary>
-                        <div class="px-6 pb-6 pt-0 text-slate-600">
-                            <p class="text-base leading-relaxed">{{ $faq['a'] }}</p>
-                        </div>
-                    </details>
-                @endforeach
-            </div>
-        </div>
-    </section>
+   
 
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- FINAL CTA STRIP --}}
