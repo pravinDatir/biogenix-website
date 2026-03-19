@@ -20,18 +20,15 @@
                 <input type="hidden" name="country" value="India">
 
                 <div class="space-y-4 text-center">
-                    <div class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary-700">
+                    <!-- <div class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary-700">
                         Personal Account
-                    </div>
+                    </div> -->
                     <div class="space-y-3">
                         <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Sign Up</h1>
-                        <p class="mx-auto max-w-2xl text-sm leading-7 text-slate-500 sm:text-base">
-                            Create your Biogenix account to browse products, request quotations, and manage your orders with a cleaner checkout flow.
-                        </p>
                         <p class="text-sm text-slate-600">
                             Are you a business owner or a healthcare professional?
                             <a href="{{ route('b2b.signup') }}" class="font-semibold text-primary-700 no-underline transition hover:text-primary-600">
-                                Register for a B2B Account
+                                </br>Register for a B2B Account
                             </a>
                         </p>
                     </div>
