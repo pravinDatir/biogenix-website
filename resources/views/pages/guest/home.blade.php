@@ -1,10 +1,143 @@
 @push('styles')
 <style>
-    .home-solutions {
+    .home-page {
+        --home-orange: #ff6a00;
+        --home-cyan: #38bdf8;
+        --home-navy: #07111f;
+        --home-panel: rgba(255, 255, 255, 0.74);
         background:
-            radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.11), transparent 24%),
-            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.12), transparent 18%),
-            linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            radial-gradient(circle at top left, rgba(255, 106, 0, 0.12), transparent 23%),
+            radial-gradient(circle at 88% 14%, rgba(56, 189, 248, 0.12), transparent 20%),
+            linear-gradient(180deg, #f5f9ff 0%, #eef4ff 50%, #f9fbff 100%);
+    }
+
+    .home-page .home-card,
+    .home-page .home-panel {
+        border-color: rgba(148, 163, 184, 0.18);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.78));
+        box-shadow: 0 24px 55px rgba(15, 23, 42, 0.07);
+        backdrop-filter: blur(18px);
+    }
+
+    .home-page .home-card {
+        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+
+    .home-page .home-card:hover,
+    .home-page .home-panel:hover {
+        border-color: rgba(255, 106, 0, 0.2);
+        box-shadow: 0 28px 60px rgba(15, 23, 42, 0.11);
+    }
+
+    .home-page .home-input {
+        border-radius: 1rem;
+        border-color: rgba(148, 163, 184, 0.28);
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    .home-page .home-primary-button {
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #ff6a00, #ff8f3f);
+        box-shadow: 0 18px 30px rgba(255, 106, 0, 0.28);
+    }
+
+    .home-page .home-primary-button:hover {
+        background: linear-gradient(135deg, #ed6200, #ff7b21);
+    }
+
+    .home-hero::before,
+    .home-hero::after {
+        content: '';
+        position: absolute;
+        border-radius: 9999px;
+        pointer-events: none;
+        filter: blur(12px);
+    }
+
+    .home-hero::before {
+        top: 4rem;
+        left: -6rem;
+        height: 18rem;
+        width: 18rem;
+        background: radial-gradient(circle, rgba(255, 106, 0, 0.34), transparent 70%);
+    }
+
+    .home-hero::after {
+        right: -5rem;
+        top: -2rem;
+        height: 20rem;
+        width: 20rem;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.28), transparent 72%);
+    }
+
+    .home-hero-track-overlay {
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent);
+    }
+
+    .home-hero-copy-shell {
+        position: relative;
+        max-width: 64rem;
+        border-radius: 2rem;
+        background: linear-gradient(180deg, rgba(7, 17, 31, 0.16), rgba(7, 17, 31, 0.04));
+        padding: 0.35rem 1.2rem 1.25rem 0;
+        backdrop-filter: blur(4px);
+    }
+
+    .home-hero-title,
+    .home-hero-copy,
+    .home-hero-chip-text {
+        text-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .home-hero-focus-card {
+        width: 100%;
+        border-radius: 1.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: linear-gradient(180deg, rgba(7, 17, 31, 0.56), rgba(7, 17, 31, 0.78));
+        box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+        padding: 1.25rem;
+        backdrop-filter: blur(18px);
+    }
+
+    .home-hero-focus-title,
+    .home-hero-focus-copy,
+    .home-hero-focus-meta {
+        text-shadow: 0 10px 26px rgba(0, 0, 0, 0.42);
+    }
+
+    .home-route-visual {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        min-height: 11rem;
+    }
+
+    .home-route-visual::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(7, 17, 31, 0.14), rgba(7, 17, 31, 0.76));
+    }
+
+    .home-route-visual img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .home-panel:hover .home-route-visual img {
+        transform: scale(1.05);
+    }
+
+    .home-route-copy {
+        position: absolute;
+        inset: auto 1rem 1rem 1rem;
+        z-index: 1;
     }
 
     .home-route-card {
@@ -85,6 +218,218 @@
         backdrop-filter: blur(10px);
     }
 
+    .home-delivery-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .home-delivery-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(135deg, rgba(255, 106, 0, 0.96), rgba(255, 147, 71, 0.84)),
+            url('{{ asset('upload/corousel/lucknow-map.svg') }}');
+        background-position: center, center;
+        background-repeat: no-repeat, no-repeat;
+        background-size: cover, cover;
+        opacity: 1;
+    }
+
+    .home-delivery-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 26%),
+            linear-gradient(90deg, rgba(122, 38, 0, 0.14), transparent 52%);
+    }
+
+    .home-delivery-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .home-stats {
+        margin-top: -3.8rem;
+        z-index: 20;
+    }
+
+    .home-stats-shell {
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.72));
+        box-shadow: 0 28px 70px rgba(15, 23, 42, 0.1);
+        backdrop-filter: blur(24px);
+    }
+
+    .home-category-grid {
+        display: grid;
+        gap: 0.9rem;
+    }
+
+    .home-category-tile {
+        position: relative;
+        overflow: hidden;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        border-radius: 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
+        isolation: isolate;
+    }
+
+    .home-category-tile__media {
+        position: relative;
+        height: 14.25rem;
+        flex: 0 0 14.25rem;
+        overflow: hidden;
+    }
+
+    .home-category-tile__image {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.7s ease;
+    }
+
+    .home-category-tile__media::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(180deg, rgba(7, 17, 31, 0.04) 0%, rgba(7, 17, 31, 0.08) 55%, rgba(7, 17, 31, 0.26) 100%);
+        z-index: 0;
+    }
+
+    .home-category-tile:hover .home-category-tile__image {
+        transform: scale(1.06);
+    }
+
+    .home-category-tile__content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+        flex: 1;
+        padding: 0.85rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
+    }
+
+    .home-category-tile--featured,
+    .home-category-tile--featured .home-category-tile__content {
+        min-height: 0;
+    }
+
+    .home-category-tile--featured .home-category-tile__media {
+        height: 14.25rem;
+        flex-basis: 14.25rem;
+    }
+
+    .home-category-pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.75);
+        padding: 0.35rem 0.7rem;
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #0f172a;
+        backdrop-filter: blur(12px);
+    }
+
+    .home-category-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 106, 0, 0.16);
+        background: rgba(255, 243, 236, 0.95);
+        padding: 0.35rem 0.65rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #9a3412;
+        backdrop-filter: blur(10px);
+    }
+
+    .home-category-copy {
+        max-width: 28rem;
+        color: #64748b;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+    }
+
+    .home-category-action {
+        display: inline-flex;
+        min-height: 2.5rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.9rem;
+        background: linear-gradient(135deg, #ff6a00, #ff8f3f);
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #ffffff;
+        box-shadow: 0 14px 24px rgba(255, 106, 0, 0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .home-category-action:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(135deg, #ed6200, #ff7b21);
+        box-shadow: 0 16px 28px rgba(255, 106, 0, 0.28);
+    }
+
+    @media (min-width: 640px) {
+        .home-category-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 768px) {
+        .home-category-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .home-category-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .home-category-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
+
+    .home-solutions {
+        background:
+            radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.11), transparent 24%),
+            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.12), transparent 18%),
+            linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .home-trust {
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.82));
+        backdrop-filter: blur(14px);
+    }
+
+    .home-cta {
+        background:
+            radial-gradient(circle at top right, rgba(255, 106, 0, 0.18), transparent 28%),
+            linear-gradient(135deg, #07111f 0%, #102243 52%, #112d60 100%);
+    }
+
     .home-reveal {
         opacity: 0;
         transform: translateY(24px);
@@ -96,17 +441,31 @@
         opacity: 1;
         transform: translateY(0);
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        .home-page .home-card,
+        .home-page .home-panel,
+        .home-reveal {
+            transition: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .home-stats {
+            margin-top: -2.2rem;
+        }
+    }
 </style>
 @endpush
 
-<div class="bg-[radial-gradient(circle_at_top_left,rgba(255,106,0,0.12),transparent_23%),radial-gradient(circle_at_88%_14%,rgba(56,189,248,0.12),transparent_20%),linear-gradient(180deg,#f5f9ff_0%,#eef4ff_50%,#f9fbff_100%)]">
+<div class="home-page">
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- HERO CAROUSEL --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
-<div class="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(255,106,0,0.34),transparent_70%)] blur-xl"></div>
-<div class="pointer-events-none absolute -right-20 -top-8 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.28),transparent_72%)] blur-xl"></div>
-        <div class="bg-[#ffffff08] bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:42px_42px] [mask-image:linear-gradient(180deg,rgba(0,0,0,0.85),transparent)] absolute inset-0 opacity-30"></div>
+    <section class="home-hero relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
+        <div class="home-hero-track-overlay absolute inset-0 opacity-30"></div>
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
             <div id="heroTrack" class="flex h-full w-full translate-x-0 transition-transform duration-700 ease-out">
                 @foreach ($heroSlides ?? [] as $slide)
@@ -122,10 +481,10 @@
 
                         <div class="relative z-10 mx-auto grid min-h-[calc(100vh-88px)] w-full max-w-none grid-cols-1 gap-8 px-4 py-10 pb-28 sm:px-6 md:py-14 lg:grid-cols-12 lg:px-8 xl:px-10">
                             <div class="home-reveal flex flex-col justify-center lg:col-span-7">
-                                <div class="max-w-4xl rounded-[2rem] bg-gradient-to-b from-[#07111f29] to-[#07111f0a] pt-1.5 pr-5 pb-5 pl-0 backdrop-blur-sm">
+                                <div class="home-hero-copy-shell">
                                     <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
-                                    <h1 class="[text-shadow:0_8px_28px_rgba(0,0,0,0.45)] mt-5 max-w-4xl font-['Sora'] text-5xl font-semibold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
-                                    <p class="[text-shadow:0_8px_28px_rgba(0,0,0,0.45)] mt-6 max-w-2xl text-base leading-8 text-slate-100 md:text-xl">{{ $slide['copy'] }}</p>
+                                    <h1 class="home-hero-title mt-5 max-w-4xl font-['Sora'] text-5xl font-semibold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
+                                    <p class="home-hero-copy mt-6 max-w-2xl text-base leading-8 text-slate-100 md:text-xl">{{ $slide['copy'] }}</p>
 
                                     <div class="mt-8 flex flex-wrap items-center gap-3">
                                         <x-ui.action-link :href="route('products.index')" variant="secondary" class="min-h-11 px-5">Browse Catalog</x-ui.action-link>
@@ -134,30 +493,30 @@
                                     </div>
 
                                     <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-200">
-                                        <span class="[text-shadow:0_8px_28px_rgba(0,0,0,0.45)] rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Healthcare-first sourcing</span>
-                                        <span class="[text-shadow:0_8px_28px_rgba(0,0,0,0.45)] rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Fast quotation workflow</span>
-                                        <span class="[text-shadow:0_8px_28px_rgba(0,0,0,0.45)] rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Structured support handoff</span>
+                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Healthcare-first sourcing</span>
+                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Fast quotation workflow</span>
+                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Structured support handoff</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="home-reveal flex items-end lg:col-span-5">
-                                <div class="w-full rounded-[1.75rem] border border-white/20 bg-gradient-to-b from-[#07111f8F] to-[#07111fC7] shadow-[0_22px_55px_rgba(0,0,0,0.22)] p-5 backdrop-blur-[18px]">
+                                <div class="home-hero-focus-card">
                                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Featured Focus</p>
-                                    <h2 class="[text-shadow:0_10px_26px_rgba(0,0,0,0.42)] mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
-                                    <p class="[text-shadow:0_10px_26px_rgba(0,0,0,0.42)] mt-3 text-sm text-slate-100">Biogenix combines category expertise with enterprise-ready support to improve continuity across procurement and delivery operations.</p>
+                                    <h2 class="home-hero-focus-title mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
+                                    <p class="home-hero-focus-copy mt-3 text-sm text-slate-100">Biogenix combines category expertise with enterprise-ready support to improve continuity across procurement and delivery operations.</p>
                                     <div class="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
                                         <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
                                             <p class="text-xl font-semibold text-white">24h</p>
-                                            <p class="[text-shadow:0_10px_26px_rgba(0,0,0,0.42)] text-xs uppercase tracking-[0.18em] text-white/70">Dispatch promise</p>
+                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Dispatch promise</p>
                                         </div>
                                         <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
                                             <p class="text-xl font-semibold text-white">200+</p>
-                                            <p class="[text-shadow:0_10px_26px_rgba(0,0,0,0.42)] text-xs uppercase tracking-[0.18em] text-white/70">Institutional clients</p>
+                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Institutional clients</p>
                                         </div>
                                         <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
                                             <p class="text-xl font-semibold text-white">98%</p>
-                                            <p class="[text-shadow:0_10px_26px_rgba(0,0,0,0.42)] text-xs uppercase tracking-[0.18em] text-white/70">Satisfaction score</p>
+                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Satisfaction score</p>
                                         </div>
                                     </div>
                                 </div>
@@ -242,9 +601,9 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- STATS / SOCIAL PROOF STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="-mt-[3.8rem] z-20 max-md:-mt-[2.2rem] border-b border-transparent bg-transparent py-8">
+    <section class="home-stats border-b border-transparent bg-transparent py-8">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <dl class="border border-white/60 bg-gradient-to-b from-white/90 to-white/70 shadow-[0_28px_70px_rgba(15,23,42,0.1)] backdrop-blur-3xl grid grid-cols-2 gap-6 rounded-[2rem] px-5 py-6 sm:grid-cols-4 sm:px-6">
+            <dl class="home-stats-shell grid grid-cols-2 gap-6 rounded-[2rem] px-5 py-6 sm:grid-cols-4 sm:px-6">
                 @foreach ([
                     ['value' => '5,000+', 'label' => 'Products Listed', 'icon' => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'],
                     ['value' => '200+',   'label' => 'Lab & Hospital Clients', 'icon' => 'M3 21h18M9 21V9m6 12V9M3 9l9-7 9 7'],
@@ -275,43 +634,43 @@
             <div class="home-reveal">
                 <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
             </div>
-            <div class="grid gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-6">
+            <div class="home-category-grid mt-6">
                 @forelse (($productCategories ?? collect()) as $category)
                     @php
                         $tileClass = 'home-category-tile--standard';
                         $imagePath = $category->default_image_path ?: 'upload/categories/image1.jpg';
                         $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
                     @endphp
-                    <article class="relative flex overflow-hidden min-h-0 isolate flex-col rounded-[1.25rem] border border-white/70 bg-gradient-to-b from-white/95 to-white/90 shadow-[0_14px_30px_rgba(15,23,42,0.07)] home-reveal group {{ $tileClass }}">
-                        <div class="relative h-[14.25rem] flex-[0_0_14.25rem] overflow-hidden after:absolute after:inset-0 after:bg-gradient-to-b after:from-[#07111f0a] after:via-[#07111f14] after:to-[#07111f42] after:z-0">
+                    <article class="home-category-tile home-reveal group {{ $tileClass }}">
+                        <div class="home-category-tile__media">
                             <img
                                 src="{{ asset($imagePath) }}"
                                 alt="{{ $category->name }}"
-                                class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                                class="home-category-tile__image"
                                 loading="lazy"
                                 decoding="async"
                             >
                             <div class="relative z-[1] flex items-start justify-between gap-3 p-4">
-                                <span class="inline-flex items-center rounded-full border border-white/20 bg-white/75 px-3 py-1.5 text-[0.64rem] font-bold uppercase tracking-[0.14em] text-slate-900 backdrop-blur-md">{{ $loop->first ? 'Featured category' : 'Category' }}</span>
+                                <span class="home-category-pill">{{ $loop->first ? 'Featured category' : 'Category' }}</span>
                                 @if (isset($category->products_count) && $category->products_count > 0)
-                                    <span class="inline-flex items-center gap-2 rounded-full border border-[#ff6a00]/15 bg-orange-50/95 px-2.5 py-1.5 text-[0.7rem] font-semibold text-orange-800 backdrop-blur-md">{{ $category->products_count }} products</span>
+                                    <span class="home-category-meta">{{ $category->products_count }} products</span>
                                 @endif
                             </div>
                         </div>
-                        <div class="relative z-10 flex flex-1 flex-col gap-2 p-3.5 bg-gradient-to-b from-white/95 to-slate-50/95">
+                        <div class="home-category-tile__content">
                             <div>
                                 <h3 class="font-['Sora'] text-lg font-semibold tracking-tight text-slate-950">{{ $category->name }}</h3>
-                                <p class="max-w-[28rem] text-slate-500 line-clamp-3 mt-1.5 text-[13px] leading-5.5">
+                                <p class="home-category-copy mt-1.5 text-[13px] leading-5.5">
                                     {{ $categoryCopy }}
                                 </p>
                             </div>
                             <div class="mt-auto">
-                                <a href="{{ route('products.index') }}" class="inline-flex min-h-[2.5rem] items-center justify-center rounded-[0.9rem] bg-gradient-to-br from-[#ff6a00] to-[#ff8f3f] px-4 py-2.5 text-[0.9rem] font-bold text-white shadow-[0_14px_24px_rgba(255,106,0,0.22)] transition-all duration-200 ease-out hover:-translate-y-[1px] hover:bg-gradient-to-br hover:from-[#ed6200] hover:to-[#ff7b21] hover:shadow-[0_16px_28px_rgba(255,106,0,0.28)]">Explore</a>
+                                <a href="{{ route('products.index') }}" class="home-category-action">Explore</a>
                             </div>
                         </div>
                     </article>
                 @empty
-                    <article class="border-slate-200/20 bg-gradient-to-b from-white/90 to-white/80 shadow-[0_24px_55px_rgba(15,23,42,0.07)] backdrop-blur-[18px] hover:border-[#ff6a00]/20 hover:shadow-[0_28px_60px_rgba(15,23,42,0.11)] transition-all duration-[350ms] ease-out rounded-3xl p-6 md:p-8 sm:col-span-2 xl:col-span-5">
+                    <article class="home-panel sm:col-span-2 xl:col-span-5">
                         <h3 class="text-lg font-semibold text-slate-900">Categories will appear here</h3>
                         <p class="mt-2 text-sm text-slate-600">No home page categories are available right now.</p>
                     </article>
@@ -364,7 +723,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- PARTNER / BRAND TRUST BAR --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-[linear-gradient(180deg,rgba(255,255,255,0.52),rgba(255,255,255,0.82))] backdrop-blur-[14px] border-y border-slate-100 py-8">
+    <section class="home-trust border-y border-slate-100 py-8">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <p class="mb-6 text-center text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Trusted by leading healthcare institutions &amp; diagnostic brands</p>
             <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10">
@@ -397,8 +756,8 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-newsletter bg-transparent py-12 md:py-16">
         <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
-            <article class="relative overflow-hidden before:absolute before:inset-0 before:bg-[color:rgba(255,106,0,0.96)] before:bg-[image:var(--bg-overlay)] before:bg-center before:bg-no-repeat before:bg-cover after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_26%),linear-gradient(90deg,rgba(122,38,0,0.14),transparent_52%)] home-reveal rounded-3xl p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8" style="--bg-overlay: linear-gradient(135deg,rgba(255,106,0,0.96),rgba(255,147,71,0.84)), url('{{ asset('upload/corousel/lucknow-map.svg') }}');">
-                <div class="relative z-10">
+            <article class="home-delivery-card home-reveal rounded-3xl p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8">
+                <div class="home-delivery-content">
                     <span class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow local support</span>
                     <h2 class="mt-4 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
                     <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
@@ -409,7 +768,7 @@
                 </div>
             </article>
 
-            <article class="home-reveal border-slate-200/20 bg-gradient-to-b from-white/90 to-white/80 shadow-[0_24px_55px_rgba(15,23,42,0.07)] backdrop-blur-[18px] hover:border-[#ff6a00]/20 hover:shadow-[0_28px_60px_rgba(15,23,42,0.11)] rounded-3xl p-6 md:p-8 xl:col-span-5">
+            <article class="home-panel home-reveal xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
                 <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
@@ -494,7 +853,7 @@
                         'color'   => 'bg-violet-600',
                     ],
                 ] as $testimonial)
-                    <article class="home-reveal border border-slate-200/50 bg-white/80 shadow-sm backdrop-blur-md flex flex-col gap-4 rounded-[2rem] p-6 md:p-8 hover:shadow-lg transition-shadow duration-300">
+                    <article class="home-panel home-reveal flex flex-col gap-4">
                         {{-- Stars --}}
                         <div class="flex items-center gap-0.5">
                             @for ($s = 0; $s < $testimonial['rating']; $s++)
@@ -504,16 +863,17 @@
                             @endfor
                         </div>
                         {{-- Quote --}}
-                        <blockquote class="flex-1 text-sm italic leading-7 text-slate-700">
+                        <blockquote class="flex-1 text-sm leading-7 text-slate-600">
                             "{{ $testimonial['quote'] }}"
                         </blockquote>
-                        <div class="mt-auto pt-4 border-t border-slate-100 flex items-center gap-3">
-                            <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl {{ $testimonial['color'] }} text-[11px] font-bold text-white">
+                        {{-- Author --}}
+                        <div class="flex items-center gap-3 border-t border-slate-100 pt-4">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full {{ $testimonial['color'] }} text-sm font-bold text-white">
                                 {{ $testimonial['initials'] }}
-                            </div>
+                            </span>
                             <div>
-                                <p class="text-sm font-bold text-slate-900 leading-none">{{ $testimonial['name'] }}</p>
-                                <p class="mt-1 text-xs text-slate-500 leading-none">{{ $testimonial['role'] }}</p>
+                                <p class="text-sm font-semibold text-slate-900">{{ $testimonial['name'] }}</p>
+                                <p class="text-xs text-slate-500">{{ $testimonial['role'] }}</p>
                             </div>
                         </div>
                     </article>
@@ -560,7 +920,7 @@
                         'color'  => 'bg-violet-50 text-violet-600',
                     ],
                 ] as $insight)
-                    <article class="home-reveal border border-slate-200/50 bg-white/80 shadow-sm backdrop-blur-md group flex flex-col gap-4 rounded-[2rem] p-6 md:p-8 hover:shadow-lg transition-shadow duration-300">
+                    <article class="home-panel home-reveal group flex flex-col gap-4">
                         {{-- Icon thumbnail --}}
                         <div class="flex items-center gap-4">
                             <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl {{ $insight['color'] }} transition group-hover:scale-110">
@@ -571,14 +931,12 @@
                             <x-badge variant="default">{{ $insight['tag'] }}</x-badge>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-lg font-semibold text-slate-900 group-hover:text-primary-600 transition-colors">{{ $insight['title'] }}</h3>
-                            <p class="mt-2 text-sm text-slate-600 leading-relaxed">{{ $insight['copy'] }}</p>
+                            <h3 class="text-lg font-semibold text-slate-900">{{ $insight['title'] }}</h3>
+                            <p class="mt-2 text-sm text-slate-600">{{ $insight['copy'] }}</p>
                         </div>
-                        <div class="mt-auto pt-4 border-t border-slate-100">
-                            <x-ui.action-link :href="$insight['href']" variant="secondary" class="w-fit">
-                                {{ $insight['action'] }}
-                            </x-ui.action-link>
-                        </div>
+                        <x-ui.action-link :href="$insight['href']" variant="secondary" class="mt-auto w-fit">
+                            {{ $insight['action'] }}
+                        </x-ui.action-link>
                     </article>
                 @endforeach
             </div>
@@ -588,12 +946,42 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- FREQUENTLY ASKED QUESTIONS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    
+    <section class="bg-slate-50 py-12 md:py-16">
+        <div class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 xl:px-10">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900">Frequently Asked Questions</h2>
+                <p class="mt-4 text-base text-slate-600">Got questions? We have answers. If you can't find what you're looking for, please <a href="{{ route('contact') }}" class="font-semibold text-primary-600 hover:text-primary-500">contact our support team</a>.</p>
+            </div>
+            <div class="mt-10 space-y-4">
+                @foreach ([
+                    ['q' => 'Do you ship to all locations in India?', 'a' => 'Yes, we provide pan-India delivery. We also offer same-day or next-day delivery in select regions, including Lucknow and surrounding areas, depending on product availability and current stock levels.'],
+                    ['q' => 'How can I request a bulk or institutional quotation?', 'a' => 'You can use the "Generate Quote" button available on most pages to instantly build an MRP quotation. For negotiated or institutional pricing, we recommend creating a B2B account or booking a meeting with our sales team.'],
+                    ['q' => 'Are your medical supplies and instruments certified?', 'a' => 'Absolutely. We only partner with leading brands and manufacturers. All our products comply with standard regulations such as ISO, CE Marking, and FDA where applicable.'],
+                    ['q' => 'What is your return or replacement policy?', 'a' => 'We offer replacements for items that arrive damaged, defective, or do not match the order description. Due to the sensitive nature of diagnostic supplies, returns for correctly fulfilled products are handled on a case-by-case basis. Please review our full return policy for details.'],
+                    ['q' => 'Do you provide post-installation support for instruments?', 'a' => 'Yes. For medium to large diagnostic instruments, we coordinate with manufacturer technicians to ensure proper installation, basic operational training, and support.'],
+                ] as $index => $faq)
+                    <details class="group rounded-3xl border border-slate-200 bg-white shadow-sm [&_summary::-webkit-details-marker]:hidden" {{ $index === 0 ? 'open' : '' }}>
+                        <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30 rounded-3xl group-open:rounded-b-none">
+                            <h3 class="text-lg font-semibold">{{ $faq['q'] }}</h3>
+                            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition-transform duration-300 group-open:-rotate-180 group-open:bg-primary-50 group-open:text-primary-600">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div class="px-6 pb-6 pt-0 text-slate-600">
+                            <p class="text-base leading-relaxed">{{ $faq['a'] }}</p>
+                        </div>
+                    </details>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- FINAL CTA STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="bg-[radial-gradient(circle_at_top_right,rgba(255,106,0,0.18),transparent_28%),linear-gradient(135deg,#07111f_0%,#102243_52%,#112d60_100%)] py-12 text-white md:py-14">
+    <section class="home-cta py-12 text-white md:py-14">
         <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <h2 class="font-['Sora'] text-2xl font-semibold text-white md:text-4xl">Need a faster procurement decision?</h2>
@@ -705,11 +1093,7 @@
                 const rect = item.getBoundingClientRect();
                 const isVisible = rect.top <= visibleTopLimit && rect.bottom >= visibleBottomLimit;
 
-                if (isVisible) {
-                    item.classList.add('is-visible');
-                } else {
-                    item.classList.remove('is-visible');
-                }
+                item.classList.toggle('is-visible', isVisible);
             });
         }
 
