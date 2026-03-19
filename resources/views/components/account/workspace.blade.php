@@ -13,86 +13,61 @@
     $portal = $portal === 'b2b' ? 'b2b' : 'b2c';
     $flashSuccess = session('success') ?: session('status');
     $flashError = session('error');
-    $frameClass = $framed ? 'rounded-[34px] border border-slate-200 bg-white/70 p-4 shadow-sm sm:p-5' : '';
-    $gridClass = $framed
-        ? 'grid w-full gap-8 lg:grid-cols-[15.5rem_minmax(0,1fr)]'
-        : 'grid w-full gap-8 px-4 pb-12 sm:px-6 lg:grid-cols-[15.5rem_minmax(0,1fr)] lg:px-6 xl:px-0';
-    $outerClass = $framed ? 'mx-auto w-full max-w-[1456px] pb-12' : 'mx-auto w-full max-w-[1456px]';
 @endphp
 
-<div class="{{ $outerClass }}">
-    <div class="{{ $frameClass }}">
-        <div class="{{ $gridClass }}">
-            @include('customer.partials.account-sidebar', ['portal' => $portal, 'active' => $active])
+<div class="min-h-screen bg-[#f4f7fb] py-4 lg:py-8">
+    <div class="mx-auto flex w-full max-w-[96rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+        @include('customer.partials.account-sidebar', ['portal' => $portal, 'active' => $active])
 
-            <div class="space-y-6 lg:border-l lg:border-slate-200 lg:pl-10">
-                {{-- Premium hero header --}}
-                <div class="rounded-[32px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-primary-50/40 p-6 shadow-sm md:p-8">
-                    <div class="space-y-2">
-                        @if ($backUrl)
-                            <a href="{{ $backUrl }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 no-underline transition hover:text-slate-800">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                </svg>
-                                {{ $backLabel }}
-                            </a>
-                        @endif
-
-                        @if ($eyebrow || $title || $description)
-                            <div class="space-y-1.5">
-                                @if ($eyebrow)
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">{{ $eyebrow }}</p>
-                                @endif
-                                @if ($title)
-                                    <h1 class="text-2xl font-bold tracking-tight text-slate-950 md:text-3xl">{{ $title }}</h1>
-                                @endif
-                                @if ($description)
-                                    <p class="max-w-xl text-sm leading-7 text-slate-500">{{ $description }}</p>
-                                @endif
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                @if ($flashSuccess)
-                    <x-alert type="success">
-                        {{ $flashSuccess }}
-                    </x-alert>
+        <div id="customer-main-content" class="flex-1 min-w-0 space-y-6 pb-12">
+            {{-- Page header — same pattern as admin dashboard --}}
+            <div class="mb-4">
+                @if ($title)
+                    <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $title }}</h2>
                 @endif
-
-                @if ($flashError)
-                    <x-alert type="error">
-                        {{ $flashError }}
-                    </x-alert>
+                @if ($description)
+                    <p class="text-sm text-slate-500 mt-1">{{ $description }}</p>
                 @endif
-
-                @if ($errors->any())
-                    <x-alert type="error">
-                        <p class="font-semibold">Please review the highlighted fields.</p>
-                        <ul class="mt-2 list-disc space-y-1 pl-5">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </x-alert>
-                @endif
-
-                @isset($metrics)
-                    <div>
-                        {{ $metrics }}
-                    </div>
-                @endisset
-
-                <div class="space-y-6">
-                    {{ $slot }}
-                </div>
-
-                @isset($footer)
-                    <div class="flex flex-wrap items-center justify-end gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        {{ $footer }}
-                    </div>
-                @endisset
             </div>
+
+            @if ($flashSuccess)
+                <x-alert type="success">
+                    {{ $flashSuccess }}
+                </x-alert>
+            @endif
+
+            @if ($flashError)
+                <x-alert type="error">
+                    {{ $flashError }}
+                </x-alert>
+            @endif
+
+            @if ($errors->any())
+                <x-alert type="error">
+                    <p class="font-semibold">Please review the highlighted fields.</p>
+                    <ul class="mt-2 list-disc space-y-1 pl-5">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </x-alert>
+            @endif
+
+            @isset($metrics)
+                <div>
+                    {{ $metrics }}
+                </div>
+            @endisset
+
+            <div class="space-y-6">
+                {{ $slot }}
+            </div>
+
+            @isset($footer)
+                <div class="flex flex-wrap items-center justify-end gap-3 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+                    {{ $footer }}
+                </div>
+            @endisset
         </div>
     </div>
 </div>

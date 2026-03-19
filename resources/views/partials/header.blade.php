@@ -27,17 +27,51 @@
 @endphp
 
 <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-    <div class="mx-auto grid min-h-[72px] w-full max-w-none grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-2 sm:px-6 lg:px-8 xl:px-10" style="
-    display: flex;">
-        <a href="{{ route('home') }}" class="shrink-0">
-            <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-14 w-auto md:h-16">
+    <style>
+        /* Fluid navbar sizing that scales with viewport */
+        .header-nav-link {
+            padding: clamp(0.35rem, 0.45vw, 0.5rem) clamp(0.4rem, 0.65vw, 0.75rem);
+            font-size: clamp(0.68rem, 0.72vw, 0.875rem);
+        }
+        #headerMainNav {
+            gap: clamp(0rem, 0.18vw, 0.25rem);
+        }
+        @media (min-width: 1280px) and (max-width: 1535px) {
+            #headerDesktopActions {
+                gap: 0.5rem;
+            }
+            .header-nav-link {
+                padding: 0.4rem 0.4rem;
+                font-size: 0.74rem;
+            }
+            .header-auth-button {
+                min-height: 2.5rem;
+                padding-inline: 1rem;
+                font-size: 0.8125rem;
+            }
+            .header-cart-button {
+                gap: 0.45rem;
+                padding: 0.55rem 0.8rem;
+            }
+            .header-cart-label {
+                font-size: 0.8125rem;
+            }
+            .header-profile-button {
+                height: 2.5rem;
+                width: 2.5rem;
+            }
+        }
+    </style>
+    <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10">
+        <a href="{{ route('home') }}" class="shrink-0 xl:col-start-1">
+            <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
         </a>
 
         {{-- Mobile hamburger --}}
         <button
             class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 xl:hidden"
             data-menu-toggle
-            aria-label="Open mobile menu"
+            aria-label="Open navigation menu"
             aria-expanded="false"
             aria-controls="mobileMenuDrawer"
         >
@@ -49,37 +83,36 @@
         {{-- Desktop nav --}}
         <nav
             id="headerMainNav"
-            class="hidden min-w-0 items-center justify-center gap-0.5 xl:flex"
+            class="hidden items-center justify-self-center xl:col-start-2 xl:flex xl:min-w-0"
             aria-label="Main Navigation"
         >
             @foreach ($navItems as $nav)
                 <a
                     href="{{ $nav['href'] }}"
-                    class="relative rounded-lg px-2.5 py-2 text-[13px] font-medium no-underline transition 2xl:px-3 2xl:text-sm {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
+                    class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
                 >
                     {{ $nav['label'] }}
                 </a>
             @endforeach
         </nav>
 
-
         {{-- Desktop auth & cart --}}
-        <div class="ml-auto hidden items-center justify-end gap-2 xl:flex">
+        <div id="headerDesktopActions" class="ml-auto hidden items-center gap-2 xl:col-start-3 xl:flex xl:justify-self-end">
             @auth
-                <span class="max-w-[12rem] truncate text-sm text-slate-600 2xl:max-w-[16rem]" title="{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})">{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
+                <span class="hidden max-w-[12rem] truncate text-sm text-slate-600 2xl:inline-block 2xl:max-w-[14rem]">{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
-                    <button type="submit" id="logoutBtn" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">Logout</button>
+                    <button type="submit" id="logoutBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-[13px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
                 </form>
             @else
-                <a href="{{ route('login') }}" id="loginBtn" class="inline-flex h-11 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Login</a>
-                <a href="{{ route('signup') }}" id="signupBtn" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">Sign Up</a>
+                <a href="{{ route('login') }}" id="loginBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Login</a>
+                <a href="{{ route('signup') }}" id="signupBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-[13px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 2xl:h-11 2xl:px-5 2xl:text-sm">Sign Up</a>
             @endauth
 
             <button
                 type="button"
                 onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
-                class="inline-flex items-center gap-2.5 rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer"
+                class="header-cart-button inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:gap-2.5 2xl:px-3.5 2xl:py-2.5"
                 aria-label="View cart"
             >
                 <span class="relative inline-flex h-7 w-7 items-center justify-center text-slate-900">
@@ -89,19 +122,19 @@
                         <path d="M5 6h2l1.4 8h12.1l1.5-6H8"></path>
                     </svg>
                     <span
-                        id="globalCartCount"
+                        data-cart-count
                         class="absolute -right-2 -top-1 hidden h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1.5 text-xs font-bold leading-none text-white shadow-sm"
                         aria-live="polite"
                         aria-atomic="true"
                     >0</span>
                 </span>
-                <span class="text-sm font-bold leading-none text-slate-900">Cart</span>
+                <span class="header-cart-label text-[13px] font-bold leading-none text-slate-900 2xl:text-sm">Cart</span>
             </button>
 
             {{-- Profile icon --}}
             <a
                 href="{{ $profileHref }}"
-                class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20"
+                class="header-profile-button inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
                 aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}"
                 title="Profile"
             >
@@ -589,18 +622,20 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         // ─── Cart badge sync ───
-        const cartCount = document.getElementById('globalCartCount');
-        if (window.CartStore && cartCount) {
+        const cartCountBadges = Array.from(document.querySelectorAll('[data-cart-count]'));
+        if (window.CartStore && cartCountBadges.length) {
             const syncCartBadge = function (items) {
                 const total = items.reduce(function (sum, item) {
                     const raw = item && (item.quantity ?? item.qty ?? item.count ?? 1);
                     const parsed = Number(raw);
                     return sum + (Number.isFinite(parsed) && parsed > 0 ? parsed : 1);
                 }, 0);
-                cartCount.textContent = total > 99 ? '99+' : String(total);
-                cartCount.classList.toggle('hidden', total <= 0);
-                cartCount.classList.toggle('inline-flex', total > 0);
-                cartCount.setAttribute('aria-label', total + ' items in cart');
+                cartCountBadges.forEach(function (cartCount) {
+                    cartCount.textContent = total > 99 ? '99+' : String(total);
+                    cartCount.classList.toggle('hidden', total <= 0);
+                    cartCount.classList.toggle('inline-flex', total > 0);
+                    cartCount.setAttribute('aria-label', total + ' items in cart');
+                });
             };
 
             window.CartStore.subscribe(syncCartBadge);
