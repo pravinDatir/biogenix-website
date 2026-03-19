@@ -10,6 +10,9 @@ class SupportTicketHistory extends Model
 {
     public $timestamps = false;
 
+    // This keeps the model aligned with the current database table name used by the support ticket history migration.
+    protected $table = 'support_ticket_history';
+
     protected $fillable = [
         'support_ticket_id',
         'event_type',

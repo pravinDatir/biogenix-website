@@ -69,9 +69,12 @@ class SupportTicketController extends Controller
     public function store(Request $request, SupportTicketService $supportTicketService): RedirectResponse
     {
         try {
+            // Step 1: load the active category master so the create form validates against real backend values.
+            $categorySlugs = $supportTicketService->availableCategorySlugs();
+
             // Step 1: validate the submitted ticket form.
             $validated = $request->validate([
-                'category' => ['required', Rule::in(SupportTicketService::CATEGORIES)],
+                'category' => ['required', Rule::in($categorySlugs)],
                 'priority' => ['required', Rule::in(SupportTicketService::PRIORITIES)],
                 'description' => ['required', 'string', 'max:4000'],
                 'attachments' => ['nullable', 'array', 'max:5'],

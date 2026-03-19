@@ -113,11 +113,13 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->middleware('auth')->name('proforma.index');
     Route::get('/proforma/{proformaId}/download', [ProformaInvoiceController::class, 'download'])->middleware('auth')->name('proforma.download');
-    Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
-    Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
-    Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
-    Route::post('/support-tickets/{ticketId}/comments', [SupportTicketController::class, 'addComment'])->name('support-tickets.comments.store');
-    Route::patch('/support-tickets/{ticketId}/status', [SupportTicketController::class, 'updateStatus'])->name('support-tickets.status.update');
+    Route::middleware('auth')->group(function (): void {
+        Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
+        Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
+        Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
+        Route::post('/support-tickets/{ticketId}/comments', [SupportTicketController::class, 'addComment'])->name('support-tickets.comments.store');
+        Route::patch('/support-tickets/{ticketId}/status', [SupportTicketController::class, 'updateStatus'])->name('support-tickets.status.update');
+    });
 
     Route::post('/impersonation/stop', [ImpersonationController::class, 'stop'])->name('impersonation.stop');
 

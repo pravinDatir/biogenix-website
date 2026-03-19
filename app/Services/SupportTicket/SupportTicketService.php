@@ -3,6 +3,7 @@
 namespace App\Services\SupportTicket;
 
 use App\Models\Authorization\User;
+use App\Models\SupportTicket\SupportTicketCategory;
 use App\Models\SupportTicket\SupportTicket;
 use App\Models\SupportTicket\SupportTicketAttachment;
 use App\Models\SupportTicket\SupportTicketComment;
@@ -22,6 +23,7 @@ class SupportTicketService
 {
     public const STATUSES = ['open', 'in_progress', 'awaiting_response', 'closed'];
 
+    // This fallback list keeps the ticket form usable until the category master is migrated and seeded.
     public const CATEGORIES = ['technical', 'billing', 'account', 'general', 'other'];
 
     public const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
@@ -38,7 +40,8 @@ class SupportTicketService
         try {
             return [
                 'tickets' => $this->listVisibleTickets($user),
-                'categories' => self::CATEGORIES,
+                // Step 1: load ticket categories from the backend master so the dropdown stays business-managed.
+                'categories' => $this->availableCategorySlugs(),
                 'priorities' => self::PRIORITIES,
                 'statuses' => self::STATUSES,
                 'selectedTicket' => null,
@@ -53,6 +56,35 @@ class SupportTicketService
         } catch (Throwable $exception) {
             Log::error('Failed to build support ticket index.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
             throw $exception;
+        }
+    }
+
+    // This returns the active support ticket category slugs used by forms and validation.
+    public function availableCategorySlugs(): array
+    {
+        try {
+            // Step 1: read the active category master in business display order.
+            $categorySlugs = SupportTicketCategory::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->pluck('slug')
+                ->filter(fn (mixed $slug): bool => is_string($slug) && trim($slug) !== '')
+                ->map(fn (string $slug): string => trim($slug))
+                ->values()
+                ->all();
+
+            // Step 2: keep the live form usable even before the category master is migrated and seeded.
+            if ($categorySlugs === []) {
+                return self::CATEGORIES;
+            }
+
+            return $categorySlugs;
+        } catch (Throwable $exception) {
+            Log::error('Failed to load support ticket categories.', ['error' => $exception->getMessage()]);
+
+            // Step 3: return the safe fallback list so ticket creation does not stop during setup gaps.
+            return self::CATEGORIES;
         }
     }
 
@@ -425,17 +457,25 @@ class SupportTicketService
                     continue;
                 }
 
+                // Step 1: capture the uploaded file metadata before the file is moved into its final public folder.
+                $originalFileName = $attachment->getClientOriginalName();
+                $fileSize = (int) ($attachment->getSize() ?? 0);
+                $mimeType = $attachment->getClientMimeType();
+
+                // Step 2: move the uploaded file through the shared helper so the saved path stays consistent for future storage changes.
+                $storedFilePath = $this->fileHandlingService->storeUploadedFile(
+                    $attachment,
+                    FileHandlingService::DOCUMENT_DIRECTORY.'/support-tickets/'.$ticketId,
+                );
+
+                // Step 3: save the attachment record with the metadata captured before the move.
                 SupportTicketAttachment::query()->create([
                     'support_ticket_id' => $ticketId,
                     'support_ticket_comment_id' => $commentId,
-                    'original_file_name' => $attachment->getClientOriginalName(),
-                    // Step 1: save support attachments through the shared file helper so future storage changes stay centralized.
-                    'stored_file_path' => $this->fileHandlingService->storeUploadedFile(
-                        $attachment,
-                        FileHandlingService::DOCUMENT_DIRECTORY.'/support-tickets/'.$ticketId,
-                    ),
-                    'file_size' => (int) ($attachment->getSize() ?? 0),
-                    'mime_type' => $attachment->getClientMimeType(),
+                    'original_file_name' => $originalFileName,
+                    'stored_file_path' => $storedFilePath,
+                    'file_size' => $fileSize,
+                    'mime_type' => $mimeType,
                     'uploaded_by_user_id' => $actorUserId,
                     'created_at' => now(),
                 ]);

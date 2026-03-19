@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CompaniesSeeder::class,
             AdminSetupSeeder::class,
             CatalogSeeder::class,
+            SupportTicketCategorySeeder::class,
             ProductTechnicalResourceSeeder::class,
             PricingRulesSeeder::class,
             OrderSeeder::class,

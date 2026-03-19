@@ -97,8 +97,9 @@
                             error-key="attachments"
                         />
 
-                        <div class="flex justify-end">
-                            <button type="submit" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Create Ticket</button>
+                        <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                            <p class="text-sm text-slate-500">Review your issue details and selected attachments, then submit the ticket to the support team.</p>
+                            <button type="submit" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Submit Ticket</button>
                         </div>
                     </form>
                 @else
@@ -275,8 +276,9 @@
                                     multiple
                                     error-key="comment_attachments"
                                 />
-                                <div class="flex justify-end">
-                                    <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Add Comment</button>
+                                <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <p class="text-sm text-slate-500">Add your response and any supporting files, then send the update to the ticket thread.</p>
+                                    <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Submit Comment</button>
                                 </div>
                             </form>
                         @else
