@@ -27,7 +27,8 @@
 @endphp
 
 <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-    <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 lg:px-8 xl:px-10">
+    <div class="mx-auto grid min-h-[72px] w-full max-w-none grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-2 sm:px-6 lg:px-8 xl:px-10" style="
+    display: flex;">
         <a href="{{ route('home') }}" class="shrink-0">
             <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-14 w-auto md:h-16">
         </a>
@@ -48,13 +49,13 @@
         {{-- Desktop nav --}}
         <nav
             id="headerMainNav"
-            class="hidden items-center gap-1 xl:absolute xl:left-1/2 xl:top-1/2 xl:flex xl:-translate-x-1/2 xl:-translate-y-1/2"
+            class="hidden min-w-0 items-center justify-center gap-0.5 xl:flex"
             aria-label="Main Navigation"
         >
             @foreach ($navItems as $nav)
                 <a
                     href="{{ $nav['href'] }}"
-                    class="relative rounded-lg px-3 py-2 text-sm font-medium no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
+                    class="relative rounded-lg px-2.5 py-2 text-[13px] font-medium no-underline transition 2xl:px-3 2xl:text-sm {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
                 >
                     {{ $nav['label'] }}
                 </a>
@@ -63,9 +64,9 @@
 
 
         {{-- Desktop auth & cart --}}
-        <div class="ml-auto hidden items-center gap-2 xl:flex">
+        <div class="ml-auto hidden items-center justify-end gap-2 xl:flex">
             @auth
-                <span class="text-sm text-slate-600">{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
+                <span class="max-w-[12rem] truncate text-sm text-slate-600 2xl:max-w-[16rem]" title="{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})">{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
                     <button type="submit" id="logoutBtn" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">Logout</button>
