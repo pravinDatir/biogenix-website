@@ -3,6 +3,7 @@
 namespace App\Models\Authorization;
 
 use App\Models\Invoice\ProformaInvoice;
+use App\Services\Notification\EmailNotificationService;
 use App\Models\SupportTicket\SupportTicket;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class User extends Authenticatable
 {
@@ -142,5 +145,28 @@ class User extends Authenticatable
     public function isPendingApproval(): bool
     {
         return $this->status === 'pending_approval';
+    }
+
+    // This sends the password reset link through the shared notification service so provider changes stay centralized.
+    public function sendPasswordResetNotification($token): void
+    {
+        try {
+            // Step 1: build the standard Fortify password reset URL with the token and customer email.
+            $resetUrl = url(route('password.reset', [
+                'token' => $token,
+                'email' => $this->getEmailForPasswordReset(),
+            ], false));
+
+            // Step 2: send the email through the shared provider-aware notification service.
+            app(EmailNotificationService::class)->sendForgotPasswordResetLink($this, $resetUrl);
+        } catch (Throwable $exception) {
+            Log::error('Failed to start password reset notification send.', [
+                'user_id' => $this->id,
+                'email' => $this->email,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
     }
 }

@@ -133,15 +133,32 @@
         }
 
         forgotForm.addEventListener('submit', async function (event) {
+            const fieldGroup = forgotForm.querySelector('[data-field-group]');
+            const fieldError = forgotForm.querySelector('[data-field-error]');
+            const emailInput = document.getElementById('forgotEmail');
+
             event.preventDefault();
             forgotSubmitBtn.disabled = true;
             forgotSubmitBtn.classList.add('cursor-not-allowed', 'opacity-70');
             forgotSubmitBtn.setAttribute('aria-disabled', 'true');
 
+            if (fieldError) {
+                fieldError.textContent = '';
+                fieldError.classList.add('hidden');
+            }
+
+            if (fieldGroup) {
+                fieldGroup.classList.remove('text-rose-600');
+            }
+
+            if (emailInput) {
+                emailInput.classList.remove('border-rose-400', 'focus:border-rose-500', 'focus:ring-rose-500/20');
+            }
+
             const formData = new FormData(forgotForm);
 
             try {
-                await fetch(forgotForm.action, {
+                const response = await fetch(forgotForm.action, {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: {
@@ -151,11 +168,54 @@
                     },
                     body: formData,
                 });
-            } catch (error) {
-                // Keep the UI privacy-safe and move to the confirmation state regardless.
-            }
 
-            window.location.href = forgotForm.dataset.successUrl || '{{ route('forgot.password', ['sent' => 1]) }}';
+                // Business step: move to the success state only when the backend confirms the reset-link request was accepted.
+                if (response.ok) {
+                    window.location.href = forgotForm.dataset.successUrl || '{{ route('forgot.password', ['sent' => 1]) }}';
+                    return;
+                }
+
+                // Business step: show a field-friendly message when the backend rejects the email request.
+                let responseBody = {};
+                try {
+                    responseBody = await response.json();
+                } catch (jsonError) {
+                    responseBody = {};
+                }
+
+                const emailError = responseBody?.errors?.email?.[0] || responseBody?.message || 'Unable to send reset link right now. Please try again.';
+
+                if (fieldError) {
+                    fieldError.textContent = emailError;
+                    fieldError.classList.remove('hidden');
+                }
+
+                if (fieldGroup) {
+                    fieldGroup.classList.add('text-rose-600');
+                }
+
+                if (emailInput) {
+                    emailInput.classList.add('border-rose-400', 'focus:border-rose-500', 'focus:ring-rose-500/20');
+                }
+            } catch (error) {
+                // Business step: keep the user on the form when the request fails before the server can answer.
+                if (fieldError) {
+                    fieldError.textContent = 'Unable to send reset link right now. Please try again.';
+                    fieldError.classList.remove('hidden');
+                }
+
+                if (fieldGroup) {
+                    fieldGroup.classList.add('text-rose-600');
+                }
+
+                if (emailInput) {
+                    emailInput.classList.add('border-rose-400', 'focus:border-rose-500', 'focus:ring-rose-500/20');
+                }
+            } finally {
+                forgotSubmitBtn.disabled = false;
+                forgotSubmitBtn.classList.remove('cursor-not-allowed', 'opacity-70');
+                forgotSubmitBtn.removeAttribute('aria-disabled');
+            }
         });
     });
 </script>
