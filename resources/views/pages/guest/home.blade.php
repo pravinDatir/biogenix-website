@@ -308,7 +308,7 @@
     }
 
     .home-stats {
-        margin-top: -3.8rem;
+        margin-top: 1.5rem;
         z-index: 20;
     }
 
@@ -511,7 +511,7 @@
 
     @media (max-width: 768px) {
         .home-stats {
-            margin-top: -2.2rem;
+            margin-top: 1rem;
         }
     }
 </style>
@@ -621,7 +621,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- SEARCH BAR STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="relative z-30 -mt-10 mb-4 px-4 sm:px-6 lg:px-8 xl:px-10">
+    <section class="relative z-30 -mt-7 mb-6 px-4 sm:px-6 lg:px-8 xl:px-10">
         <div class="mx-auto w-full max-w-4xl rounded-3xl bg-white p-3 shadow-xl ring-1 ring-slate-900/5 sm:p-4">
             <form action="{{ route('products.index') }}" method="GET" class="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div class="relative flex-1">
