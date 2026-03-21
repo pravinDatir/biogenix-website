@@ -345,7 +345,7 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid rgba(255, 255, 255, 0.72);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
         box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
@@ -770,7 +770,7 @@
                 </div>
             </article>
 
-            <article class="home-panel home-reveal xl:col-span-5">
+            <article class="home-panel home-reveal rounded-3xl xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
                 <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
