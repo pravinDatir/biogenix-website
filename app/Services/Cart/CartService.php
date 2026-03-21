@@ -8,6 +8,7 @@ use App\Models\Cart\CartItem;
 use App\Models\Order\Order;
 use App\Models\Product\ProductVariant;
 use App\Services\Authorization\DataVisibilityService;
+use App\Services\Notification\EmailNotificationService;
 use App\Services\Pricing\PriceService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,7 @@ class CartService
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
         protected PriceService $priceService,
+        protected EmailNotificationService $emailNotificationService,
     ) {
     }
 
@@ -270,7 +272,10 @@ class CartService
                 'order_id' => $order->id,
             ]);
 
-            // Step 9: return the final order summary as JSON-ready data.
+            // Step 9: send the customer email after the order is safely created, while keeping the order success independent from email provider issues.
+            $this->sendOrderSubmittedEmail($user, $order);
+
+            // Step 10: return the final order summary as JSON-ready data.
             return [
                 'order' => [
                     'id' => $order->id,
@@ -302,6 +307,31 @@ class CartService
         } catch (Throwable $exception) {
             Log::error('Failed to checkout cart.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
             throw $exception;
+        }
+    }
+
+    // This sends the order-submitted customer email without interrupting a successful checkout.
+    protected function sendOrderSubmittedEmail(User $user, Order $order): void
+    {
+        try {
+            // Step 1: skip the send cleanly when the account does not have an email address yet.
+            if (! filled($user->email)) {
+                Log::warning('Order submitted email skipped because the user email is empty.', [
+                    'user_id' => $user->id,
+                    'order_id' => $order->id,
+                ]);
+
+                return;
+            }
+
+            // Step 2: send the business confirmation email using the shared notification service.
+            $this->emailNotificationService->sendOrderSubmittedConfirmation($user, $order);
+        } catch (Throwable $exception) {
+            Log::error('Order submitted email could not be delivered after checkout.', [
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'error' => $exception->getMessage(),
+            ]);
         }
     }
 

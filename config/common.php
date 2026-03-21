@@ -47,5 +47,11 @@ return [
             'ca_bundle_path' => env('BREVO_CA_BUNDLE_PATH', ''),
         ],
     ],
+    'signup_email_otp' => [
+        'expiry_minutes' => 10,
+        'resend_cooldown_seconds' => 60,
+        'verified_window_minutes' => 30,
+        'max_attempts' => 5,
+    ],
     'frequently_bought_together_limit' => 4,
 ];

@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Authorization\ImpersonationController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
+use App\Http\Controllers\Authorization\SignupEmailOtpController;
 use App\Http\Controllers\Invoice\ProformaInvoiceController;
 use App\Http\Controllers\Invoice\QuotationController;
 use App\Http\Controllers\Order\OrderController;
@@ -91,6 +92,8 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
    //Route::view('/login', 'auth.login')->name('login');
    Route::view('/signup', 'auth.signup')->name('signup');
    Route::view('/b2b-signup', 'auth.signup-b2b')->name('b2b.signup');
+   Route::post('/signup/email-otp/send', [SignupEmailOtpController::class, 'sendOtp'])->name('signup.email-otp.send');
+   Route::post('/signup/email-otp/verify', [SignupEmailOtpController::class, 'verifyOtp'])->name('signup.email-otp.verify');
    Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password');
    Route::view('/book-meeting', 'prelogin.book-meeting')->name('book-meeting');
 

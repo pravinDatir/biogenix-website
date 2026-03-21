@@ -28,49 +28,7 @@
 
     <div id="toastContainer" class="pointer-events-none fixed right-4 top-5 z-[120] flex w-[min(calc(100vw-2rem),24rem)] flex-col gap-3 sm:right-6 sm:top-6"></div>
 
-    <div id="globalPageLoader" aria-hidden="true" class="fixed inset-x-0 bottom-0 top-[72px] z-40 opacity-100 visible transition-opacity duration-200">
-        <div class="h-full w-full bg-slate-950 flex items-center justify-center overflow-hidden relative">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.18),transparent_35%),radial-gradient(circle_at_bottom,rgba(34,197,94,0.12),transparent_30%)]"></div>
-
-            <div class="relative flex flex-col items-center gap-0">
-                <div class="relative">
-                    <!-- <div class="absolute inset-[-12px] rounded-[2rem] bg-white/5 blur-xl"></div> -->
-
-                    <!-- <div class="relative rounded-[28px] bg-white shadow-2xl shadow-cyan-500/10 px-6 py-5 border border-white/60"> -->
-                        <img
-                            src="{{ $loaderLogoSrc }}"
-                            alt="Biogenix"
-                            class="w-[260px] max-w-[72vw] drop-shadow-sm"
-                            decoding="sync"
-                        >
-                    <!-- </div> -->
-                </div>
-
-                <div class="flex flex-col items-center gap-3">
-                    <div class="flex items-center gap-2">
-                        <span class="h-2.5 w-2.5 rounded-full bg-emerald-400/95"></span>
-                        <span class="h-2.5 w-2.5 rounded-full bg-cyan-400/95"></span>
-                        <span class="h-2.5 w-2.5 rounded-full bg-amber-300/95"></span>
-                    </div>
-
-                    <div class="text-center">
-                        <p class="text-white text-xl md:text-2xl font-semibold tracking-[0.24em] uppercase">
-                            Loading your store
-                        </p>
-                        <p class="mt-2 text-slate-300 text-sm md:text-base">
-                            Preparing a faster, smarter shopping experience...
-                        </p>
-                    </div>
-                </div>
-
-                <div class="w-72 max-w-[80vw]">
-                    <div class="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                        <div class="loader-bar h-full w-1/2 rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-amber-300"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('loader.loader')
 
     <style>
         html {

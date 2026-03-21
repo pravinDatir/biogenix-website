@@ -487,24 +487,42 @@
                                 @php
                                     $badgeRow = $badgeSets[$loop->index % count($badgeSets)];
                                     $price = $product->visible_price !== null ? (float) $product->visible_price : null;
-                                    $listPrice = $price !== null ? round($price * 1.16, 2) : null;
-                                $detailUrl = route('products.productDetails', $product->id);
+                                    $mrpPrice = $product->visible_base_price !== null
+                                        ? (float) $product->visible_base_price
+                                        : ($price !== null ? round($price * 1.16, 2) : null);
+                                    $showMrpPrice = $price !== null && $mrpPrice !== null && $mrpPrice > $price;
+                                    $defaultQuantity = max(1, (int) ($product->visible_min_order_quantity ?? 1));
+                                    $maxQuantity = ($product->visible_max_order_quantity ?? null) === null
+                                        ? null
+                                        : max($defaultQuantity, (int) $product->visible_max_order_quantity);
+                                    $lotSize = max(1, (int) ($product->visible_lot_size ?? 1));
+                                    $detailUrl = route('products.productDetails', $product->id);
                                     $variantId = $product->visible_variant_id ?? null;
                                     $imageUrl = filled($product->image_path ?? null) ? asset($product->image_path) : null;
                                     $visualVariant = $resolveVisualVariant($product, $loop->index);
-                                    $ratingValue = number_format(4.6 + (($loop->index % 3) * 0.1), 1);
-                                    $reviewTotal = 42 + ($loop->index * 7);
-                                    $inStock = (bool) ($product->is_active ?? true);
-                                    $stockText = $inStock ? 'In Stock' : 'Limited Availability';
+                                    $bulkSummary = $product->catalog_bulk_summary ?? null;
                                 @endphp
-                                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                                <article data-catalog-product-card data-product-id="{{ $product->id }}" class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                                     <div class="relative px-3 pt-3">
-                                        <div class="overflow-hidden rounded-2xl">
+                                        <div class="relative overflow-hidden rounded-2xl">
                                             @if ($imageUrl)
                                                 <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                             @else
                                                 @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-[clamp(13.5rem,18vw,15rem)] rounded-2xl transition duration-300 group-hover:scale-[1.04]'])
                                             @endif
+                                            {{-- Step 3: keep a single compact quantity stepper pinned inside the image itself so it never drops below the media block. --}}
+                                            <div
+                                                data-catalog-quantity-control
+                                                data-product-id="{{ $product->id }}"
+                                                data-min-quantity="{{ $defaultQuantity }}"
+                                                data-max-quantity="{{ $maxQuantity ?? '' }}"
+                                                data-lot-size="{{ $lotSize }}"
+                                                class="absolute bottom-3 right-3 z-10 flex h-8 min-w-[5rem] items-center rounded-full border border-white/90 bg-white/95 px-1 shadow-[0_12px_22px_rgba(15,23,42,0.16)] backdrop-blur-sm"
+                                            >
+                                                <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-[1rem] font-medium text-white shadow-[0_8px_14px_rgba(244,63,94,0.22)] transition hover:bg-rose-600">-</button>
+                                                <span data-catalog-quantity-value class="inline-flex min-w-0 flex-1 items-center justify-center px-2 text-[0.82rem] font-semibold tracking-tight text-slate-900">{{ number_format($defaultQuantity) }}</span>
+                                                <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-[1rem] font-medium text-white shadow-[0_8px_14px_rgba(244,63,94,0.22)] transition hover:bg-rose-600">+</button>
+                                            </div>
                                         </div>
                                         <div class="absolute left-6 top-6 flex flex-col gap-2">
                                             @foreach ($badgeRow as $badgeIndex => $badgeLabel)
@@ -520,49 +538,69 @@
                                             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
                                             <h3 class="overflow-hidden text-base font-semibold leading-6 text-slate-950 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">{{ Str::limit((string) $product->name, 58) }}</h3>
                                             <p class="text-xs text-slate-400">SKU: {{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}</p>
-                                            <div class="flex items-center gap-2 pt-1 text-sm font-medium text-slate-500">
-                                                <span class="flex items-center gap-1 text-amber-400">
-                                                    @for ($star = 0; $star < 5; $star++)
-                                                        <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.54 5.14 5.68.83-4.11 4 1 5.66L10 14.44 4.89 17.13l.98-5.66-4.1-4 5.67-.83L10 1.5Z"></path></svg>
-                                                    @endfor
-                                                </span>
-                                                <span>{{ $ratingValue }}</span>
-                                                <span class="text-slate-300">|</span>
-                                                <span>{{ $reviewTotal }} reviews</span>
-                                            </div>
                                         </div>
 
-                                        <div class="rounded-2xl bg-slate-50 px-3 py-3">
-                                            <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                                                <span>List MRP</span>
-                                                <span class="line-through">{!! $listPrice !== null ? $formatInr($listPrice, 2) : 'N/A' !!}</span>
-                                            </div>
-                                            <div class="mt-1.5 flex items-baseline justify-between gap-2">
-                                                <span class="text-[10px] font-bold uppercase tracking-wider text-primary-600/70">Your Price</span>
+                                        <div class="rounded-2xl bg-slate-50 px-3 py-2.5">
+                                            <div class="flex items-end justify-between gap-3">
+                                                <span class="text-sm font-semibold text-slate-500">Price:</span>
                                                 <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
                                             </div>
+                                            @if ($showMrpPrice)
+                                                <p class="mt-1 text-right text-sm font-medium text-slate-400 line-through">{!! $formatInr($mrpPrice, 2) !!}</p>
+                                            @endif
                                         </div>
 
-                                        <div class="flex flex-wrap items-center gap-2 text-sm text-slate-700">
-                                            <svg class="h-3.5 w-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M7 8h10M7 12h10M7 16h6"></path>
-                                                <path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8l-5 0V6a2 2 0 0 1 2-2Z"></path>
-                                            </svg>
-                                            <span>Variant: {{ $product->visible_variant_name ?: 'Standard' }}</span>
-                                        </div>
+                                        @if ($bulkSummary)
+                                            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/80 px-3 py-2.5">
+                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-700">Bulk Offer</p>
+                                                <p class="mt-1 text-xs font-semibold text-emerald-900">
+                                                    {{ $bulkSummary['label'] ?? 'Bulk pricing available' }}
+                                                    @if (filled($bulkSummary['discount'] ?? null))
+                                                        | {{ $bulkSummary['discount'] }}
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        @endif
 
-                                        <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-600">
-                                            <x-ui.status-badge type="product" :value="$stockText" :label="$stockText" dot />
-                                            <span class="inline-flex items-center gap-2 rounded-full bg-slate-200/65 px-3 py-1 text-xs font-semibold text-slate-600">
-                                                Ships 24-48h
-                                            </span>
-                                        </div>
+                                        <div class="hidden space-y-2.5">
+                                            <div class="flex min-h-[2.65rem] items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white px-3 shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                                                <div class="flex min-w-0 items-center gap-3 text-[0.95rem] font-medium text-slate-600">
+                                                <span class="whitespace-nowrap">Min <span class="font-semibold text-slate-900">{{ number_format($defaultQuantity) }}</span></span>
+                                                @if (($product->visible_max_order_quantity ?? null) !== null)
+                                                    <span class="h-4 w-px bg-slate-200"></span>
+                                                    <span class="whitespace-nowrap">Max <span class="font-semibold text-slate-900">{{ number_format((int) $product->visible_max_order_quantity) }}</span></span>
+                                                @endif
+                                                <span class="h-4 w-px bg-slate-200"></span>
+                                                <span class="whitespace-nowrap">Lot <span class="font-semibold text-slate-900">{{ number_format($lotSize) }}</span></span>
+                                                </div>
+                                            </div>
 
-                                        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
-                                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Bulk Discounts Available</p>
-                                            <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-                                                <span>5+ units: 5% off</span>
-                                                <span>10+ units: 12% off</span>
+                                            <div class="hidden min-w-0">
+                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Quantity</p>
+                                                <p class="mt-1 text-xs font-medium text-slate-500">
+                                                    Min {{ $defaultQuantity }}
+                                                    @if ($lotSize > 1)
+                                                        • Step {{ $lotSize }}
+                                                    @endif
+                                                </p>
+                                            </div>
+
+                                            {{-- Step 3: keep the quantity stepper compact and let it follow the real min, max, and lot-size rules coming from backend pricing. --}}
+                                            <div
+                                                data-catalog-quantity-control
+                                                data-product-id="{{ $product->id }}"
+                                                data-min-quantity="{{ $defaultQuantity }}"
+                                                data-max-quantity="{{ $maxQuantity ?? '' }}"
+                                                data-lot-size="{{ $lotSize }}"
+                                                class="hidden h-[3.05rem] w-full items-center overflow-hidden rounded-full border border-slate-200 bg-white px-1.5 shadow-[0_10px_22px_rgba(15,23,42,0.05)]"
+                                            >
+                                                <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-full w-9 shrink-0 items-center justify-center text-[1.6rem] font-medium text-slate-300 transition">-</button>
+                                                <div class="flex h-full min-w-0 flex-1 items-center rounded-full bg-slate-50 px-1.5">
+                                                    <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[1.4rem] font-medium text-primary-600 shadow-[0_6px_14px_rgba(15,23,42,0.06)] transition">-</button>
+                                                    <span data-catalog-quantity-value class="inline-flex min-w-0 flex-1 items-center justify-center px-3 text-[1.05rem] font-semibold tracking-tight text-slate-900">{{ number_format($defaultQuantity) }}</span>
+                                                    <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary-100 bg-primary-600 text-[1.4rem] font-medium text-white shadow-[0_10px_18px_rgba(35,131,235,0.2)] transition">+</button>
+                                                </div>
+                                                <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-full w-9 shrink-0 items-center justify-center text-[1.6rem] font-medium text-slate-300 transition">+</button>
                                             </div>
                                         </div>
 
@@ -576,7 +614,7 @@
                                                 <span>View Details</span>
                                             </a>
                                             @guest
-                                                <a href="{{ route('login') }}" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="1" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                <a href="{{ route('login') }}" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <circle cx="9" cy="20" r="1"></circle>
                                                         <circle cx="18" cy="20" r="1"></circle>
@@ -585,7 +623,7 @@
                                                     <span>Add to Cart</span>
                                                 </a>
                                             @else
-                                                <button type="button" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="1" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                <button type="button" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                     <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                         <circle cx="9" cy="20" r="1"></circle>
                                                         <circle cx="18" cy="20" r="1"></circle>
@@ -635,7 +673,8 @@
             @csrf
             <input type="hidden" name="product_id" value="{{ $product->id }}">
             <input type="hidden" name="product_variant_id" value="{{ $product->visible_variant_id ?? '' }}">
-            <input type="hidden" name="quantity" value="1">
+            {{-- Step 5: submit the catalog buy-now action with the real backend minimum order quantity so the buyer can move to checkout without quantity validation failure. --}}
+            <input type="hidden" name="quantity" value="{{ max(1, (int) ($product->visible_min_order_quantity ?? 1)) }}" data-catalog-buy-now-quantity="{{ $product->id }}">
         </form>
     @endforeach
 @endauth
@@ -851,6 +890,73 @@
                 });
             };
 
+            document.querySelectorAll('[data-catalog-quantity-control]').forEach(function (quantityControl) {
+                const productId = String(quantityControl.dataset.productId || '');
+                const minQuantity = Math.max(1, Number(quantityControl.dataset.minQuantity || 1));
+                const maxQuantityRaw = Number(quantityControl.dataset.maxQuantity || 0);
+                const maxQuantity = maxQuantityRaw > 0 ? maxQuantityRaw : null;
+                const lotSize = Math.max(1, Number(quantityControl.dataset.lotSize || 1));
+                const quantityValue = quantityControl.querySelector('[data-catalog-quantity-value]');
+                const productCard = quantityControl.closest('[data-catalog-product-card]');
+                const decreaseButtons = quantityControl.querySelectorAll('[data-catalog-qty-button][data-direction="-1"]');
+                const increaseButtons = quantityControl.querySelectorAll('[data-catalog-qty-button][data-direction="1"]');
+                let quantity = minQuantity;
+
+                const syncSelectedQuantity = function () {
+                    // Step 4: keep the visible quantity, add-to-cart buttons, and buy-now form aligned with the same selected quantity.
+                    if (maxQuantity !== null) {
+                        quantity = Math.min(quantity, maxQuantity);
+                    }
+
+                    if (quantityValue) {
+                        quantityValue.textContent = new Intl.NumberFormat('en-IN').format(quantity);
+                    }
+
+                    if (productCard) {
+                        productCard.querySelectorAll('.js-add-to-cart').forEach(function (button) {
+                            button.dataset.quantity = String(quantity);
+                        });
+                    }
+
+                    const buyNowQuantityInput = document.querySelector('[data-catalog-buy-now-quantity="' + productId + '"]');
+                    if (buyNowQuantityInput) {
+                        buyNowQuantityInput.value = String(quantity);
+                    }
+
+                    const isAtMinimum = quantity <= minQuantity;
+                    const isAtMaximum = maxQuantity !== null && quantity >= maxQuantity;
+
+                    decreaseButtons.forEach(function (button) {
+                        button.disabled = isAtMinimum;
+                        button.classList.toggle('opacity-40', isAtMinimum);
+                        button.classList.toggle('cursor-not-allowed', isAtMinimum);
+                    });
+
+                    increaseButtons.forEach(function (button) {
+                        button.disabled = isAtMaximum;
+                        button.classList.toggle('opacity-40', isAtMaximum);
+                        button.classList.toggle('cursor-not-allowed', isAtMaximum);
+                    });
+                };
+
+                syncSelectedQuantity();
+
+                quantityControl.querySelectorAll('[data-catalog-qty-button]').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        const direction = Number(button.dataset.direction || 0);
+
+                        if (direction < 0) {
+                            quantity = Math.max(minQuantity, quantity - lotSize);
+                        } else if (direction > 0) {
+                            const nextQuantity = quantity + lotSize;
+                            quantity = maxQuantity === null ? nextQuantity : Math.min(maxQuantity, nextQuantity);
+                        }
+
+                        syncSelectedQuantity();
+                    });
+                });
+            });
+
             document.querySelectorAll('.js-add-to-cart').forEach(function (button) {
                 button.addEventListener('click', async function (event) {
                     const target = event.currentTarget;
@@ -933,4 +1039,3 @@
         });
     </script>
 @endpush
-

@@ -114,6 +114,11 @@ function validateFields(fields) {
 document.addEventListener("input", (e) => {
   const input = e.target;
   if (!input.closest("form")) return;
+  const form = input.closest("form");
+
+  if (form?.dataset.disableLiveValidation === "true") {
+    return;
+  }
 
   const value = input.value.trim();
 

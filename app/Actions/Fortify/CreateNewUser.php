@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Models\Authorization\Company;
 use App\Models\Authorization\User;
 use App\Services\Authorization\RolePermissionService;
+use App\Services\Authorization\SignupEmailOtpService;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +23,7 @@ class CreateNewUser implements CreatesNewUsers
 
     public function __construct(
         protected RolePermissionService $rolePermissionService,
+        protected SignupEmailOtpService $signupEmailOtpService,
     ) {
     }
 
@@ -30,11 +32,19 @@ class CreateNewUser implements CreatesNewUsers
     {
         $input = $this->normalizeInput($input);
         $this->validator($input)->validate();
+        $this->ensureB2cSignupEmailIsVerified($input);
 
         try {
             $user = DB::transaction(fn (): User => $this->createUserRecord($input));
 
             $this->rolePermissionService->assignDefaultRole($user);
+            $this->consumeSignupEmailVerification($input);
+
+            Log::info('New user account created successfully.', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+            ]);
 
             return $user;
         } catch (Throwable $exception) {
@@ -101,6 +111,31 @@ class CreateNewUser implements CreatesNewUsers
     private function isB2bSignup(array $input): bool
     {
         return ($input['user_type'] ?? null) === 'b2b';
+    }
+
+    private function isB2cSignup(array $input): bool
+    {
+        return ($input['user_type'] ?? null) === 'b2c';
+    }
+
+    private function ensureB2cSignupEmailIsVerified(array $input): void
+    {
+        // Business rule: retail signup must verify email before the account can be created.
+        if (! $this->isB2cSignup($input)) {
+            return;
+        }
+
+        $this->signupEmailOtpService->ensureVerifiedEmailOrFail((string) ($input['email'] ?? ''));
+    }
+
+    private function consumeSignupEmailVerification(array $input): void
+    {
+        // Business rule: once signup is completed successfully, the temporary email verification token should not be reused.
+        if (! $this->isB2cSignup($input)) {
+            return;
+        }
+
+        $this->signupEmailOtpService->consumeVerifiedEmail((string) ($input['email'] ?? ''));
     }
 
     private function upsertCompany(array $input): Company

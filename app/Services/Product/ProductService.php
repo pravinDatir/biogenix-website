@@ -63,8 +63,18 @@ class ProductService
             // Step 4: sort and paginate the final product list for the view.
             $sortedProducts = $this->sortProducts($filteredProducts, $catalogFilters['sort'])->values();
 
+            // Step 5: paginate the final product list first so any extra catalog-card data is attached only to products visible on the current page.
+            $paginatedProducts = $this->paginateProducts($sortedProducts, 15);
+
+            // Step 6: attach compact card-level commerce details only to the paginated product set to keep catalog rendering efficient.
+            $paginatedProducts->setCollection(
+                $paginatedProducts->getCollection()
+                    ->map(fn ($product) => $this->attachCatalogCardCommercialData($product, $user))
+                    ->values()
+            );
+
             return [
-                'products' => $this->paginateProducts($sortedProducts, 15), // Paginate the final product list for the catalog page.
+                'products' => $paginatedProducts, // Paginate the final product list for the catalog page.
                 'catalogOptions' => $catalogOptions, // Return the sidebar filter metadata beside the paginated products.
             ]; // Return the complete catalog payload expected by the controller.
         } catch (Throwable $exception) {
@@ -93,6 +103,46 @@ class ProductService
         $product->visible_variant_name = $price['variant_name'] ?? null;
         // Step 3: keep the resolved minimum order quantity ready for storefront quantity messaging.
         $product->visible_min_order_quantity = $price['min_order_quantity'] ?? 1;
+        // Step 4: keep the resolved maximum order quantity ready for compact storefront quantity guidance.
+        $product->visible_max_order_quantity = $price['max_order_quantity'] ?? null;
+        // Step 5: keep the lot size ready so storefront quantity pickers can stay aligned with selling rules.
+        $product->visible_lot_size = $price['lot_size'] ?? 1;
+        return $product;
+    }
+
+    // This attaches the compact bulk and quantity details needed by one catalog product card.
+    protected function attachCatalogCardCommercialData(object $product, ?User $user): object
+    {
+        // Step 1: default the compact bulk summary to null so the card stays clean when no real tier applies.
+        $product->catalog_bulk_summary = null;
+
+        // Step 2: stop early when the catalog card does not have a visible sellable variant.
+        if (! filled($product->visible_variant_id ?? null)) {
+            return $product;
+        }
+
+        // Step 3: read the shopper-visible bulk ladder from the shared pricing service.
+        $bulkPriceTiers = $this->priceService->listBulkPriceTiers((int) $product->visible_variant_id, $user);
+
+        // Step 4: keep the card clean when only the standard price row exists and there is no real bulk pricing benefit to show.
+        if ($bulkPriceTiers->count() <= 1) {
+            return $product;
+        }
+
+        // Step 5: show only the first real qualifying bulk row because catalog cards need one short commercial hint, not the full ladder.
+        $firstBulkTier = $bulkPriceTiers->slice(1)->first();
+
+        if (! $firstBulkTier) {
+            return $product;
+        }
+
+        $product->catalog_bulk_summary = [
+            'label' => $firstBulkTier['label'] ?? null,
+            'discount' => $firstBulkTier['discount'] ?? null,
+            'price' => $firstBulkTier['price'] ?? null,
+            'min' => $firstBulkTier['min'] ?? null,
+        ];
+
         return $product;
     }
 
@@ -661,6 +711,8 @@ class ProductService
                     $product->visible_variant_sku = $price['variant_sku'] ?? null;
                     $product->visible_variant_name = $price['variant_name'] ?? null;
                     $product->visible_min_order_quantity = $price['min_order_quantity'] ?? 1;
+                    $product->visible_max_order_quantity = $price['max_order_quantity'] ?? null;
+                    $product->visible_lot_size = $price['lot_size'] ?? 1;
                     return $product;
                 })
                 ->filter()

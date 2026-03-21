@@ -3,6 +3,7 @@
 namespace App\Services\Notification;
 
 use App\Models\Authorization\User;
+use App\Models\Order\Order;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -11,6 +12,31 @@ use Throwable;
 
 class EmailNotificationService
 {
+    // This sends the signup email OTP so the customer can verify email before account creation.
+    public function sendSignupEmailOtp(string $email, string $otpCode, int $expiryMinutes): void
+    {
+        try {
+            // Step 1: prepare the OTP email payload in one business-friendly structure.
+            $emailPayload = $this->buildSignupEmailOtpPayload($email, $otpCode, $expiryMinutes);
+
+            // Step 2: send the prepared OTP email through the configured provider.
+            $this->sendEmail($emailPayload);
+
+            Log::info('Signup OTP email sent successfully.', [
+                'email' => $email,
+                'provider' => $this->configuredProvider(),
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to send signup OTP email.', [
+                'email' => $email,
+                'provider' => $this->configuredProvider(),
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
     // This sends the forgot-password email through the configured provider using one shared business flow.
     public function sendForgotPasswordResetLink(User $user, string $resetUrl): void
     {
@@ -29,6 +55,39 @@ class EmailNotificationService
         } catch (Throwable $exception) {
             Log::error('Failed to send forgot password email.', [
                 'user_id' => $user->id,
+                'email' => $user->email,
+                'provider' => $this->configuredProvider(),
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This sends the order-submitted confirmation email after the order has been created successfully.
+    public function sendOrderSubmittedConfirmation(User $user, Order $order): void
+    {
+        try {
+            // Step 1: load the order summary details needed by the confirmation email in one predictable structure.
+            $preparedOrder = $this->prepareOrderForSubmittedEmail($order);
+
+            // Step 2: prepare the business email payload using the submitted order details.
+            $emailPayload = $this->buildOrderSubmittedEmailPayload($user, $preparedOrder);
+
+            // Step 3: send the prepared email through the shared provider flow.
+            $this->sendEmail($emailPayload);
+
+            Log::info('Order submitted email sent successfully.', [
+                'user_id' => $user->id,
+                'order_id' => $preparedOrder->id,
+                'items_count' => $preparedOrder->items->count(),
+                'email' => $user->email,
+                'provider' => $this->configuredProvider(),
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to send order submitted email.', [
+                'user_id' => $user->id,
+                'order_id' => $order->id,
                 'email' => $user->email,
                 'provider' => $this->configuredProvider(),
                 'error' => $exception->getMessage(),
@@ -81,7 +140,7 @@ class EmailNotificationService
         $expiryMinutes = (int) config('auth.passwords.'.config('fortify.passwords').'.expire', 60);
 
         // Step 1: render the branded email body through a normal Blade view so the business copy stays easy to edit later.
-        $htmlContent = view('emails.auth.forgot-password-reset', [
+        $htmlContent = view('email-template.auth.forgot-password-reset', [
             'user' => $user,
             'resetUrl' => $resetUrl,
             'expiryMinutes' => $expiryMinutes,
@@ -95,6 +154,60 @@ class EmailNotificationService
             'html_content' => $htmlContent,
             'text_content' => trim(strip_tags($htmlContent)),
         ];
+    }
+
+    // This builds the signup OTP email content used by any provider.
+    protected function buildSignupEmailOtpPayload(string $email, string $otpCode, int $expiryMinutes): array
+    {
+        // Step 1: render the branded OTP email body so business copy stays easy to maintain.
+        $htmlContent = view('email-template.auth.signup-email-otp', [
+            'otpCode' => $otpCode,
+            'expiryMinutes' => $expiryMinutes,
+        ])->render();
+
+        // Step 2: prepare one provider-neutral payload used by the shared send flow.
+        return [
+            'to_email' => $email,
+            'to_name' => 'Biogenix Customer',
+            'subject' => 'Verify your email for Biogenix signup',
+            'html_content' => $htmlContent,
+            'text_content' => trim(strip_tags($htmlContent)),
+        ];
+    }
+
+    // This builds the order-submitted email content used by any provider.
+    protected function buildOrderSubmittedEmailPayload(User $user, Order $order): array
+    {
+        // Step 1: render the order confirmation body through a normal Blade view so operations can update the message later without touching provider code.
+        $htmlContent = view('email-template.order.order-submitted', [
+            'user' => $user,
+            'order' => $order,
+        ])->render();
+
+        // Step 2: prepare one provider-neutral payload used by the shared send flow.
+        return [
+            'to_email' => $user->email,
+            'to_name' => $user->name,
+            'subject' => 'Your Biogenix order #'.$order->id.' has been submitted',
+            'html_content' => $htmlContent,
+            'text_content' => trim(strip_tags($htmlContent)),
+        ];
+    }
+
+    // This ensures the order confirmation email always receives the latest item rows and totals in one consistent structure.
+    protected function prepareOrderForSubmittedEmail(Order $order): Order
+    {
+        $preparedOrder = $order->loadMissing([
+            'items' => fn ($builder) => $builder->orderBy('sort_order')->orderBy('id'),
+        ]);
+
+        Log::info('Prepared order details for submitted email.', [
+            'order_id' => $preparedOrder->id,
+            'items_count' => $preparedOrder->items->count(),
+            'total_amount' => (float) $preparedOrder->total_amount,
+        ]);
+
+        return $preparedOrder;
     }
 
     // This sends the email through Brevo's SMTP email API.
