@@ -142,7 +142,7 @@
                 <span>Back</span>
             </a>
 
-            <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
+            <!-- <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
                 <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-slate-700">Home</a>
                 <span>/</span>
                 <a href="{{ route('products.index') }}" class="text-inherit no-underline hover:text-slate-700">Catalog</a>
@@ -152,7 +152,7 @@
                 <span>{{ $applicationLabel }}</span>
                 <span>/</span>
                 <span class="text-slate-700">{{ $productTitle }}</span>
-            </div>
+            </div> -->
 
             <section class="mt-4 grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:items-start">
                 <div class="space-y-3 self-start">
@@ -189,13 +189,7 @@
                             </div>
                             {{-- ══ Share + Wishlist Buttons ══ --}}
                             <div class="flex items-center gap-2">
-                                {{-- Wishlist --}}
-                                <button type="button" id="wishlistBtn" class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600" aria-label="Save to wishlist">
-                                    <svg id="wishlistIcon" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 0 0 0 6.364L12 20.364l7.682-7.682a4.5 4.5 0 0 0-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 0 0-6.364 0Z"/>
-                                    </svg>
-                                    <span id="wishlistLabel">Save</span>
-                                </button>
+                                  
                                 {{-- Share --}}
                                 <div class="relative" id="shareParent">
                                     <button type="button" id="shareToggleBtn" class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700" aria-label="Share product">
@@ -259,35 +253,8 @@
                                     @endif
                                 </p>
                             </div>
-
-                            <div class="rounded-2xl border border-primary-100 bg-primary-50 px-4 py-3">
-                                <p class="text-xs font-medium text-primary-700">Secure checkout</p>
-                                <p class="mt-1 text-sm font-semibold text-slate-900">SSL protected ordering</p>
-                            </div>
                         </div>
-
-                        <div class="{{ $featurePanelClass }}">
-                            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                                <div class="flex items-start gap-3">
-                                    <span class="{{ $iconTilePrimaryClass }} mt-0.5">
-                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="6" y="10" width="12" height="10" rx="2"></rect>
-                                            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-                                        </svg>
-                                    </span>
-                                    <div class="space-y-1">
-                                        <p class="text-base font-medium text-slate-900">{{ auth()->check() ? 'Account-aware pricing controls are active' : 'Unlock wholesale pricing and bulk contract rates' }}</p>
-                                        <p class="text-sm leading-6 text-slate-500">{{ auth()->check() ? 'This product follows your current account visibility and quotation rules.' : 'Login reveals B2B price ladders, contract terms, and customer-specific discounts.' }}</p>
-                                    </div>
-                                </div>
-                                
-                                @guest
-                                    <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">
-                                        Login to See B2B Price
-                                    </a>
-                                @endguest
-                            </div>
-                        </div>
+                        
 
                         <div class="mt-4 space-y-3">
                             <div class="max-w-48 space-y-3">
@@ -299,16 +266,7 @@
                                 </div>
                             </div>
 
-                                <div class="{{ $estimateClass }}">
-                                <div class="flex items-center justify-between gap-3 text-sm font-medium text-slate-600">
-                                    <span>Estimated total</span>
-                                    <span id="detailEstimatedTotal" class="font-semibold text-slate-900">{!! $formatInr($currentPrice) !!}</span>
-                                </div>
-                                <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm font-medium text-slate-500">
-                                    <span id="detailTierLabel">Tier: {{ $selectedTierRow['label'] }}</span>
-                                    <span id="detailTierDiscount">{{ $selectedTierRow['discount'] }}</span>
-                                </div>
-                            </div>
+                                
 
                             <div class="{{ $actionsClass }}">
                                 {{-- Step 1: keep the core storefront purchase actions together inside the pricing card. --}}
@@ -331,20 +289,10 @@
                                         <span>Add to Cart</span>
                                     </button>
                                 @endguest
-                                <a href="{{ $quoteUrl }}" class="{{ $secondaryButtonClass }}">
-                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M3 5h18"></path>
-                                        <path d="M7 3v4"></path>
-                                        <path d="M17 3v4"></path>
-                                        <rect x="4" y="7" width="16" height="13" rx="2"></rect>
-                                        <path d="M8 11h8"></path>
-                                    </svg>
-                                    <span>Add to Quote</span>
-                                </a>
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
                                 @guest
-                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ff5f00] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e25500] sm:col-span-2">
+                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ff5f00] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e25500]">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
@@ -352,7 +300,7 @@
                                         <span>Buy Now</span>
                                     </a>
                                 @else
-                                    <form method="POST" action="{{ route('checkout.buy-now') }}" class="sm:col-span-2">
+                                    <form method="POST" action="{{ route('checkout.buy-now') }}">
                                         @csrf
 
                                         {{-- Step 3: submit the selected product and current quantity so checkout includes this choice immediately. --}}
@@ -373,14 +321,10 @@
                             </div>
                         </div>
 
-                            <div class="mt-4 flex flex-wrap gap-2">
-                                @foreach ($trustSignals as $signal)
-                                    <span class="{{ $inlineChipClass }}"><span class="h-1.5 w-1.5 rounded-full bg-primary-600"></span>{{ $signal }}</span>
-                                @endforeach
-                            </div>
+                               
 
                         {{-- ══ Pincode / Delivery Check ══ --}}
-                        <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <!-- <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <p class="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 <svg class="h-3.5 w-3.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
                                 Check Delivery Availability
@@ -399,13 +343,9 @@
                                 </button>
                             </div>
                             <p id="pincodeResult" class="mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500"></p>
-                        </div>
+                        </div> -->
 
-                        @if ($primaryTechnicalResource)
-                            <a href="{{ $primaryTechnicalResource['href'] }}" data-download-label="{{ e((string) $primaryTechnicalResource['title']) }}" class="{{ $secondaryButtonClass }} js-download-resource mt-4 w-full">
-                                Download {{ $primaryTechnicalResource['title'] }}
-                            </a>
-                        @endif
+                       
                     </div>
 
                 </div>
@@ -419,7 +359,7 @@
                     @foreach ([
                         ['id' => 'sectionBulkPricing',  'label' => 'Pricing'],
                         ['id' => 'sectionOverview',     'label' => 'Overview'],
-                        ['id' => 'sectionResources',    'label' => 'Resources'],
+                        ['id' => 'sectionResources',    'label' => 'Browsers'],
                         ['id' => 'sectionSpecs',        'label' => 'Specs'],
                         ['id' => 'sectionRelated',      'label' => 'Related'],
                     ] as $tab)
@@ -461,35 +401,20 @@
                 </div>
             </section>
 
-            <section id="sectionOverview" class="mt-5 scroll-mt-16 grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+            <section id="sectionOverview" class="mt-5 scroll-mt-16 grid gap-5 xl:items-start xl:grid-cols-[minmax(0,1fr)_340px]">
                 <div class="{{ $sectionCardClass }}">
                     <h2 class="{{ $sectionHeadingClass }}">Product Overview</h2>
                     <div class="mt-5 space-y-5 text-sm leading-7 text-slate-600 md:text-base">
                         {{-- Step 2: render the saved product overview exactly from database content instead of page-level hardcoded copy. --}}
                         <p>{!! nl2br(e($productOverview)) !!}</p>
 
-                        <div class="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-5">
-                            <div class="flex flex-wrap items-center justify-between gap-3">
-                                <p class="text-base font-medium text-slate-900">Customer reviews snapshot</p>
-                                <span class="text-sm font-semibold text-slate-600">{{ $ratingValue }} / 5 • {{ $reviewCount }} reviews</span>
-                            </div>
-                            <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
-                                    <p class="text-sm font-medium leading-6 text-slate-900">Fast dispatch and excellent documentation pack for procurement approvals.</p>
-                                    <p class="mt-2 text-sm font-medium text-slate-500">Institutional buyer • Verified order</p>
-                                </div>
-                                <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
-                                    <p class="text-sm font-medium leading-6 text-slate-900">Stable performance in routine workflows with clear setup guidance.</p>
-                                    <p class="mt-2 text-sm font-medium text-slate-500">Lab manager • Repeat purchase</p>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
 
                 <div id="sectionResources" class="{{ $sectionCardClass }} scroll-mt-16">
                     <div class="flex items-center justify-between gap-3">
-                        <h3 class="{{ $sectionHeadingClass }}">Technical Resources</h3>
+                        <h3 class="{{ $sectionHeadingClass }}">Technical Browsers</h3>
                         <x-ui.status-badge type="product" value="resource_count" :label="count($technicalResources) . ' files'" />
                     </div>
                     <div class="mt-5 space-y-3">
@@ -540,14 +465,7 @@
                     </div>
                 @endif
 
-                <div class="rounded-3xl border border-primary-100 bg-primary-50 p-5 shadow-sm md:p-6">
-                    <h3 class="{{ $sectionHeadingClass }}">Need a Custom Setup?</h3>
-                    <p class="mt-3 text-sm leading-7 text-slate-600 md:text-base">Our specialists can help configure this product for your workflow, budget, and institutional procurement needs.</p>
-                    <p class="mt-5 text-sm font-medium text-slate-500">Suggested with installation guidance, documentation packs, and compliance support.</p>
-                    <a href="{{ route('contact') }}" class="{{ $primaryButtonClass }} mt-6 w-full">
-                        Consult an Expert
-                    </a>
-                </div>
+
             </section>
 
             <section id="sectionRelated" class="mt-6 scroll-mt-16 pb-2">
@@ -578,12 +496,7 @@
                                         <img src="{{ $relatedImage }}" alt="{{ $relatedProduct->name }}" class="h-[200px] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                     </div>
                                     <div class="space-y-3 px-4 pb-5 pt-4">
-                                        <div class="flex items-center gap-1 text-amber-400">
-                                            @for ($star = 0; $star < 5; $star++)
-                                                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z"></path></svg>
-                                            @endfor
-                                            <span class="ml-1 text-xs font-medium text-slate-500">{{ $relatedReviews }} reviews</span>
-                                        </div>
+
                                         <h3 class="text-base font-semibold leading-6 text-slate-950">{{ Str::limit((string) ($relatedProduct->name ?? 'Related Product'), 52) }}</h3>
                                         <p class="text-sm leading-6 text-slate-500">{{ $relatedProduct->brand ?? 'Biogenix' }}</p>
                                         <div class="flex items-center justify-between gap-3">

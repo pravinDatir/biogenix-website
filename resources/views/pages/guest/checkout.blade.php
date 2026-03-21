@@ -274,9 +274,7 @@
                                             <p class="text-lg font-semibold text-primary-700">Lucknow Same-Day Delivery</p>
                                             <x-ui.status-badge type="cart" value="fastest" label="Fastest" />
                                         </div>
-                                        <p class="mt-2 text-sm leading-7 text-slate-600">
-                                            Order within the next <span class="font-semibold text-slate-900">2h 14m</span> to receive it before 8 PM today.
-                                        </p>
+
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -311,7 +309,7 @@
                     {{-- ════════════════════════════════════════════════════════ --}}
                     {{-- STEP 3: PAYMENT METHOD --}}
                     {{-- ════════════════════════════════════════════════════════ --}}
-                    <section class="{{ $sectionCardClass }}">
+                    <!-- <section class="{{ $sectionCardClass }}">
                         <div class="flex items-center gap-3">
                             <span class="{{ $stepClass }}">3</span>
                             <div>
@@ -379,7 +377,7 @@
                                 disabled
                             />
                         </div>
-                    </section>
+                    </section> -->
                 </div>
 
                 {{-- ════════════════════════════════════════════════════════ --}}

@@ -13,7 +13,7 @@
     $buttonSecondaryClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70';
     $rowClass = 'space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-4';
     $previewClass = 'rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-600';
-    $pageBreadcrumbLabel = $isPiRequestFlow ? 'Generate PI Quotation' : 'Order / Generate Quote';
+    $pageBreadcrumbLabel = $isPiRequestFlow ? 'Generate PI Quotation' : 'Generate Quote';
     $pageBadgeLabel = $isPiRequestFlow ? 'Internal Review PI Flow' : 'MRP-Only Guest Flow';
     $pageTitle = $isPiRequestFlow ? 'Generate PI Quotation' : 'Generate Quotation / PI';
     $pageDescription = $isPiRequestFlow
@@ -51,13 +51,7 @@
 @endphp
 
 <div class="{{ $pageShellClass }}">
-    <nav class="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-        <a href="{{ route('home') }}" class="hover:underline">Home</a>
-        <span>/</span>
-        <a href="{{ route('products.index') }}" class="hover:underline">Products</a>
-        <span>/</span>
-        <span class="font-semibold text-slate-700">{{ $pageBreadcrumbLabel }}</span>
-    </nav>
+  
 
     <section class="space-y-4">
         <div class="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-primary-950 p-5 text-white shadow-xl md:p-8">
@@ -82,8 +76,8 @@
 
     <section class="space-y-4">
         <x-ui.section-heading title="Product Selection" :subtitle="$sectionSubtitle" />
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:items-start">
-            <div class="lg:col-span-8">
+        <div class="mx-auto max-w-4xl">
+            <div>
                 <x-ui.surface-card class="{{ $formCardClass }}">
                     @if ($errors->any())
                         <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-800">
@@ -151,16 +145,7 @@
                         </div>
 
                         <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-                            <div class="space-y-2">
-                                <label for="purpose" class="text-sm font-semibold text-slate-700">{{ $purposeLabel }}</label>
-                                <select id="purpose" name="purpose" class="{{ $inputClass }} @error('purpose') border-red-500 ring-1 ring-red-100 @enderror" required>
-                                    <option value="self" @selected(old('purpose') === 'self')>Self</option>
-                                    <option value="other" @selected(old('purpose') === 'other')>Custom Recipient</option>
-                                </select>
-                                @error('purpose')
-                                    <p class="text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
+                            <input type="hidden" id="purpose" name="purpose" value="other">
 
                             <div class="space-y-2">
                                 <label for="customer_name" class="text-sm font-semibold text-slate-700">Recipient Name</label>
@@ -219,8 +204,6 @@
                             @if ($showDownloadActions)
                                 <button type="submit" id="downloadQuoteSubmitBtn" name="download_pdf" value="1" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Download PDF</button>
                             @endif
-                            <button type="button" id="saveQuoteDraftBtn" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Save Draft</button>
-                            <button type="button" id="clearQuoteDraftBtn" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Clear Draft</button>
                             <p class="text-xs text-slate-500">{{ $actionHelpText }}</p>
                             <p id="quoteDraftStatus" class="w-full text-xs text-slate-500"></p>
                         </div>
@@ -228,41 +211,6 @@
                 </x-ui.surface-card>
             </div>
 
-            <div class="lg:col-span-4 lg:sticky lg:top-8 lg:self-start">
-                <x-ui.surface-card class="{{ $sidebarCardClass }}">
-                    <h3 class="text-lg font-semibold text-slate-900">{{ $summaryTitle }}</h3>
-                    <p class="mt-1 text-sm text-slate-600">{{ $summaryDescription }}</p>
-                    <div id="quote-summary-body" class="mt-3 text-sm text-slate-600">
-                        <div class="py-4 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50">
-                            <svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                            </svg>
-                            <p class="text-xs text-slate-500">Select products and quantities<br>to preview estimated MRP totals.</p>
-                        </div>
-                    </div>
-                    @guest
-                        <div class="mt-4 border-t border-slate-200 pt-4">
-                            @if ($showDownloadActions)
-                                <div class="rounded-lg border border-primary-100 bg-primary-50 p-4">
-                                    <p class="text-sm text-gray-700">Login to access personalized pricing and ordering features.</p>
-                                    <a href="{{ route('login') }}" class="text-primary-700 font-medium hover:underline">Login Now</a>
-                                </div>
-                                <button type="button" id="downloadFromPreviewBtn" class="{{ $buttonSecondaryClass }} mt-3 w-full">Download PDF</button>
-                            @else
-                                <div class="rounded-lg border border-amber-100 bg-amber-50 p-4">
-                                    <p class="text-sm text-amber-900">Guest users can submit a PI request. The final PI will be issued after internal review.</p>
-                                </div>
-                            @endif
-                        </div>
-                    @endguest
-                    @auth
-                        <div class="mt-4 border-t border-slate-200 pt-4">
-                            <x-ui.action-link :href="route('proforma.index')" variant="secondary">{{ $authSidebarLinkLabel }}</x-ui.action-link>
-                        </div>
-                    @endauth
-                </x-ui.surface-card>
-            </div>
-        </div>
     </section>
 </div>
 

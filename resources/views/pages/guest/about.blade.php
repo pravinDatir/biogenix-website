@@ -8,17 +8,11 @@
 
 <div class="bg-slate-50 min-h-screen">
     <!-- Premium Hero Section -->
-    <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
+    <section class="relative overflow-hidden bg-slate-900 py-10 text-white lg:py-16">
         <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/70 to-primary-900/30"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
-            <div class="mb-6 flex flex-wrap items-center gap-2 text-sm font-medium text-slate-300">
-                <a href="{{ route('home') }}">Home</a>
-                <span>/</span>
-                <a href="{{ route('products.index') }}">Catalog</a>
-                <span>/</span>
-                <span class="text-white">About</span>
-            </div>
+           
             <div class="max-w-4xl">
                 <x-badge variant="inverse" class="mb-6">Company Profile</x-badge>
                 <h1 class="{{ $titleClass }}">
@@ -31,29 +25,7 @@
         </div>
     </section>
 
-    <!-- Stats Section overlapping hero -->
-    <section class="-mt-12 relative z-20 pb-16">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ([
-                    ['label' => 'Founded', 'value' => '2017', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-                    ['label' => 'Product Categories', 'value' => '4+', 'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'],
-                    ['label' => 'Operational Hub', 'value' => 'Lucknow', 'icon' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z'],
-                    ['label' => 'Service Coverage', 'value' => 'PAN India', 'icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
-                ] as $stat)
-                    <article class="{{ $cardClass }} group hover:border-primary-100">
-                        <div class="{{ $primaryIconClass }}">
-                            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $stat['icon'] }}" />
-                            </svg>
-                        </div>
-                        <p class="text-3xl font-bold text-slate-900">{{ $stat['value'] }}</p>
-                        <p class="mt-2 text-sm font-semibold text-slate-500 uppercase tracking-wide">{{ $stat['label'] }}</p>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </section>
+
 
     <!-- Vision/Mission/Values -->
     <section class="py-16 md:py-24 relative overflow-hidden">
@@ -140,40 +112,11 @@
         <div class="absolute top-0 right-0 -mr-48 -mt-48 h-96 w-96 rounded-full bg-primary-600 opacity-20 blur-3xl"></div>
         <div class="absolute bottom-0 left-0 -ml-48 -mb-48 h-96 w-96 rounded-full bg-primary-600 opacity-20 blur-3xl"></div>
         
-        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8 xl:px-10 relative z-10">
-            <article class="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <h2 class="text-3xl font-bold tracking-tight">Leadership & Teams</h2>
-                <p class="mt-4 text-lg text-slate-300">Our management, operations, and support teams collaborate to deliver end-to-end diagnostics service reliability.</p>
-                
-                <div class="mt-8 space-y-4">
-                    <div class="flex items-start rounded-2xl bg-white/5 p-5 border border-white/10">
-                        <div class="mr-4 mt-1 rounded-full bg-primary-500 p-2"><svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg></div>
-                        <div>
-                            <p class="font-bold text-white">Management</p>
-                            <p class="mt-1 text-sm text-slate-300">Strategy, governance, and growth planning</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start rounded-2xl bg-white/5 p-5 border border-white/10">
-                        <div class="mr-4 mt-1 rounded-full bg-emerald-500 p-2"><svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>
-                        <div>
-                            <p class="font-bold text-white">Operations</p>
-                            <p class="mt-1 text-sm text-slate-300">Inventory, dispatch, logistics orchestration</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start rounded-2xl bg-white/5 p-5 border border-white/10">
-                        <div class="mr-4 mt-1 rounded-full bg-primary-600 p-2"><svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" /></svg></div>
-                        <div>
-                            <p class="font-bold text-white">Support</p>
-                            <p class="mt-1 text-sm text-slate-300">Product guidance, issue resolution, escalation</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm flex flex-col justify-center">
-                <h2 class="text-3xl font-bold tracking-tight">Quality & Compliance</h2>
-                <p class="mt-4 text-lg text-slate-300">Biogenix follows robust quality and compliance practices to ensure safe and consistent product delivery across all lines.</p>
-                <div class="mt-10 grid grid-cols-2 gap-4">
+        <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10">
+            <article class="rounded-3xl border border-white/10 bg-white/5 p-8 md:p-12 backdrop-blur-sm flex flex-col items-center text-center">
+                <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Quality & Compliance</h2>
+                <p class="mt-4 max-w-2xl text-lg text-slate-300">Biogenix follows robust quality and compliance practices to ensure safe and consistent product delivery across all lines.</p>
+                <div class="mt-10 grid w-full grid-cols-2 gap-4 md:grid-cols-4">
                     @foreach (['ISO 13485', 'GMP Aligned', 'QA Audited', 'CDSCO Ready'] as $badge)
                         <div class="flex items-center justify-center rounded-2xl border border-primary-500/30 bg-primary-900/40 p-6 text-center shadow-inner transition hover:bg-primary-800/50">
                             <span class="text-base font-bold text-primary-50 tracking-wide">{{ $badge }}</span>
@@ -233,81 +176,10 @@
     </section>
 
     <!-- Service Blueprint -->
-    <section class="py-16 md:py-24 bg-white">
-        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 xl:px-10">
-            <div class="space-y-4">
-                <x-ui.section-heading title="Service Blueprint" subtitle="One consistent playbook from first inquiry to repeat supply." />
-                <p class="text-base leading-8 text-slate-600">Each account is run on a predictable loop: discovery, solutioning, validated delivery, and continuous optimisation.</p>
-                <div class="space-y-3">
-                    @foreach ([
-                        ['title' => 'Intake & Fitment', 'copy' => 'Clinical workflow mapping, product compatibility checks, and regulatory considerations.'],
-                        ['title' => 'Pricing & SLA Design', 'copy' => 'Bulk tiers, PO handling, and response/dispatch commitments documented upfront.'],
-                        ['title' => 'Delivery & Validation', 'copy' => 'Staged dispatch with QC checkpoints and optional on-site validation.'],
-                        ['title' => 'Lifecycle Support', 'copy' => 'Proactive replenishment nudges, remote triage, and periodic account reviews.'],
-                    ] as $step)
-                        <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-700">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </span>
-                            <div>
-                                <p class="text-base font-semibold text-slate-900">{{ $step['title'] }}</p>
-                                <p class="mt-1 text-sm text-slate-600">{{ $step['copy'] }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="{{ $accentCardClass }}">
-                <div class="absolute -right-16 -bottom-16 h-60 w-60 rounded-full bg-primary-50 opacity-60 blur-3xl"></div>
-                <h3 class="text-2xl font-bold text-slate-900">Enterprise Readiness Kit</h3>
-                <p class="mt-3 text-sm leading-6 text-slate-600">A ready-to-share pack you can attach to internal approvals and audits.</p>
-                <ul class="mt-6 space-y-3 text-sm text-slate-700">
-                    <li class="flex items-start gap-2">
-                        <span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>
-                        Consolidated certificates (ISO 13485, GMP alignment, QA checklists)
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>
-                        Standard SLAs for response, dispatch, and escalation ladders
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>
-                        Delivery and cold-chain handling SOP snippets for compliance teams
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>
-                        Sample PI / quotation templates for finance and procurement review
-                    </li>
-                </ul>
-                <div class="mt-6 flex flex-wrap gap-3">
-                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5">Download PI Template</x-ui.action-link>
-                    <x-ui.action-link :href="route('contact')" variant="secondary" class="min-h-11 px-5">Request Docs Pack</x-ui.action-link>
-                </div>
-            </div>
-        </div>
-    </section>
+    
 
     <!-- Global map -->
-    <section class="py-16 bg-slate-50">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-xl lg:p-6">
-                <div class="mb-6 text-center">
-                    <h2 class="text-3xl font-semibold tracking-tight text-slate-950">National Presence</h2>
-                    <p class="mx-auto mt-2 max-w-2xl text-base leading-8 text-slate-600">A scalable service footprint with Lucknow as a strong operational center.</p>
-                </div>
-                <div class="overflow-hidden rounded-2xl bg-slate-200">
-                    <iframe
-                        class="h-[400px] w-full border-0"
-                        src="https://www.google.com/maps?q=Lucknow%2C%20Uttar%20Pradesh&output=embed"
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Biogenix Presence Map"
-                    ></iframe>
-                </div>
-            </div>
-        </div>
-    </section>
+   
 </div>
 
 @push('scripts')

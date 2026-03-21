@@ -1,11 +1,11 @@
-<footer id="siteFooter" class="relative mt-14 overflow-hidden border-t border-white/10 bg-slate-950 text-white transition-[padding] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]">
+<footer id="siteFooter" class="relative mt-10 overflow-hidden border-t border-white/10 bg-slate-950 text-white transition-[padding] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-400/60 to-transparent"></div>
     <div class="pointer-events-none absolute -left-24 top-10 h-56 w-56 rounded-full bg-primary-500/15 blur-3xl"></div>
     <div class="pointer-events-none absolute right-0 top-0 h-64 w-64 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.22),transparent_58%)]"></div>
 
-    <div class="relative mx-auto w-full max-w-none px-4 py-9 sm:px-6 lg:px-8 xl:px-10">
+    <div class="relative mx-auto w-full max-w-none px-4 py-7 sm:px-6 lg:px-8 xl:px-10">
         <div class="grid gap-4 lg:grid-cols-12">
-            <section class="rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.28)] backdrop-blur sm:p-6 lg:col-span-5">
+            <section class="rounded-[28px] border border-white/10 bg-white/5 p-4 shadow-[0_24px_80px_rgba(15,23,42,0.28)] backdrop-blur sm:p-5 lg:col-span-5">
                 <div class="flex items-center gap-4">
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-2 shadow-lg shadow-primary-950/20">
                         <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" class="h-full w-full object-contain">
@@ -20,13 +20,9 @@
                     Precision diagnostics, medical instruments, and responsive post-order support for laboratories, hospitals, and procurement teams.
                 </p>
 
-                <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">Fast quotations</span>
-                    <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">Support follow-up</span>
-                    <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">Verified workflows</span>
-                </div>
+             
 
-                <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                <div class="mt-4 grid gap-3 sm:grid-cols-2">
                     <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-3.5">
                         <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Email</p>
                         <a href="mailto:support@biogenix.com" class="mt-1.5 block text-sm font-semibold text-white no-underline transition hover:text-primary-200">
@@ -41,15 +37,15 @@
                     </div>
                 </div>
 
-                <div class="mt-3 rounded-2xl border border-white/10 bg-slate-900/70 p-3.5">
+                <div class="mt-3 rounded-2xl border border-white/10 bg-slate-900/70 p-3">
                     <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Address</p>
                     <p class="mt-1.5 text-sm leading-6 text-slate-300">123 Medical Park Drive, Lucknow, UP, IN</p>
                 </div>
             </section>
 
-            <section class="rounded-[28px] border border-white/10 bg-white/5 p-5 backdrop-blur lg:col-span-2">
+            <section class="rounded-[28px] border border-white/10 bg-white/5 p-4 backdrop-blur lg:col-span-2">
                 <h4 class="text-base font-semibold text-white">Quick Links</h4>
-                <ul class="mt-4 space-y-2.5">
+                <ul class="mt-3 space-y-2">
                     <li><a href="{{ route('home') }}" class="text-sm font-medium text-slate-300 no-underline transition hover:text-white">Home</a></li>
                     <li><a href="{{ route('products.index') }}" class="text-sm font-medium text-slate-300 no-underline transition hover:text-white">Products</a></li>
                     <li><a href="{{ route('quotation.create') }}" class="text-sm font-medium text-slate-300 no-underline transition hover:text-white">Generate Quote</a></li>
@@ -58,9 +54,9 @@
                 </ul>
             </section>
 
-            <section class="rounded-[28px] border border-white/10 bg-white/5 p-5 backdrop-blur lg:col-span-2">
+            <section class="rounded-[28px] border border-white/10 bg-white/5 p-4 backdrop-blur lg:col-span-2">
                 <h4 class="text-base font-semibold text-white">Legal</h4>
-                <ul class="mt-4 space-y-2.5">
+                <ul class="mt-3 space-y-2">
                     <li><a href="{{ route('privacy') }}" class="text-sm font-medium text-slate-300 no-underline transition hover:text-white">Privacy Policy</a></li>
                     <li><a href="{{ route('terms') }}" class="text-sm font-medium text-slate-300 no-underline transition hover:text-white">Terms of Use</a></li>
                     <li><a href="{{ route('refund-policy') }}" class="text-sm font-medium text-slate-300 no-underline transition hover:text-white">Refund & Cancellation</a></li>
@@ -68,13 +64,13 @@
                 </ul>
             </section>
 
-            <section class="rounded-[28px] border border-white/10 bg-white/5 p-5 backdrop-blur lg:col-span-3">
+            <section class="rounded-[28px] border border-white/10 bg-white/5 p-4 backdrop-blur lg:col-span-3">
                 <h4 class="text-base font-semibold text-white">Quick Connect</h4>
                 <p class="mt-2 text-sm leading-6 text-slate-300">
                     Use the fastest channel for order follow-up, account help, and support desk coordination.
                 </p>
 
-                <div class="mt-4 flex flex-wrap gap-2.5">
+                <div class="mt-3 flex flex-wrap gap-2.5">
                     <a href="mailto:support@biogenix.com" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-slate-200 transition hover:-translate-y-0.5 hover:border-primary-300/30 hover:bg-primary-500/20 hover:text-white" aria-label="Email support">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg>
                     </a>
@@ -86,7 +82,7 @@
                     </a>
                 </div>
 
-                <div class="mt-4 space-y-2.5">
+                <div class="mt-3 space-y-2">
                     <div class="rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3">
                         <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Support Desk</p>
                         <p class="mt-1 text-sm font-medium leading-6 text-slate-200">Email, phone, and WhatsApp shortcuts for faster response handling during business hours.</p>
@@ -95,55 +91,11 @@
             </section>
         </div>
 
-        <div class="mt-5 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
-            <div class="flex flex-wrap gap-2">
-                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">Precision diagnostics</span>
-                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">Secure procurement</span>
-                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">Order support</span>
-            </div>
+        <div class="mt-4 flex flex-col gap-3 border-t border-white/10 pt-3.5 sm:flex-row sm:items-center sm:justify-between">
+          
 
             <p class="text-sm text-slate-400">&copy; 2026 Biogenix Healthcare Solutions - All Rights Reserved</p>
         </div>
     </div>
 </footer>
 
-{{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- GLOBAL: Back-to-Top Button --}}
-{{-- ═══════════════════════════════════════════════════════════ --}}
-<button
-    id="backToTopBtn"
-    type="button"
-    aria-label="Back to top"
-    class="fixed bottom-6 right-6 z-[999] inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 opacity-0 shadow-lg ring-1 ring-slate-900/5 pointer-events-none transition-all duration-300 hover:-translate-y-1 hover:bg-primary-600 hover:text-white hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
->
-    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-    </svg>
-</button>
-
-<script>
-    (function () {
-        var btn = document.getElementById('backToTopBtn');
-        if (!btn) return;
-
-        var visible = false;
-
-        function syncBtn() {
-            var shouldShow = window.scrollY > 300;
-            if (shouldShow === visible) return;
-            visible = shouldShow;
-            btn.classList.toggle('opacity-0', !visible);
-            btn.classList.toggle('pointer-events-none', !visible);
-            btn.classList.toggle('translate-y-2', !visible);
-            btn.classList.toggle('opacity-100', visible);
-            btn.classList.toggle('pointer-events-auto', visible);
-            btn.classList.toggle('translate-y-0', visible);
-        }
-
-        window.addEventListener('scroll', syncBtn, { passive: true });
-
-        btn.addEventListener('click', function () {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }());
-</script>

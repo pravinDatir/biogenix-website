@@ -303,7 +303,7 @@
 
                     <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
                         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
-                            <span class="text-sm font-semibold text-slate-900">Application</span>
+                            <span class="text-sm font-semibold text-slate-900">Sub-Category</span>
                             <span class="flex items-center gap-3">
                                 @if ($selectedApplications->isNotEmpty())
                                     <a href="{{ $dropQueryKeys(['application_name', 'subcategory_name']) }}" class="text-xs font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
@@ -504,12 +504,14 @@
                                 @endphp
                                 <article data-catalog-product-card data-product-id="{{ $product->id }}" class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                                     <div class="relative px-3 pt-3">
-                                        <div class="relative overflow-hidden rounded-2xl">
-                                            @if ($imageUrl)
-                                                <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
-                                            @else
-                                                @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-[clamp(13.5rem,18vw,15rem)] rounded-2xl transition duration-300 group-hover:scale-[1.04]'])
-                                            @endif
+                                        <div class="relative overflow-hidden rounded-2xl group/image">
+                                            <a href="{{ $detailUrl }}" class="block cursor-pointer">
+                                                @if ($imageUrl)
+                                                    <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover/image:scale-[1.04]" loading="lazy" decoding="async">
+                                                @else
+                                                    @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-[clamp(13.5rem,18vw,15rem)] w-full rounded-2xl transition duration-300 group-hover/image:scale-[1.04]'])
+                                                @endif
+                                            </a>
                                             {{-- Step 3: keep a single compact quantity stepper pinned inside the image itself so it never drops below the media block. --}}
                                             <div
                                                 data-catalog-quantity-control
@@ -536,8 +538,17 @@
                                     <div class="flex flex-1 flex-col gap-2.5 px-4 pb-4 pt-3.5">
                                         <div class="space-y-1.5">
                                             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
-                                            <h3 class="overflow-hidden text-base font-semibold leading-6 text-slate-950 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">{{ Str::limit((string) $product->name, 58) }}</h3>
-                                            <p class="text-xs text-slate-400">SKU: {{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}</p>
+                                            <h3 class="overflow-hidden text-[15px] font-semibold leading-snug text-slate-950 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] transition-colors hover:text-primary-600">
+                                                <a href="{{ $detailUrl }}">{{ Str::limit((string) $product->name, 58) }}</a>
+                                            </h3>
+                                            <div>
+                                                <p class="text-[12px] text-slate-500">SKU: <span class="font-medium tracking-tight text-slate-700">{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}</span></p>
+                                                <p class="mt-0.5 text-[11.5px] font-medium text-slate-400">
+                                                    Min: <span class="text-slate-600">{{ $defaultQuantity }}</span>
+                                                    @if (($product->visible_max_order_quantity ?? null) !== null) &bull; Max: <span class="text-slate-600">{{ number_format((int) $product->visible_max_order_quantity) }}</span> @endif
+                                                    @if ($lotSize > 1) &bull; Lot: <span class="text-slate-600">{{ $lotSize }}</span> @endif
+                                                </p>
+                                            </div>
                                         </div>
 
                                         <div class="rounded-2xl bg-slate-50 px-3 py-2.5">
@@ -604,52 +615,36 @@
                                             </div>
                                         </div>
 
-                                        <div data-catalog-action-group class="mt-auto grid w-full grid-cols-1 gap-2 sm:grid-cols-2">
-                                            {{-- Step 1: keep the standard product actions available directly from each catalog card. --}}
-                                            <a href="{{ $detailUrl }}" class="flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-slate-300 bg-white px-4 py-2 text-center text-sm font-semibold leading-tight text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.06)] transition hover:-translate-y-px hover:border-primary-600 hover:text-primary-600">
-                                                <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
-                                                <span>View Details</span>
-                                            </a>
+                                        <div data-catalog-action-group class="mt-auto grid w-full items-center gap-2" style="grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);">
+                                            {{-- Buy Now --}}
                                             @guest
-                                                <a href="{{ route('login') }}" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
-                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                        <circle cx="9" cy="20" r="1"></circle>
-                                                        <circle cx="18" cy="20" r="1"></circle>
-                                                        <path d="M3 4h2l2.4 10.5a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L21 7H7"></path>
-                                                    </svg>
-                                                    <span>Add to Cart</span>
+                                                <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
+                                                    <span>Buy Now</span>
                                                 </a>
                                             @else
-                                                <button type="button" class="js-add-to-cart flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(35,131,235,0.26)]" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
-                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                        <circle cx="9" cy="20" r="1"></circle>
-                                                        <circle cx="18" cy="20" r="1"></circle>
-                                                        <path d="M3 4h2l2.4 10.5a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L21 7H7"></path>
-                                                    </svg>
-                                                    <span>Add to Cart</span>
+                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
+                                                    <span>Buy Now</span>
                                                 </button>
                                             @endguest
 
-                                            {{-- Step 2: let buyers move straight to checkout with the selected item plus the existing cart. --}}
+                                            {{-- Add to Cart --}}
                                             @guest
-                                                <a href="{{ route('login') }}" data-catalog-buy-now class="col-span-full flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)] sm:col-span-2">
-                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M5 12h14"></path>
-                                                        <path d="m12 5 7 7-7 7"></path>
+                                                <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                        <circle cx="8" cy="20" r="1.5"></circle>
+                                                        <circle cx="18" cy="20" r="1.5"></circle>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
                                                     </svg>
-                                                    <span>Buy Now</span>
                                                 </a>
                                             @else
-                                                {{-- Step 3: submit through a dedicated hidden form so the catalog filter form stays valid HTML. --}}
-                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="col-span-full flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-4 py-2 text-center text-sm font-semibold leading-tight text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)] sm:col-span-2">
-                                                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M5 12h14"></path>
-                                                        <path d="m12 5 7 7-7 7"></path>
+                                                <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                        <circle cx="8" cy="20" r="1.5"></circle>
+                                                        <circle cx="18" cy="20" r="1.5"></circle>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
                                                     </svg>
-                                                    <span>Buy Now</span>
                                                 </button>
                                             @endguest
                                         </div>

@@ -86,14 +86,17 @@
 
 {{-- Address Information --}}
 <div class="{{ $panelClass }}">
-    <div class="flex items-center gap-3 border-b border-slate-100 pb-5">
-        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+    <div class="flex items-center justify-between border-b border-slate-100 pb-5">
+        <div class="flex items-center gap-3">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-900">Address Information</h3>
+                <p class="text-sm text-slate-500">Your primary shipping and delivery address.</p>
+            </div>
         </div>
-        <div>
-            <h3 class="text-lg font-bold text-slate-900">Address Information</h3>
-            <p class="text-sm text-slate-500">Your primary shipping and delivery address.</p>
-        </div>
+        <a href="{{ route('customer.addresses.preview') }}" class="text-[13px] font-bold text-primary-600 hover:text-primary-700 transition no-underline">Manage Addresses</a>
     </div>
 
     <div class="mt-6 grid gap-5 md:grid-cols-2">
@@ -156,14 +159,5 @@
         </button>
     </div>
 
-    <div class="mt-4 flex flex-col gap-4 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-            <p class="text-sm font-semibold text-slate-700">Two-Factor Authentication</p>
-            <p class="mt-1 text-sm text-slate-500">Add an extra layer of security to your account</p>
-        </div>
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
-            <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
-            Not Enabled
-        </span>
-    </div>
+
 </div>

@@ -17,12 +17,7 @@
             <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Support Ticket System</h1>
             <p class="text-sm text-slate-500 mt-1 max-w-lg">Centralized hub for managing, resolving, and tracking customer inquiries across Biogenix services.</p>
         </div>
-        <button id="btn-new-ticket" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-[#091b3f]/20 flex items-center gap-2 shrink-0 cursor-pointer">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            New Ticket
-        </button>
+        </div>
     </div>
 
     {{-- ─── Active Ticket Inbox ─── --}}
@@ -312,66 +307,6 @@
         </div>
     </div>
 
-    {{-- ─── New Ticket Modal ─── --}}
-    <div id="new-ticket-modal" class="fixed inset-0 z-[1000] flex items-center justify-center hidden">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="closeNewTicketModal()"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 animate-ticket-fade">
-            <div class="flex items-center justify-between mb-5">
-                <h3 class="text-[15px] font-extrabold text-[#0f172a]">Create New Ticket</h3>
-                <button onclick="closeNewTicketModal()" class="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[12px] font-bold text-slate-600 mb-1">Customer</label>
-                    <input type="text" placeholder="Search customer name or email..." class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2.5 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition placeholder:text-slate-400">
-                </div>
-                <div>
-                    <label class="block text-[12px] font-bold text-slate-600 mb-1">Subject</label>
-                    <input type="text" placeholder="Brief description of the issue..." class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2.5 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition placeholder:text-slate-400">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[12px] font-bold text-slate-600 mb-1">Category</label>
-                        <select class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2.5 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition">
-                            <option>Technical Support</option>
-                            <option>Billing &amp; Subscription</option>
-                            <option>Lab Results</option>
-                            <option>Order &amp; Shipping</option>
-                            <option>General Enquiry</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[12px] font-bold text-slate-600 mb-1">Priority</label>
-                        <select class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2.5 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition">
-                            <option>Low</option>
-                            <option>Medium</option>
-                            <option selected>High</option>
-                            <option>Critical</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[12px] font-bold text-slate-600 mb-1">Description</label>
-                    <textarea rows="4" placeholder="Describe the issue in detail..." class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2.5 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition resize-none placeholder:text-slate-400"></textarea>
-                </div>
-                <div>
-                    <label class="block text-[12px] font-bold text-slate-600 mb-1">Assign To</label>
-                    <select class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] font-semibold text-slate-700 rounded-lg px-3 py-2.5 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition">
-                        <option>Sarah Miller</option>
-                        <option>James Cooper</option>
-                        <option>Nina Patel</option>
-                        <option>Unassigned</option>
-                    </select>
-                </div>
-            </div>
-            <div class="mt-5 flex gap-3 justify-end">
-                <button onclick="closeNewTicketModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
-                <button class="px-5 py-2.5 rounded-xl text-sm font-bold bg-[#091b3f] hover:bg-[#112347] text-white shadow-md shadow-[#091b3f]/20 transition cursor-pointer">Create Ticket</button>
-            </div>
-        </div>
-    </div>
 
 <style>
     @keyframes ticket-fade { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -382,15 +317,6 @@
 
 <script>
 (function() {
-    // ─── New Ticket Modal ───
-    document.getElementById('btn-new-ticket')?.addEventListener('click', () => {
-        document.getElementById('new-ticket-modal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    });
-    window.closeNewTicketModal = function() {
-        document.getElementById('new-ticket-modal').classList.add('hidden');
-        document.body.style.overflow = '';
-    };
 
     // ─── Ticket inbox search ───
     document.getElementById('ticket-search')?.addEventListener('input', function() {

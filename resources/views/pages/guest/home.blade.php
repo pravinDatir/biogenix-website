@@ -319,9 +319,24 @@
         backdrop-filter: blur(24px);
     }
 
+    .home-category-carousel-wrapper {
+        position: relative;
+        margin-top: 1.5rem;
+        padding-bottom: 0.5rem;
+    }
+
     .home-category-grid {
-        display: grid;
+        display: flex;
         gap: 0.9rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
+    }
+
+    .home-category-grid::-webkit-scrollbar {
+        display: none;
     }
 
     .home-category-tile {
@@ -335,6 +350,8 @@
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
         box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
         isolation: isolate;
+        flex: 0 0 100%;
+        scroll-snap-align: start;
     }
 
     .home-category-tile__media {
@@ -445,26 +462,26 @@
     }
 
     @media (min-width: 640px) {
-        .home-category-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .home-category-tile {
+            flex: 0 0 calc(50% - 0.45rem);
         }
     }
 
     @media (min-width: 768px) {
-        .home-category-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+        .home-category-tile {
+            flex: 0 0 calc(33.333% - 0.6rem);
         }
     }
 
     @media (min-width: 1024px) {
-        .home-category-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+        .home-category-tile {
+            flex: 0 0 calc(25% - 0.675rem);
         }
     }
 
     @media (min-width: 1280px) {
-        .home-category-grid {
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+        .home-category-tile {
+            flex: 0 0 calc(25% - 0.675rem);
         }
     }
 
@@ -536,8 +553,8 @@
                         >
                         <div class="absolute inset-0 bg-[radial-gradient(circle_at_22%_28%,rgba(7,17,31,0.28),transparent_22%),linear-gradient(105deg,rgba(7,17,31,0.98)_10%,rgba(7,17,31,0.84)_44%,rgba(7,17,31,0.62)_62%,rgba(7,17,31,0.9)_100%)]"></div>
 
-                        <div class="relative z-10 mx-auto grid min-h-[calc(100vh-88px)] w-full max-w-none grid-cols-1 gap-8 px-4 py-10 pb-28 sm:px-6 md:py-14 lg:grid-cols-12 lg:px-8 xl:px-10">
-                            <div class="home-reveal flex flex-col justify-center lg:col-span-7">
+                        <div class="relative z-10 mx-auto grid min-h-[calc(100vh-88px)] w-full max-w-none grid-cols-1 gap-8 px-4 py-8 pb-12 sm:px-6 md:py-10 lg:grid-cols-12 lg:px-8 xl:px-10">
+                            <div class="home-reveal flex flex-col justify-start lg:col-span-7">
                                 <div class="home-hero-copy-shell">
                                     <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
                                     <h1 class="home-hero-title mt-5 max-w-4xl font-['Sora'] text-5xl font-semibold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
@@ -557,7 +574,7 @@
                                 </div>
                             </div>
 
-                            <div class="home-reveal flex items-end lg:col-span-5">
+                            <div class="home-reveal flex items-start lg:col-span-5">
                                 <div class="home-hero-focus-card">
                                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Featured Focus</p>
                                     <h2 class="home-hero-focus-title mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
@@ -618,70 +635,8 @@
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    {{-- SEARCH BAR STRIP --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="relative z-30 -mt-7 mb-6 px-4 sm:px-6 lg:px-8 xl:px-10">
-        <div class="mx-auto w-full max-w-4xl rounded-3xl bg-white p-3 shadow-xl ring-1 ring-slate-900/5 sm:p-4">
-            <form action="{{ route('products.index') }}" method="GET" class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <div class="relative flex-1">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                        <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197M15.803 15.803A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                        </svg>
-                    </div>
-                    <input
-                        type="search"
-                        name="search"
-                        id="homeProductSearch"
-                        class="block w-full rounded-2xl border-0 bg-slate-50 py-4 pl-12 pr-4 text-base text-slate-900 ring-1 ring-inset ring-slate-200 transition placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-primary-600 focus:outline-none sm:text-lg"
-                        placeholder="Search products, categories, or keywords..."
-                        aria-label="Search catalog"
-                        required
-                    >
-                </div>
-                <button type="submit" class="inline-flex min-h-[3.5rem] items-center justify-center gap-2 rounded-2xl bg-primary-600 px-8 text-base font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30">
-                    Search Catalog
-                </button>
-            </form>
-            <div class="mt-3 hidden items-center justify-center gap-2 px-2 sm:flex">
-                <p class="text-xs font-medium text-slate-500">Popular searches:</p>
-                <div class="flex gap-2">
-                    <a href="{{ route('products.index', ['search' => 'hematology']) }}" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200">Hematology</a>
-                    <a href="{{ route('products.index', ['search' => 'reagents']) }}" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200">Reagents</a>
-                    <a href="{{ route('products.index', ['search' => 'consumables']) }}" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200">Consumables</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    {{-- STATS / SOCIAL PROOF STRIP --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-stats border-b border-transparent bg-transparent py-8">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <dl class="home-stats-shell grid grid-cols-2 gap-6 rounded-[2rem] px-5 py-6 sm:grid-cols-4 sm:px-6">
-                @foreach ([
-                    ['value' => '5,000+', 'label' => 'Products Listed', 'icon' => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'],
-                    ['value' => '200+',   'label' => 'Lab & Hospital Clients', 'icon' => 'M3 21h18M9 21V9m6 12V9M3 9l9-7 9 7'],
-                    ['value' => '24h',    'label' => 'Avg. Dispatch Time', 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
-                    ['value' => '98%',    'label' => 'Order Satisfaction', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
-                ] as $stat)
-                    <div class="flex flex-col items-center gap-3 text-center sm:flex-row sm:items-center sm:text-left sm:gap-4">
-                        <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $stat['icon'] }}" />
-                            </svg>
-                        </span>
-                        <div>
-                            <dt class="text-2xl font-extrabold tracking-tight text-slate-950">{{ $stat['value'] }}</dt>
-                            <dd class="mt-0.5 text-sm font-medium text-slate-500">{{ $stat['label'] }}</dd>
-                        </div>
-                    </div>
-                @endforeach
-            </dl>
-        </div>
-    </section>
+ 
+   
 
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- CORE PRODUCT CATEGORIES (with hover overlay + count badge) --}}
@@ -691,7 +646,24 @@
             <div class="home-reveal">
                 <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
             </div>
-            <div class="home-category-grid mt-6">
+            <div class="home-category-carousel-wrapper home-reveal group">
+                {{-- Carousel Navigation (Prev) --}}
+                <button id="catPrev" type="button" aria-label="Previous category"
+                    class="absolute -left-2 sm:-left-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-400/50 bg-slate-900/5 text-slate-600 backdrop-blur-sm transition hover:scale-110 hover:bg-slate-900/10 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+
+                {{-- Carousel Navigation (Next) --}}
+                <button id="catNext" type="button" aria-label="Next category"
+                    class="absolute -right-2 sm:-right-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-400/50 bg-slate-900/5 text-slate-600 backdrop-blur-sm transition hover:scale-110 hover:bg-slate-900/10 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+
+                <div class="home-category-grid" id="categoryCarousel">
                 @forelse (($productCategories ?? collect()) as $category)
                     @php
                         $tileClass = 'home-category-tile--standard';
@@ -732,6 +704,7 @@
                         <p class="mt-2 text-sm text-slate-600">No home page categories are available right now.</p>
                     </article>
                 @endforelse
+                </div>
             </div>
         </div>
     </section>
@@ -742,7 +715,7 @@
     <section class="home-solutions py-12 md:py-16">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
-                <x-ui.section-heading title="Clinical &amp; Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
+                <x-ui.section-heading title="Clinical Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
             </div>
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
                 <article class="home-route-card home-reveal">
@@ -753,8 +726,9 @@
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For institutions and channel partners</p>
                             <h3 class="mt-3 text-2xl font-semibold text-white">Distributor, lab, and hospital buying with structured support.</h3>
                             <p class="mt-3 text-sm leading-7 text-slate-200">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
-                            <div class="mt-5">
+                            <div class="mt-5 flex flex-wrap gap-3">
                                 <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])" variant="inverse">B2B Login</x-ui.action-link>
+                                <x-ui.action-link href="{{ url('/b2b-signup') }}" class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2B Sign Up</x-ui.action-link>
                             </div>
                         </div>
                     </div>
@@ -767,8 +741,9 @@
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For direct and retail buyers</p>
                             <h3 class="mt-3 text-2xl font-semibold text-white">A cleaner buying path for faster product access.</h3>
                             <p class="mt-3 text-sm leading-7 text-slate-200">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
-                            <div class="mt-5">
+                            <div class="mt-5 flex flex-wrap gap-3">
                                 <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])" variant="inverse">B2C Login</x-ui.action-link>
+                                <x-ui.action-link href="{{ url('/signup') }}" class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2C Sign Up</x-ui.action-link>
                             </div>
                         </div>
                     </div>
@@ -777,37 +752,7 @@
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    {{-- PARTNER / BRAND TRUST BAR --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-trust border-y border-slate-100 py-8">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <p class="mb-6 text-center text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Trusted by leading healthcare institutions &amp; diagnostic brands</p>
-            <div class="flex flex-wrap items-center justify-center gap-6 md:gap-10">
-                @foreach ([
-                    ['name' => 'ISO 9001', 'sub' => 'Quality Certified'],
-                    ['name' => 'CE Mark',  'sub' => 'EU Compliance'],
-                    ['name' => 'ICMR',     'sub' => 'Registered Supplier'],
-                    ['name' => 'WHO GMP',  'sub' => 'Manufacturing Standard'],
-                    ['name' => 'FDA',      'sub' => 'Approved Distributor'],
-                ] as $badge)
-                    <div class="flex items-center gap-2.5 rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v6c0 5 3.5 8 7 9 3.5-1 7-4 7-9V6l-7-3Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m9.5 12 1.8 1.8 3.2-3.6" />
-                            </svg>
-                        </span>
-                        <div>
-                            <p class="text-sm font-bold text-slate-900">{{ $badge['name'] }}</p>
-                            <p class="text-[11px] font-medium text-slate-500">{{ $badge['sub'] }}</p>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
+    
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- SAME-DAY DELIVERY + NEWSLETTER --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
@@ -840,170 +785,11 @@
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    {{-- WHY BIOGENIX --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-why bg-transparent py-12 md:py-16">
-        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-12 lg:px-8 xl:px-10">
-            <article class="home-reveal min-h-[18rem] overflow-hidden rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-xl md:min-h-[22rem] lg:col-span-6">
-                <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix diagnostics support" class="h-full w-full object-cover opacity-80" loading="lazy" decoding="async">
-            </article>
+   
 
-            <article class="home-reveal lg:col-span-6">
-                <x-ui.section-heading title="Why Leading Teams Choose Biogenix" subtitle="A modern diagnostics partner model inspired by enterprise healthcare standards." />
-                <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    @foreach ([
-                        ['title' => 'Product Depth', 'copy' => 'Broad portfolio across IVD, reagents, instruments, and consumables.', 'icon' => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'],
-                        ['title' => 'Operational Reliability', 'copy' => 'Structured order workflows and responsive escalation support.', 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
-                        ['title' => 'Compliance-Ready', 'copy' => 'Quality-first processes aligned to regulated healthcare operations.', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
-                        ['title' => 'Consultative Service', 'copy' => 'Pre-sale and post-sale support for clinical and procurement teams.', 'icon' => 'M8 10h8M8 14h5M12 3c4.97 0 9 3.58 9 8 0 1.95-.78 3.74-2.07 5.16L20 21l-5.04-1.68A10.5 10.5 0 0 1 12 20c-4.97 0-9-3.58-9-8s4.03-9 9-9Z'],
-                    ] as $value)
-                        <article class="group flex gap-3.5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                            <span class="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 transition group-hover:bg-primary-600 group-hover:text-white">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $value['icon'] }}" />
-                                </svg>
-                            </span>
-                            <div>
-                                <h3 class="text-base font-semibold text-slate-900">{{ $value['title'] }}</h3>
-                                <p class="mt-1.5 text-sm text-slate-600">{{ $value['copy'] }}</p>
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-            </article>
-        </div>
-    </section>
+    
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    {{-- TESTIMONIALS --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-testimonials bg-transparent py-12 md:py-16">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="home-reveal">
-                <x-ui.section-heading title="What Our Clients Say" subtitle="Trusted by procurement heads, lab managers, and healthcare institutions across India." />
-            </div>
-            <div class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3">
-                @foreach ([
-                    [
-                        'quote'   => 'Biogenix has transformed our reagent procurement cycle. Same-day availability and documentation packs save us hours every week.',
-                        'name'    => 'Dr. Priya Mehta',
-                        'role'    => 'Lab Director, Apollo Diagnostics',
-                        'rating'  => 5,
-                        'initials'=> 'PM',
-                        'color'   => 'from-blue-600 to-blue-700',
-                    ],
-                    [
-                        'quote'   => 'The B2B portal is clean, fast, and the quotation workflow makes budget approvals painless. Highly recommended for hospital procurement.',
-                        'name'    => 'Rajesh Kumar',
-                        'role'    => 'Purchase Manager, Fortis Healthcare',
-                        'rating'  => 5,
-                        'initials'=> 'RK',
-                        'color'   => 'from-emerald-500 to-emerald-700',
-                    ],
-                    [
-                        'quote'   => 'Excellent product range and responsive support. We\'ve consolidated three vendors into one with Biogenix as our primary diagnostics partner.',
-                        'name'    => 'Sunita Agarwal',
-                        'role'    => 'Operations Head, PathLab India',
-                        'rating'  => 5,
-                        'initials'=> 'SA',
-                        'color'   => 'from-violet-500 to-violet-700',
-                    ],
-                ] as $testimonial)
-                    <article class="home-panel home-reveal testimonial-card flex flex-col gap-6">
-                        <div class="flex items-center justify-between">
-                            {{-- Stars --}}
-                            <div class="flex items-center gap-0.5">
-                                @for ($s = 0; $s < $testimonial['rating']; $s++)
-                                    <svg class="h-4 w-4 fill-amber-400 text-amber-400" viewBox="0 0 20 20">
-                                        <path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z" />
-                                    </svg>
-                                @endfor
-                            </div>
-                        </div>
-
-                        {{-- Quote --}}
-                        <blockquote class="flex-1 text-base font-medium leading-relaxed text-slate-700 md:text-lg">
-                            "{{ $testimonial['quote'] }}"
-                        </blockquote>
-
-                        {{-- Author --}}
-                        <div class="flex items-center gap-4">
-                            <span class="testimonial-author-badge bg-gradient-to-br {{ $testimonial['color'] }} shadow-lg">
-                                {{ $testimonial['initials'] }}
-                            </span>
-                            <div class="flex flex-col">
-                                <p class="text-[15px] font-bold tracking-tight text-slate-900">{{ $testimonial['name'] }}</p>
-                                <p class="text-xs font-medium text-slate-500">{{ $testimonial['role'] }}</p>
-                            </div>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    {{-- INSIGHTS & UPDATES (with icon thumbnails) --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-insights bg-transparent py-12 md:py-16">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="home-reveal">
-                <x-ui.section-heading title="Insights & Updates" subtitle="Explore diagnostics trends, product updates, and operational best practices." />
-            </div>
-            <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-                @foreach ([
-                    [
-                        'title'  => 'Scaling Diagnostic Labs in Tier-2 Cities',
-                        'tag'    => 'Operations',
-                        'copy'   => 'How regional labs can improve turnaround time with better procurement and support.',
-                        'href'   => route('about'),
-                        'action' => 'Explore Story',
-                        'icon'   => 'M3 21h18M9 21V9m6 12V9M3 9l9-7 9 7',
-                        'color'  => 'bg-blue-50 text-blue-600 ring-blue-500/10',
-                    ],
-                    [
-                        'title'  => 'Choosing the Right Reagent Mix',
-                        'tag'    => 'Product Guide',
-                        'copy'   => 'A practical framework for balancing consistency, throughput, and budget.',
-                        'href'   => route('products.index'),
-                        'action' => 'Browse Products',
-                        'icon'   => 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 12h6M9 16h4',
-                        'color'  => 'bg-emerald-50 text-emerald-600 ring-emerald-500/10',
-                    ],
-                    [
-                        'title'  => 'Checklist for New Instrument Rollouts',
-                        'tag'    => 'Implementation',
-                        'copy'   => 'Deployment, training, and support essentials for successful onboarding.',
-                        'href'   => route('contact'),
-                        'action' => 'Talk to Team',
-                        'icon'   => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-                        'color'  => 'bg-violet-50 text-violet-600 ring-violet-500/10',
-                    ],
-                ] as $insight)
-                    <article class="home-panel home-reveal insight-card group flex flex-col gap-5">
-                        <div class="flex items-center gap-4">
-                            <span class="insight-icon-shell inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl {{ $insight['color'] }} ring-1 ring-inset">
-                                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $insight['icon'] }}" />
-                                </svg>
-                            </span>
-                            <x-badge variant="default" class="text-[11px] uppercase tracking-wider">{{ $insight['tag'] }}</x-badge>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-['Sora'] text-xl font-semibold leading-snug text-slate-900 group-hover:text-primary-600 transition-colors">{{ $insight['title'] }}</h3>
-                            <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ $insight['copy'] }}</p>
-                        </div>
-                        <div class="mt-auto pt-2">
-                            <x-ui.action-link :href="$insight['href']" variant="secondary" class="min-h-11 px-5 shadow-sm">
-                                {{ $insight['action'] }}
-                            </x-ui.action-link>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </section>
+   
 
    
 
@@ -1174,6 +960,59 @@
                     newsletterBtn.setAttribute('aria-disabled', 'false');
                 }, 500);
             });
+        }
+
+        /* ─── Category Carousel Auto Scroll ─── */
+        const catCarousel = document.getElementById('categoryCarousel');
+        let catScrollInterval;
+        
+        function startCatScroll() {
+            if (!catCarousel) return;
+            if (catScrollInterval) clearInterval(catScrollInterval);
+            
+            catScrollInterval = setInterval(() => {
+                const maxScrollLeft = catCarousel.scrollWidth - catCarousel.clientWidth;
+                if (catCarousel.scrollLeft >= maxScrollLeft - 1) {
+                    catCarousel.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    const itemWidth = catCarousel.children[0]?.clientWidth || 300;
+                    const gap = 14; // ≈ 0.9rem
+                    catCarousel.scrollBy({ left: itemWidth + gap, behavior: 'smooth' });
+                }
+            }, 3000);
+        }
+        
+        function stopCatScroll() {
+            if (catScrollInterval) clearInterval(catScrollInterval);
+        }
+        
+        if (catCarousel) {
+            startCatScroll();
+            catCarousel.addEventListener('mouseenter', stopCatScroll);
+            catCarousel.addEventListener('mouseleave', startCatScroll);
+            catCarousel.addEventListener('touchstart', stopCatScroll, { passive: true });
+            catCarousel.addEventListener('touchend', startCatScroll, { passive: true });
+
+            const catPrev = document.getElementById('catPrev');
+            const catNext = document.getElementById('catNext');
+
+            if (catPrev) {
+                catPrev.addEventListener('mouseenter', stopCatScroll);
+                catPrev.addEventListener('mouseleave', startCatScroll);
+                catPrev.addEventListener('click', () => {
+                    const itemWidth = catCarousel.children[0]?.clientWidth || 300;
+                    catCarousel.scrollBy({ left: -(itemWidth + 14), behavior: 'smooth' });
+                });
+            }
+
+            if (catNext) {
+                catNext.addEventListener('mouseenter', stopCatScroll);
+                catNext.addEventListener('mouseleave', startCatScroll);
+                catNext.addEventListener('click', () => {
+                    const itemWidth = catCarousel.children[0]?.clientWidth || 300;
+                    catCarousel.scrollBy({ left: itemWidth + 14, behavior: 'smooth' });
+                });
+            }
         }
     });
 </script>

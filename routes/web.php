@@ -27,6 +27,9 @@ Route::get('/products/{productId}/technical-resources/{resourceId}/download', [P
 // flow incomplete 
  // Preview-only customer workspace pages (UI shells)
  Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
+ Route::post('/customer/addresses', function () {
+     return back()->with('success', 'Address added successfully (Preview Mode).');
+ })->name('customer.addresses.store');
  Route::view('/customer/orders', 'customer.orders')->name('customer.orders.preview');
  Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
 

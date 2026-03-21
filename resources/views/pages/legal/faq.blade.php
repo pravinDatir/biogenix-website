@@ -7,11 +7,7 @@
         <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-b from-primary-900/50 to-slate-950/80"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 text-center">
-            <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
-                <a href="{{ route('home') }}">Home</a>
-                <span>/</span>
-                <span class="text-white">FAQ</span>
-            </div>
+           
             <h1 class="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">Frequently Asked Questions</h1>
             <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300">Got questions about products, ordering, or delivery? We've got answers.</p>
         </div>
@@ -118,17 +114,7 @@
         </div>
     </section>
 
-    <section class="bg-slate-900 py-10 text-white">
-        <div class="mx-auto w-full max-w-4xl space-y-4 px-4 text-center sm:px-6 lg:px-8 xl:px-10">
-            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">Still need help?</p>
-            <h2 class="text-3xl font-bold tracking-tight">Talk to our specialists</h2>
-            <p class="text-base text-slate-200">We will route you to the right desk: sales, technical, or partnerships, and respond within one business hour.</p>
-            <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
-                <x-ui.action-link :href="route('contact')" class="min-h-11 px-5">Open Support Desk</x-ui.action-link>
-                <x-ui.action-link :href="route('book-meeting')" variant="secondary" class="min-h-11 px-5">Book a Call</x-ui.action-link>
-            </div>
-        </div>
-    </section>
+
 </div>
 
 @push('scripts')

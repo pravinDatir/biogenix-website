@@ -13,11 +13,7 @@
         <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-r from-primary-950/90 via-slate-900/80 to-slate-900/40"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10 text-center">
-            <div class="mb-5 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-slate-300">
-                <a href="{{ route('home') }}">Home</a>
-                <span>/</span>
-                <span class="text-white">Book Meeting</span>
-            </div>
+           
             <x-badge variant="inverse" class="mb-4 inline-block">Talk to an Expert</x-badge>
             <h1 class="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">
                 Accelerate your diagnostics operations with Biogenix.
@@ -195,48 +191,7 @@
         </div>
     </section>
 
-    <section class="bg-slate-50 py-14 md:py-18">
-        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:items-center lg:px-8 xl:px-10">
-            <div class="space-y-4 lg:col-span-6">
-                <x-ui.section-heading title="Pre-Read & Checklist" subtitle="Arrive prepared and get more value from your slot." />
-                <ul class="space-y-3 text-sm text-slate-700">
-                    <li class="flex gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>Share anticipated monthly volumes and any product preferences.</li>
-                    <li class="flex gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>List current bottlenecks (stockouts, TAT, validation, compliance).</li>
-                    <li class="flex gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>Identify stakeholders to join: ops, QA, finance, or clinical.</li>
-                    <li class="flex gap-2"><span class="mt-1 h-2 w-2 rounded-full bg-primary-600"></span>Have a preferred delivery city/region for accurate lead times.</li>
-                </ul>
-                <div class="mt-5 flex flex-wrap gap-3">
-                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5">Download PI Template</x-ui.action-link>
-                    <x-ui.action-link :href="route('contact')" variant="secondary" class="min-h-11 px-5">Share Requirements</x-ui.action-link>
-                </div>
-            </div>
-            <div class="lg:col-span-6">
-                <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                    <div class="absolute -right-14 -top-14 h-48 w-48 rounded-full bg-primary-50 opacity-60 blur-3xl"></div>
-                    <h3 class="text-2xl font-bold text-slate-900">What we'll bring</h3>
-                    <div class="mt-4 space-y-3 text-sm text-slate-700">
-                        <p class="font-semibold text-slate-900">Pricing ladders</p>
-                        <p>Volume-based tiers, sample PI, and payment terms draft.</p>
-                        <p class="font-semibold text-slate-900">Fulfillment plan</p>
-                        <p>Dispatch windows, temperature control needs, and return policy summary.</p>
-                        <p class="font-semibold text-slate-900">Compliance docs</p>
-                        <p>Certifications, QA checklists, and SOP snippets you can forward internally.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="bg-white py-12 md:py-16">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 text-center">
-            <h2 class="text-3xl font-semibold tracking-tight text-slate-950">Need immediate assistance?</h2>
-            <p class="mx-auto mt-2 max-w-2xl text-base leading-8 text-slate-600">If your request is urgent, skip the meeting booking and talk to our support desk right now.</p>
-            <div class="mt-6 flex justify-center gap-4">
-                <x-ui.action-link :href="route('contact')" variant="dark">Go to Support Desk</x-ui.action-link>
-                <a href="tel:+919876543210" class="{{ $secondaryButtonClass }}">Call +91 98765 43210</a>
-            </div>
-        </div>
-    </section>
 </div>
 
 @push('scripts')

@@ -21,13 +21,20 @@
 
         <div id="customer-main-content" class="flex-1 min-w-0 space-y-6 pb-12">
             {{-- Page header — same pattern as admin dashboard --}}
-            <div class="mb-4">
-                @if ($title)
-                    <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $title }}</h2>
-                @endif
-                @if ($description)
-                    <p class="text-sm text-slate-500 mt-1">{{ $description }}</p>
-                @endif
+            <div class="mb-4 flex items-center justify-between">
+                <div>
+                    @if ($title)
+                        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $title }}</h2>
+                    @endif
+                    @if ($description)
+                        <p class="text-sm text-slate-500 mt-1">{{ $description }}</p>
+                    @endif
+                </div>
+                @isset($headerActions)
+                    <div class="flex items-center gap-3">
+                        {{ $headerActions }}
+                    </div>
+                @endisset
             </div>
 
             @if ($flashSuccess)

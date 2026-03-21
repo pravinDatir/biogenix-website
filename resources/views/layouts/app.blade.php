@@ -99,7 +99,19 @@
         @include('partials.footer')
     </div>
 
-    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
+    <div class="fixed bottom-10 right-6 z-50 flex flex-col items-end gap-4">
+        {{-- Back-to-Top Button --}}
+        <button
+            id="backToTopBtn"
+            type="button"
+            aria-label="Back to top"
+            class="inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 opacity-0 shadow-lg ring-1 ring-slate-900/5 pointer-events-none transition-all duration-300 hover:-translate-y-1 hover:bg-primary-600 hover:text-white hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
+        >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+        </button>
+
         <div id="supportTicketForm" class="hidden w-[360px] origin-bottom-right translate-y-3 scale-95 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white opacity-0 pointer-events-none shadow-2xl transition duration-300 sm:w-[400px]">
             <div class="flex items-start justify-between bg-[#0b74fb] px-5 py-4">
                 <div class="flex items-center gap-3">
@@ -166,12 +178,14 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="hidden">Submit</button>
-
-                    <div class="mt-2 pb-2 pt-3 text-center">
-                        <span class="flex items-center justify-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.05em] text-slate-400">
-                            ENCRYPTED CONNECTION &bull; BIOGENIX SECURE SUPPORT
+                    <div class="mt-4 flex items-center justify-between border-t border-slate-100 pb-1 pt-4">
+                        <span class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.05em] text-slate-400">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            Secure
                         </span>
+                        <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-[#0b74fb] px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-[#0b74fb]/30">
+                            Submit Ticket
+                        </button>
                     </div>
                 </form>
             </div>
@@ -183,6 +197,33 @@
             </svg>
         </button>
     </div>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('backToTopBtn');
+            if (!btn) return;
+
+            var visible = false;
+
+            function syncBtn() {
+                var shouldShow = window.scrollY > 300;
+                if (shouldShow === visible) return;
+                visible = shouldShow;
+                btn.classList.toggle('opacity-0', !visible);
+                btn.classList.toggle('pointer-events-none', !visible);
+                btn.classList.toggle('translate-y-2', !visible);
+                btn.classList.toggle('opacity-100', visible);
+                btn.classList.toggle('pointer-events-auto', visible);
+                btn.classList.toggle('translate-y-0', visible);
+            }
+
+            window.addEventListener('scroll', syncBtn, { passive: true });
+
+            btn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }());
+    </script>
 
     <script>
         (function () {
