@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
 use App\Services\Cart\CartService;
+use Illuminate\Validation\Rule;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
@@ -39,10 +40,14 @@ class CartController extends Controller
         // Step 2: load the saved checkout addresses for the current account from the user_address table.
         $savedAddresses = $this->loadSavedAddressesForCheckout($request);
 
-        // Step 3: return the checkout page with both cart data and saved address data.
+        // Step 3: load the business invoice details once so B2B users can review prefilled GST details.
+        $checkoutBusinessDetails = $this->loadBusinessInvoiceDetailsForCheckout($request);
+
+        // Step 4: return the checkout page with cart data, saved addresses, and business invoice details.
         return view('pages.guest.checkout', [
             'initialCart' => $initialCart,
             'savedAddresses' => $savedAddresses,
+            'checkoutBusinessDetails' => $checkoutBusinessDetails,
         ]);
     }
 
@@ -74,9 +79,27 @@ class CartController extends Controller
     public function submitCustomerCheckoutOrder(Request $request, CartService $cartService): RedirectResponse
     {
         try {
-            // Step 1: validate the optional checkout coupon before the shared checkout flow starts.
+            // Step 1: validate the checkout coupon, selected address choice, and optional business invoice details.
             $validatedCheckout = $request->validate([
                 'coupon_code' => ['nullable', 'string', 'max:50'],
+                'selected_address_source' => ['required', 'string', Rule::in(['existing', 'new'])],
+                'selected_user_address_id' => [
+                    'nullable',
+                    'integer',
+                    Rule::requiredIf(fn () => $request->input('selected_address_source') === 'existing'),
+                    Rule::exists('user_address', 'id')->where(fn ($builder) => $builder->where('user_id', $request->user()->id)),
+                ],
+                'new_address_label' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->input('selected_address_source') === 'new')],
+                'new_address_line1' => ['nullable', 'string', 'max:255', Rule::requiredIf(fn () => $request->input('selected_address_source') === 'new')],
+                'new_address_city' => ['nullable', 'string', 'max:128', Rule::requiredIf(fn () => $request->input('selected_address_source') === 'new')],
+                'new_address_state' => ['nullable', 'string', 'max:128', Rule::requiredIf(fn () => $request->input('selected_address_source') === 'new')],
+                'new_address_postal_code' => ['nullable', 'string', 'max:20', Rule::requiredIf(fn () => $request->input('selected_address_source') === 'new')],
+                'new_address_country' => ['nullable', 'string', 'max:128'],
+                'new_address_phone' => ['nullable', 'string', 'max:32'],
+                'gstin' => ['nullable', 'string', 'max:20'],
+                'pan_number' => ['nullable', 'string', 'max:20'],
+                'registered_business_name' => ['nullable', 'string', 'max:255'],
+                'notes' => ['nullable', 'string', 'max:1000'],
             ]);
 
             // Step 2: convert the current cart into a submitted order using the shared cart service.
@@ -298,6 +321,42 @@ class CartController extends Controller
 
             // Step 3: keep checkout usable even when saved addresses cannot be loaded.
             return collect();
+        }
+    }
+
+    // This prepares GST and business invoice details for the checkout page.
+    protected function loadBusinessInvoiceDetailsForCheckout(Request $request): array
+    {
+        // Step 1: keep the invoice details hidden for guests and B2C customers.
+        if (! $request->user() || ! $request->user()->isB2b()) {
+            return [
+                'show_business_fields' => false,
+                'gstin' => null,
+                'pan_number' => null,
+                'registered_business_name' => null,
+            ];
+        }
+
+        try {
+            $company = $request->user()->company;
+
+            // Step 2: prefill B2B invoice details from the linked company record when one exists.
+            return [
+                'show_business_fields' => true,
+                'gstin' => $company?->gst_number,
+                'pan_number' => $company?->pan_number,
+                'registered_business_name' => $company?->legal_name ?: $company?->name,
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to load checkout business invoice details.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
+
+            // Step 3: keep checkout usable even when the B2B invoice details cannot be prepared.
+            return [
+                'show_business_fields' => true,
+                'gstin' => null,
+                'pan_number' => null,
+                'registered_business_name' => null,
+            ];
         }
     }
 

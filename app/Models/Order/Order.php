@@ -7,6 +7,7 @@ use App\Models\Authorization\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
@@ -68,5 +69,23 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    // This loads all stored shipping and billing address rows for the order.
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(OrderAddress::class);
+    }
+
+    // This loads the saved shipping address for quick order display screens.
+    public function shippingAddress(): HasOne
+    {
+        return $this->hasOne(OrderAddress::class)->where('address_type', 'shipping');
+    }
+
+    // This loads the saved billing address for invoice-facing flows.
+    public function billingAddress(): HasOne
+    {
+        return $this->hasOne(OrderAddress::class)->where('address_type', 'billing');
     }
 }

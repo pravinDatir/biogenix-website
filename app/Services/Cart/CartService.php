@@ -2,10 +2,12 @@
 
 namespace App\Services\Cart;
 
+use App\Models\Authorization\UserAddress;
 use App\Models\Authorization\User;
 use App\Models\Cart\Cart;
 use App\Models\Cart\CartItem;
 use App\Models\Order\Order;
+use App\Models\Order\OrderAddress;
 use App\Models\Product\ProductVariant;
 use App\Services\Authorization\DataVisibilityService;
 use App\Services\Notification\EmailNotificationService;
@@ -252,6 +254,9 @@ class CartService
                 // Step 7: store the final discount breakdown so operations can trace why the final order value changed.
                 $this->storeCheckoutDiscountLines($order, collect($createdOrderItems), $preparedOrderItems);
 
+                // Step 8: store the selected shipping and billing addresses on the order so operations can dispatch correctly.
+                $this->storeCheckoutOrderAddresses($order, $user, $validatedCartCheckout);
+
                 $cart->items()->delete();
                 $cart->delete();
 
@@ -259,6 +264,9 @@ class CartService
                     ->with([
                         'placedByUser:id,name,email,user_type',
                         'company:id,name,company_type',
+                        'addresses',
+                        'shippingAddress',
+                        'billingAddress',
                         'items' => fn ($builder) => $builder->orderBy('sort_order')->orderBy('id'),
                         'items.product:id,name,sku',
                         'items.variant:id,product_id,sku,variant_name',
@@ -333,6 +341,201 @@ class CartService
                 'error' => $exception->getMessage(),
             ]);
         }
+    }
+
+    // This stores the selected shipping and billing addresses for a submitted order.
+    protected function storeCheckoutOrderAddresses(Order $order, User $user, array $validatedCartCheckout): void
+    {
+        try {
+            // Step 1: resolve the checkout address that the customer selected or entered on the page.
+            $checkoutAddressData = $this->resolveCheckoutAddressData($user, $validatedCartCheckout);
+            $selectedAddressSource = (string) ($validatedCartCheckout['selected_address_source'] ?? 'existing');
+
+            // Step 2: create the shipping address row exactly as it will be used for dispatch and delivery.
+            $order->addresses()->create($this->buildOrderAddressPayload(
+                $order,
+                'shipping',
+                $checkoutAddressData,
+                $user,
+                $validatedCartCheckout
+            ));
+
+            // Step 3: create the billing address row too so later invoice and finance flows have a stable stored reference.
+            $order->addresses()->create($this->buildOrderAddressPayload(
+                $order,
+                'billing',
+                $checkoutAddressData,
+                $user,
+                $validatedCartCheckout
+            ));
+
+            // Step 4: write one business log so the team can confirm whether checkout reused an existing address or saved a brand-new one.
+            Log::info('Checkout order addresses stored successfully.', [
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'selected_address_source' => $selectedAddressSource,
+                'user_address_id' => $checkoutAddressData['user_address']->id ?? null,
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to store checkout order addresses.', [
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This resolves the final checkout address from either an existing saved address or the new-address form.
+    protected function resolveCheckoutAddressData(User $user, array $validatedCartCheckout): array
+    {
+        try {
+            $selectedAddressSource = (string) ($validatedCartCheckout['selected_address_source'] ?? 'existing');
+
+            // Step 1: reuse the selected saved address when the customer picked an existing address from the address book.
+            if ($selectedAddressSource === 'existing') {
+                $selectedUserAddress = UserAddress::query()
+                    ->where('user_id', $user->id)
+                    ->whereKey((int) ($validatedCartCheckout['selected_user_address_id'] ?? 0))
+                    ->first();
+
+                if (! $selectedUserAddress) {
+                    throw ValidationException::withMessages([
+                        'selected_user_address_id' => 'Please select one saved address for checkout.',
+                    ]);
+                }
+
+                // Step 1A: log that checkout reused an already-saved address and did not create a fresh address-book entry.
+                Log::info('Checkout is using an existing saved user address.', [
+                    'user_id' => $user->id,
+                    'user_address_id' => $selectedUserAddress->id,
+                ]);
+
+                return [
+                    'user_address' => $selectedUserAddress,
+                    'address_line1' => $selectedUserAddress->line1,
+                    'address_line2' => $selectedUserAddress->line2,
+                    'city' => $selectedUserAddress->city,
+                    'state' => $selectedUserAddress->state,
+                    'postal_code' => $selectedUserAddress->postal_code,
+                    'country' => $selectedUserAddress->country ?: 'India',
+                    'contact_phone' => $user->phone,
+                    'address_label' => $selectedUserAddress->line2,
+                ];
+            }
+
+            // Step 2: create a saved user address first when the customer entered a brand new dispatch address on checkout.
+            $createdUserAddress = $this->saveNewCheckoutAddressForUser($user, $validatedCartCheckout);
+
+            return [
+                'user_address' => $createdUserAddress,
+                'address_line1' => $createdUserAddress->line1,
+                'address_line2' => $createdUserAddress->line2,
+                'city' => $createdUserAddress->city,
+                'state' => $createdUserAddress->state,
+                'postal_code' => $createdUserAddress->postal_code,
+                'country' => $createdUserAddress->country ?: 'India',
+                'contact_phone' => $validatedCartCheckout['new_address_phone'] ?? $user->phone,
+                'address_label' => $validatedCartCheckout['new_address_label'] ?? null,
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to resolve checkout address data.', [
+                'user_id' => $user->id,
+                'selected_address_source' => $validatedCartCheckout['selected_address_source'] ?? null,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This saves a new checkout address into the user address book before it is used on the order.
+    protected function saveNewCheckoutAddressForUser(User $user, array $validatedCartCheckout): UserAddress
+    {
+        try {
+            $userHasSavedAddresses = $user->addresses()->exists();
+
+            // Step 1: save the new address in the shared user address book so it becomes reusable in later checkouts.
+            $createdUserAddress = $user->addresses()->create([
+                'line1' => trim((string) ($validatedCartCheckout['new_address_line1'] ?? '')),
+                'line2' => filled($validatedCartCheckout['new_address_label'] ?? null) ? trim((string) $validatedCartCheckout['new_address_label']) : null,
+                'city' => trim((string) ($validatedCartCheckout['new_address_city'] ?? '')),
+                'state' => trim((string) ($validatedCartCheckout['new_address_state'] ?? '')),
+                'postal_code' => trim((string) ($validatedCartCheckout['new_address_postal_code'] ?? '')),
+                'country' => filled($validatedCartCheckout['new_address_country'] ?? null) ? trim((string) $validatedCartCheckout['new_address_country']) : 'India',
+                'is_default_shipping' => ! $userHasSavedAddresses,
+                'is_default_billing' => ! $userHasSavedAddresses,
+            ]);
+
+            // Step 2: log the new address-book save so support can verify that only fresh checkout addresses create user_address rows.
+            Log::info('New checkout address saved to user address book.', [
+                'user_id' => $user->id,
+                'user_address_id' => $createdUserAddress->id,
+            ]);
+
+            return $createdUserAddress;
+        } catch (Throwable $exception) {
+            Log::error('Failed to save new checkout address for user.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This builds one order_addresses payload from the chosen checkout address and the current customer context.
+    protected function buildOrderAddressPayload(Order $order, string $addressType, array $checkoutAddressData, User $user, array $validatedCartCheckout): array
+    {
+        try {
+            $companyName = filled($validatedCartCheckout['registered_business_name'] ?? null)
+                ? trim((string) $validatedCartCheckout['registered_business_name'])
+                : ($user->company?->legal_name ?: $user->company?->name);
+
+            // Step 1: keep the business GST details only on billing flows for B2B customers.
+            $gstin = $addressType === 'billing' && $user->isB2b()
+                ? (filled($validatedCartCheckout['gstin'] ?? null) ? trim((string) $validatedCartCheckout['gstin']) : ($user->company?->gst_number))
+                : null;
+
+            // Step 2: use the same selected address lines for both shipping and billing to keep the current checkout flow simple.
+            return [
+                'order_id' => $order->id,
+                'address_type' => $addressType,
+                'contact_name' => $user->name,
+                'company_name' => $user->isB2b() ? $companyName : null,
+                'email' => $user->email,
+                'phone' => filled($checkoutAddressData['contact_phone'] ?? null) ? trim((string) $checkoutAddressData['contact_phone']) : $user->phone,
+                'gstin' => $gstin,
+                'line1' => trim((string) ($checkoutAddressData['address_line1'] ?? '')),
+                'line2' => filled($checkoutAddressData['address_line2'] ?? null) ? trim((string) $checkoutAddressData['address_line2']) : null,
+                'landmark' => filled($checkoutAddressData['address_label'] ?? null) ? trim((string) $checkoutAddressData['address_label']) : null,
+                'city' => trim((string) ($checkoutAddressData['city'] ?? '')),
+                'state' => trim((string) ($checkoutAddressData['state'] ?? '')),
+                'postal_code' => trim((string) ($checkoutAddressData['postal_code'] ?? '')),
+                'country_code' => $this->normalizeCountryCode($checkoutAddressData['country'] ?? 'India'),
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to build order address payload.', [
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'address_type' => $addressType,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This converts the entered country into the two-character code expected by order_addresses.
+    protected function normalizeCountryCode(?string $country): string
+    {
+        $normalizedCountry = strtoupper(trim((string) $country));
+
+        return match ($normalizedCountry) {
+            '', 'INDIA', 'IN' => 'IN',
+            default => substr($normalizedCountry, 0, 2),
+        };
     }
 
     // This loads the current user's cart with relations.

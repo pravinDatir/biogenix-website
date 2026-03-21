@@ -4,19 +4,8 @@
 
 @section('content')
     @php
-        $previousUrl = url()->previous();
-        $currentUrl = url()->current();
-        $currentHost = parse_url(url()->to('/'), PHP_URL_HOST);
-        $previousHost = $previousUrl ? parse_url($previousUrl, PHP_URL_HOST) : null;
-        $backUrl = filled($previousUrl) && $previousUrl !== $currentUrl && (! $previousHost || $previousHost === $currentHost)
-            ? $previousUrl
-            : route('cart.page');
         $pageWrapClass = 'mx-auto w-full max-w-none px-3 py-4 sm:px-6 sm:py-6 lg:px-8 xl:px-10';
         $backLinkClass = 'inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto';
-        $heroClass = 'rounded-[28px] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f4f7fb_58%,#dbeafe_100%)] p-4 shadow-sm sm:p-6 md:rounded-[32px] md:p-8';
-        $eyebrowClass = 'text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400';
-        $titleClass = 'mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl md:text-4xl';
-        $leadClass = 'mt-3 text-sm leading-7 text-slate-600 md:text-base';
         $layoutGridClass = 'mt-6 grid gap-5 xl:mt-8 xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-6';
         $mainColumnClass = 'space-y-6';
         $sectionCardClass = 'rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:rounded-[28px] md:p-8';
@@ -40,58 +29,33 @@
         $labelClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500';
         $savedAddressCollection = collect($savedAddresses ?? []);
         $selectedAddress = $savedAddressCollection->firstWhere('is_default_shipping', true) ?? $savedAddressCollection->first();
-        $selectedAddressId = $selectedAddress?->id;
+        $checkoutBusinessDetails = $checkoutBusinessDetails ?? [];
+        $showBusinessInvoiceDetails = (bool) ($checkoutBusinessDetails['show_business_fields'] ?? false);
+        $selectedAddressSource = old('selected_address_source', $selectedAddress ? 'existing' : (auth()->check() ? 'new' : 'existing'));
+        $selectedAddressId = old('selected_user_address_id', $selectedAddress?->id);
+        $newAddressFieldNames = ['new_address_label', 'new_address_line1', 'new_address_city', 'new_address_state', 'new_address_postal_code', 'new_address_phone'];
+        $newAddressFormVisible = auth()->check() && (
+            $selectedAddressSource === 'new'
+            || $savedAddressCollection->isEmpty()
+            || collect($newAddressFieldNames)->contains(fn ($fieldName) => $errors->has($fieldName))
+        );
     @endphp
 
     <div class="{{ $pageWrapClass }}">
         <div>
-            <a href="{{ $backUrl }}" class="{{ $backLinkClass }} mb-4">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m15 18-6-6 6-6"></path>
-                </svg>
-                <span>Back</span>
-            </a>
+            <div class="mb-4 flex justify-end">
+                <a href="{{ route('cart.page') }}" class="{{ $backLinkClass }}">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                    <span>Back to Cart</span>
+                </a>
+            </div>
 
             {{-- ─── Hero ─── --}}
-            <section class="{{ $heroClass }}">
-                <div class="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-                    <div class="max-w-3xl">
-                        <p class="{{ $eyebrowClass }}">Checkout</p>
-                        <h1 class="{{ $titleClass }}">Complete your professional supply order</h1>
-                        <p class="{{ $leadClass }}">
-                            Review shipping, delivery, payment method, and your final order summary in the same shared design system used across the storefront.
-                        </p>
-                    </div>
-                    <a href="{{ route('cart.page') }}" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Back to Cart</a>
-                </div>
-            </section>
-
             {{-- ════════════════════════════════════════════════════════ --}}
             {{-- STEP PROGRESS BAR --}}
             {{-- ════════════════════════════════════════════════════════ --}}
-            <div class="mt-6 overflow-hidden rounded-[24px] border border-slate-200 bg-white px-6 py-5 shadow-sm md:rounded-[28px]">
-                <div class="relative flex items-center justify-between">
-                    {{-- Connecting line --}}
-                    <div id="stepProgressLine" class="absolute left-0 right-0 top-[22px] flex gap-2" aria-hidden="true">
-                        <span data-step-connector class="h-0.5 flex-1 rounded-full bg-slate-200 transition-all duration-500"></span>
-                        <span data-step-connector class="h-0.5 flex-1 rounded-full bg-slate-200 transition-all duration-500"></span>
-                    </div>
-
-                    @foreach ([
-                        ['num' => 1, 'label' => 'Shipping Address', 'icon' => 'M3 10.5 12 3l9 7.5M5 9.5V21h14V9.5M9 21v-6h6v6'],
-                        ['num' => 2, 'label' => 'Delivery Method',  'icon' => 'M13 3 4 14h7l-1 7 10-12h-7l1-6Z'],
-                        ['num' => 3, 'label' => 'Payment',          'icon' => 'M3 6h18M3 10h18M5 6v14h14V6'],
-                    ] as $step)
-                        <div class="relative z-10 flex flex-col items-center gap-2 text-center" id="stepIndicator{{ $step['num'] }}">
-                            <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border-2 border-primary-600 bg-white text-sm font-bold text-primary-600 transition-all duration-300 step-circle">
-                                {{ $step['num'] }}
-                            </span>
-                            <span class="hidden text-xs font-semibold text-slate-600 sm:block">{{ $step['label'] }}</span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
             <div class="{{ $layoutGridClass }}">
                 <div class="{{ $mainColumnClass }}">
 
@@ -111,7 +75,7 @@
                             @auth
                                 @forelse ($savedAddressCollection as $savedAddress)
                                     @php
-                                        $isSelectedAddress = (int) $savedAddress->id === (int) $selectedAddressId;
+                                        $isSelectedAddress = $selectedAddressSource === 'existing' && (int) $savedAddress->id === (int) $selectedAddressId;
                                         $addressTitle = trim((string) ($savedAddress->city . ', ' . $savedAddress->state));
                                         $addressLines = collect([
                                             $savedAddress->line1,
@@ -124,6 +88,8 @@
                                         type="button"
                                         class="{{ $selectionCardBaseClass }} {{ $isSelectedAddress ? $selectionCardActiveClass : $selectionCardInactiveClass }}"
                                         data-address-card
+                                        data-address-id="{{ $savedAddress->id }}"
+                                        data-address-source="existing"
                                         data-selected="{{ $isSelectedAddress ? 'true' : 'false' }}"
                                     >
                                         <span class="{{ $isSelectedAddress ? $iconTilePrimaryClass : $iconTileNeutralClass }}">
@@ -159,104 +125,85 @@
                                 </div>
                             @endauth
 
-                            @if (false)
-                            <button
-                                type="button"
-                                class="{{ $selectionCardBaseClass }} {{ $selectionCardActiveClass }}"
-                                data-address-card
-                                data-selected="true"
-                            >
-                                <span class="{{ $iconTilePrimaryClass }}">
-                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                                        <path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M9 21v-6h6v6"></path>
-                                    </svg>
-                                </span>
-                                <span class="text-base font-semibold text-slate-950">Corporate Lab - HQ</span>
-                                <span class="text-sm leading-7 text-slate-500">123 Science Park, Phase II<br>Lucknow, UP 226010</span>
-                                <span class="mt-auto pt-3 text-sm font-semibold text-primary-700">Selected</span>
-                                <span class="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-primary-700 shadow-sm">
-                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"></path></svg>
-                                </span>
-                            </button>
-
-                            <button
-                                type="button"
-                                class="{{ $selectionCardBaseClass }} {{ $selectionCardInactiveClass }}"
-                                data-address-card
-                            >
-                                <span class="{{ $iconTileNeutralClass }}">
-                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                                        <path d="M4 4h16v16H4z"></path><path d="M8 2v4"></path><path d="M16 2v4"></path><path d="M4 10h16"></path>
-                                    </svg>
-                                </span>
-                                <span class="text-base font-semibold text-slate-950">Research Center Alpha</span>
-                                <span class="text-sm leading-7 text-slate-500">45 Biotech Zone, South Gate<br>Lucknow, UP 226002</span>
-                                <span class="mt-auto pt-3 text-sm font-medium text-slate-400">Available address</span>
-                            </button>
-
-                            {{-- Add New Address — toggle button --}}
-                            <button
-                                type="button"
-                                id="addAddressToggleBtn"
-                                class="{{ $selectionCardBaseClass }} {{ $selectionCardInactiveClass }} items-center justify-center border-dashed text-center text-slate-500"
-                            >
-                                <span class="{{ $iconTilePrimaryClass }}">
-                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
-                                        <path d="M12 5v14"></path><path d="M5 12h14"></path>
-                                    </svg>
-                                </span>
-                                <span class="text-base font-semibold">Add New Address</span>
-                                <span class="text-sm leading-6">Create another dispatch point for a different lab or facility.</span>
-                            </button>
+                            @auth
+                                <button
+                                    type="button"
+                                    id="addAddressToggleBtn"
+                                    class="{{ $selectionCardBaseClass }} {{ $selectedAddressSource === 'new' ? $selectionCardActiveClass : $selectionCardInactiveClass }} items-center justify-center border-dashed text-center text-slate-500"
+                                    data-address-source="new"
+                                >
+                                    <span class="{{ $selectedAddressSource === 'new' ? $iconTilePrimaryClass : $iconTileNeutralClass }}">
+                                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                                            <path d="M12 5v14"></path><path d="M5 12h14"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="text-base font-semibold">Add New Address</span>
+                                    <span class="text-sm leading-6">Create another dispatch point for a different lab or facility.</span>
+                                </button>
+                            @endauth
                         </div>
 
-                        {{-- ─── Add New Address Inline Form (hidden by default) ─── --}}
-                        <div id="addAddressForm" class="mt-5 hidden">
-                            <div class="rounded-[22px] border border-primary-200 bg-primary-50/40 p-5 md:p-6">
-                                <div class="mb-5 flex items-center justify-between">
-                                    <h3 class="text-base font-semibold text-slate-900">New Address Details</h3>
-                                    <button type="button" id="addAddressCloseBtn" aria-label="Close form" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    </button>
-                                </div>
-                                <div class="grid gap-4 sm:grid-cols-2">
-                                    <div class="sm:col-span-2">
-                                        <label class="{{ $labelClass }}">Address Label / Facility Name</label>
-                                        <input type="text" class="{{ $inputClass }}" placeholder="e.g. North Wing Lab, Warehouse B">
+                        @error('selected_user_address_id')
+                            <p class="mt-3 text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @enderror
+                        @error('selected_address_source')
+                            <p class="mt-3 text-sm font-medium text-rose-600">{{ $message }}</p>
+                        @enderror
+
+                        @auth
+                            {{-- Step 2: keep the new address form available to every logged-in customer so checkout can save a fresh destination when needed. --}}
+                            <div id="addAddressForm" class="mt-5 {{ $newAddressFormVisible ? '' : 'hidden' }}">
+                                <div class="rounded-[22px] border border-primary-200 bg-primary-50/40 p-5 md:p-6">
+                                    <div class="mb-5 flex items-center justify-between">
+                                        <h3 class="text-base font-semibold text-slate-900">New Address Details</h3>
+                                        <button type="button" id="addAddressCloseBtn" aria-label="Close form" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
                                     </div>
-                                    <div class="sm:col-span-2">
-                                        <label class="{{ $labelClass }}">Street Address</label>
-                                        <input type="text" class="{{ $inputClass }}" placeholder="Building no., street, locality">
+                                    <div class="grid gap-4 sm:grid-cols-2">
+                                        <div class="sm:col-span-2">
+                                            <label class="{{ $labelClass }}" for="newAddressLabelInput">Address Label / Facility Name</label>
+                                            <input id="newAddressLabelInput" type="text" class="{{ $inputClass }}" placeholder="e.g. North Wing Lab, Warehouse B" value="{{ old('new_address_label') }}">
+                                            @error('new_address_label')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label class="{{ $labelClass }}" for="newAddressLine1Input">Street Address</label>
+                                            <input id="newAddressLine1Input" type="text" class="{{ $inputClass }}" placeholder="Building no., street, locality" value="{{ old('new_address_line1') }}">
+                                            @error('new_address_line1')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
+                                        </div>
+                                        <div>
+                                            <label class="{{ $labelClass }}" for="newAddressCityInput">City</label>
+                                            <input id="newAddressCityInput" type="text" class="{{ $inputClass }}" placeholder="City" value="{{ old('new_address_city') }}">
+                                            @error('new_address_city')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
+                                        </div>
+                                        <div>
+                                            <label class="{{ $labelClass }}" for="newAddressPostalCodeInput">Pincode</label>
+                                            <input id="newAddressPostalCodeInput" type="text" class="{{ $inputClass }}" placeholder="6-digit pincode" maxlength="6" inputmode="numeric" value="{{ old('new_address_postal_code') }}">
+                                            @error('new_address_postal_code')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
+                                        </div>
+                                        <div>
+                                            <label class="{{ $labelClass }}" for="newAddressStateInput">State</label>
+                                            <input id="newAddressStateInput" type="text" class="{{ $inputClass }}" placeholder="State" value="{{ old('new_address_state') }}">
+                                            @error('new_address_state')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
+                                        </div>
+                                        <div>
+                                            <label class="{{ $labelClass }}" for="newAddressPhoneInput">Contact Phone</label>
+                                            <input id="newAddressPhoneInput" type="tel" class="{{ $inputClass }}" placeholder="+91 XXXXX XXXXX" value="{{ old('new_address_phone', auth()->user()->phone) }}">
+                                            @error('new_address_phone')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="{{ $labelClass }}">City</label>
-                                        <input type="text" class="{{ $inputClass }}" placeholder="City">
+                                    <div class="mt-5 flex flex-wrap gap-3">
+                                        <button type="button" id="saveAddressBtn" class="{{ $buttonPrimaryClass }} h-11 text-sm">
+                                            Save & Use This Address
+                                        </button>
+                                        <button type="button" id="addAddressCloseBtn2" class="{{ $buttonSecondaryClass }}">
+                                            Cancel
+                                        </button>
                                     </div>
-                                    <div>
-                                        <label class="{{ $labelClass }}">Pincode</label>
-                                        <input type="text" class="{{ $inputClass }}" placeholder="6-digit pincode" maxlength="6" inputmode="numeric">
-                                    </div>
-                                    <div>
-                                        <label class="{{ $labelClass }}">State</label>
-                                        <input type="text" class="{{ $inputClass }}" placeholder="State">
-                                    </div>
-                                    <div>
-                                        <label class="{{ $labelClass }}">Contact Phone</label>
-                                        <input type="tel" class="{{ $inputClass }}" placeholder="+91 XXXXX XXXXX">
-                                    </div>
-                                </div>
-                                <div class="mt-5 flex flex-wrap gap-3">
-                                    <button type="button" id="saveAddressBtn" class="{{ $buttonPrimaryClass }} h-11 text-sm">
-                                        Save & Use This Address
-                                    </button>
-                                    <button type="button" id="addAddressCloseBtn2" class="{{ $buttonSecondaryClass }}">
-                                        Cancel
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-
-                            @endif
+                        @endauth
+                        @if ($showBusinessInvoiceDetails)
                         {{-- GST / PAN Field --}}
                         <div class="mt-5 rounded-[20px] border border-slate-200 bg-slate-50 p-4 md:p-5">
                             <div class="flex items-center gap-2 mb-3">
@@ -267,33 +214,39 @@
                             </div>
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label class="{{ $labelClass }}">GSTIN Number</label>
+                                    <label class="{{ $labelClass }}" for="gstinInput">GSTIN Number</label>
                                     <input
                                         type="text"
                                         id="gstinInput"
                                         class="{{ $inputClass }} uppercase"
                                         placeholder="22AAAAA0000A1Z5"
                                         maxlength="15"
+                                        value="{{ old('gstin', $checkoutBusinessDetails['gstin'] ?? '') }}"
                                     >
+                                    @error('gstin')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                                     <p class="mt-1 text-xs text-slate-500">15-character GST Identification Number</p>
                                 </div>
                                 <div>
-                                    <label class="{{ $labelClass }}">PAN Number</label>
+                                    <label class="{{ $labelClass }}" for="panInput">PAN Number</label>
                                     <input
                                         type="text"
                                         id="panInput"
                                         class="{{ $inputClass }} uppercase"
                                         placeholder="AAAPL1234C"
                                         maxlength="10"
+                                        value="{{ old('pan_number', $checkoutBusinessDetails['pan_number'] ?? '') }}"
                                     >
+                                    @error('pan_number')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                                     <p class="mt-1 text-xs text-slate-500">Required for high-value orders (&gt; ₹2L)</p>
                                 </div>
                                 <div class="sm:col-span-2">
-                                    <label class="{{ $labelClass }}">Registered Business Name (for invoice)</label>
-                                    <input type="text" class="{{ $inputClass }}" placeholder="As per GST registration">
+                                    <label class="{{ $labelClass }}" for="registeredBusinessNameInput">Registered Business Name (for invoice)</label>
+                                    <input id="registeredBusinessNameInput" type="text" class="{{ $inputClass }}" placeholder="As per GST registration" value="{{ old('registered_business_name', $checkoutBusinessDetails['registered_business_name'] ?? '') }}">
+                                    @error('registered_business_name')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                                 </div>
                             </div>
                         </div>
+                        @endif
                     </section>
 
                     {{-- ════════════════════════════════════════════════════════ --}}
@@ -349,7 +302,8 @@
                                 rows="3"
                                 class="{{ $inputClass }} resize-none"
                                 placeholder="e.g. Deliver to loading bay B, fragile items, leave with reception, specific handling instructions..."
-                            ></textarea>
+                            >{{ old('notes') }}</textarea>
+                            @error('notes')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                             <p class="mt-1.5 text-xs text-slate-400">Your delivery team will see this note on the dispatch sheet.</p>
                         </div>
                     </section>
@@ -451,11 +405,7 @@
                             icon="order"
                             title="No items available"
                             description="Return to the cart page to add products before placing the order."
-                        >
-                            <x-slot:action>
-                                <a href="{{ route('cart.page') }}" class="{{ $buttonSecondaryClass }} mt-5">Back to Cart</a>
-                            </x-slot:action>
-                        </x-ui.empty-state>
+                        />
 
                         <div id="checkoutSummaryItems" class="mt-4 space-y-2.5"></div>
 
@@ -529,6 +479,25 @@
                                 if (couponField && couponInput) {
                                     couponField.value = (couponInput.value || '').trim().toUpperCase();
                                 }
+                                const copyFieldValue = function (targetId, sourceId, transform) {
+                                    const target = document.getElementById(targetId);
+                                    const source = document.getElementById(sourceId);
+                                    if (!target || !source) return;
+                                    const rawValue = source.value || '';
+                                    target.value = transform ? transform(rawValue) : rawValue;
+                                };
+                                copyFieldValue('checkoutSelectedAddressSourceField', 'checkoutAddressSourceStateField');
+                                copyFieldValue('checkoutSelectedUserAddressIdField', 'checkoutSelectedAddressIdStateField');
+                                copyFieldValue('checkoutNewAddressLabelField', 'newAddressLabelInput');
+                                copyFieldValue('checkoutNewAddressLine1Field', 'newAddressLine1Input');
+                                copyFieldValue('checkoutNewAddressCityField', 'newAddressCityInput');
+                                copyFieldValue('checkoutNewAddressStateField', 'newAddressStateInput');
+                                copyFieldValue('checkoutNewAddressPostalCodeField', 'newAddressPostalCodeInput');
+                                copyFieldValue('checkoutNewAddressPhoneField', 'newAddressPhoneInput');
+                                copyFieldValue('checkoutNotesField', 'orderNotes');
+                                copyFieldValue('checkoutGstinField', 'gstinInput', function (value) { return value.trim().toUpperCase(); });
+                                copyFieldValue('checkoutPanNumberField', 'panInput', function (value) { return value.trim().toUpperCase(); });
+                                copyFieldValue('checkoutRegisteredBusinessNameField', 'registeredBusinessNameInput');
                                 const btn = this.querySelector('button[type=submit]');
                                 btn.disabled = true;
                                 btn.innerHTML = `
@@ -544,6 +513,21 @@
 
                                 {{-- Step 2: submit the current coupon code to backend checkout so the final discount stays server-validated. --}}
                                 <input type="hidden" name="coupon_code" id="checkoutCouponCodeField" value="{{ old('coupon_code') }}">
+                                <input type="hidden" name="selected_address_source" id="checkoutSelectedAddressSourceField" value="{{ old('selected_address_source', $selectedAddressSource) }}">
+                                <input type="hidden" id="checkoutAddressSourceStateField" value="{{ old('selected_address_source', $selectedAddressSource) }}">
+                                <input type="hidden" name="selected_user_address_id" id="checkoutSelectedUserAddressIdField" value="{{ old('selected_user_address_id', $selectedAddressId) }}">
+                                <input type="hidden" id="checkoutSelectedAddressIdStateField" value="{{ old('selected_user_address_id', $selectedAddressId) }}">
+                                <input type="hidden" name="new_address_label" id="checkoutNewAddressLabelField" value="{{ old('new_address_label') }}">
+                                <input type="hidden" name="new_address_line1" id="checkoutNewAddressLine1Field" value="{{ old('new_address_line1') }}">
+                                <input type="hidden" name="new_address_city" id="checkoutNewAddressCityField" value="{{ old('new_address_city') }}">
+                                <input type="hidden" name="new_address_state" id="checkoutNewAddressStateField" value="{{ old('new_address_state') }}">
+                                <input type="hidden" name="new_address_postal_code" id="checkoutNewAddressPostalCodeField" value="{{ old('new_address_postal_code') }}">
+                                <input type="hidden" name="new_address_phone" id="checkoutNewAddressPhoneField" value="{{ old('new_address_phone') }}">
+                                <input type="hidden" name="new_address_country" value="India">
+                                <input type="hidden" name="gstin" id="checkoutGstinField" value="{{ old('gstin') }}">
+                                <input type="hidden" name="pan_number" id="checkoutPanNumberField" value="{{ old('pan_number') }}">
+                                <input type="hidden" name="registered_business_name" id="checkoutRegisteredBusinessNameField" value="{{ old('registered_business_name') }}">
+                                <input type="hidden" name="notes" id="checkoutNotesField" value="{{ old('notes') }}">
 
                                 {{-- Step 3: keep the submit action simple because the backend cart already holds the current checkout items. --}}
                                 <button type="submit" class="{{ $buttonPrimaryClass }} w-full gap-2 transition-all">
@@ -607,6 +591,8 @@
                 const paymentInputs    = Array.from(document.querySelectorAll('input[name="payment_method"]'));
                 const addressCards     = Array.from(document.querySelectorAll('[data-address-card]'));
                 const poUploadPanel    = document.getElementById('poUploadPanel');
+                const selectedAddressSourceStateField = document.getElementById('checkoutAddressSourceStateField');
+                const selectedAddressIdStateField     = document.getElementById('checkoutSelectedAddressIdStateField');
 
                 /* ── Add New Address inline form ── */
                 const addToggleBtn  = document.getElementById('addAddressToggleBtn');
@@ -625,12 +611,36 @@
                     if (addForm) addForm.classList.add('hidden');
                 }
 
+                const syncAddAddressButtonState = function (isActive) {
+                    if (!addToggleBtn) return;
+                    addToggleBtn.classList.toggle('border-primary-200', isActive);
+                    addToggleBtn.classList.toggle('bg-primary-50', isActive);
+                    addToggleBtn.classList.toggle('border-slate-200', !isActive);
+                    addToggleBtn.classList.toggle('bg-white', !isActive);
+                };
+
+                const activateNewAddressSelection = function (keepFormOpen) {
+                    if (selectedAddressSourceStateField) selectedAddressSourceStateField.value = 'new';
+                    if (selectedAddressIdStateField) selectedAddressIdStateField.value = '';
+                    addressCards.forEach(function (node) {
+                        node.dataset.selected = 'false';
+                        node.classList.remove('border-primary-200', 'bg-primary-50');
+                        node.classList.add('border-slate-200', 'bg-white');
+                    });
+                    syncAddAddressButtonState(true);
+                    if (keepFormOpen) {
+                        openAddressForm();
+                    } else {
+                        closeAddressForm();
+                    }
+                };
+
                 if (addToggleBtn) addToggleBtn.addEventListener('click', openAddressForm);
                 if (addCloseBtn)  addCloseBtn.addEventListener('click', closeAddressForm);
                 if (addCloseBtn2) addCloseBtn2.addEventListener('click', closeAddressForm);
                 if (saveAddressBtn) {
                     saveAddressBtn.addEventListener('click', function () {
-                        closeAddressForm();
+                        activateNewAddressSelection(false);
                     });
                 }
 
@@ -797,6 +807,10 @@
                         node.classList.toggle('border-slate-200', !selected);
                         node.classList.toggle('bg-white', !selected);
                     });
+                    if (selectedAddressSourceStateField) selectedAddressSourceStateField.value = 'existing';
+                    if (selectedAddressIdStateField) selectedAddressIdStateField.value = card.dataset.addressId || '';
+                    syncAddAddressButtonState(false);
+                    closeAddressForm();
                 };
 
                 /* ── payment card sync ── */
@@ -813,17 +827,12 @@
                     if (poUploadPanel) {
                         poUploadPanel.classList.toggle('hidden', !(active && active.value === 'po'));
                     }
-                    /* update step bar based on section interaction */
-                    setStep(3);
                 };
 
                 /* ── events ── */
                 addressCards.forEach(function (card) {
                     card.addEventListener('click', function () {
-                        if (!card.classList.contains('border-dashed')) {
-                            setActiveAddress(card);
-                            setStep(2);
-                        }
+                        setActiveAddress(card);
                     });
                 });
 
@@ -839,6 +848,11 @@
 
                 /* ── init ── */
                 if (window.CartStore) window.CartStore.subscribe(render);
+                if (selectedAddressSourceStateField && selectedAddressSourceStateField.value === 'new') {
+                    activateNewAddressSelection(addForm && !addForm.classList.contains('hidden'));
+                } else {
+                    syncAddAddressButtonState(false);
+                }
                 syncPaymentCards();
             });
         </script>
