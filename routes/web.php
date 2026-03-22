@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Authorization\AdminUserManagementController;
 use App\Http\Controllers\Cart\CartController;
+use App\Http\Controllers\ContactUs\ContactUsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Authorization\ImpersonationController;
@@ -90,7 +91,8 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 
    //Route::view('/homeAdmin', 'home')->name('home');
    Route::view('/about', 'prelogin.about')->name('about');
-   Route::view('/contact', 'prelogin.contact')->name('contact');
+   Route::get('/contact', [ContactUsController::class, 'index'])->name('contact');
+   Route::post('/contact', [ContactUsController::class, 'store'])->name('contact.store');
 
    //Route::view('/login', 'auth.login')->name('login');
    Route::view('/signup', 'auth.signup')->name('signup');

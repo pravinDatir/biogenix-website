@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             AdminSetupSeeder::class,
             CatalogSeeder::class,
             SupportTicketCategorySeeder::class,
+            EnquiryTypeSeeder::class,
             ProductTechnicalResourceSeeder::class,
             PricingRulesSeeder::class,
             OrderSeeder::class,
