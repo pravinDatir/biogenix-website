@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Authorization\AdminUserManagementController;
+use App\Http\Controllers\BookMeeting\BookMeetingController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\ContactUs\ContactUsController;
 use App\Http\Controllers\DashboardController;
@@ -100,7 +101,8 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
    Route::post('/signup/email-otp/send', [SignupEmailOtpController::class, 'sendOtp'])->name('signup.email-otp.send');
    Route::post('/signup/email-otp/verify', [SignupEmailOtpController::class, 'verifyOtp'])->name('signup.email-otp.verify');
    Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password');
-   Route::view('/book-meeting', 'prelogin.book-meeting')->name('book-meeting');
+   Route::get('/book-meeting', [BookMeetingController::class, 'index'])->name('book-meeting');
+   Route::post('/book-meeting', [BookMeetingController::class, 'store'])->name('book-meeting.store');
 
 // Route::view('/dashboard/customer', 'dashboard.customer')->name('customer.dashboard');
 // Route::view('/dashboard/admin', 'dashboard.admin')->name('admin.dashboard');
