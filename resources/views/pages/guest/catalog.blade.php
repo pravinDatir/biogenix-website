@@ -505,7 +505,7 @@
                                 <article data-catalog-product-card data-product-id="{{ $product->id }}" class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                                     <div class="relative px-3 pt-3">
                                         <div class="relative overflow-hidden rounded-2xl group/image">
-                                            <a href="{{ $detailUrl }}" class="block cursor-pointer">
+                                            <a href="{{ $detailUrl }}" data-catalog-detail-link data-base-url="{{ $detailUrl }}" class="block cursor-pointer">
                                                 @if ($imageUrl)
                                                     <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover/image:scale-[1.04]" loading="lazy" decoding="async">
                                                 @else
@@ -539,7 +539,7 @@
                                         <div class="space-y-1.5">
                                             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
                                             <h3 class="overflow-hidden text-[15px] font-semibold leading-snug text-slate-950 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] transition-colors hover:text-primary-600">
-                                                <a href="{{ $detailUrl }}">{{ Str::limit((string) $product->name, 58) }}</a>
+                                                <a href="{{ $detailUrl }}" data-catalog-detail-link data-base-url="{{ $detailUrl }}">{{ Str::limit((string) $product->name, 58) }}</a>
                                             </h3>
                                             <div>
                                                 <p class="text-[12px] text-slate-500">SKU: <span class="font-medium tracking-tight text-slate-700">{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}</span></p>
@@ -615,38 +615,42 @@
                                             </div>
                                         </div>
 
-                                        <div data-catalog-action-group class="mt-auto grid w-full items-center gap-2" style="grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);">
+                                        <div data-catalog-action-group class="mt-auto flex w-full items-center gap-2">
                                             {{-- Buy Now --}}
-                                            @guest
-                                                <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
-                                                    <span>Buy Now</span>
-                                                </a>
-                                            @else
-                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
-                                                    <span>Buy Now</span>
-                                                </button>
-                                            @endguest
+                                            <div style="width: 70%;">
+                                                @guest
+                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
+                                                        <span>Buy Now</span>
+                                                    </a>
+                                                @else
+                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
+                                                        <span>Buy Now</span>
+                                                    </button>
+                                                @endguest
+                                            </div>
 
                                             {{-- Add to Cart --}}
-                                            @guest
-                                                <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
-                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                        <circle cx="8" cy="20" r="1.5"></circle>
-                                                        <circle cx="18" cy="20" r="1.5"></circle>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
-                                                    </svg>
-                                                </a>
-                                            @else
-                                                <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
-                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                        <circle cx="8" cy="20" r="1.5"></circle>
-                                                        <circle cx="18" cy="20" r="1.5"></circle>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
-                                                    </svg>
-                                                </button>
-                                            @endguest
+                                            <div style="width: 30%;">
+                                                @guest
+                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                            <circle cx="8" cy="20" r="1.5"></circle>
+                                                            <circle cx="18" cy="20" r="1.5"></circle>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
+                                                        </svg>
+                                                    </a>
+                                                @else
+                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                            <circle cx="8" cy="20" r="1.5"></circle>
+                                                            <circle cx="18" cy="20" r="1.5"></circle>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
+                                                        </svg>
+                                                    </button>
+                                                @endguest
+                                            </div>
                                         </div>
                                     </div>
                                 </article>
@@ -910,6 +914,14 @@
                     if (productCard) {
                         productCard.querySelectorAll('.js-add-to-cart').forEach(function (button) {
                             button.dataset.quantity = String(quantity);
+                        });
+
+                        // Step 5: update all product detail links within this card to include the current quantity.
+                        productCard.querySelectorAll('[data-catalog-detail-link]').forEach(function (link) {
+                            const baseUrl = link.dataset.baseUrl || link.getAttribute('href').split('?')[0];
+                            const url = new URL(baseUrl, window.location.origin);
+                            url.searchParams.set('quantity', String(quantity));
+                            link.href = url.toString();
                         });
                     }
 

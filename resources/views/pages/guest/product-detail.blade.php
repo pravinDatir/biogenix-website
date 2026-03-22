@@ -130,6 +130,27 @@
         $actionsClass = 'grid gap-3 sm:grid-cols-2';
         $inlineChipClass = 'inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600';
         $sectionHeadingClass = 'text-xl font-semibold text-slate-950';
+
+        // Step 1: extract Min, Max, and Lot Size from the product with standard fallback logic.
+        $minQuantity = max(1, (int) ($product->visible_min_order_quantity ?? 1));
+        $maxQuantity = ($product->visible_max_order_quantity ?? null) === null
+            ? null
+            : max($minQuantity, (int) $product->visible_max_order_quantity);
+        $lotSize = max(1, (int) ($product->visible_lot_size ?? 1));
+
+        // Step 2: read the initial quantity from the query parameter, ensuring it respects the Min/Max/Lot rules.
+        $requestedQuantity = (int) request('quantity', $minQuantity);
+        if ($requestedQuantity < $minQuantity) {
+            $requestedQuantity = $minQuantity;
+        } elseif ($maxQuantity !== null && $requestedQuantity > $maxQuantity) {
+            $requestedQuantity = $maxQuantity;
+        }
+
+        // Adjust requested quantity to align with lot size if needed
+        if ($lotSize > 1 && ($requestedQuantity - $minQuantity) % $lotSize !== 0) {
+            $diff = ($requestedQuantity - $minQuantity) % $lotSize;
+            $requestedQuantity = $requestedQuantity - $diff;
+        }
     @endphp
 
     <div class="-mt-6 w-screen bg-slate-50 py-4 md:-mt-8 md:py-6 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
@@ -259,10 +280,22 @@
                         <div class="mt-4 space-y-3">
                             <div class="max-w-48 space-y-3">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Quantity</p>
-                                <div class="{{ $qtyPickerClass }}">
+                                <div class="{{ $qtyPickerClass }}"
+                                    data-detail-quantity-control
+                                    data-min-quantity="{{ $minQuantity }}"
+                                    data-max-quantity="{{ $maxQuantity ?? '' }}"
+                                    data-lot-size="{{ $lotSize }}"
+                                >
                                     <button type="button" class="{{ $qtyButtonClass }}" data-qty-button data-direction="-1">-</button>
-                                    <span id="catalogQuantityValue" class="text-base font-medium text-slate-900 transition duration-150">1</span>
+                                    <span id="catalogQuantityValue" class="text-base font-medium text-slate-900 transition duration-150">{{ $requestedQuantity }}</span>
                                     <button type="button" class="{{ $qtyButtonClass }}" data-qty-button data-direction="1">+</button>
+                                </div>
+                                <div class="mt-2.5 flex items-center gap-3">
+                                    <p class="whitespace-nowrap text-[11.5px] font-medium text-slate-400">
+                                        Min: <span class="text-slate-600">{{ $minQuantity }}</span>
+                                        @if ($maxQuantity !== null) &bull; Max: <span class="text-slate-600">{{ number_format($maxQuantity) }}</span> @endif
+                                        @if ($lotSize > 1) &bull; Lot: <span class="text-slate-600">{{ $lotSize }}</span> @endif
+                                    </p>
                                 </div>
                             </div>
 
@@ -306,7 +339,7 @@
                                         {{-- Step 3: submit the selected product and current quantity so checkout includes this choice immediately. --}}
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="product_variant_id" value="{{ $cartVariantId }}">
-                                        <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="1">
+                                        <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="{{ $requestedQuantity }}">
 
                                         {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
                                         <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ff5f00] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e25500]">
@@ -414,7 +447,7 @@
 
                 <div id="sectionResources" class="{{ $sectionCardClass }} scroll-mt-16">
                     <div class="flex items-center justify-between gap-3">
-                        <h3 class="{{ $sectionHeadingClass }}">Technical Browsers</h3>
+                        <h3 class="{{ $sectionHeadingClass }}">Technical Brochure</h3>
                         <x-ui.status-badge type="product" value="resource_count" :label="count($technicalResources) . ' files'" />
                     </div>
                     <div class="mt-5 space-y-3">
@@ -561,7 +594,13 @@
                 const bulkTierRows = Array.from(document.querySelectorAll('[data-bulk-tier-row]'));
                 const bulkTierHint = document.getElementById('bulkTierHint');
                 const buyNowQuantityInput = document.getElementById('productDetailBuyNowQuantity');
-                let quantity = 1;
+                const quantityControl = document.querySelector('[data-detail-quantity-control]');
+                const minQuantity = Math.max(1, Number(quantityControl?.dataset.minQuantity || 1));
+                const maxQuantityRaw = Number(quantityControl?.dataset.maxQuantity || 0);
+                const maxQuantity = maxQuantityRaw > 0 ? maxQuantityRaw : null;
+                const lotSize = Math.max(1, Number(quantityControl?.dataset.lotSize || 1));
+                
+                let quantity = Number(@json($requestedQuantity));
 
                 const loginUrl = @json(route('login'));
                 const isAuthenticated = @json(auth()->check());
@@ -756,6 +795,22 @@
 
                     // Step 3: refresh the tier pricing so the buyer sees the correct checkout estimate.
                     syncTierPricing();
+
+                    // Step 4: disable buttons when they hit the boundaries.
+                    const isAtMinimum = quantity <= minQuantity;
+                    const isAtMaximum = maxQuantity !== null && quantity >= maxQuantity;
+
+                    document.querySelectorAll('[data-qty-button][data-direction="-1"]').forEach(function (btn) {
+                        btn.disabled = isAtMinimum;
+                        btn.classList.toggle('opacity-40', isAtMinimum);
+                        btn.classList.toggle('cursor-not-allowed', isAtMinimum);
+                    });
+
+                    document.querySelectorAll('[data-qty-button][data-direction="1"]').forEach(function (btn) {
+                        btn.disabled = isAtMaximum;
+                        btn.classList.toggle('opacity-40', isAtMaximum);
+                        btn.classList.toggle('cursor-not-allowed', isAtMaximum);
+                    });
                 };
 
                 syncSelectedQuantity(false);
@@ -843,7 +898,13 @@
 
                 document.querySelectorAll('[data-qty-button]').forEach(function (button) {
                     button.addEventListener('click', function () {
-                        quantity = Math.max(1, quantity + Number(button.dataset.direction || 0));
+                        const direction = Number(button.dataset.direction || 0);
+                        if (direction < 0) {
+                            quantity = Math.max(minQuantity, quantity - lotSize);
+                        } else if (direction > 0) {
+                            const nextQuantity = quantity + lotSize;
+                            quantity = maxQuantity === null ? nextQuantity : Math.min(maxQuantity, nextQuantity);
+                        }
                         syncSelectedQuantity();
                     });
                 });
