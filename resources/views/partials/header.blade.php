@@ -62,9 +62,13 @@
             }
         }
     </style>
-    <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10">
+    <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10"
+    style="background: radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.11), transparent 24%),
+            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.12), transparent 18%),
+            linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)"
+    >
         <a href="{{ route('home') }}" class="shrink-0 xl:col-start-1">
-            <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
+            <img src="{{ asset('upload/icons/biogenixlogo5.png') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
         </a>
 
         {{-- Mobile hamburger --}}
