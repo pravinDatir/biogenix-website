@@ -43,15 +43,15 @@ Route::post('/generate-quote', [QuotationController::class, 'createQuotationAndD
 Route::get('/pi-quotation', [ProformaInvoiceController::class, 'showPiQuotationRequestPage'])->name('pi-quotation.generate');
 Route::post('/pi-quotation', [ProformaInvoiceController::class, 'submitPiQuotationRequest'])->name('pi-quotation.store');
 Route::view('/adminPanel/dashboard', 'adminPanel.dashboard')->name('adminPanel.dashboard');
-Route::view('/adminPanel/products', 'adminPanel.products')->name('adminPanel.products');
-Route::view('/adminPanel/products/create', 'adminPanel.products-create')->name('adminPanel.products.create');
-Route::view('/adminPanel/pricing', 'adminPanel.pricing')->name('adminPanel.pricing');
+Route::view('/adminPanel/products', 'adminPanel.products.index')->name('adminPanel.products');
+Route::view('/adminPanel/products/create', 'adminPanel.products.create')->name('adminPanel.products.create');
+Route::view('/adminPanel/pricing', 'adminPanel.pricing.index')->name('adminPanel.pricing');
 Route::view('/adminPanel/pi-quotation', 'adminPanel.pi-quotation')->name('adminPanel.pi-quotation.index');
 Route::view('/adminPanel/pi-quotation/create', 'adminPanel.pi-quotation-create')->name('adminPanel.pi-quotation.create');
-Route::view('/adminPanel/orders', 'adminPanel.orders')->name('adminPanel.orders');
-Route::view('/adminPanel/orders/view', 'adminPanel.order-details')->name('adminPanel.orders.view');
-Route::view('/adminPanel/customers', 'adminPanel.customers')->name('adminPanel.customers');
-Route::view('/adminPanel/customer-directory', 'adminPanel.customer-directory')->name('adminPanel.customer-directory');
+Route::view('/adminPanel/orders', 'adminPanel.orders.index')->name('adminPanel.orders');
+Route::view('/adminPanel/orders/view', 'adminPanel.orders.details')->name('adminPanel.orders.view');
+Route::view('/adminPanel/customers', 'adminPanel.customers.index')->name('adminPanel.customers');
+Route::view('/adminPanel/customer-directory', 'adminPanel.customers.directory')->name('adminPanel.customer-directory');
 Route::group(['prefix' => 'adminPanel', 'as' => 'adminPanel.'], function () {
     Route::view('/role-permission', 'adminPanel.RolePermissions.index')->name('role-permission');
     Route::view('/role-permission/add-role', 'adminPanel.RolePermissions.add-role')->name('role-permission.add-role');
@@ -61,10 +61,10 @@ Route::group(['prefix' => 'adminPanel', 'as' => 'adminPanel.'], function () {
     Route::view('/role-permission/add-delegation', 'adminPanel.RolePermissions.add-delegation')->name('role-permission.add-delegation');
     Route::view('/role-permission/grant-impersonation', 'adminPanel.RolePermissions.grant-impersonation')->name('role-permission.grant-impersonation');
 });
-Route::view('/adminPanel/support-tickets', 'adminPanel.support-tickets')->name('adminPanel.support-tickets');
-Route::view('/adminPanel/ui-fields-modification', 'adminPanel.ui-fields-modification')->name('adminPanel.ui-fields-modification');
-Route::view('/adminPanel/sync-monitor', 'adminPanel.sync-monitor')->name('adminPanel.sync-monitor');
-Route::view('/adminPanel/global-settings', 'adminPanel.global-settings')->name('adminPanel.global-settings');
+Route::view('/adminPanel/support-tickets', 'adminPanel.support-tickets.index')->name('adminPanel.support-tickets');
+Route::view('/adminPanel/ui-fields-modification', 'adminPanel.support-tickets.ui-fields-modification')->name('adminPanel.ui-fields-modification');
+Route::view('/adminPanel/sync-monitor', 'adminPanel.sync-monitor.index')->name('adminPanel.sync-monitor');
+Route::view('/adminPanel/global-settings', 'adminPanel.global-settings.index')->name('adminPanel.global-settings');
 Route::get('/cart', [CartController::class, 'showCustomerCartPage'])->name('cart.page');
 Route::get('/checkout', [CartController::class, 'showCustomerCheckoutPage'])->name('checkout.page');
 Route::middleware('auth')->post('/checkout', [CartController::class, 'submitCustomerCheckoutOrder'])->name('checkout.submit');
