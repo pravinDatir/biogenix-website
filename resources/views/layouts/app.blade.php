@@ -23,6 +23,7 @@
 
 <body class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_right_15%,rgba(14,165,233,0.12),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#eff5ff_100%)] font-sans text-slate-800 antialiased">
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
+    @php($isMinimalCustomerWorkspace = trim($__env->yieldContent('customer_minimal')) === 'minimal')
     @php($loaderLogoPath = public_path('upload/icons/biogenix3D.png'))
     @php($loaderLogoSrc = file_exists($loaderLogoPath) ? 'data:image/jpeg;base64,' . base64_encode(file_get_contents($loaderLogoPath)) : asset('upload/icons/logo.jpg'))
 
@@ -96,7 +97,9 @@
             </div>
         </main>
 
-        @include('partials.footer')
+        @unless ($isMinimalCustomerWorkspace)
+            @include('partials.footer')
+        @endunless
     </div>
 
     <div class="fixed bottom-10 right-6 z-50 flex flex-col items-end gap-4">

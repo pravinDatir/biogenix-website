@@ -34,7 +34,7 @@
     {{-- Add Address Modal --}}
     <div 
         id="addAddressModal"
-        class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+        class="hidden fixed inset-0 z-[100] items-center justify-center p-4 sm:p-6"
     >
         {{-- Backdrop --}}
         <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleAddAddressModal(false)"></div>
@@ -102,17 +102,19 @@
     </div>
 
     <script>
-        function toggleAddAddressModal(show) {
+        window.toggleAddAddressModal = function(show) {
             const modal = document.getElementById('addAddressModal');
             if (!modal) return;
             
             if (show) {
                 modal.classList.remove('hidden');
+                modal.classList.add('flex');
                 document.body.style.overflow = 'hidden';
             } else {
+                modal.classList.remove('flex');
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
             }
-        }
+        };
     </script>
 @endsection

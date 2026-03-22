@@ -17,7 +17,6 @@
             <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Support Ticket System</h1>
             <p class="text-sm text-slate-500 mt-1 max-w-lg">Centralized hub for managing, resolving, and tracking customer inquiries across Biogenix services.</p>
         </div>
-        </div>
     </div>
 
     {{-- ─── Active Ticket Inbox ─── --}}

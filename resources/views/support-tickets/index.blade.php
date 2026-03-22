@@ -30,163 +30,152 @@
         title="Support Tickets"
         description="Create, track, and collaborate on support issues without leaving the main customer workspace."
     >
+
         <x-slot:metrics>
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <div class="{{ $metricCardClass }}">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Open</p>
-                    <p class="mt-3 text-2xl font-bold text-slate-900">{{ $openCount }}</p>
+            <div class="grid gap-4 sm:grid-cols-3">
+                <div class="flex items-center gap-5 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-[13px] font-semibold text-slate-500">Open Tickets</p>
+                        <p class="text-2xl font-bold text-slate-900">{{ $openCount }}</p>
+                    </div>
                 </div>
-                <div class="{{ $metricCardClass }}">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">In Progress</p>
-                    <p class="mt-3 text-2xl font-bold text-slate-900">{{ $inProgressCount }}</p>
+                <div class="flex items-center gap-5 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-[13px] font-semibold text-slate-500">In Progress</p>
+                        <p class="text-2xl font-bold text-slate-900">{{ $inProgressCount }}</p>
+                    </div>
                 </div>
-                <div class="{{ $metricCardClass }}">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Awaiting Response</p>
-                    <p class="mt-3 text-2xl font-bold text-slate-900">{{ $awaitingResponseCount }}</p>
-                </div>
-                <div class="{{ $metricCardClass }}">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Closed</p>
-                    <p class="mt-3 text-2xl font-bold text-slate-900">{{ $closedCount }}</p>
+                <div class="flex items-center gap-5 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-[13px] font-semibold text-slate-500">Resolved</p>
+                        <p class="text-2xl font-bold text-slate-900">{{ $closedCount }}</p>
+                    </div>
                 </div>
             </div>
         </x-slot:metrics>
 
-        <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
-            <div class="{{ $panelClass }}">
-                <div>
-                    <h2 class="text-lg font-semibold text-slate-900">{{ $canCreateTicket ? 'Create Ticket' : 'Ticket Creation Restricted' }}</h2>
-                    <p class="mt-1 text-sm text-slate-500">Use the live support workflow fields and upload optional supporting files.</p>
-                </div>
-
-                @if ($canCreateTicket)
-                    <form method="POST" action="{{ route('support-tickets.store') }}" enctype="multipart/form-data" class="space-y-5">
-                        @csrf
-
-                        <div class="grid gap-4 md:grid-cols-2">
-                            <div class="space-y-2">
-                                <label for="category" class="text-sm font-semibold text-slate-700">Category</label>
-                                <select id="category" name="category" class="{{ $inputClass }}" required>
-                                    <option value="">Select category</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category }}" @selected(old('category') === $category)>{{ ucwords(str_replace('_', ' ', $category)) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="space-y-2">
-                                <label for="priority" class="text-sm font-semibold text-slate-700">Priority</label>
-                                <select id="priority" name="priority" class="{{ $inputClass }}" required>
-                                    <option value="">Select priority</option>
-                                    @foreach ($priorities as $priority)
-                                        <option value="{{ $priority }}" @selected(old('priority') === $priority)>{{ strtoupper($priority) }}</option>
-                                    @endforeach
-                                </select>
+        <div class="space-y-6">
+            {{-- Ticket History Table --}}
+            <div class="rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+                <div class="flex flex-col gap-4 border-b border-slate-100 p-6 sm:flex-row sm:items-center sm:justify-between md:p-8">
+                    <h2 class="text-lg font-bold text-slate-900">Ticket History</h2>
+                    <div class="flex items-center gap-3">
+                        <div class="relative w-full sm:w-64">
+                            <input type="text" placeholder="Search tickets..." class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]">
+                            <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                             </div>
                         </div>
+                        <button type="button" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                        </button>
+                    </div>
+                </div>
 
-                        <div class="space-y-2">
-                            <label for="description" class="text-sm font-semibold text-slate-700">Description</label>
-                            <textarea id="description" name="description" rows="5" class="{{ $textareaClass }}" required>{{ old('description') }}</textarea>
-                        </div>
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 bg-slate-50/50 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                <th class="whitespace-nowrap px-6 py-4 md:px-8">Ticket ID</th>
+                                <th class="whitespace-nowrap px-6 py-4">Date</th>
+                                <th class="whitespace-nowrap px-6 py-4">Subject</th>
+                                <th class="whitespace-nowrap px-6 py-4 text-center">Category</th>
+                                <th class="whitespace-nowrap px-6 py-4">Status</th>
+                                <th class="whitespace-nowrap px-6 py-4 md:px-8 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse ($tickets as $ticket)
+                                @php
+                                    $activityAt = $ticket->created_at;
+                                    $statusColors = [
+                                        'open' => ['dot' => 'bg-blue-600', 'text' => 'text-blue-700'],
+                                        'in_progress' => ['dot' => 'bg-amber-500', 'text' => 'text-amber-700'],
+                                        'resolved' => ['dot' => 'bg-emerald-500', 'text' => 'text-emerald-700'],
+                                        'closed' => ['dot' => 'bg-emerald-500', 'text' => 'text-emerald-700'],
+                                        'awaiting_response' => ['dot' => 'bg-purple-500', 'text' => 'text-purple-700']
+                                    ];
+                                    $sColor = $statusColors[$ticket->status] ?? ['dot' => 'bg-slate-400', 'text' => 'text-slate-700'];
+                                    
+                                    // Mock subject since original DB might not have 'subject' column clearly
+                                    // fallback: ticket_number logic or just display
+                                @endphp
+                                <tr class="transition hover:bg-slate-50/50">
+                                    <td class="whitespace-nowrap px-6 py-4 md:px-8">
+                                        <span class="text-[13px] font-bold text-[#0369a1]">{{ $ticket->ticket_number }}</span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-[13px] font-medium text-slate-500">
+                                        {{ $activityAt ? \Illuminate\Support\Carbon::parse($activityAt)->format('M d, Y') : 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 text-[14px] font-semibold text-slate-900 max-w-[200px] truncate">
+                                        {{ $ticket->subject ?? 'Support Tracking Inquiry' }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-center">
+                                        <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-600">
+                                            {{ ucwords(str_replace('_', ' ', $ticket->category)) }}
+                                        </span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <div class="flex items-center gap-2 text-[13px] font-bold {{ $sColor['text'] }}">
+                                            <span class="h-1.5 w-1.5 rounded-full {{ $sColor['dot'] }}"></span>
+                                            {{ ucwords(str_replace('_', ' ', $ticket->status)) }}
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 md:px-8 text-right">
+                                        <a href="{{ route('support-tickets.show', $ticket->id) }}" class="text-[13px] font-bold text-[#0369a1] transition hover:text-[#0284c7]">View Details</a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-sm font-medium text-slate-500">No tickets found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
-                        <x-ui.file-upload
-                            id="attachments"
-                            name="attachments[]"
-                            label="Attachments"
-                            hint="Upload up to 5 files, 5 MB each."
-                            multiple
-                            error-key="attachments"
-                        />
-
-                        <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-                            <p class="text-sm text-slate-500">Review your issue details and selected attachments, then submit the ticket to the support team.</p>
-                            <button type="submit" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Submit Ticket</button>
-                        </div>
-                    </form>
-                @else
-                    <x-alert type="warning">
-                        You are not allowed to create support tickets with your current role or permissions.
-                    </x-alert>
-                @endif
+                {{-- Pagination mock --}}
+                <div class="flex items-center justify-between border-t border-slate-100 px-6 py-4 md:px-8">
+                    <p class="text-[13px] font-medium text-slate-500">Showing {{ $tickets->firstItem() ?? 0 }} to {{ $tickets->lastItem() ?? 0 }} of {{ $tickets->total() }} tickets</p>
+                    <div class="flex items-center gap-2">
+                        <button type="button" class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-700 transition hover:bg-slate-50">Previous</button>
+                        <button type="button" class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-700 transition hover:bg-slate-50">Next</button>
+                    </div>
+                </div>
             </div>
 
-            <div class="{{ $panelClass }} !space-y-4">
-                <h2 class="text-lg font-semibold text-slate-900">Support SLA Snapshot</h2>
-                <div class="rounded-2xl bg-slate-50 px-4 py-4">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Response Window</p>
-                    <p class="mt-2 text-base font-semibold text-slate-900">Business hours first-response target</p>
+            {{-- Knowledge Base Card --}}
+            <div class="flex flex-col gap-6 rounded-3xl bg-[#f0f4f8] p-6 lg:flex-row lg:items-center lg:justify-between lg:p-10">
+                <div class="max-w-xl">
+                    <h3 class="text-xl font-bold text-slate-900">Need immediate help?</h3>
+                    <p class="mt-3 text-[14px] leading-relaxed text-slate-600">Our knowledge base contains answers to 90% of technical questions regarding bio-storage and shipping protocols.</p>
+                    <a href="#" class="mt-5 inline-flex flex-wrap items-center gap-2 text-[14px] font-bold text-[#0369a1] transition hover:text-[#0284c7]">
+                        Visit Help Center 
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </a>
                 </div>
-                <div class="rounded-2xl bg-slate-50 px-4 py-4">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Attachment Policy</p>
-                    <p class="mt-2 text-base font-semibold text-slate-900">Up to 5 files, 5 MB each</p>
-                </div>
-                <div class="rounded-2xl bg-slate-50 px-4 py-4">
-                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Scope</p>
-                    <p class="mt-2 text-base font-semibold text-slate-900">{{ $portal === 'b2b' ? 'Company-linked support visibility' : 'Self-service ticket visibility' }}</p>
+                <div class="flex flex-col gap-4 sm:flex-row">
+                    <a href="#" class="flex min-w-[180px] flex-col justify-center rounded-2xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                        <svg class="h-6 w-6 text-[#0369a1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                        <p class="mt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Documentation</p>
+                        <p class="mt-1 text-[14px] font-bold text-slate-900">Storage Guide</p>
+                    </a>
+                    <a href="#" class="flex min-w-[180px] flex-col justify-center rounded-2xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                        <svg class="h-6 w-6 text-[#0369a1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        <p class="mt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Live Support</p>
+                        <p class="mt-1 text-[14px] font-bold text-slate-900">24/7 Chat</p>
+                    </a>
                 </div>
             </div>
-        </div>
-
-        <div class="{{ $panelClass }}">
-            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h2 class="text-lg font-semibold text-slate-900">Visible Tickets</h2>
-                    <p class="mt-1 text-sm text-slate-500">All tickets currently visible to the signed-in scope.</p>
-                </div>
-                <div class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">{{ $tickets->total() }} tickets</div>
-            </div>
-
-            <div class="space-y-4">
-                @forelse ($tickets as $ticket)
-                    @php
-                        $activityAt = $ticket->last_activity_at ?? $ticket->updated_at ?? $ticket->created_at;
-                    @endphp
-                    <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                            <div class="space-y-3">
-                                <div class="flex flex-wrap items-center gap-3">
-                                    <h3 class="text-lg font-semibold text-slate-900">{{ $ticket->ticket_number }}</h3>
-                                    <x-ui.status-badge
-                                        type="status"
-                                        :value="$ticket->status"
-                                        :label="strtoupper(str_replace('_', ' ', $ticket->status))"
-                                        uppercase
-                                    />
-                                    <x-ui.status-badge type="priority" :value="$ticket->priority" :label="strtoupper($ticket->priority)" uppercase />
-                                </div>
-                                <div class="grid gap-3 text-sm text-slate-600 sm:grid-cols-2 xl:grid-cols-4">
-                                    <div>
-                                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Owner</p>
-                                        <p class="mt-1 font-medium text-slate-900">{{ $ticket->owner_name ?? 'Unknown' }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Company</p>
-                                        <p class="mt-1 font-medium text-slate-900">{{ $ticket->owner_company_name ?? 'Self' }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Category</p>
-                                        <p class="mt-1 font-medium text-slate-900">{{ ucwords(str_replace('_', ' ', $ticket->category)) }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Comments</p>
-                                        <p class="mt-1 font-medium text-slate-900">{{ $ticket->comments_count }}</p>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-slate-500">Last activity: {{ $activityAt ? \Illuminate\Support\Carbon::parse($activityAt)->format('d M Y, h:i A') : 'N/A' }}</p>
-                            </div>
-
-                            <a class="inline-flex h-10 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto" href="{{ route('support-tickets.show', $ticket->id) }}">View Ticket</a>
-                        </div>
-                    </article>
-                @empty
-                    <x-ui.empty-state
-                        icon="support"
-                        title="No visible tickets"
-                        description="There are no support tickets visible for the current user scope."
-                    />
-                @endforelse
-            </div>
-
-            <x-ui.pagination :paginator="$tickets" />
         </div>
 
         @if ($selectedTicket)

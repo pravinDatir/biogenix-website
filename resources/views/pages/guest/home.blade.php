@@ -5,10 +5,7 @@
         --home-cyan: #38bdf8;
         --home-navy: #07111f;
         --home-panel: rgba(255, 255, 255, 0.74);
-        background:
-            radial-gradient(circle at top left, rgba(255, 106, 0, 0.12), transparent 23%),
-            radial-gradient(circle at 88% 14%, rgba(56, 189, 248, 0.12), transparent 20%),
-            linear-gradient(180deg, #f5f9ff 0%, #eef4ff 50%, #f9fbff 100%);
+        background: transparent;
     }
 
     .home-page .home-card,
@@ -486,10 +483,8 @@
     }
 
     .home-solutions {
-        background:
-            radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.11), transparent 24%),
-            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.12), transparent 18%),
-            linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
     }
 
     .home-trust {
@@ -535,6 +530,7 @@
 @endpush
 
 <div class="home-page">
+    <div id="vanta-bg" class="fixed inset-0 -z-10 h-full w-full pointer-events-none"></div>
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- HERO CAROUSEL --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
@@ -1013,6 +1009,29 @@
                     catCarousel.scrollBy({ left: itemWidth + 14, behavior: 'smooth' });
                 });
             }
+        }
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof VANTA !== 'undefined') {
+            VANTA.FOG({
+              el: "#vanta-bg",
+              mouseControls: true,
+              touchControls: true,
+              gyroControls: false,
+              minHeight: 200.00,
+              minWidth: 200.00,
+              highlightColor: 0x2cc280,
+              midtoneColor: 0xd9bebe,
+              lowlightColor: 0x267726,
+              baseColor: 0xffebeb,
+              blurFactor: 0.60,
+              speed: 2.70,
+              zoom: 1.00
+            });
         }
     });
 </script>
