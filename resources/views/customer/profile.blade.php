@@ -31,7 +31,7 @@
 
         {{-- Change Password Modal --}}
         <x-modal id="changePasswordModal" title="Change Password">
-            <form action="{{ route('customer.profile.password.update') }}" method="POST" class="space-y-4">
+            <form action="{{ route('customer.profile.update') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="space-y-2">
                     <label for="current_password" class="text-[13px] font-semibold text-slate-700">Current Password</label>
