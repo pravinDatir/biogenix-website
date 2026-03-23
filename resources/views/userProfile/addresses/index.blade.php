@@ -116,40 +116,7 @@
         </x-modal>
 
         <script>
-            let modalHideTimers = {};
-
-            function toggleModal(id, show) {
-                const modal = document.getElementById(id);
-                const content = document.getElementById(id + '-content');
-                if (!modal || !content) return;
-                
-                if (show) {
-                    window.clearTimeout(modalHideTimers[id]);
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-                    window.requestAnimationFrame(() => {
-                        modal.classList.remove('opacity-0');
-                        content.classList.remove('scale-85');
-                        content.classList.add('scale-90');
-                    });
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    modal.classList.add('opacity-0');
-                    content.classList.remove('scale-90');
-                    content.classList.add('scale-85');
-                    
-                    modalHideTimers[id] = window.setTimeout(() => {
-                        modal.classList.add('hidden');
-                        modal.classList.remove('flex');
-                        document.body.style.overflow = '';
-                    }, 300);
-                }
-            }
-
-            // Also hook into the global modal-close if any
-            document.querySelectorAll('[data-modal-close="addAddressModal"]').forEach(btn => {
-                btn.onclick = () => toggleModal('addAddressModal', false);
-            });
+        </script>
         </script>
     </x-account.workspace>
 @endsection

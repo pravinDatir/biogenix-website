@@ -469,6 +469,55 @@
 
     <script src="{{ asset('js/validation.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <script>
+        // Global Modal Logic
+        (function() {
+            let modalHideTimers = {};
+
+            window.toggleModal = function(id, show) {
+                const modal = document.getElementById(id);
+                const content = document.getElementById(id + '-content') || modal?.querySelector('.relative.flex.flex-col');
+                if (!modal) return;
+                
+                if (show) {
+                    window.clearTimeout(modalHideTimers[id]);
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                    window.requestAnimationFrame(() => {
+                        modal.classList.remove('opacity-0');
+                        if (content) {
+                            content.classList.remove('scale-85');
+                            content.classList.add('scale-90');
+                        }
+                    });
+                } else {
+                    modal.classList.add('opacity-0');
+                    if (content) {
+                        content.classList.remove('scale-90');
+                        content.classList.add('scale-85');
+                    }
+                    
+                    modalHideTimers[id] = window.setTimeout(() => {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.style.overflow = '';
+                    }, 300);
+                }
+            };
+
+            // Delegated Close Listener
+            document.addEventListener('click', function(e) {
+                const closeBtn = e.target.closest('[data-modal-close], .modal-close');
+                if (closeBtn) {
+                    const modalId = closeBtn.getAttribute('data-modal-close') || closeBtn.closest('[role="dialog"]')?.id;
+                    if (modalId) {
+                        window.toggleModal(modalId, false);
+                    }
+                }
+            });
+        })();
+    </script>
     @stack('scripts')
 </body>
 

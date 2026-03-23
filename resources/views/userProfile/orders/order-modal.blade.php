@@ -20,7 +20,7 @@
 </style>
 
 <div id="orderModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300 sm:p-6">
-    <button type="button" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="Close order details" onclick="closeOrderModal()"></button>
+    <button type="button" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm modal-close" aria-label="Close order details" data-modal-close="orderModal"></button>
 
     <div
         id="orderModalContent"
@@ -34,7 +34,7 @@
                 </div>
                 <p id="orderModalMeta" class="mt-1.5 text-[13px] font-medium text-slate-500"></p>
             </div>
-            <button type="button" onclick="closeOrderModal()" class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600">
+            <button type="button" data-modal-close="orderModal" class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 modal-close">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -103,7 +103,7 @@
             </button>
 
             <div class="flex w-full items-center justify-end gap-3 sm:w-auto">
-                <button type="button" onclick="closeOrderModal()" class="h-10 flex-1 rounded-xl px-5 text-[14px] font-bold text-slate-700 transition hover:bg-slate-200/60 sm:flex-none">
+                <button type="button" data-modal-close="orderModal" class="h-10 flex-1 rounded-xl px-5 text-[14px] font-bold text-slate-700 transition hover:bg-slate-200/60 sm:flex-none modal-close">
                     Close
                 </button>
                 <button id="orderModalReorder" type="button" class="h-10 min-w-[136px] flex-1 whitespace-nowrap rounded-xl bg-[#091b3f] px-7 text-[14px] font-bold text-white shadow-sm transition hover:bg-slate-800 sm:flex-none">
@@ -132,32 +132,9 @@
     }
 
     function setOrderModalVisibility(show) {
-        const modal = document.getElementById('orderModal');
-        const modalContent = document.getElementById('orderModalContent');
-        if (!modal || !modalContent) return;
-
-        if (show) {
-            window.clearTimeout(orderModalHideTimer);
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            window.requestAnimationFrame(function () {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-85');
-                modalContent.classList.add('scale-90');
-            });
-            document.body.style.overflow = 'hidden';
-            return;
+        if (typeof window.toggleModal === 'function') {
+            window.toggleModal('orderModal', show);
         }
-
-        modal.classList.add('opacity-0');
-        modalContent.classList.remove('scale-90');
-        modalContent.classList.add('scale-85');
-
-        orderModalHideTimer = window.setTimeout(function () {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = '';
-        }, 300);
     }
 
     function closeOrderModal() {

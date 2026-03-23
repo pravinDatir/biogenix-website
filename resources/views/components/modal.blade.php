@@ -13,7 +13,7 @@
     aria-labelledby="{{ $id }}-title"
 >
     <!-- Backdrop -->
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" data-modal-close="{{ $id }}"></div>
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm modal-close" data-modal-close="{{ $id }}"></div>
 
     <div
         class="relative flex flex-col w-full {{ $maxWidth }} grow-0 overflow-hidden rounded-[2rem] bg-white shadow-2xl transition duration-300 scale-85 max-h-[calc(100vh-2rem)]"
@@ -26,7 +26,7 @@
             @endif
             <button
                 type="button"
-                class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                class="rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 modal-close"
                 data-modal-close="{{ $id }}"
             >
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
