@@ -5,6 +5,7 @@ use App\Http\Controllers\BookMeeting\BookMeetingController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\ContactUs\ContactUsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Faq\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Authorization\ImpersonationController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
@@ -116,7 +117,7 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
    Route::view('/privacy', 'legal.privacy')->name('privacy');
    Route::view('/terms', 'legal.terms')->name('terms');
    Route::view('/refund-policy', 'legal.refund')->name('refund-policy');
-   Route::view('/faq', 'legal.faq')->name('faq');
+   Route::get('/faq', [FaqController::class, 'index'])->name('faq');
    Route::view('/order-confirmation', 'order.confirmation')->name('order.confirmation');
    Route::view('/maintenance', 'errors.503')->name('maintenance');
 

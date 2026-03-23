@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CatalogSeeder::class,
             SupportTicketCategorySeeder::class,
             EnquiryTypeSeeder::class,
+            FaqSeeder::class,
             ProductTechnicalResourceSeeder::class,
             PricingRulesSeeder::class,
             OrderSeeder::class,
