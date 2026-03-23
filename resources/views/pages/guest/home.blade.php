@@ -530,7 +530,7 @@
 @endpush
 
 <div class="home-page">
-    <div id="vanta-bg" class="fixed inset-0 -z-10 h-full w-full pointer-events-none"></div>
+
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- HERO CAROUSEL --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
@@ -1012,27 +1012,5 @@
         }
     });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof VANTA !== 'undefined') {
-            VANTA.FOG({
-              el: "#vanta-bg",
-              mouseControls: true,
-              touchControls: true,
-              gyroControls: false,
-              minHeight: 200.00,
-              minWidth: 200.00,
-              highlightColor: 0x2cc280,
-              midtoneColor: 0xd9bebe,
-              lowlightColor: 0x267726,
-              baseColor: 0xffebeb,
-              blurFactor: 0.60,
-              speed: 2.70,
-              zoom: 1.00
-            });
-        }
-    });
-</script>
+
 @endpush

@@ -249,6 +249,35 @@ class ProfileService
         }
     }
 
+    // This returns the strict validation rules for the change password form.
+    public function passwordValidationRules(): array
+    {
+        return [
+            'current_password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ];
+    }
+
+    // This securely updates the user's password with hashing.
+    public function updatePassword(User $user, array $validated): void
+    {
+        try {
+            $user->password = $validated['password'];
+            $user->save();
+
+            Log::info('Customer password updated successfully.', [
+                'user_id' => $user->id,
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to update customer password in service.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
     // This converts the account status into a simple label used by the profile summary UI.
     protected function humanProfileStatus(User $user): string
     {

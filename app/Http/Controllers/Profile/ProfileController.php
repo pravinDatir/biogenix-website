@@ -65,4 +65,29 @@ class ProfileController extends Controller
             return $this->redirectBackWithError($exception, 'Unable to update profile.');
         }
     }
+
+    // This updates the customer password after verifying the current one.
+    public function updatePassword(Request $request, ProfileService $profileService): RedirectResponse
+    {
+        try {
+            $user = $request->user();
+
+            // Step 1: validate the current and new password using strict account security rules.
+            $validated = $request->validate($profileService->passwordValidationRules());
+
+            // Step 2: apply the new hashed password to the user record.
+            $profileService->updatePassword($user, $validated);
+
+            return redirect()
+                ->route('customer.profile.preview')
+                ->with('status', 'Password updated successfully.');
+        } catch (Throwable $exception) {
+            Log::error('Failed to update customer password.', [
+                'user_id' => $request->user()?->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return $this->redirectBackWithError($exception, 'Unable to update password.');
+        }
+    }
 }

@@ -127,6 +127,7 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
     Route::middleware('auth')->group(function (): void {
         Route::get('/customer/profile', [ProfileController::class, 'showMyProfilePage'])->name('customer.profile.preview');
         Route::post('/customer/profile', [ProfileController::class, 'updateMyProfileSection'])->name('customer.profile.update');
+        Route::post('/customer/profile/password', [ProfileController::class, 'updatePassword'])->name('customer.profile.password.update');
         Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
         Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
         Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
