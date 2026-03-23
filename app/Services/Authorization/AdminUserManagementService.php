@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Throwable;
 
 class AdminUserManagementService
@@ -170,6 +171,7 @@ class AdminUserManagementService
                     'approved_by_user_id' => $actorUserId,
                     'created_by_user_id' => $actorUserId,
                     'password' => Hash::make($validated['password']),
+                    'password_updated_at' => Schema::hasColumn('users', 'password_updated_at') ? now() : null,
                 ]);
 
                 $departments = Department::query()
@@ -205,6 +207,7 @@ class AdminUserManagementService
                     'approved_by_user_id' => $actorUserId,
                     'created_by_user_id' => $actorUserId,
                     'password' => Hash::make($validated['password']),
+                    'password_updated_at' => Schema::hasColumn('users', 'password_updated_at') ? now() : null,
                 ]);
 
                 $this->rolePermissionService->assignRole($delegatedAdminUser, 'delegated_admin');

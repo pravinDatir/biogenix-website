@@ -10,6 +10,7 @@ use App\Models\SupportTicket\SupportTicket;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Laravel\Fortify\Contracts\UpdatesUserPasswords;
 use Throwable;
 
 class ProfileService
@@ -35,6 +36,7 @@ class ProfileService
                 'profileCompany' => $profileUser->company,
                 'profileAddress' => $profileAddress,
                 'profileSummary' => $profileSummary,
+                'passwordLastChangedLabel' => $this->buildPasswordLastChangedLabel($profileUser),
             ];
         } catch (Throwable $exception) {
             Log::error('Failed to build customer profile page data.', [
@@ -119,6 +121,26 @@ class ProfileService
         }
     }
 
+    // This updates the signed-in customer's password through the shared Fortify password flow.
+    public function updateMyPassword(User $user, array $input, UpdatesUserPasswords $passwordUpdater): void
+    {
+        try {
+            // Step 1: reuse the standard Fortify password validation and hashing flow so password rules stay consistent across the application.
+            $passwordUpdater->update($user, $input);
+
+            Log::info('Customer password updated successfully.', [
+                'user_id' => $user->id,
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to update customer password.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
     // This loads the main address row used for the customer profile page.
     protected function primaryAddressForUser(User $user): ?UserAddress
     {
@@ -155,6 +177,39 @@ class ProfileService
             ]);
 
             throw $exception;
+        }
+    }
+
+    // This prepares a business-friendly label for the latest known password change time.
+    protected function buildPasswordLastChangedLabel(User $user): string
+    {
+        try {
+            // Step 1: prefer the dedicated password timestamp and fall back to account creation for older databases.
+            $passwordUpdatedAt = $user->password_updated_at ?: $user->created_at;
+
+            if (! $passwordUpdatedAt) {
+                return 'Last changed date not available';
+            }
+
+            // Step 2: count full day difference so the UI can show a simple and stable business label.
+            $daysSincePasswordChange = $passwordUpdatedAt->copy()->startOfDay()->diffInDays(now()->startOfDay());
+
+            if ($daysSincePasswordChange === 0) {
+                return 'Last changed today';
+            }
+
+            if ($daysSincePasswordChange === 1) {
+                return 'Last changed 1 day ago';
+            }
+
+            return 'Last changed '.$daysSincePasswordChange.' days ago';
+        } catch (Throwable $exception) {
+            Log::error('Failed to build password last changed label.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return 'Last changed date not available';
         }
     }
 

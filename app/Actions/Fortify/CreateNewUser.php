@@ -177,6 +177,7 @@ class CreateNewUser implements CreatesNewUsers
             'approved_by_user_id' => null,
             'created_by_user_id' => null,
             'password' => Hash::make($input['password']),
+            'password_updated_at' => now(),
         ]);
     }
 

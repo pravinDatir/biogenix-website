@@ -3,9 +3,10 @@
 @php
     $portal = auth()->user()?->user_type ?? request('user_type', request('portal', 'b2c'));
     $portal = $portal === 'b2b' ? 'b2b' : 'b2c';
+    $countryOptions = ['India', 'United States', 'United Kingdom'];
 @endphp
 
-@section('title', 'Edit Address')
+@section('title', 'Addresses')
 @section('customer_active', 'addresses')
 @section('customer_minimal', 'minimal')
 
@@ -14,107 +15,105 @@
         :portal="$portal"
         active="addresses"
         title="Addresses"
-        description="Manage your delivery and billing addresses."
+        description="Manage your saved delivery and billing addresses."
     >
         <x-slot:headerActions>
-            <button type="button" onclick="toggleAddAddressModal(true)" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none cursor-pointer">
+            <button
+                type="button"
+                data-open-modal="addAddressModal"
+                class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none cursor-pointer"
+            >
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                 Add Address
             </button>
         </x-slot:headerActions>
 
         @include('customer.'.$portal.'.addresses-form')
-
-        <x-slot:footer>
-            <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none cursor-pointer">Cancel</button>
-            <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none cursor-pointer">Save Changes</button>
-        </x-slot:footer>
     </x-account.workspace>
 
-    {{-- Add Address Modal --}}
-    <div 
+    <x-modal
         id="addAddressModal"
-        class="hidden fixed inset-0 z-[100] items-center justify-center p-4 sm:p-6"
+        title="Add New Address"
+        :open="session('open_modal') === 'addAddressModal' || $errors->getBag('addressCreate')->any()"
     >
-        {{-- Backdrop --}}
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleAddAddressModal(false)"></div>
-        
-        {{-- Modal Content --}}
-        <div class="relative w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-2xl transition-all grow-0">
-            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 md:px-8">
-                <h3 class="text-lg font-bold text-slate-900">Add New Address</h3>
-                <button type="button" onclick="toggleAddAddressModal(false)" class="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
+        <form action="{{ route('customer.addresses.store') }}" method="POST" class="space-y-5">
+            @csrf
+
+            @if (session('open_modal') === 'addAddressModal' && session('error'))
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <div class="space-y-2">
+                <label for="add_line1" class="text-[13px] font-semibold text-slate-700">Address Line 1</label>
+                <input id="add_line1" name="line1" value="{{ old('line1') }}" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('line1', 'addressCreate') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Enter building, street name" required>
+                @error('line1', 'addressCreate')
+                    <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                @enderror
             </div>
 
-            <form action="{{ route('customer.addresses.store') }}" method="POST" class="px-6 py-6 md:px-8 md:py-8">
-                @csrf
-                <div class="space-y-5">
-                    <div class="space-y-2">
-                        <label class="text-[13px] font-semibold text-slate-700">Address Line 1</label>
-                        <input name="address_line1" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Enter building, street name" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[13px] font-semibold text-slate-700">Address Line 2 (Optional)</label>
-                        <input name="address_line2" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Apartment, suite, etc.">
-                    </div>
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <div class="space-y-2">
-                            <label class="text-[13px] font-semibold text-slate-700">City</label>
-                            <input name="city" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="City" required>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[13px] font-semibold text-slate-700">State</label>
-                            <input name="state" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="State" required>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[13px] font-semibold text-slate-700">Pincode</label>
-                            <input name="pincode" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Zip code" required>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[13px] font-semibold text-slate-700">Country</label>
-                            <select name="country" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" required>
-                                <option value="India">India</option>
-                                <option value="US">United States</option>
-                                <option value="UK">United Kingdom</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex flex-col gap-3 pt-2">
-                        <label class="flex items-center gap-3 text-sm font-semibold text-slate-800 cursor-pointer">
-                            <input type="checkbox" name="is_default_shipping" class="h-4 w-4 rounded border-slate-300 text-[#091b3f] focus:ring-[#091b3f]">
-                            Set as Default Shipping Address
-                        </label>
-                        <label class="flex items-center gap-3 text-sm font-semibold text-slate-800 cursor-pointer">
-                            <input type="checkbox" name="is_default_billing" class="h-4 w-4 rounded border-slate-300 text-[#091b3f] focus:ring-[#091b3f]">
-                            Set as Default Billing Address
-                        </label>
-                    </div>
+            <div class="space-y-2">
+                <label for="add_line2" class="text-[13px] font-semibold text-slate-700">Address Line 2 (Optional)</label>
+                <input id="add_line2" name="line2" value="{{ old('line2') }}" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('line2', 'addressCreate') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Apartment, suite, landmark">
+                @error('line2', 'addressCreate')
+                    <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div class="space-y-2">
+                    <label for="add_city" class="text-[13px] font-semibold text-slate-700">City</label>
+                    <input id="add_city" name="city" value="{{ old('city') }}" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('city', 'addressCreate') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="City" required>
+                    @error('city', 'addressCreate')
+                        <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                <div class="mt-8 flex items-center justify-end gap-3">
-                    <button type="button" onclick="toggleAddAddressModal(false)" class="h-11 rounded-xl border border-slate-200 bg-white px-6 text-sm font-bold text-slate-700 transition hover:bg-slate-50 cursor-pointer">Cancel</button>
-                    <button type="submit" class="h-11 rounded-xl bg-[#091b3f] px-6 text-sm font-bold text-white shadow-lg transition hover:bg-slate-800 cursor-pointer">Save Address</button>
+                <div class="space-y-2">
+                    <label for="add_state" class="text-[13px] font-semibold text-slate-700">State</label>
+                    <input id="add_state" name="state" value="{{ old('state') }}" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('state', 'addressCreate') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="State" required>
+                    @error('state', 'addressCreate')
+                        <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                    @enderror
                 </div>
-            </form>
-        </div>
-    </div>
 
-    <script>
-        window.toggleAddAddressModal = function(show) {
-            const modal = document.getElementById('addAddressModal');
-            if (!modal) return;
-            
-            if (show) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.style.overflow = 'hidden';
-            } else {
-                modal.classList.remove('flex');
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
-            }
-        };
-    </script>
+                <div class="space-y-2">
+                    <label for="add_postal_code" class="text-[13px] font-semibold text-slate-700">Postal Code</label>
+                    <input id="add_postal_code" name="postal_code" value="{{ old('postal_code') }}" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('postal_code', 'addressCreate') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Postal code" required>
+                    @error('postal_code', 'addressCreate')
+                        <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-2">
+                    <label for="add_country" class="text-[13px] font-semibold text-slate-700">Country</label>
+                    <select id="add_country" name="country" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('country', 'addressCreate') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" required>
+                        @foreach ($countryOptions as $countryOption)
+                            <option value="{{ $countryOption }}" @selected(old('country', 'India') === $countryOption)>{{ $countryOption }}</option>
+                        @endforeach
+                    </select>
+                    @error('country', 'addressCreate')
+                        <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-1">
+                <label class="flex items-center gap-3 text-sm font-semibold text-slate-800 cursor-pointer">
+                    <input type="checkbox" name="is_default_shipping" value="1" class="h-4 w-4 rounded border-slate-300 text-[#091b3f] focus:ring-[#091b3f]" @checked(old('is_default_shipping'))>
+                    Set as Default Shipping Address
+                </label>
+                <label class="flex items-center gap-3 text-sm font-semibold text-slate-800 cursor-pointer">
+                    <input type="checkbox" name="is_default_billing" value="1" class="h-4 w-4 rounded border-slate-300 text-[#091b3f] focus:ring-[#091b3f]" @checked(old('is_default_billing'))>
+                    Set as Default Billing Address
+                </label>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" data-modal-close="addAddressModal">Cancel</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">Save Address</button>
+            </div>
+        </form>
+    </x-modal>
 @endsection

@@ -32,6 +32,7 @@ class User extends Authenticatable
         'approved_by_user_id',
         'created_by_user_id',
         'password',
+        'password_updated_at',
     ];
 
     protected $hidden = [
@@ -45,6 +46,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'company_id' => 'integer',
             'approved_at' => 'datetime',
+            'password_updated_at' => 'datetime',
             'approved_by_user_id' => 'integer',
             'created_by_user_id' => 'integer',
             'password' => 'hashed',

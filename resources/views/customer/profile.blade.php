@@ -30,20 +30,38 @@
         </form>
 
         {{-- Change Password Modal --}}
-        <x-modal id="changePasswordModal" title="Change Password">
-            <form action="{{ route('customer.profile.update') }}" method="POST" class="space-y-4">
+        <x-modal
+            id="changePasswordModal"
+            title="Change Password"
+            :open="session('open_modal') === 'changePasswordModal' || $errors->getBag('updatePassword')->any()"
+        >
+            <form action="{{ route('customer.profile.password.update') }}" method="POST" class="space-y-4">
                 @csrf
+                @if (session('open_modal') === 'changePasswordModal' && session('error'))
+                    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <div class="space-y-2">
                     <label for="current_password" class="text-[13px] font-semibold text-slate-700">Current Password</label>
-                    <input type="password" id="current_password" name="current_password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Enter current password" required>
+                    <input type="password" id="current_password" name="current_password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('current_password', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Enter current password" required>
+                    @error('current_password', 'updatePassword')
+                        <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="space-y-2">
                     <label for="password" class="text-[13px] font-semibold text-slate-700">New Password</label>
-                    <input type="password" id="password" name="password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Enter new password (min. 8 characters)" required>
+                    <input type="password" id="password" name="password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('password', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Enter new password (min. 8 characters)" required>
+                    @error('password', 'updatePassword')
+                        <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="space-y-2">
                     <label for="password_confirmation" class="text-[13px] font-semibold text-slate-700">Confirm New Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Confirm new password" required>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('password_confirmation', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Confirm new password" required>
+                    @error('password_confirmation', 'updatePassword')
+                        <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="mt-6 flex justify-end gap-3">
                     <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" data-modal-close="changePasswordModal">Cancel</button>

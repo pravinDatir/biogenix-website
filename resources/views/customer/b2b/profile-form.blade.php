@@ -5,6 +5,7 @@
     $profileUser = $profileUser ?? auth()->user();
     $profileCompany = $profileCompany ?? null;
     $profileSummary = $profileSummary ?? ['orders_count' => 0, 'tickets_count' => 0, 'status_label' => 'Unknown'];
+    $passwordLastChangedLabel = $passwordLastChangedLabel ?? 'Last changed date not available';
     $hasGst = filled($profileCompany?->gst_number);
 @endphp
 
@@ -142,7 +143,7 @@
     <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <p class="text-sm font-semibold text-slate-700">Password</p>
-            <p class="mt-1 text-sm text-slate-500">Last changed 15 days ago</p>
+            <p class="mt-1 text-sm text-slate-500">{{ $passwordLastChangedLabel }}</p>
         </div>
         <button type="button" data-open-modal="changePasswordModal" class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
             <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>

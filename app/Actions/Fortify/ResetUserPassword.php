@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Models\Authorization\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\ResetsUserPasswords;
@@ -30,9 +31,16 @@ class ResetUserPassword implements ResetsUserPasswords
             ])->validate();
 
             // Step 2: save the new hashed password on the user record.
-            $user->forceFill([
+            $attributes = [
                 'password' => Hash::make($input['password']),
-            ])->save();
+            ];
+
+            // Step 3: update the dedicated password-change timestamp only when the column exists in the current database.
+            if (Schema::hasColumn('users', 'password_updated_at')) {
+                $attributes['password_updated_at'] = now();
+            }
+
+            $user->forceFill($attributes)->save();
         } catch (Throwable $exception) {
             Log::error('Failed to reset user password.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
             throw $exception;

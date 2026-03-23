@@ -7,7 +7,9 @@ use App\Services\Profile\ProfileService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Laravel\Fortify\Contracts\UpdatesUserPasswords;
 use Throwable;
 
 class ProfileController extends Controller
@@ -63,6 +65,47 @@ class ProfileController extends Controller
             ]);
 
             return $this->redirectBackWithError($exception, 'Unable to update profile.');
+        }
+    }
+
+    // This updates only the signed-in customer's password from the profile security modal.
+    public function updateMyPassword(
+        Request $request,
+        ProfileService $profileService,
+        UpdatesUserPasswords $passwordUpdater
+    ): RedirectResponse {
+        try {
+            $user = $request->user();
+
+            // Step 1: keep the password form input focused on password fields only so it does not trigger profile field validation.
+            $input = $request->only(['current_password', 'password', 'password_confirmation']);
+
+            // Step 2: reuse the shared password update flow so the same business rules apply everywhere.
+            $profileService->updateMyPassword($user, $input, $passwordUpdater);
+
+            return redirect()
+                ->route('customer.profile.preview')
+                ->with('status', 'Password updated successfully.');
+        } catch (ValidationException $exception) {
+            Log::warning('Customer password update validation failed.', [
+                'user_id' => $request->user()?->id,
+                'errors' => $exception->errors(),
+            ]);
+
+            return redirect()
+                ->back()
+                ->withErrors($exception->validator->errors(), $exception->errorBag ?: 'updatePassword')
+                ->with('open_modal', 'changePasswordModal');
+        } catch (Throwable $exception) {
+            Log::error('Failed to update customer password from profile page.', [
+                'user_id' => $request->user()?->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('error', 'Unable to update password.')
+                ->with('open_modal', 'changePasswordModal');
         }
     }
 

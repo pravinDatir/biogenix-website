@@ -12,6 +12,7 @@ use App\Http\Controllers\Authorization\SignupEmailOtpController;
 use App\Http\Controllers\Invoice\ProformaInvoiceController;
 use App\Http\Controllers\Invoice\QuotationController;
 use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Profile\CustomerAddressController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Product\ProductCrudController;
 use App\Http\Controllers\Product\ProductController;
@@ -28,15 +29,13 @@ Route::get('/products/{productId}/technical-resources/{resourceId}/download', [P
 
 // flow incomplete 
  // Preview-only customer workspace pages (UI shells)
- Route::view('/customer/addresses', 'customer.addresses')->name('customer.addresses.preview');
- Route::post('/customer/addresses', function () {
-     return back()->with('success', 'Address added successfully (Preview Mode).');
- })->name('customer.addresses.store');
  Route::view('/customer/orders', 'customer.orders')->name('customer.orders.preview');
  Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
 
  // for testing PI flow only, will be removed later.
 Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page');
+Route::view('/test-animation', 'TestAnimation.index')->name('test-animation');
+
 
 Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
 Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
@@ -127,6 +126,10 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
     Route::middleware('auth')->group(function (): void {
         Route::get('/customer/profile', [ProfileController::class, 'showMyProfilePage'])->name('customer.profile.preview');
         Route::post('/customer/profile', [ProfileController::class, 'updateMyProfileSection'])->name('customer.profile.update');
+        Route::post('/customer/profile/password', [ProfileController::class, 'updateMyPassword'])->name('customer.profile.password.update');
+        Route::get('/customer/addresses', [CustomerAddressController::class, 'index'])->name('customer.addresses.preview');
+        Route::post('/customer/addresses', [CustomerAddressController::class, 'store'])->name('customer.addresses.store');
+        Route::put('/customer/addresses/{addressId}', [CustomerAddressController::class, 'update'])->name('customer.addresses.update');
         Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
         Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
         Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
