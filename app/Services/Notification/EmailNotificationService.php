@@ -97,7 +97,7 @@ class EmailNotificationService
         }
     }
 
-    // This routing to different providers is kept centralized here.
+    // This routes the prepared email payload to the currently configured provider.
     public function sendEmail(array $emailPayload): void
     {
         try {
