@@ -16,12 +16,12 @@
 @endphp
 
 <div class="min-h-screen bg-[#f4f7fb] py-4 lg:py-8">
-    <div class="mx-auto flex w-full max-w-[96rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+    <div class="mx-auto flex w-full max-w-[96rem] flex-col gap-6 px-4 sm:px-6 lg:flex-row lg:gap-8 lg:px-8 xl:px-12 2xl:px-16">
         @include('customer.partials.account-sidebar', ['portal' => $portal, 'active' => $active])
 
         <div id="customer-main-content" class="flex-1 min-w-0 space-y-6 pb-12">
             {{-- Page header — same pattern as admin dashboard --}}
-            <div class="mb-4 flex items-center justify-between">
+            <div class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     @if ($title)
                         <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $title }}</h2>
@@ -31,7 +31,7 @@
                     @endif
                 </div>
                 @isset($headerActions)
-                    <div class="flex items-center gap-3">
+                    <div class="flex w-full items-center gap-3 sm:w-auto">
                         {{ $headerActions }}
                     </div>
                 @endisset

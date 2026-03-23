@@ -20,8 +20,7 @@
     >
         <form method="POST" action="{{ route('customer.profile.update') }}" class="space-y-6">
             @csrf
-
-            @include('customer.'.$portal.'.profile-form')
+            @include('userProfile.profile.'.$portal.'.profile-form')
 
             <div class="flex flex-wrap items-center justify-end gap-3">
                 <a href="{{ route('customer.profile.preview') }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none no-underline">Cancel</a>
@@ -35,7 +34,7 @@
             title="Change Password"
             :open="session('open_modal') === 'changePasswordModal' || $errors->getBag('updatePassword')->any()"
         >
-            <form action="{{ route('customer.profile.password.update') }}" method="POST" class="space-y-4">
+            <form id="changePasswordForm" action="{{ route('customer.profile.password.update') }}" method="POST" class="space-y-4">
                 @csrf
                 @if (session('open_modal') === 'changePasswordModal' && session('error'))
                     <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
@@ -63,11 +62,12 @@
                         <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="mt-6 flex justify-end gap-3">
-                    <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" data-modal-close="changePasswordModal">Cancel</button>
-                    <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">Update Password</button>
-                </div>
             </form>
+
+            <x-slot:footer>
+                <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" onclick="toggleModal('changePasswordModal', false)">Cancel</button>
+                <button type="submit" form="changePasswordForm" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">Update Password</button>
+            </x-slot:footer>
         </x-modal>
 
 
@@ -79,10 +79,6 @@
                     <label for="new_email" class="text-[13px] font-semibold text-slate-700">New Email Address</label>
                     <input type="email" id="new_email" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Enter new email address">
                     <p id="email-error" class="hidden text-xs text-red-500"></p>
-                </div>
-                <div class="mt-6 flex justify-end gap-3">
-                    <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" data-modal-close="changeEmailModal">Cancel</button>
-                    <button type="button" id="btn-get-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50">Get OTP</button>
                 </div>
             </div>
 
@@ -98,10 +94,6 @@
                     <button type="button" id="btn-resend-otp" class="text-[13px] font-semibold text-[#091b3f] hover:underline disabled:text-slate-400">Resend OTP</button>
                     <span id="resend-timer" class="text-[12px] text-slate-500"></span>
                 </div>
-                <div class="mt-6 flex justify-end gap-3">
-                    <button type="button" id="btn-back-to-email" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Back</button>
-                    <button type="button" id="btn-verify-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50">Verify OTP</button>
-                </div>
             </div>
 
             {{-- Step 3: Success & Final Update --}}
@@ -115,11 +107,22 @@
                     <h3 class="mt-2 text-sm font-bold text-green-900">Email Verified!</h3>
                     <p class="mt-1 text-xs text-green-700">Your new email has been verified. Click 'Submit' to update your profile.</p>
                 </div>
-                <div class="mt-6 flex justify-end gap-3">
+            </div>
+
+            <x-slot:footer>
+                <div id="email-footer-step-1" class="flex w-full items-center justify-end gap-3">
+                    <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" onclick="toggleModal('changeEmailModal', false)">Cancel</button>
+                    <button type="button" id="btn-get-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50">Get OTP</button>
+                </div>
+                <div id="email-footer-step-2" class="hidden w-full items-center justify-end gap-3">
+                    <button type="button" id="btn-back-to-email" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Back</button>
+                    <button type="button" id="btn-verify-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50">Verify OTP</button>
+                </div>
+                <div id="email-footer-step-3" class="hidden w-full items-center justify-end gap-3">
                     <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" data-modal-close="changeEmailModal">Cancel</button>
                     <button type="button" id="btn-final-email-submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">Submit Change</button>
                 </div>
-            </div>
+            </x-slot:footer>
         </x-modal>
 
         <script>
@@ -148,9 +151,26 @@
                     step1.classList.add('hidden');
                     step2.classList.add('hidden');
                     step3.classList.add('hidden');
-                    if (step === 1) step1.classList.remove('hidden');
-                    if (step === 2) step2.classList.remove('hidden');
-                    if (step === 3) step3.classList.remove('hidden');
+                    
+                    const f1 = document.getElementById('email-footer-step-1');
+                    const f2 = document.getElementById('email-footer-step-2');
+                    const f3 = document.getElementById('email-footer-step-3');
+                    if (f1) f1.classList.add('hidden');
+                    if (f2) f2.classList.add('hidden');
+                    if (f3) f3.classList.add('hidden');
+
+                    if (step === 1) {
+                        step1.classList.remove('hidden');
+                        if (f1) f1.classList.remove('hidden');
+                    }
+                    if (step === 2) {
+                        step2.classList.remove('hidden');
+                        if (f2) f2.classList.remove('hidden');
+                    }
+                    if (step === 3) {
+                        step3.classList.remove('hidden');
+                        if (f3) f3.classList.remove('hidden');
+                    }
                 }
 
                 function resetEmailModal() {
@@ -284,6 +304,44 @@
 
                 btnResendOtp.addEventListener('click', () => btnGetOtp.click());
                 btnBack.addEventListener('click', () => showStep(1));
+            });
+
+            let modalHideTimers = {};
+
+            function toggleModal(id, show) {
+                const modal = document.getElementById(id);
+                const content = document.getElementById(id + '-content');
+                if (!modal || !content) return;
+                
+                if (show) {
+                    window.clearTimeout(modalHideTimers[id]);
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    window.requestAnimationFrame(() => {
+                        modal.classList.remove('opacity-0');
+                        content.classList.remove('scale-85');
+                        content.classList.add('scale-90');
+                    });
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    modal.classList.add('opacity-0');
+                    content.classList.remove('scale-90');
+                    content.classList.add('scale-85');
+                    
+                    modalHideTimers[id] = window.setTimeout(() => {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        document.body.style.overflow = '';
+                    }, 300);
+                }
+            }
+
+            // Also hook into modal-close via class if they use x-modal default close
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                const modalId = btn.closest('[role="dialog"]')?.id;
+                if (modalId) {
+                    btn.onclick = () => toggleModal(modalId, false);
+                }
             });
         </script>
 

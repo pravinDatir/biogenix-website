@@ -15,8 +15,8 @@
     ];
 @endphp
 
-<aside id="customer-sidebar" class="w-64 flex-shrink-0">
-    <nav class="sticky top-24 space-y-1.5 bg-white p-4 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 pb-6">
+<aside id="customer-sidebar" class="w-full flex-shrink-0 lg:w-64">
+    <nav class="space-y-1.5 rounded-2xl border border-slate-100 bg-white p-4 pb-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] lg:sticky lg:top-24">
 
         <h3 class="px-3 text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 mt-2">{{ $portal === 'b2b' ? 'Business Portal' : 'Customer Portal' }}</h3>
 

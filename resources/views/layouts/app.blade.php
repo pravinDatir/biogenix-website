@@ -115,90 +115,92 @@
             </svg>
         </button>
 
-        <div id="supportTicketForm" class="hidden w-[360px] origin-bottom-right translate-y-3 scale-95 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white opacity-0 pointer-events-none shadow-2xl transition duration-300 sm:w-[400px]">
-            <div class="flex items-start justify-between bg-[#0b74fb] px-5 py-4">
-                <div class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-[#3b93ff] text-white">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 13v4m-2-2h4" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-[15px] font-bold leading-tight text-white">Biogenix Support</h3>
-                        <p class="mt-0.5 text-[11px] text-blue-100">Average response time: &lt; 2 hours</p>
-                    </div>
-                </div>
-                <button onclick="toggleSupportForm()" class="-mr-2 p-1 text-blue-100 transition-colors hover:text-white">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto bg-white p-6 text-left">
-                <h4 class="mb-1 text-lg font-bold leading-tight text-slate-900">Raise a Ticket</h4>
-                <p class="mb-5 text-[13px] leading-relaxed text-slate-500">Submit your request and our biotech experts will assist you.</p>
-
-                <form action="{{ route('contact') }}" method="GET" class="space-y-4">
-                    <div>
-                        <label for="supportSubject" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Subject</label>
-                        <input type="text" id="supportSubject" name="subject" class="h-10 w-full rounded-md border border-slate-200 px-3 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" placeholder="Briefly describe the issue" required>
-                    </div>
-
-                    <div>
-                        <label for="supportCategory" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Category</label>
-                        <div class="relative">
-                            <select id="supportCategory" name="category" class="h-10 w-full appearance-none rounded-md border border-slate-200 pl-3 pr-8 text-[13px] text-slate-900 outline-none transition focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" required>
-                                <option value="">Select a category</option>
-                                <option value="Product">Product Issue</option>
-                                <option value="Billing">Billing & Invoice</option>
-                                <option value="Shipping">Shipping</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="supportMessage" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Message</label>
-                        <textarea id="supportMessage" name="message" rows="3" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" placeholder="Provide detailed information about your request..." required></textarea>
-                    </div>
-
-                    <div>
-                        <label class="mb-1.5 block text-[13px] font-semibold text-slate-800">Attachments</label>
-                        <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-[#fbfcfd] px-4 py-5 text-center transition-colors hover:bg-slate-50">
-                            <svg class="mb-2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                            </svg>
-                            <span class="text-[11px] font-medium text-slate-500">Click to upload or drag and drop</span>
-                            <span class="mt-1 text-[10px] uppercase tracking-wider text-slate-400">PDF, PNG, JPG (MAX. 5MB)</span>
-                            <input type="file" class="hidden" name="attachment">
-                        </label>
-                    </div>
-
-                    <div class="mt-4 flex items-center justify-between border-t border-slate-100 pb-1 pt-4">
-                        <span class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.05em] text-slate-400">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                            Secure
-                        </span>
-                        <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-[#0b74fb] px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-[#0b74fb]/30">
-                            Submit Ticket
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
+        {{-- Support Ticket Toggle Button --}}
         <button onclick="toggleSupportForm()" class="group flex h-14 w-14 items-center justify-center rounded-full bg-[#0b74fb] text-white shadow-xl shadow-blue-500/30 transition-all hover:scale-105 hover:bg-blue-700" aria-label="Open support ticket">
             <svg class="h-7 w-7 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.477 2 2 5.582 2 10c0 2.476 1.343 4.675 3.444 6.136.213 1.393-.454 3.125-.5 3.245a.5.5 0 00.643.64c.12-.046 1.85-.712 3.244-1.127A9.852 9.852 0 0012 18c5.523 0 10-3.582 10-8s-4.477-8-10-8zm-3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
             </svg>
         </button>
+    </div>
+
+    {{-- Floating Support Form (Dedicated Position) --}}
+    <div id="supportTicketForm" class="fixed inset-x-4 bottom-24 top-24 z-[60] hidden flex origin-bottom-right translate-y-3 scale-95 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white opacity-0 pointer-events-none shadow-2xl transition duration-300 sm:inset-x-auto sm:top-auto sm:right-6 sm:bottom-28 sm:w-[400px] sm:max-h-[calc(100vh-140px)]">
+        <div class="flex items-start justify-between bg-[#0b74fb] px-5 py-4">
+            <div class="flex items-center gap-3">
+                <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-[#3b93ff] text-white">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 13v4m-2-2h4" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-[15px] font-bold leading-tight text-white">Biogenix Support</h3>
+                    <p class="mt-0.5 text-[11px] text-blue-100">Average response time: &lt; 2 hours</p>
+                </div>
+            </div>
+            <button onclick="toggleSupportForm()" class="-mr-2 p-1 text-blue-100 transition-colors hover:text-white">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto bg-white p-6 text-left">
+            <h4 class="mb-1 text-lg font-bold leading-tight text-slate-900">Raise a Ticket</h4>
+            <p class="mb-5 text-[13px] leading-relaxed text-slate-500">Submit your request and our biotech experts will assist you.</p>
+
+            <form action="{{ route('contact') }}" method="GET" class="space-y-4">
+                <div>
+                    <label for="supportSubject" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Subject</label>
+                    <input type="text" id="supportSubject" name="subject" class="h-10 w-full rounded-md border border-slate-200 px-3 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" placeholder="Briefly describe the issue" required>
+                </div>
+
+                <div>
+                    <label for="supportCategory" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Category</label>
+                    <div class="relative">
+                        <select id="supportCategory" name="category" class="h-10 w-full appearance-none rounded-md border border-slate-200 pl-3 pr-8 text-[13px] text-slate-900 outline-none transition focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" required>
+                            <option value="">Select a category</option>
+                            <option value="Product">Product Issue</option>
+                            <option value="Billing">Billing & Invoice</option>
+                            <option value="Shipping">Shipping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="supportMessage" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Message</label>
+                    <textarea id="supportMessage" name="message" rows="3" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" placeholder="Provide detailed information about your request..." required></textarea>
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block text-[13px] font-semibold text-slate-800">Attachments</label>
+                    <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-[#fbfcfd] px-4 py-5 text-center transition-colors hover:bg-slate-50">
+                        <svg class="mb-2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <span class="text-[11px] font-medium text-slate-500">Click to upload or drag and drop</span>
+                        <span class="mt-1 text-[10px] uppercase tracking-wider text-slate-400">PDF, PNG, JPG (MAX. 5MB)</span>
+                        <input type="file" class="hidden" name="attachment">
+                    </label>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between border-t border-slate-100 pb-1 pt-4">
+                    <span class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.05em] text-slate-400">
+                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        Secure
+                    </span>
+                    <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-[#0b74fb] px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-[#0b74fb]/30">
+                        Submit Ticket
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -382,6 +384,21 @@
                 }
             }, 300);
         }
+
+        document.addEventListener('mousedown', function(e) {
+            const form = document.getElementById('supportTicketForm');
+            if (!form || form.classList.contains('hidden')) return;
+
+            const isToggleBtn = e.target.closest('button[onclick="toggleSupportForm()"]');
+            if (isToggleBtn) return;
+
+            if (!form.contains(e.target)) {
+                // Check if it's already shown
+                if (!form.classList.contains('opacity-0')) {
+                    toggleSupportForm();
+                }
+            }
+        });
 
         window.BiogenixToast = {
             show: function (message, type, duration) {

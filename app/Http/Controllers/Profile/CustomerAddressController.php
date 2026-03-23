@@ -22,14 +22,14 @@ class CustomerAddressController extends Controller
             $pageData = $customerAddressService->buildAddressPageData($request->user());
 
             // Step 2: render the existing addresses page with backend data.
-            return view('customer.addresses', $pageData);
+            return view('userProfile.addresses.index', $pageData);
         } catch (Throwable $exception) {
             Log::error('Failed to load customer addresses page.', [
                 'user_id' => $request->user()?->id,
                 'error' => $exception->getMessage(),
             ]);
 
-            return $this->viewWithError('customer.addresses', [
+            return $this->viewWithError('userProfile.addresses.index', [
                 'portal' => $request->user()?->isB2b() ? 'b2b' : 'b2c',
                 'savedAddresses' => collect(),
             ], $exception, 'Unable to load addresses right now.');

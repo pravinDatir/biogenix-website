@@ -22,14 +22,14 @@ class ProfileController extends Controller
             $pageData = $profileService->buildMyProfilePageData($request->user());
 
             // Step 2: render the existing profile page with real backend data.
-            return view('customer.profile', $pageData);
+            return view('userProfile.profile.index', $pageData);
         } catch (Throwable $exception) {
             Log::error('Failed to load customer profile page.', [
                 'user_id' => $request->user()?->id,
                 'error' => $exception->getMessage(),
             ]);
 
-            return $this->viewWithError('customer.profile', [
+            return $this->viewWithError('userProfile.profile.index', [
                 'portal' => 'b2c',
                 'profileUser' => $request->user(),
                 'profileCompany' => null,

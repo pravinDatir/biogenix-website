@@ -18,11 +18,11 @@ class SupportTicketController extends Controller
     {
         try {
             // Step 1: load the main support ticket page data.
-            return view('support-tickets.index', $supportTicketService->indexPageData($request->user()));
+            return view('userProfile.support-tickets.index', $supportTicketService->indexPageData($request->user()));
         } catch (Throwable $exception) {
             Log::error('Failed to load support ticket index.', ['error' => $exception->getMessage()]);
 
-            return $this->viewWithError('support-tickets.index', [
+            return $this->viewWithError('userProfile.support-tickets.index', [
                 'tickets' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15),
                 'categories' => SupportTicketService::CATEGORIES,
                 'priorities' => SupportTicketService::PRIORITIES,
@@ -44,11 +44,11 @@ class SupportTicketController extends Controller
     {
         try {
             // Step 1: load the selected ticket with its detail data.
-            return view('support-tickets.index', $supportTicketService->showPageData($request->user(), $ticketId));
+            return view('userProfile.support-tickets.index', $supportTicketService->showPageData($request->user(), $ticketId));
         } catch (Throwable $exception) {
             Log::error('Failed to load support ticket detail.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
 
-            return $this->viewWithError('support-tickets.index', [
+            return $this->viewWithError('userProfile.support-tickets.index', [
                 'tickets' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15),
                 'categories' => SupportTicketService::CATEGORIES,
                 'priorities' => SupportTicketService::PRIORITIES,

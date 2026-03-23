@@ -122,7 +122,7 @@
                 <h3 class="text-lg font-bold text-slate-900">No saved addresses yet</h3>
                 <p class="mt-1 text-sm text-slate-500">Add your first address so future delivery and billing flows can reuse it quickly.</p>
             </div>
-            <button type="button" data-open-modal="addAddressModal" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">
+            <button type="button" onclick="toggleModal('addAddressModal', true)" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">
                 Add Address
             </button>
         </div>

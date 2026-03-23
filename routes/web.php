@@ -30,8 +30,8 @@ Route::get('/products/{productId}/technical-resources/{resourceId}/download', [P
 
 // flow incomplete 
  // Preview-only customer workspace pages (UI shells)
- Route::view('/customer/orders', 'customer.orders')->name('customer.orders.preview');
- Route::view('/customer/support-tickets', 'support-tickets.preview')->name('customer.support.preview');
+ Route::view('/customer/orders', 'userProfile.orders.index')->name('customer.orders.preview');
+ Route::view('/customer/support-tickets', 'userProfile.support-tickets.preview')->name('customer.support.preview');
 
  // for testing PI flow only, will be removed later.
 Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page');

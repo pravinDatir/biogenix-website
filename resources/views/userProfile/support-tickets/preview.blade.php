@@ -235,10 +235,10 @@
     </x-account.workspace>
 
 {{-- New Ticket Modal --}}
-<div id="newTicketModal" class="fixed inset-0 z-50 hidden">
+<div id="newTicketModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="document.getElementById('newTicketModal').classList.add('hidden')"></div>
-    <div class="fixed inset-0 flex items-center justify-center p-4">
-        <div class="relative w-full max-w-lg rounded-2xl border border-slate-100 bg-white p-6 shadow-xl md:p-8">
+    <div class="relative flex min-h-full items-start justify-center p-4 sm:items-center sm:p-6">
+        <div class="relative w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl border border-slate-100 bg-white p-6 shadow-xl sm:max-h-[calc(100vh-3rem)] md:p-8">
             <button type="button" class="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 cursor-pointer" onclick="document.getElementById('newTicketModal').classList.add('hidden')">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>

@@ -79,7 +79,7 @@
             <div class="relative">
                 <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 <input name="email" id="profile_email_input" class="{{ $inputClass }} pl-11 bg-slate-50 cursor-not-allowed" value="{{ old('email', $profileUser?->email) }}" placeholder="Email" readonly>
-                <button type="button" data-open-modal="changeEmailModal" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold text-[#091b3f] shadow-sm border border-slate-200 hover:bg-slate-50 transition">Change</button>
+                <button type="button" onclick="toggleModal('changeEmailModal', true)" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold text-[#091b3f] shadow-sm border border-slate-200 hover:bg-slate-50 transition">Change</button>
             </div>
             <p class="text-xs text-slate-400">This email will be used for account notifications and security updates.</p>
         </div>
@@ -155,7 +155,7 @@
             <p class="text-sm font-semibold text-slate-700">Password</p>
             <p class="mt-1 text-sm text-slate-500">{{ $passwordLastChangedLabel }}</p>
         </div>
-        <button type="button" data-open-modal="changePasswordModal" class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
+        <button type="button" onclick="toggleModal('changePasswordModal', true)" class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
             <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             Change Password
         </button>
