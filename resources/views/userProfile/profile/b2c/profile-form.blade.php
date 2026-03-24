@@ -1,6 +1,6 @@
 @php
     $panelClass = 'rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] md:p-7';
-    $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]';
+    $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600';
     $labelClass = 'text-[13px] font-semibold text-slate-700';
     $profileUser = $profileUser ?? auth()->user();
     $profileAddress = $profileAddress ?? null;
@@ -25,8 +25,8 @@
                 <h3 class="text-lg font-bold text-slate-900">{{ $profileUser?->name ?? 'Customer Profile' }}</h3>
                 <p class="mt-0.5 text-sm text-slate-500">{{ $profileUser?->email ?? 'No email available' }}</p>
                 <div class="mt-2 flex flex-wrap gap-2">
-                    <span class="inline-flex items-center gap-1.5 rounded-full {{ $isVerified ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }} px-2.5 py-1 text-xs font-semibold">
-                        <span class="h-1.5 w-1.5 rounded-full {{ $isVerified ? 'bg-emerald-500' : 'bg-amber-500' }}"></span>
+                    <span class="inline-flex items-center gap-1.5 rounded-full {{ $isVerified ? 'bg-primary-50 text-primary-600' : 'bg-secondary-50 text-secondary-700' }} px-2.5 py-1 text-xs font-semibold">
+                        <span class="h-1.5 w-1.5 rounded-full {{ $isVerified ? 'bg-primary-600' : 'bg-secondary-600' }}"></span>
                         {{ $isVerified ? 'Verified' : 'Verification Pending' }}
                     </span>
                     <span class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-1 text-xs font-semibold text-primary-700">B2C Customer</span>
@@ -43,7 +43,7 @@
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tickets</p>
             </div>
             <div class="px-5 py-3 text-center">
-                <p class="text-lg font-bold {{ $profileSummary['status_label'] === 'Active' ? 'text-emerald-600' : 'text-amber-600' }}">{{ $profileSummary['status_label'] }}</p>
+                <p class="text-lg font-bold {{ $profileSummary['status_label'] === 'Active' ? 'text-primary-600' : 'text-secondary-700' }}">{{ $profileSummary['status_label'] }}</p>
                 <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Status</p>
             </div>
         </div>
@@ -79,7 +79,7 @@
             <div class="relative">
                 <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 <input name="email" id="profile_email_input" class="{{ $inputClass }} pl-11 bg-slate-50 cursor-not-allowed" value="{{ old('email', $profileUser?->email) }}" placeholder="Email" readonly>
-                <button type="button" onclick="toggleModal('changeEmailModal', true)" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold text-[#091b3f] shadow-sm border border-slate-200 hover:bg-slate-50 transition">Change</button>
+                <button type="button" onclick="toggleModal('changeEmailModal', true)" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold text-primary-800 shadow-sm border border-slate-200 hover:bg-slate-50 transition">Change</button>
             </div>
             <p class="text-xs text-slate-400">This email will be used for account notifications and security updates.</p>
         </div>
@@ -103,7 +103,7 @@
 <div class="{{ $panelClass }}">
     <div class="flex items-center justify-between border-b border-slate-100 pb-5">
         <div class="flex items-center gap-3">
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
             </div>
             <div>
@@ -141,7 +141,7 @@
 {{-- Security section --}}
 <div class="{{ $panelClass }}">
     <div class="flex items-center gap-3 border-b border-slate-100 pb-5">
-        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary-50 text-secondary-700">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
         </div>
         <div>

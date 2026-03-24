@@ -17,7 +17,7 @@
         $eyebrowClass = 'text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400';
         $titleClass = 'mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl md:text-4xl';
         $leadClass = 'mt-3 text-sm leading-7 text-slate-600 md:text-base';
-        $chipSuccessClass = 'inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700';
+        $chipSuccessClass = 'inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-600';
         $buttonSecondaryClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50';
         $buttonPrimaryClass = 'inline-flex h-14 items-center justify-center rounded-2xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700';
         $layoutGridClass = 'mt-6 grid gap-5 xl:mt-8 xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-6';
@@ -26,7 +26,7 @@
         $sectionTitleClass = 'text-xl font-semibold text-slate-950';
         $sectionCopyClass = 'mt-1 text-sm leading-6 text-slate-500';
         $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700';
-        $iconTileSuccessClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700';
+        $iconTileSuccessClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600';
         $helpCardClass = 'rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5 md:rounded-[28px]';
     @endphp
 
@@ -54,7 +54,7 @@
                     </div>
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
                         <div class="{{ $chipSuccessClass }}">
-                            <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                            <span class="inline-flex h-2.5 w-2.5 rounded-full bg-primary-600"></span>
                             Secure cart sync across pages
                         </div>
                         <a href="{{ route('products.index') }}" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Continue Shopping</a>
@@ -65,20 +65,20 @@
             {{-- ════════════════════════════════════════════════════════ --}}
             {{-- FREE SHIPPING PROGRESS BAR --}}
             {{-- ════════════════════════════════════════════════════════ --}}
-            <div id="shippingProgressWrap" class="mt-5 overflow-hidden rounded-[22px] border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 px-5 py-4">
+            <div id="shippingProgressWrap" class="mt-5 overflow-hidden rounded-[22px] border border-primary-200 bg-gradient-to-r from-emerald-50 to-green-50 px-5 py-4">
                 <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-center gap-2.5">
-                        <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                        <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-primary-600">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
                             </svg>
                         </span>
                         <div>
                             <p id="shippingProgressMsg" class="text-sm font-semibold text-emerald-800">Loading...</p>
-                            <p class="text-xs text-emerald-600">Free same-day delivery on orders above <span class="font-bold">Rs. {{ number_format($freeShippingThreshold) }}</span></p>
+                            <p class="text-xs text-primary-600">Free same-day delivery on orders above <span class="font-bold">Rs. {{ number_format($freeShippingThreshold) }}</span></p>
                         </div>
                     </div>
-                    <span id="shippingProgressBadge" class="inline-flex w-fit items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white">Calculating...</span>
+                    <span id="shippingProgressBadge" class="inline-flex w-fit items-center rounded-full bg-primary-600 px-3 py-1 text-xs font-bold text-white">Calculating...</span>
                 </div>
                 {{-- Bar --}}
                 <div
@@ -164,7 +164,7 @@
                     <section id="savedForLaterSection" class="hidden {{ $cardClass }}">
                         <div class="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
                             <div class="flex items-center gap-3">
-                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-secondary-50 text-secondary-700">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
                                     </svg>
@@ -174,7 +174,7 @@
                                     <p class="text-xs text-slate-500">Move back to cart when ready to order</p>
                                 </div>
                             </div>
-                            <span id="savedItemCount" class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">0 items</span>
+                            <span id="savedItemCount" class="inline-flex items-center rounded-full border border-amber-200 bg-secondary-50 px-3 py-1 text-xs font-semibold text-secondary-700">0 items</span>
                         </div>
                         <div id="savedForLaterList" class="mt-4 space-y-3"></div>
                     </section>
@@ -206,7 +206,7 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>Shipping</span>
-                                <span class="font-semibold text-emerald-700">FREE</span>
+                                <span class="font-semibold text-primary-600">FREE</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>GST (18%)</span>
@@ -314,7 +314,7 @@
 
                     progressSegments.forEach(function (segment, index) {
                         const active = index < activeSegmentCount;
-                        segment.classList.toggle('bg-emerald-500', active && unlocked);
+                        segment.classList.toggle('bg-primary-600', active && unlocked);
                         segment.classList.toggle('bg-primary-500', active && !unlocked);
                         segment.classList.toggle('bg-emerald-200', !active);
                     });
@@ -322,7 +322,7 @@
                     if (unlocked) {
                         progressMsg.textContent = '🎉 You\'ve unlocked FREE same-day delivery!';
                         progressBadge.textContent = 'FREE Delivery';
-                        progressBadge.className = 'inline-flex w-fit items-center rounded-full bg-emerald-600 px-3 py-1 text-xs font-bold text-white';
+                        progressBadge.className = 'inline-flex w-fit items-center rounded-full bg-primary-600 px-3 py-1 text-xs font-bold text-white';
                     } else {
                         const fmt = remaining.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
                         progressMsg.textContent = 'Add Rs. ' + fmt + ' more for FREE delivery';
@@ -386,7 +386,7 @@
                                             <p class="mt-1.5 text-sm font-medium text-slate-500">Model No: ${model}</p>
                                             <div class="mt-3 flex flex-wrap gap-2">
                                                 <span class="inline-flex items-center rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">Dispatch 24-48h</span>
-                                                <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Procurement ready</span>
+                                                <span class="inline-flex items-center rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600">Procurement ready</span>
                                             </div>
                                         </div>
                                         <div class="text-left sm:text-right">
@@ -414,7 +414,7 @@
                                         <div class="flex w-full flex-wrap items-center gap-2.5 sm:w-auto">
                                             {{-- Save for Later button --}}
                                             <button type="button"
-                                                class="inline-flex h-10 items-center gap-1.5 justify-center rounded-xl border border-amber-300 bg-amber-50 px-3.5 text-sm font-semibold text-amber-700 transition hover:bg-amber-100"
+                                                class="inline-flex h-10 items-center gap-1.5 justify-center rounded-xl border border-amber-300 bg-secondary-50 px-3.5 text-sm font-semibold text-secondary-700 transition hover:bg-amber-100"
                                                 data-save-later-button
                                                 data-product-id="${productId}" data-variant-id="${variantId}">
                                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">

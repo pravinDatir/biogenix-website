@@ -14,7 +14,7 @@
     {{-- Page Header --}}
     <div class="mb-5 flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Support Ticket System</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Support Ticket System</h1>
             <p class="text-sm text-slate-500 mt-1 max-w-lg">Centralized hub for managing, resolving, and tracking customer inquiries across Biogenix services.</p>
         </div>
     </div>
@@ -24,14 +24,14 @@
 
         {{-- Toolbar --}}
         <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h2 class="text-sm font-extrabold text-[#0f172a]">Active Ticket Inbox</h2>
+            <h2 class="text-sm font-extrabold text-slate-900">Active Ticket Inbox</h2>
             <div class="relative w-full sm:w-80">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
-                <input id="ticket-search" type="text" placeholder="Search by Ticket ID, Customer, or Subject..." class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                <input id="ticket-search" type="text" placeholder="Search by Ticket ID, Customer, or Subject..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
             </div>
         </div>
 
@@ -51,19 +51,19 @@
 
                     @php
                     $tickets = [
-                        ['id' => 'TK-8821', 'customer' => 'Alice Henderson', 'subject' => 'Subscription Billing Issue',   'priority' => 'High',   'priority_color' => 'bg-rose-100 text-rose-600',    'status' => 'Open',        'status_color' => 'bg-slate-100 text-slate-600 border border-slate-200'],
-                        ['id' => 'TK-8819', 'customer' => 'Marcus Thorne',   'subject' => 'Lab Report Access',           'priority' => 'Medium', 'priority_color' => 'bg-amber-100 text-amber-700',  'status' => 'In Progress', 'status_color' => 'bg-blue-100 text-blue-700 border border-blue-200'],
-                        ['id' => 'TK-8795', 'customer' => 'Elena Rossi',     'subject' => 'Technical Bug: Login Loop',   'priority' => 'Critical','priority_color' => 'bg-red-600 text-white',        'status' => 'Resolved',    'status_color' => 'bg-emerald-100 text-emerald-700 border border-emerald-200'],
-                        ['id' => 'TK-8790', 'customer' => 'James Wilson',    'subject' => 'Feature Request: API Access', 'priority' => null,     'priority_color' => '',                             'status' => 'Open',        'status_color' => 'bg-slate-100 text-slate-600 border border-slate-200'],
-                        ['id' => 'TK-8787', 'customer' => 'Priya Anand',     'subject' => 'Order Not Received',          'priority' => 'High',   'priority_color' => 'bg-rose-100 text-rose-600',    'status' => 'Open',        'status_color' => 'bg-slate-100 text-slate-600 border border-slate-200'],
-                        ['id' => 'TK-8771', 'customer' => 'Karl Messner',    'subject' => 'Refund Processing Delay',     'priority' => 'Low',    'priority_color' => 'bg-slate-100 text-slate-600',  'status' => 'Closed',      'status_color' => 'bg-slate-200 text-slate-500 border border-slate-300'],
+                        ['id' => 'TK-8821', 'customer' => 'Alice Henderson', 'subject' => 'Subscription Billing Issue',   'priority' => 'High',   'priority_color' => 'bg-rose-50 text-rose-700 border border-rose-200/60',    'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
+                        ['id' => 'TK-8819', 'customer' => 'Marcus Thorne',   'subject' => 'Lab Report Access',           'priority' => 'Medium', 'priority_color' => 'bg-primary-50 text-primary-700 border border-primary-200/60',  'status' => 'In Progress', 'status_color' => 'bg-blue-50 text-blue-700 border border-blue-200/60'],
+                        ['id' => 'TK-8795', 'customer' => 'Elena Rossi',     'subject' => 'Technical Bug: Login Loop',   'priority' => 'Critical','priority_color' => 'bg-red-50 text-red-700 border border-red-200/60',        'status' => 'Resolved',    'status_color' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'],
+                        ['id' => 'TK-8790', 'customer' => 'James Wilson',    'subject' => 'Feature Request: API Access', 'priority' => null,     'priority_color' => '',                             'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
+                        ['id' => 'TK-8787', 'customer' => 'Priya Anand',     'subject' => 'Order Not Received',          'priority' => 'High',   'priority_color' => 'bg-rose-50 text-rose-700 border border-rose-200/60',    'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
+                        ['id' => 'TK-8771', 'customer' => 'Karl Messner',    'subject' => 'Refund Processing Delay',     'priority' => 'Low',    'priority_color' => 'bg-slate-50 text-slate-600 border border-slate-200/60',  'status' => 'Closed',      'status_color' => 'bg-slate-50 text-slate-500 border border-slate-200/60'],
                     ];
                     @endphp
 
                     @foreach($tickets as $t)
                     <tr class="hover:bg-slate-50/60 transition-colors cursor-pointer ticket-row" onclick="selectTicket('{{ $t['id'] }}')" data-ticket="{{ $t['id'] }}" data-name="{{ strtolower($t['customer']) }}" data-subject="{{ strtolower($t['subject']) }}">
                         <td class="px-6 py-3.5">
-                            <span class="text-[13px] font-extrabold text-[#091b3f]">#{{ $t['id'] }}</span>
+                            <span class="text-[13px] font-extrabold text-primary-800">#{{ $t['id'] }}</span>
                         </td>
                         <td class="px-6 py-3.5">
                             <span class="text-[13px] font-semibold text-slate-800">{{ $t['customer'] }}</span>
@@ -110,7 +110,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <h2 class="text-[15px] font-extrabold text-[#0f172a]" id="detail-title">#TK-8821: Subscription Billing Issue</h2>
+                            <h2 class="text-[15px] font-extrabold text-slate-900" id="detail-title">#TK-8821: Subscription Billing Issue</h2>
                             <button class="h-6 w-6 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer">
                                 <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                             </button>
@@ -118,17 +118,17 @@
                         <p class="text-[12px] text-slate-500" id="detail-meta">Opened by Alice Henderson &bull; 3 hours ago</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <span class="inline-flex items-center px-2.5 py-1 bg-slate-100 text-slate-600 border border-slate-200 text-[11px] font-bold rounded-full" id="detail-status-badge">Status: Open</span>
-                        <span class="inline-flex items-center px-2.5 py-1 bg-rose-100 text-rose-600 text-[11px] font-bold rounded-full" id="detail-priority-badge">Priority: High</span>
+                        <span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[11px] font-bold rounded-full" id="detail-status-badge">Status: Open</span>
+                        <span class="inline-flex items-center px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200/60 text-[11px] font-bold rounded-full" id="detail-priority-badge">Priority: High</span>
                     </div>
                 </div>
 
                 {{-- Meta Row --}}
-                <div class="mt-4 grid grid-cols-3 gap-4 bg-[#f8fafc] rounded-xl px-4 py-3">
+                <div class="mt-4 grid grid-cols-3 gap-4 bg-slate-50 rounded-xl px-4 py-3">
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Assigned To</p>
                         <div class="flex items-center gap-1.5">
-                            <div class="h-5 w-5 rounded-full bg-[#091b3f] text-white flex items-center justify-center text-[8px] font-black">SM</div>
+                            <div class="h-5 w-5 rounded-full bg-primary-600 text-white flex items-center justify-center text-[8px] font-black">SM</div>
                             <span class="text-[12px] font-semibold text-slate-800" id="detail-assignee">Sarah Miller</span>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                                 <span class="text-[12px] font-bold text-slate-900">Alice Henderson</span>
                                 <span class="text-[10px] text-slate-400">09:12 AM</span>
                             </div>
-                            <div class="bg-[#f8fafc] border border-slate-100 rounded-xl rounded-tl-sm px-4 py-3 text-[12px] text-slate-700 leading-relaxed">
+                            <div class="bg-slate-50 border border-slate-100 rounded-xl rounded-tl-sm px-4 py-3 text-[12px] text-slate-700 leading-relaxed">
                                 "Hi, I noticed an extra charge of $49.99 on my account this morning that doesn't seem to match my current subscription tier. Can you please check why this happened?"
                             </div>
                         </div>
@@ -174,13 +174,13 @@
 
                     {{-- Support reply --}}
                     <div class="flex items-start gap-3 flex-row-reverse">
-                        <div class="h-7 w-7 rounded-full bg-[#091b3f] text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">SM</div>
+                        <div class="h-7 w-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">SM</div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-baseline gap-2 mb-1 justify-end">
                                 <span class="text-[10px] text-slate-400">11:30 AM</span>
                                 <span class="text-[12px] font-bold text-slate-900">Sarah Miller (Support)</span>
                             </div>
-                            <div class="bg-[#091b3f] rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed">
+                            <div class="bg-primary-600 rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed">
                                 "Hello Alice, I'm currently looking into your billing discrepancy. It appears there might have been a double-authorization during the renewal process. Could you please confirm if you received two receipt emails?"
                             </div>
                         </div>
@@ -194,7 +194,7 @@
                                 <span class="text-[12px] font-bold text-slate-900">Alice Henderson</span>
                                 <span class="text-[10px] text-slate-400">11:45 AM</span>
                             </div>
-                            <div class="bg-[#f8fafc] border border-slate-100 rounded-xl rounded-tl-sm px-4 py-3 text-[12px] text-slate-700 leading-relaxed">
+                            <div class="bg-slate-50 border border-slate-100 rounded-xl rounded-tl-sm px-4 py-3 text-[12px] text-slate-700 leading-relaxed">
                                 "Yes, I did receive two emails. One says 'Order Confirmed' and the other says 'Subscription Updated'."
                             </div>
                         </div>
@@ -221,7 +221,7 @@
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="mt-1 h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                            <svg class="h-3 w-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            <svg class="h-3 w-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         </div>
                         <div>
                             <p class="text-[12px] font-semibold text-slate-900"><span class="font-bold">Ticket Assigned</span> to Sarah Miller</p>
@@ -230,7 +230,7 @@
                     </div>
                     <div class="flex items-start gap-3">
                         <div class="mt-1 h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                            <svg class="h-3 w-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            <svg class="h-3 w-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         </div>
                         <div>
                             <p class="text-[12px] font-semibold text-slate-900"><span class="font-bold">Status Changed</span> to Open</p>
@@ -242,7 +242,7 @@
 
             {{-- Reply Box --}}
             <div class="px-6 py-4 border-t border-slate-100">
-                <textarea id="reply-input" rows="3" placeholder="Type your response here..." class="w-full bg-[#f8fafc] border border-slate-200 text-[13px] text-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition resize-none placeholder:text-slate-400 font-medium"></textarea>
+                <textarea id="reply-input" rows="3" placeholder="Type your response here..." class="w-full bg-slate-50 border border-slate-200 text-[13px] text-slate-800 rounded-xl px-4 py-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition resize-none placeholder:text-slate-400 font-medium"></textarea>
                 <div class="mt-3 flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Attach file">
@@ -252,7 +252,7 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </button>
                     </div>
-                    <button id="btn-send-message" onclick="sendMessage()" class="bg-[#091b3f] hover:bg-[#112347] transition text-white px-5 py-2 rounded-lg text-[13px] font-bold shadow-sm shadow-[#091b3f]/20 cursor-pointer">Send Message</button>
+                    <button id="btn-send-message" onclick="sendMessage()" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2 rounded-lg text-[13px] font-bold shadow-sm shadow-primary-600/20 cursor-pointer">Send Message</button>
                 </div>
             </div>
         </div>
@@ -264,13 +264,13 @@
             <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-5">
                 <div class="flex items-center justify-between mb-4">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Support Categories</span>
-                    <button class="text-[12px] font-bold text-[#091b3f] hover:underline cursor-pointer">Manage</button>
+                    <button class="text-[12px] font-bold text-primary-800 hover:underline cursor-pointer">Manage</button>
                 </div>
                 <div id="categories-list">
                     {{-- Simple rows with separator lines, matching the original design --}}
                     <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
                         <span class="text-[13px] font-semibold text-slate-800">Technical Support</span>
-                        <span class="text-[11px] font-bold bg-[#091b3f] text-white rounded-full px-2.5 py-0.5 min-w-[28px] text-center">128</span>
+                        <span class="text-[11px] font-bold bg-primary-600 text-white rounded-full px-2.5 py-0.5 min-w-[28px] text-center">128</span>
                     </div>
                     <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
                         <span class="text-[13px] font-semibold text-slate-800">Billing &amp; Subscription</span>
@@ -281,7 +281,7 @@
                         <span class="text-[11px] font-bold bg-slate-100 text-slate-600 rounded-full px-2.5 py-0.5 min-w-[28px] text-center">12</span>
                     </div>
                 </div>
-                <button id="btn-add-category" onclick="addCategory()" class="mt-3 w-full py-2 border border-dashed border-slate-200 rounded-xl text-[12px] font-semibold text-slate-400 hover:border-[#091b3f] hover:text-[#091b3f] transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <button id="btn-add-category" onclick="addCategory()" class="mt-3 w-full py-2 border border-dashed border-slate-200 rounded-xl text-[12px] font-semibold text-slate-400 hover:border-primary-600 hover:text-primary-800 transition flex items-center justify-center gap-1.5 cursor-pointer">
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     + Add New Category
                 </button>
@@ -294,10 +294,10 @@
                     <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Configuration</span>
                 </div>
                 {{-- Only 1 configuration item as per the screenshot --}}
-                <a href="{{ route('adminPanel.ui-fields-modification') }}" class="ajax-link w-full text-left rounded-xl border border-slate-100 bg-[#f8fafc] hover:border-[#091b3f]/30 hover:bg-[#f0f3f8] transition px-4 py-3 group flex flex-col cursor-pointer">
+                <a href="{{ route('adminPanel.ui-fields-modification') }}" class="ajax-link w-full text-left rounded-xl border border-slate-100 bg-slate-50 hover:border-primary-600/30 hover:bg-slate-100 transition px-4 py-3 group flex flex-col cursor-pointer">
                     <div class="flex items-center justify-between">
-                        <span class="text-[13px] font-bold text-slate-900 group-hover:text-[#091b3f] transition">UI Fields Modification</span>
-                        <svg class="h-3.5 w-3.5 text-slate-400 group-hover:text-[#091b3f] transition shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        <span class="text-[13px] font-bold text-slate-900 group-hover:text-primary-800 transition">UI Fields Modification</span>
+                        <svg class="h-3.5 w-3.5 text-slate-400 group-hover:text-primary-800 transition shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                     </div>
                     <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Customize ticket forms, custom fields, and data validation rules.</p>
                 </a>
@@ -311,7 +311,7 @@
     @keyframes ticket-fade { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     .animate-ticket-fade { animation: ticket-fade 0.2s ease-out forwards; }
     .ticket-row.active-ticket { background: #f0f3f8; }
-    .ticket-row.active-ticket td:first-child { border-left: 3px solid #091b3f; }
+    .ticket-row.active-ticket td:first-child { border-left: 3px solid #1A4D2E; }
 </style>
 
 <script>
@@ -349,13 +349,13 @@
         const bubble = document.createElement('div');
         bubble.className = 'flex items-start gap-3 flex-row-reverse';
         bubble.innerHTML = `
-            <div class="h-7 w-7 rounded-full bg-[#091b3f] text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">SA</div>
+            <div class="h-7 w-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">SA</div>
             <div class="flex-1 min-w-0">
                 <div class="flex items-baseline gap-2 mb-1 justify-end">
                     <span class="text-[10px] text-slate-400">${timeStr}</span>
                     <span class="text-[12px] font-bold text-slate-900">Super Admin</span>
                 </div>
-                <div class="bg-[#091b3f] rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed">${msg.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+                <div class="bg-primary-600 rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed">${msg.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
             </div>`;
         thread.appendChild(bubble);
         input.value = '';

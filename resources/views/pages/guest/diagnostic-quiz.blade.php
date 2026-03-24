@@ -19,7 +19,7 @@
     .quiz-progress-fill {
         height: 100%;
         border-radius: 999px;
-        background: #2B4A2B;
+        background: var(--color-primary-600);
         transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -41,12 +41,12 @@
         background: #f8fafc;
     }
     .quiz-option.selected {
-        border-color: #2B4A2B;
-        background: rgba(43, 74, 43, 0.06);
-        box-shadow: 0 0 0 3px rgba(43, 74, 43, 0.1);
+        border-color: var(--color-primary-600);
+        background: rgba(26, 77, 46, 0.06);
+        box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
     }
     .quiz-option.correct {
-        border-color: #16a34a;
+        border-color: var(--color-primary-500);
         background: rgba(22, 163, 74, 0.06);
     }
 
@@ -65,8 +65,8 @@
         transition: background 0.25s, border-color 0.25s, color 0.25s;
     }
     .quiz-option.selected .quiz-option-radio {
-        background: #2B4A2B;
-        border-color: #2B4A2B;
+        background: var(--color-primary-600);
+        border-color: var(--color-primary-600);
         color: #ffffff;
     }
 
@@ -125,7 +125,7 @@
     }
     .score-ring-bg { stroke: #e2e8f0; }
     .score-ring-fill {
-        stroke: #2B4A2B;
+        stroke: var(--color-primary-600);
         stroke-linecap: round;
         transform: rotate(-90deg);
         transform-origin: 50% 50%;
@@ -166,8 +166,8 @@
     }
     .quiz-field:focus {
         outline: none;
-        border-color: #2B4A2B;
-        box-shadow: 0 0 0 3px rgba(43, 74, 43, 0.1);
+        border-color: var(--color-primary-600);
+        box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
     }
     .quiz-field::placeholder {
         color: #94a3b8;
@@ -239,7 +239,7 @@
                 <div class="lg:col-span-2">
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
                         <div class="flex items-start gap-3">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white" style="background:#2B4A2B">1</span>
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">1</span>
                             <h2 class="text-lg font-bold text-slate-950 sm:text-xl">Which reagent kit is best suited for high-throughput automation?</h2>
                         </div>
 
@@ -247,22 +247,22 @@
                             <div class="quiz-option" data-answer="A" onclick="selectOption(1, this)">
                                 <span class="quiz-option-radio">A</span>
                                 <span class="text-sm font-semibold text-slate-800">Precision-X LIMS Kit</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="B" onclick="selectOption(1, this)">
                                 <span class="quiz-option-radio">B</span>
                                 <span class="text-sm font-semibold text-slate-800">Bio-RGT Standard</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="C" onclick="selectOption(1, this)">
                                 <span class="quiz-option-radio">C</span>
                                 <span class="text-sm font-semibold text-slate-800">Clinical-Max Assay</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="D" onclick="selectOption(1, this)">
                                 <span class="quiz-option-radio">D</span>
                                 <span class="text-sm font-semibold text-slate-800">Eco-Lite Consumable</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
@@ -272,7 +272,7 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B" onclick="nextStep(2)">
+                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(2)">
                             Next
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
@@ -282,11 +282,11 @@
                 {{-- Sidebar --}}
                 <div class="space-y-5">
                     <div class="quiz-tip-card">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-700">
-                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full" style="background:#d4a017"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
+                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
+                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
                             Clinical Tip
                         </p>
-                        <h3 class="mt-2 text-base font-bold text-slate-950" style="color:#2B4A2B">Automation Integration</h3>
+                        <h3 class="mt-2 text-base font-bold text-primary-600">Automation Integration</h3>
                         <p class="mt-2 text-sm leading-6 text-slate-600">Automation-compatible kits utilize standard SBS footprints and barcoded vials. When selecting a kit for high-throughput environments, prioritize those with liquid-level sensing compatibility to minimize aspiration errors.</p>
                     </div>
 
@@ -310,7 +310,7 @@
 
                     <div class="relative overflow-hidden rounded-2xl min-h-[180px]">
                         <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Automated pipetting system" class="absolute inset-0 h-full w-full object-cover" loading="lazy">
-                        <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(43,74,43,0.2),rgba(43,74,43,0.85))"></div>
+                        <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(26,77,46,0.2),rgba(26,77,46,0.85))"></div>
                         <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-white/90">Fig 1.1: Automated pipetting system with Biogenix reagents.</p>
                     </div>
                 </div>
@@ -327,22 +327,22 @@
                             <div class="quiz-option" data-answer="A" onclick="selectOption(2, this)">
                                 <span class="quiz-option-radio">A</span>
                                 <span class="text-sm font-semibold text-slate-800">Room Temperature</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="B" onclick="selectOption(2, this)">
                                 <span class="quiz-option-radio">B</span>
                                 <span class="text-sm font-semibold text-slate-800">4°C</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="C" onclick="selectOption(2, this)">
                                 <span class="quiz-option-radio">C</span>
                                 <span class="text-sm font-semibold text-slate-800">-20°C</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="D" onclick="selectOption(2, this)">
                                 <span class="quiz-option-radio">D</span>
                                 <span class="text-sm font-semibold text-slate-800">-80°C</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
@@ -351,7 +351,7 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B" onclick="nextStep(3)">
+                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(3)">
                             Next Question
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
@@ -365,18 +365,18 @@
                         </h3>
                         <ul class="mt-4 space-y-4">
                             <li>
-                                <p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full" style="background:#d4a017"></span> Enzymatic Stability</p>
+                                <p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Enzymatic Stability</p>
                                 <p class="mt-1 text-sm leading-6 text-slate-600">Most high-fidelity polymerases lose activity if exposed to repeated freeze-thaw cycles. Always use a cooling block during use.</p>
                             </li>
                             <li>
-                                <p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full" style="background:#d4a017"></span> Reagent Segregation</p>
+                                <p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Reagent Segregation</p>
                                 <p class="mt-1 text-sm leading-6 text-slate-600">Keep dNTPs and primers in separate aliquots to prevent cross-contamination during library preparation.</p>
                             </li>
                         </ul>
                     </div>
                     <div class="quiz-insight-card">
                         <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-800">
-                            <span class="inline-block h-2 w-2 rounded-full" style="background:#d4a017"></span>
+                            <span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span>
                             Clinical Insight
                         </p>
                         <p class="mt-2 text-sm leading-6 text-slate-700">Storing at -20°C in a non-frost-free freezer is critical for maintaining long-term buffer molarity.</p>
@@ -386,14 +386,14 @@
                         <div class="mt-3 space-y-2">
                             <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                                 <span class="flex items-center gap-2 text-sm font-medium text-slate-700">
-                                    <svg class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                     Kit_Datasheet_V4.pdf
                                 </span>
                                 <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             </div>
                             <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
                                 <span class="flex items-center gap-2 text-sm font-medium text-slate-700">
-                                    <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                    <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                     Storage_Protocol_Guide
                                 </span>
                                 <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -410,29 +410,29 @@
                 <div class="lg:col-span-2">
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
                         <div class="flex items-start gap-3">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white" style="background:#2B4A2B">3</span>
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">3</span>
                             <h2 class="text-lg font-bold text-slate-950 sm:text-xl">Which certification standard governs IVD reagent manufacturing quality?</h2>
                         </div>
                         <div class="mt-6 space-y-3" id="q3Options">
                             <div class="quiz-option" data-answer="A" onclick="selectOption(3, this)">
                                 <span class="quiz-option-radio">A</span>
                                 <span class="text-sm font-semibold text-slate-800">ISO 9001:2015</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="B" onclick="selectOption(3, this)">
                                 <span class="quiz-option-radio">B</span>
                                 <span class="text-sm font-semibold text-slate-800">ISO 13485:2016</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="C" onclick="selectOption(3, this)">
                                 <span class="quiz-option-radio">C</span>
                                 <span class="text-sm font-semibold text-slate-800">CE-IVD Directive 98/79/EC</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="D" onclick="selectOption(3, this)">
                                 <span class="quiz-option-radio">D</span>
                                 <span class="text-sm font-semibold text-slate-800">GMP Annex 15</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
@@ -441,7 +441,7 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B" onclick="nextStep(4)">
+                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(4)">
                             Next Question
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
@@ -449,11 +449,11 @@
                 </div>
                 <div class="space-y-5">
                     <div class="quiz-tip-card">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-700">
-                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full" style="background:#d4a017"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
+                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
+                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
                             Clinical Tip
                         </p>
-                        <h3 class="mt-2 text-base font-bold" style="color:#2B4A2B">Regulatory Compliance</h3>
+                        <h3 class="mt-2 text-base font-bold text-primary-600">Regulatory Compliance</h3>
                         <p class="mt-2 text-sm leading-6 text-slate-600">ISO 13485 is the primary quality management standard for medical devices and IVD products. It ensures traceability, risk management, and process validation throughout the product lifecycle.</p>
                     </div>
                     <div class="quiz-context-card">
@@ -479,29 +479,29 @@
                 <div class="lg:col-span-2">
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
                         <div class="flex items-start gap-3">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white" style="background:#2B4A2B">4</span>
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">4</span>
                             <h2 class="text-lg font-bold text-slate-950 sm:text-xl">Which sample preparation method yields highest DNA purity for NGS workflows?</h2>
                         </div>
                         <div class="mt-6 space-y-3" id="q4Options">
                             <div class="quiz-option" data-answer="A" onclick="selectOption(4, this)">
                                 <span class="quiz-option-radio">A</span>
                                 <span class="text-sm font-semibold text-slate-800">Phenol-chloroform extraction</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="B" onclick="selectOption(4, this)">
                                 <span class="quiz-option-radio">B</span>
                                 <span class="text-sm font-semibold text-slate-800">Magnetic bead-based purification</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="C" onclick="selectOption(4, this)">
                                 <span class="quiz-option-radio">C</span>
                                 <span class="text-sm font-semibold text-slate-800">Silica membrane column</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                             <div class="quiz-option" data-answer="D" onclick="selectOption(4, this)">
                                 <span class="quiz-option-radio">D</span>
                                 <span class="text-sm font-semibold text-slate-800">Salting-out precipitation</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
@@ -510,7 +510,7 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B" onclick="nextStep(5)">
+                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(5)">
                             Finish Quiz
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
@@ -518,16 +518,16 @@
                 </div>
                 <div class="space-y-5">
                     <div class="quiz-tip-card">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-700">
-                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full" style="background:#d4a017"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
+                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
+                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
                             Clinical Tip
                         </p>
-                        <h3 class="mt-2 text-base font-bold" style="color:#2B4A2B">NGS Library Prep</h3>
+                        <h3 class="mt-2 text-base font-bold text-primary-600">NGS Library Prep</h3>
                         <p class="mt-2 text-sm leading-6 text-slate-600">Magnetic bead-based purification provides the best combination of purity and automation compatibility for next-generation sequencing, with minimal carry-over contamination.</p>
                     </div>
                     <div class="relative overflow-hidden rounded-2xl min-h-[180px]">
                         <img src="{{ asset('upload/corousel/image5.jpg') }}" alt="NGS sample preparation" class="absolute inset-0 h-full w-full object-cover" loading="lazy">
-                        <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(43,74,43,0.2),rgba(43,74,43,0.85))"></div>
+                        <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(26,77,46,0.2),rgba(26,77,46,0.85))"></div>
                         <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-white/90">Fig 4.1: NGS library preparation workflow.</p>
                     </div>
                 </div>
@@ -538,7 +538,7 @@
         <div class="quiz-step" data-step="5">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div class="flex flex-col justify-center">
-                    <span class="inline-flex w-fit rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white" style="background:#d4a017">Final Step</span>
+                    <span class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-800">Final Step</span>
                     <h2 class="mt-4 font-['Sora'] text-3xl font-bold tracking-tight text-slate-950 md:text-4xl lg:text-5xl">You're almost<br>there!</h2>
                     <p class="mt-4 max-w-md text-sm leading-6 text-slate-600 md:text-base">Enter your details to calculate your precision score and unlock your exclusive coupon code.</p>
                     <div class="mt-6">
@@ -551,7 +551,7 @@
                         </div>
                     </div>
                     <div class="mt-8 flex items-start gap-3">
-                        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full" style="background:#2B4A2B">
+                        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-600">
                             <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         </span>
                         <div>
@@ -563,7 +563,7 @@
                 <div>
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
                         <div class="quiz-progress-track mb-6">
-                            <div class="quiz-progress-fill" style="width:100%;background:#d4a017"></div>
+                            <div class="quiz-progress-fill" style="width:100%;background:var(--color-secondary-600)"></div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -579,7 +579,7 @@
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Email Address</label>
                             <input type="email" id="quizEmail" class="quiz-field" placeholder="john.doe@medical-cloud.com">
                         </div>
-                        <button type="button" id="quizSubmitButton" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B" onclick="showResults()">
+                        <button type="button" id="quizSubmitButton" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="showResults()">
                             Unlock My Score & Reward
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
@@ -595,7 +595,7 @@
         {{-- ────────── STEP 6: RESULTS ────────── --}}
         <div class="quiz-step" data-step="6">
             <div class="mb-8">
-                <span class="inline-flex rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white" style="background:#16a34a">Assessment Complete</span>
+                <span class="inline-flex rounded-full bg-primary-500 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white">Assessment Complete</span>
                 <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <div>
                         <h2 class="font-['Sora'] text-3xl font-bold tracking-tight text-slate-950 md:text-4xl lg:text-5xl" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
@@ -638,7 +638,7 @@
                     </div>
                 </div>
 
-                <div class="overflow-hidden rounded-2xl p-6 text-white shadow-sm sm:p-8" style="background:#2B4A2B">
+                <div class="overflow-hidden rounded-2xl bg-primary-600 p-6 text-white shadow-sm sm:p-8">
                     <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl" style="background:rgba(212,160,23,0.25)">
                         <svg class="h-6 w-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </div>

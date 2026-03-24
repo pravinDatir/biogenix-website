@@ -222,8 +222,8 @@
                                     </button>
                                     <div id="shareDropdown" class="invisible absolute right-0 top-[calc(100%+6px)] z-50 w-56 rounded-2xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-200">
                                         <button type="button" data-share="copy"    class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy Link</button>
-                                        <button type="button" data-share="whatsapp" class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-700"><svg class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.75h-.004a9.72 9.72 0 0 1-4.99-1.37l-.358-.212-3.713.974.992-3.623-.233-.37A9.86 9.86 0 0 1 2.25 12.05C2.25 6.65 6.65 2.25 12.05 2.25S21.85 6.65 21.85 12.05 17.45 21.75 12.05 21.75zM12.05.75C5.82.75.75 5.82.75 12.05a11.3 11.3 0 0 0 1.535 5.688L.75 23.25l5.666-1.487A11.3 11.3 0 0 0 12.05 23.25c6.23 0 11.3-5.07 11.3-11.3S18.28.75 12.05.75z"/></svg>WhatsApp</button>
-                                        <button type="button" data-share="email"    class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"><svg class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</button>
+                                        <button type="button" data-share="whatsapp" class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-primary-50 hover:text-primary-600"><svg class="h-4 w-4 text-primary-600" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.05 21.75h-.004a9.72 9.72 0 0 1-4.99-1.37l-.358-.212-3.713.974.992-3.623-.233-.37A9.86 9.86 0 0 1 2.25 12.05C2.25 6.65 6.65 2.25 12.05 2.25S21.85 6.65 21.85 12.05 17.45 21.75 12.05 21.75zM12.05.75C5.82.75.75 5.82.75 12.05a11.3 11.3 0 0 0 1.535 5.688L.75 23.25l5.666-1.487A11.3 11.3 0 0 0 12.05 23.25c6.23 0 11.3-5.07 11.3-11.3S18.28.75 12.05.75z"/></svg>WhatsApp</button>
+                                        <button type="button" data-share="email"    class="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-primary-50 hover:text-primary-600"><svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Email</button>
                                     </div>
                                 </div>
                             </div>
@@ -238,7 +238,7 @@
                         </div>
 
                         <div class="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
-                            <div class="flex items-center gap-1 text-amber-400">
+                            <div class="flex items-center gap-1 text-secondary-700">
                                 @for ($star = 0; $star < 5; $star++)
                                     <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z"></path></svg>
                                 @endfor
@@ -325,7 +325,7 @@
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
                                 @guest
-                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ff5f00] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e25500]">
+                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)]">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
@@ -342,7 +342,7 @@
                                         <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="{{ $requestedQuantity }}">
 
                                         {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
-                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#ff5f00] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#e25500]">
+                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)]">
                                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M5 12h14"></path>
                                                 <path d="m12 5 7 7-7 7"></path>
@@ -426,7 +426,7 @@
                                 data-discount="{{ e((string) $tier['discount']) }}"
                             >
                                 <span class="{{ $loop->last ? 'font-semibold text-slate-900' : '' }}">{{ $tier['label'] }}</span>
-                                <span class="{{ $loop->last ? 'font-semibold text-emerald-700' : 'text-slate-600' }}">{{ $tier['discount'] }}</span>
+                                <span class="{{ $loop->last ? 'font-semibold text-primary-600' : 'text-slate-600' }}">{{ $tier['discount'] }}</span>
                                 <span class="text-right font-semibold text-slate-900">{!! $formatInr($tier['price']) !!}</span>
                             </div>
                         @endforeach
@@ -621,7 +621,7 @@
                     const icon = document.createElement('div');
                     icon.className = variant === 'warn'
                         ? 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-orange-50 text-orange-600'
-                        : 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-blue-50 text-primary-600';
+                        : 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-primary-50 text-primary-600';
                     icon.innerHTML = variant === 'warn'
                         ? '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M12 9v4\"></path><path d=\"M12 17h.01\"></path><path d=\"M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z\"></path></svg>'
                         : '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M20 6 9 17l-5-5\"></path></svg>';
@@ -1102,7 +1102,7 @@
                         var prefix = Number(code.charAt(0));
                         if (prefix >= 2 && prefix <= 8) {
                             pincodeResult.innerHTML = '✓ <strong>Delivery available</strong> to ' + code + ' — Estimated 24-48 hours';
-                            pincodeResult.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-emerald-700';
+                            pincodeResult.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-primary-600';
                         } else {
                             pincodeResult.textContent = '✗ Delivery not available for this pincode currently.';
                             pincodeResult.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-rose-600';

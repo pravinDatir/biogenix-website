@@ -19,7 +19,7 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Delegate Support Role</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Delegate Support Role</h1>
             <p class="text-sm text-slate-500 mt-1">Authorize internal tickets management and support proxy access.</p>
         </div>
 
@@ -76,7 +76,7 @@
                         </div>
                         <input id="delegateExpiry" type="date" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 cursor-pointer">
                     </div>
-                    <p class="mt-1.5 text-[12px] text-amber-600 font-medium">Permissions will automatically revert at 00:00 on this date.</p>
+                    <p class="mt-1.5 text-[12px] text-secondary-700 font-medium">Permissions will automatically revert at 00:00 on this date.</p>
                 </div>
 
                 {{-- Reason --}}
@@ -101,7 +101,7 @@
             {{-- Action Buttons --}}
             <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
                 <a href="{{ route('adminPanel.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-                <button type="button" id="addDelegSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b255e] px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
+                <button type="button" id="addDelegSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
                     Add Delegation
                 </button>
             </div>

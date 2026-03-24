@@ -31,7 +31,7 @@
 
     <section class="space-y-4">
         <div class="flex items-center gap-2">
-            <svg class="h-5 w-5 text-[#091b3f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+            <svg class="h-5 w-5 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a1 1 0 011 1v1.05a7.002 7.002 0 015.95 5.95H20a1 1 0 110 2h-1.05a7.002 7.002 0 01-5.95 5.95V20a1 1 0 11-2 0v-1.05a7.002 7.002 0 01-5.95-5.95H4a1 1 0 110-2h1.05a7.002 7.002 0 015.95-5.95V4a1 1 0 011-1zm0 6a3 3 0 100 6 3 3 0 000-6z" />
             </svg>
             <h3 class="text-base font-bold text-slate-900">Theme Mode</h3>
@@ -43,7 +43,7 @@
                     type="button"
                     class="flex min-h-[128px] flex-col items-center justify-center gap-4 rounded-2xl p-6 text-center transition
                     {{ $mode['selected']
-                        ? 'border-2 border-[#091b3f] bg-slate-50/60 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.12)]'
+                        ? 'border-2 border-primary-600 bg-slate-50/60 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.12)]'
                         : 'border border-slate-200 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:border-slate-300 hover:bg-slate-50/40'
                     }}">
                     @if ($mode['icon_type'] === 'sun')
@@ -69,7 +69,7 @@
 
     <section class="space-y-4">
         <div class="flex items-center gap-2">
-            <svg class="h-5 w-5 -rotate-45 text-[#091b3f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+            <svg class="h-5 w-5 -rotate-45 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
             <h3 class="text-base font-bold text-slate-900">Portal Color Theme</h3>
@@ -79,26 +79,26 @@
             <p class="mb-6 text-[11px] font-bold uppercase tracking-widest text-slate-400">Select a preset palette</p>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 lg:gap-6">
-                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border-2 border-[#091b3f] bg-white p-3.5 text-left shadow-sm">
-                    <div class="relative h-8 w-8 flex-shrink-0 rounded-full bg-[#1f3a8a]">
-                        <span class="absolute inset-[-5px] rounded-full border-2 border-[#091b3f]"></span>
-                        <span class="absolute inset-[-9px] rounded-full border border-[#c7d2fe]"></span>
+                <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border-2 border-primary-600 bg-white p-3.5 text-left shadow-sm">
+                    <div class="relative h-8 w-8 flex-shrink-0 rounded-full bg-slate-100">
+                        <span class="absolute inset-[-5px] rounded-full border-2 border-primary-600"></span>
+                        <span class="absolute inset-[-9px] rounded-full border border-slate-200"></span>
                     </div>
-                    <span class="text-[13px] font-bold text-[#091b3f]">Biogenix Blue</span>
+                    <span class="text-[13px] font-bold text-primary-800">Biogenix Blue</span>
                 </button>
 
                 <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
-                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-[#0f766e] shadow-sm"></span>
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-slate-100 shadow-sm"></span>
                     <span class="text-[13px] font-bold text-slate-700">Forest Green</span>
                 </button>
 
                 <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
-                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-[#4338ca] shadow-sm"></span>
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-slate-100 shadow-sm"></span>
                     <span class="text-[13px] font-bold text-slate-700">Modern Indigo</span>
                 </button>
 
                 <button type="button" class="flex min-h-[66px] items-center gap-3 rounded-xl border border-transparent bg-white p-3.5 text-left transition hover:border-slate-200 hover:bg-slate-50/60">
-                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-[#111827] shadow-sm"></span>
+                    <span class="h-8 w-8 flex-shrink-0 rounded-full bg-slate-100 shadow-sm"></span>
                     <span class="text-[13px] font-bold text-slate-700">Midnight Black</span>
                 </button>
             </div>
@@ -110,7 +110,7 @@
             <button type="button" class="text-[13px] font-bold text-slate-600 transition hover:text-slate-900">
                 Discard Changes
             </button>
-            <button type="button" class="inline-flex items-center justify-center rounded-xl bg-[#091b3f] px-8 py-3 text-[13px] font-bold text-white shadow-[0_6px_18px_-6px_rgba(9,27,63,0.45)] transition hover:bg-[#112347]">
+            <button type="button" class="inline-flex items-center justify-center rounded-xl bg-primary-600 px-8 py-3 text-[13px] font-bold text-white shadow-[0_6px_18px_-6px_rgba(9,27,63,0.45)] transition hover:bg-primary-700">
                 Save Changes
             </button>
         </div>

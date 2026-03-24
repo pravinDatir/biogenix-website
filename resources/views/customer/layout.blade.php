@@ -126,7 +126,7 @@
                     const isActive = link.dataset.key === activeKey;
 
                     // Remove all state classes
-                    link.classList.remove('bg-[#091b3f]', 'text-white', 'font-bold');
+                    link.classList.remove('bg-primary-600', 'text-white', 'font-bold');
                     link.classList.remove('text-slate-500', 'hover:bg-slate-50', 'hover:text-slate-800');
 
                     // Remove old active indicator
@@ -136,7 +136,7 @@
                     const svg = link.querySelector('svg');
 
                     if (isActive) {
-                        link.classList.add('bg-[#091b3f]', 'text-white', 'font-bold');
+                        link.classList.add('bg-primary-600', 'text-white', 'font-bold');
                         if (svg) { svg.classList.remove('text-slate-400'); svg.classList.add('text-indigo-200'); svg.setAttribute('stroke-width', '2.5'); }
                         // Add active indicator bar
                         const indicatorDiv = document.createElement('div');

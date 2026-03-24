@@ -1,7 +1,7 @@
 @push('styles')
 <style>
     .home-page {
-        --home-orange: #ff6a00;
+        --home-orange: var(--color-primary-600);
         --home-cyan: #38bdf8;
         --home-navy: #07111f;
         --home-panel: rgba(255, 255, 255, 0.74);
@@ -91,8 +91,8 @@
 
     .home-page .home-primary-button {
         border-radius: 1rem;
-        background: linear-gradient(135deg, #ff6a00, #ff8f3f);
-        box-shadow: 0 18px 30px rgba(255, 106, 0, 0.28);
+        background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-500));
+        box-shadow: 0 18px 30px rgba(26, 77, 46, 0.28);
     }
 
     .home-page .home-primary-button:hover {
@@ -443,19 +443,19 @@
         align-items: center;
         justify-content: center;
         border-radius: 0.9rem;
-        background: linear-gradient(135deg, #ff6a00, #ff8f3f);
+        background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-500));
         padding: 0.6rem 1rem;
         font-size: 0.9rem;
         font-weight: 700;
         color: #ffffff;
-        box-shadow: 0 14px 24px rgba(255, 106, 0, 0.22);
+        box-shadow: 0 14px 24px rgba(26, 77, 46, 0.22);
         transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     .home-category-action:hover {
         transform: translateY(-1px);
-        background: linear-gradient(135deg, #ed6200, #ff7b21);
-        box-shadow: 0 16px 28px rgba(255, 106, 0, 0.28);
+        background: linear-gradient(135deg, var(--color-primary-700), var(--color-primary-600));
+        box-shadow: 0 16px 28px rgba(26, 77, 46, 0.28);
     }
 
     @media (min-width: 640px) {
@@ -495,7 +495,7 @@
 
     .home-cta {
         background:
-            radial-gradient(circle at top right, rgba(255, 106, 0, 0.18), transparent 28%),
+            radial-gradient(circle at top right, rgba(26, 77, 46, 0.18), transparent 28%),
             linear-gradient(135deg, #07111f 0%, #102243 52%, #112d60 100%);
     }
 
@@ -805,19 +805,19 @@
 
                         <ul class="mt-6 space-y-3">
                             <li class="flex items-center gap-3">
-                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#2B4A2B">
+                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#1A4D2E">
                                     <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                                 <span class="text-sm font-semibold text-slate-800">24/7 Operational Diagnostic Facility</span>
                             </li>
                             <li class="flex items-center gap-3">
-                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#2B4A2B">
+                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#1A4D2E">
                                     <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                                 <span class="text-sm font-semibold text-slate-800">Dedicated Cold-Chain Logistics Hub</span>
                             </li>
                             <li class="flex items-center gap-3">
-                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#2B4A2B">
+                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#1A4D2E">
                                     <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                                 <span class="text-sm font-semibold text-slate-800">AI-Integrated Result Validation</span>
@@ -825,7 +825,7 @@
                         </ul>
 
                         <div class="mt-8">
-                            <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B">
+                            <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#1A4D2E">
                                 Find a Collection Center
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             </a>
@@ -858,15 +858,15 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-quiz-cta bg-transparent py-6 md:py-8">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="home-reveal overflow-hidden rounded-3xl px-6 py-10 shadow-[0_24px_55px_rgba(43,74,43,0.2)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16" style="background:#2B4A2B">
+            <div class="home-reveal overflow-hidden rounded-3xl bg-primary-600 px-6 py-10 shadow-[0_24px_55px_rgba(26,77,46,0.25)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16">
                 <div class="max-w-xl">
                     <h2 class="font-['Sora'] text-2xl font-semibold tracking-tight text-white md:text-3xl lg:text-[2rem]">Test Your Diagnostic<br>Precision</h2>
-                    <p class="mt-3 text-sm leading-6 text-white/70 md:text-[15px] md:leading-7">
+                    <p class="mt-3 text-sm leading-6 text-white/80 md:text-[15px] md:leading-7">
                         Take our 4-minute kit assessment and unlock a 15% discount code on your first clinical order.
                     </p>
                 </div>
                 <div class="mt-6 md:mt-0 md:ml-8 md:shrink-0">
-                    <a href="{{ route('diagnostic-quiz') }}" class="inline-flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/15 px-7 py-3.5 text-sm font-semibold text-white shadow-sm backdrop-blur transition hover:bg-white/25 hover:-translate-y-0.5 hover:shadow-md">
+                    <a href="{{ route('diagnostic-quiz') }}" class="inline-flex items-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:bg-secondary-200 hover:-translate-y-0.5 hover:shadow-md">
                         Start Quiz
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     </a>
@@ -1024,7 +1024,7 @@
                     newsletterEmail.classList.add('border-rose-400', 'ring-4', 'ring-rose-500/10');
                     newsletterStatus.textContent = 'Please enter a valid email.';
                     newsletterStatus.classList.add('text-rose-600');
-                    newsletterStatus.classList.remove('text-emerald-600');
+                    newsletterStatus.classList.remove('text-primary-600');
                     return;
                 }
 
@@ -1033,7 +1033,7 @@
                 newsletterBtn.setAttribute('aria-disabled', 'true');
                 newsletterStatus.textContent = 'You are subscribed. Thank you.';
                 newsletterStatus.classList.remove('text-rose-600');
-                newsletterStatus.classList.add('text-emerald-600');
+                newsletterStatus.classList.add('text-primary-600');
                 newsletterForm.reset();
 
                 setTimeout(function () {

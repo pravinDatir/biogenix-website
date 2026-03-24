@@ -34,7 +34,7 @@
                     <h2 class="text-xl font-semibold text-slate-950">PI Library</h2>
                     <p class="mt-1 text-sm leading-6 text-slate-500">Ownership, target company, status, and total value are surfaced here for faster review.</p>
                 </div>
-                <span class="inline-flex items-center rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">Scoped access</span>
+                <span class="inline-flex items-center rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600">Scoped access</span>
             </div>
 
             <div class="mt-6 {{ $tableWrapClass }}">
@@ -55,8 +55,8 @@
                             @php
                                 $isPendingInternalReview = in_array(strtolower($pi->status), ['pending_review', 'requested', 'submitted'], true);
                                 $statusClass = match (strtolower($pi->status)) {
-                                    'approved', 'active' => 'border-emerald-200 bg-emerald-50 text-emerald-700',
-                                    'pending', 'draft', 'pending_review', 'requested', 'submitted' => 'border-amber-200 bg-amber-50 text-amber-700',
+                                    'approved', 'active' => 'border-primary-200 bg-primary-50 text-primary-600',
+                                    'pending', 'draft', 'pending_review', 'requested', 'submitted' => 'border-amber-200 bg-secondary-50 text-secondary-700',
                                     'rejected', 'expired' => 'border-rose-200 bg-rose-50 text-rose-700',
                                     default => 'border-slate-200 bg-slate-50 text-slate-700',
                                 };
@@ -82,7 +82,7 @@
                                 <td class="{{ $tableCellClass }}">{{ $pi->created_at }}</td>
                                 <td class="{{ $tableCellClass }}">
                                     @if ($isPendingInternalReview)
-                                        <span class="inline-flex h-10 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-4 text-sm font-semibold text-amber-700">Awaiting Internal Review</span>
+                                        <span class="inline-flex h-10 items-center justify-center rounded-xl border border-amber-200 bg-secondary-50 px-4 text-sm font-semibold text-secondary-700">Awaiting Internal Review</span>
                                     @else
                                         <a href="{{ route('proforma.download', $pi->id) }}" class="{{ $secondaryButtonClass }}">Download PDF</a>
                                     @endif

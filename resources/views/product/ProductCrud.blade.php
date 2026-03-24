@@ -457,7 +457,7 @@
                             <td class="px-4 py-4 align-top text-sm text-slate-700">{{ $product->category_name ?? '-' }}</td>
                             <td class="px-4 py-4 align-top text-sm text-slate-700">{{ $product->subcategory_name ?? '-' }}</td>
                             <td class="px-4 py-4 align-top text-sm text-slate-700">
-                                <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold {{ (int) $product->is_published === 1 ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-700' }}">
+                                <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold {{ (int) $product->is_published === 1 ? 'border-primary-200 bg-primary-50 text-primary-600' : 'border-slate-200 bg-slate-50 text-slate-700' }}">
                                     {{ (int) $product->is_published === 1 ? 'Published' : 'Draft' }}
                                 </span>
                             </td>

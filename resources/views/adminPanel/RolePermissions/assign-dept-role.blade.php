@@ -19,7 +19,7 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Assign Role to Department</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Assign Role to Department</h1>
             <p class="text-sm text-slate-500 mt-1">Configure role mappings and permission defaults for entire departments.</p>
         </div>
 
@@ -61,7 +61,7 @@
                 {{-- Assign System Role --}}
                 <div class="pt-2">
                     <div class="flex items-center gap-2.5 mb-4">
-                        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#e8edf6] text-[#102f72]">
+                        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-slate-600">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
@@ -92,7 +92,7 @@
             {{-- Action Buttons --}}
             <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
                 <a href="{{ route('adminPanel.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-                <button type="button" id="addDeptSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b255e] px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
+                <button type="button" id="addDeptSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
                     Create & Assign
                 </button>
             </div>

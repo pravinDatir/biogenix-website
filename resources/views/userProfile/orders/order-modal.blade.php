@@ -88,7 +88,7 @@
                     </div>
                     <div class="flex items-center justify-between pt-2">
                         <span class="text-sm font-bold text-slate-900">Grand Total</span>
-                        <span id="orderModalGrandTotal" class="text-2xl font-bold text-[#091b3f]"></span>
+                        <span id="orderModalGrandTotal" class="text-2xl font-bold text-primary-800"></span>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                 <button type="button" data-modal-close="orderModal" class="h-10 flex-1 rounded-xl px-5 text-[14px] font-bold text-slate-700 transition hover:bg-slate-200/60 sm:flex-none modal-close">
                     Close
                 </button>
-                <button id="orderModalReorder" type="button" class="h-10 min-w-[136px] flex-1 whitespace-nowrap rounded-xl bg-[#091b3f] px-7 text-[14px] font-bold text-white shadow-sm transition hover:bg-slate-800 sm:flex-none">
+                <button id="orderModalReorder" type="button" class="h-10 min-w-[136px] flex-1 whitespace-nowrap rounded-xl bg-primary-600 px-7 text-[14px] font-bold text-white shadow-sm transition hover:bg-primary-700 sm:flex-none">
                     Reorder All
                 </button>
             </div>

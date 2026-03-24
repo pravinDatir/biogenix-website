@@ -64,7 +64,7 @@
                     @if (isset($stat['trend']))
                         <div @class([
                             'flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase transition-transform group-hover:scale-110',
-                            'bg-emerald-50 text-emerald-600' => $stat['trend_up'] === true,
+                            'bg-primary-50 text-primary-600' => $stat['trend_up'] === true,
                             'bg-rose-50 text-rose-600' => $stat['trend_up'] === false,
                             'bg-slate-100 text-slate-500' => $stat['trend_up'] === null,
                         ])>

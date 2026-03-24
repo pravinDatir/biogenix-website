@@ -67,7 +67,7 @@
             @unless ($suppressShellAlerts)
                 <div class="mx-auto w-full max-w-7xl space-y-4 px-4 sm:px-6 lg:px-8 xl:px-10">
                     @if (session()->has('impersonation.impersonator_id'))
-                        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
+                        <div class="rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-emerald-800">
                             You are currently impersonating another user.
                             <form method="POST" action="{{ route('impersonation.stop') }}" class="inline-block">
                                 @csrf
@@ -116,7 +116,7 @@
         </button>
 
         {{-- Support Ticket Toggle Button --}}
-        <button onclick="toggleSupportForm()" class="group flex h-14 w-14 items-center justify-center rounded-full bg-[#0b74fb] text-white shadow-xl shadow-blue-500/30 transition-all hover:scale-105 hover:bg-blue-700" aria-label="Open support ticket">
+        <button onclick="toggleSupportForm()" class="group flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-xl shadow-primary-600/30 transition-all hover:scale-105 hover:bg-primary-600" aria-label="Open support ticket">
             <svg class="h-7 w-7 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.477 2 2 5.582 2 10c0 2.476 1.343 4.675 3.444 6.136.213 1.393-.454 3.125-.5 3.245a.5.5 0 00.643.64c.12-.046 1.85-.712 3.244-1.127A9.852 9.852 0 0012 18c5.523 0 10-3.582 10-8s-4.477-8-10-8zm-3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
             </svg>
@@ -125,9 +125,9 @@
 
     {{-- Floating Support Form (Dedicated Position) --}}
     <div id="supportTicketForm" class="fixed inset-x-4 bottom-24 top-24 z-[60] hidden flex origin-bottom-right translate-y-3 scale-95 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white opacity-0 pointer-events-none shadow-2xl transition duration-300 sm:inset-x-auto sm:top-auto sm:right-6 sm:bottom-28 sm:w-[400px] sm:max-h-[calc(100vh-140px)]">
-        <div class="flex items-start justify-between bg-[#0b74fb] px-5 py-4">
+        <div class="flex items-start justify-between bg-primary-600 px-5 py-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-[#3b93ff] text-white">
+                <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-500 text-white">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 13v4m-2-2h4" />
@@ -152,13 +152,13 @@
             <form action="{{ route('contact') }}" method="GET" class="space-y-4">
                 <div>
                     <label for="supportSubject" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Subject</label>
-                    <input type="text" id="supportSubject" name="subject" class="h-10 w-full rounded-md border border-slate-200 px-3 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" placeholder="Briefly describe the issue" required>
+                    <input type="text" id="supportSubject" name="subject" class="h-10 w-full rounded-md border border-slate-200 px-3 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Briefly describe the issue" required>
                 </div>
 
                 <div>
                     <label for="supportCategory" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Category</label>
                     <div class="relative">
-                        <select id="supportCategory" name="category" class="h-10 w-full appearance-none rounded-md border border-slate-200 pl-3 pr-8 text-[13px] text-slate-900 outline-none transition focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" required>
+                        <select id="supportCategory" name="category" class="h-10 w-full appearance-none rounded-md border border-slate-200 pl-3 pr-8 text-[13px] text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600" required>
                             <option value="">Select a category</option>
                             <option value="Product">Product Issue</option>
                             <option value="Billing">Billing & Invoice</option>
@@ -175,12 +175,12 @@
 
                 <div>
                     <label for="supportMessage" class="mb-1.5 block text-[13px] font-semibold text-slate-800">Message</label>
-                    <textarea id="supportMessage" name="message" rows="3" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0b74fb] focus:ring-1 focus:ring-[#0b74fb]" placeholder="Provide detailed information about your request..." required></textarea>
+                    <textarea id="supportMessage" name="message" rows="3" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Provide detailed information about your request..." required></textarea>
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-[13px] font-semibold text-slate-800">Attachments</label>
-                    <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-[#fbfcfd] px-4 py-5 text-center transition-colors hover:bg-slate-50">
+                    <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center transition-colors hover:bg-slate-50">
                         <svg class="mb-2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                         </svg>
@@ -195,7 +195,7 @@
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         Secure
                     </span>
-                    <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-[#0b74fb] px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow focus:outline-none focus:ring-2 focus:ring-[#0b74fb]/30">
+                    <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-primary-600 px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-primary-600 hover:shadow focus:outline-none focus:ring-2 focus:ring-primary-600/30">
                         Submit Ticket
                     </button>
                 </div>
@@ -415,10 +415,10 @@
                     info: '<svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
                 };
                 var toneMap = {
-                    success: ['border-emerald-200', 'bg-emerald-50/95', 'text-emerald-700'],
+                    success: ['border-primary-200', 'bg-primary-50/95', 'text-primary-600'],
                     error: ['border-rose-200', 'bg-rose-50/95', 'text-rose-700'],
-                    warning: ['border-amber-200', 'bg-amber-50/95', 'text-amber-700'],
-                    info: ['border-sky-200', 'bg-sky-50/95', 'text-sky-700']
+                    warning: ['border-amber-200', 'bg-secondary-50/95', 'text-secondary-700'],
+                    info: ['border-sky-200', 'bg-primary-50/95', 'text-primary-600']
                 };
 
                 var toast = document.createElement('div');

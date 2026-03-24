@@ -15,7 +15,7 @@
 
                 <div class="flex flex-col items-center gap-3">
                     <div class="flex items-center gap-2">
-                        <span class="h-2.5 w-2.5 rounded-full bg-emerald-400/95"></span>
+                        <span class="h-2.5 w-2.5 rounded-full bg-primary-600/95"></span>
                         <span class="h-2.5 w-2.5 rounded-full bg-cyan-400/95"></span>
                         <span class="h-2.5 w-2.5 rounded-full bg-amber-300/95"></span>
                     </div>

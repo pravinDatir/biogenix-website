@@ -32,7 +32,7 @@
         <tr>
             <td style="padding:32px;">
                 <!-- Business step: lead with a simple confirmation header so the customer instantly knows the order is safely received. -->
-                <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#2563eb;">Order Submitted</p>
+                <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#1A4D2E;">Order Submitted</p>
                 <h1 style="margin:16px 0 0; font-size:28px; line-height:1.25; color:#0f172a;">We have received your order</h1>
 
                 <p style="margin:16px 0 0; font-size:15px; line-height:1.8; color:#475569;">
@@ -89,7 +89,7 @@
                                             <p style="margin:0; font-size:12px; line-height:1.7; color:#64748b;">Unit Price</p>
                                             <p style="margin:4px 0 0; font-size:14px; font-weight:700; color:#0f172a;">{{ $formatMoney($orderItem->unit_price) }}</p>
                                             <p style="margin:10px 0 0; font-size:12px; line-height:1.7; color:#64748b;">Line Subtotal</p>
-                                            <p style="margin:4px 0 0; font-size:14px; font-weight:700; color:#2563eb;">{{ $formatMoney($orderItem->subtotal_amount) }}</p>
+                                            <p style="margin:4px 0 0; font-size:14px; font-weight:700; color:#1A4D2E;">{{ $formatMoney($orderItem->subtotal_amount) }}</p>
                                             @if ((float) $orderItem->discount_amount > 0)
                                                 <!-- Business step: show product-level savings near the item row so the customer can understand the benefit without breaking the order total math. -->
                                                 <p style="margin:10px 0 0; font-size:12px; line-height:1.7; color:#64748b;">Savings</p>

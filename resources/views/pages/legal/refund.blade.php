@@ -65,8 +65,8 @@
 
                     <div class="space-y-5">
                         <div class="flex gap-4">
-                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50">
-                                <svg class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50">
+                                <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div>
                                 <h4 class="text-sm font-semibold text-slate-900">Integrity Validation</h4>
@@ -75,8 +75,8 @@
                         </div>
 
                         <div class="flex gap-4">
-                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-50">
-                                <svg class="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary-50">
+                                <svg class="h-5 w-5 text-secondary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </div>
                             <div>
                                 <h4 class="text-sm font-semibold text-slate-900">Reimbursement Timeline</h4>
@@ -85,8 +85,8 @@
                         </div>
 
                         <div class="flex gap-4">
-                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50">
-                                <svg class="h-5 w-5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-50">
+                                <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                             </div>
                             <div>
                                 <h4 class="text-sm font-semibold text-slate-900">Cold Chain Exclusion</h4>

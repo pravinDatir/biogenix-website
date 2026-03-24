@@ -471,7 +471,7 @@
                     if (quoteDraftStatus) {
                         quoteDraftStatus.textContent = 'Draft saved locally in this browser.';
                         quoteDraftStatus.classList.remove('text-red-600');
-                        quoteDraftStatus.classList.add('text-emerald-600');
+                        quoteDraftStatus.classList.add('text-primary-600');
                     }
                 } catch (error) {
                     console.error('Failed to save quote draft', error);
@@ -486,7 +486,7 @@
                 if (quoteDraftStatus) {
                     quoteDraftStatus.textContent = 'Draft cleared.';
                     quoteDraftStatus.classList.remove('text-red-600');
-                    quoteDraftStatus.classList.add('text-emerald-600');
+                    quoteDraftStatus.classList.add('text-primary-600');
                 }
             });
         }
@@ -498,7 +498,7 @@
                 if (quoteDraftStatus) {
                     quoteDraftStatus.textContent = 'A saved draft has been restored.';
                     quoteDraftStatus.classList.remove('text-red-600');
-                    quoteDraftStatus.classList.add('text-emerald-600');
+                    quoteDraftStatus.classList.add('text-primary-600');
                 }
             }
         } catch (error) {

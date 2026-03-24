@@ -3,7 +3,7 @@
         
         <h3 class="px-3 text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 mt-2">Admin Portal</h3>
 
-        <a href="{{ route('adminPanel.dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl {{ request()->routeIs('adminPanel.dashboard') ? 'bg-[#091b3f] text-white' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' }} font-bold text-[13px] transition w-full relative">
+        <a href="{{ route('adminPanel.dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl {{ request()->routeIs('adminPanel.dashboard') ? 'bg-primary-600 text-white' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' }} font-bold text-[13px] transition w-full relative">
             @if(request()->routeIs('adminPanel.dashboard'))
                 <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-md"></div>
                 <svg class="h-5 w-5 text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -44,7 +44,7 @@
                     $isActive = request()->routeIs($link['route']);
                 }
             @endphp
-            <a href="{{ isset($link['route']) ? route($link['route']) : '#' }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition w-full relative {{ $isActive ? 'bg-[#091b3f] text-white font-bold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' }}">
+            <a href="{{ isset($link['route']) ? route($link['route']) : '#' }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition w-full relative {{ $isActive ? 'bg-primary-600 text-white font-bold' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' }}">
                 @if($isActive)
                     <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-white rounded-r-md"></div>
                     <svg class="h-5 w-5 text-indigo-200 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $link['icon'] }}"></path></svg>
@@ -54,7 +54,7 @@
                 <span class="leading-tight z-10 flex-1">{{ $link['title'] }}</span>
                 @if(isset($link['badge']))
                     @php $bc = isset($link['badgeColor']) ? $link['badgeColor'] : 'blue'; @endphp
-                    <span class="text-[9px] font-black rounded-md px-1.5 py-0.5 z-10 {{ $isActive ? 'bg-white/20 text-white' : ($bc === 'emerald' ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600') }}">{{ $link['badge'] }}</span>
+                    <span class="text-[9px] font-black rounded-md px-1.5 py-0.5 z-10 {{ $isActive ? 'bg-white/20 text-white' : ($bc === 'emerald' ? 'bg-primary-50 text-primary-600' : 'bg-primary-50 text-primary-600') }}">{{ $link['badge'] }}</span>
                 @endif
             </a>
         @endforeach
@@ -62,7 +62,7 @@
         {{-- User Profile --}}
         <div class="mt-6 pt-4 border-t border-slate-100">
             <div class="flex items-center gap-3 px-3 py-2">
-                <div class="h-9 w-9 rounded-full bg-[#091b3f] text-white flex items-center justify-center text-[11px] font-black flex-shrink-0">SA</div>
+                <div class="h-9 w-9 rounded-full bg-primary-600 text-white flex items-center justify-center text-[11px] font-black flex-shrink-0">SA</div>
                 <div class="min-w-0 flex-1">
                     <p class="text-[13px] font-bold text-slate-900 truncate">Super Admin</p>
                     <p class="text-[11px] font-medium text-slate-400 truncate">admin@biogenix.com</p>

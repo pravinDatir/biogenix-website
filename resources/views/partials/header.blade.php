@@ -110,16 +110,16 @@
                 </form>
             @else
                 <a href="{{ route('login') }}" id="loginBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Login</a>
-                <a href="{{ route('signup') }}" id="signupBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-[13px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 2xl:h-11 2xl:px-5 2xl:text-sm">Sign Up</a>
+                <a href="{{ route('signup') }}" id="signupBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-200 bg-white px-4 text-[13px] font-semibold text-primary-700 shadow-sm transition hover:bg-primary-50 hover:text-primary-800 hover:border-primary-300 2xl:h-11 2xl:px-5 2xl:text-sm">Sign Up</a>
             @endauth
 
             <button
                 type="button"
                 onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
-                class="header-cart-button inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:gap-2.5 2xl:px-3.5 2xl:py-2.5"
+                class="header-cart-button inline-flex items-center gap-2 rounded-2xl border border-primary-100 bg-primary-50 px-3 py-2 text-primary-700 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:gap-2.5 2xl:px-3.5 2xl:py-2.5"
                 aria-label="View cart"
             >
-                <span class="relative inline-flex h-7 w-7 items-center justify-center text-slate-900">
+                <span class="relative inline-flex h-7 w-7 items-center justify-center text-inherit">
                     <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
                         <circle cx="9" cy="21" r="1.4"></circle>
                         <circle cx="17" cy="21" r="1.4"></circle>
@@ -132,13 +132,13 @@
                         aria-atomic="true"
                     >0</span>
                 </span>
-                <span class="header-cart-label text-[13px] font-bold leading-none text-slate-900 2xl:text-sm">Cart</span>
+                <span class="header-cart-label text-[13px] font-bold leading-none text-inherit 2xl:text-sm">Cart</span>
             </button>
 
             {{-- Profile icon --}}
             <a
                 href="{{ $profileHref }}"
-                class="header-profile-button inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:text-slate-900 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
+                class="header-profile-button inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 text-primary-700 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
                 aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}"
                 title="Profile"
             >
@@ -202,7 +202,7 @@
 
                 <div class="mt-4 grid gap-2 sm:grid-cols-2">
                     @auth
-                        <a href="{{ $profileHref }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-slate-800 hover:text-white">
+                        <a href="{{ $profileHref }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
                             Open Profile
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
@@ -212,7 +212,7 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-slate-800 hover:text-white">
+                        <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
                             Login
                         </a>
                         <a href="{{ route('signup') }}" class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-50 hover:text-slate-900">

@@ -12,7 +12,7 @@
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px; margin:0 auto; background:#ffffff; border:1px solid #e2e8f0; border-radius:16px; overflow:hidden;">
         <tr>
             <td style="padding:32px;">
-                <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#2563eb;">Account Recovery</p>
+                <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#1A4D2E;">Account Recovery</p>
                 <h1 style="margin:16px 0 0; font-size:28px; line-height:1.25; color:#0f172a;">Reset your password</h1>
                 <p style="margin:16px 0 0; font-size:15px; line-height:1.8; color:#475569;">
                     Hello {{ $user->name ?: 'Biogenix User' }},
@@ -22,7 +22,7 @@
                 </p>
 
                 <p style="margin:28px 0 0;">
-                    <a href="{{ $resetUrl }}" style="display:inline-block; padding:14px 24px; border-radius:12px; background:#2563eb; color:#ffffff; text-decoration:none; font-size:15px; font-weight:700;">
+                    <a href="{{ $resetUrl }}" style="display:inline-block; padding:14px 24px; border-radius:12px; background:#1A4D2E; color:#ffffff; text-decoration:none; font-size:15px; font-weight:700;">
                         Reset Password
                     </a>
                 </p>
@@ -41,7 +41,7 @@
 
                 <p style="margin:28px 0 0; font-size:13px; line-height:1.8; color:#64748b;">
                     If the button does not open, copy and paste this link into your browser:<br>
-                    <span style="word-break:break-all; color:#2563eb;">{{ $resetUrl }}</span>
+                    <span style="word-break:break-all; color:#1A4D2E;">{{ $resetUrl }}</span>
                 </p>
             </td>
         </tr>

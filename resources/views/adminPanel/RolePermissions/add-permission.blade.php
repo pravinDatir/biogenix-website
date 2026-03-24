@@ -19,7 +19,7 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Add Global Permission</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Add Global Permission</h1>
             <p class="text-sm text-slate-500 mt-1">Define actionable capabilities to be assigned across roles and teams.</p>
         </div>
 
@@ -85,7 +85,7 @@
             {{-- Action Buttons --}}
             <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
                 <a href="{{ route('adminPanel.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-                <button type="button" id="addPermSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b255e] px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
+                <button type="button" id="addPermSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
                     Save Permission
                 </button>
             </div>

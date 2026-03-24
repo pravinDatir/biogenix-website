@@ -111,7 +111,7 @@
                         <div class="flex max-w-[23rem] flex-wrap items-center gap-2">
                             <div class="relative min-w-0 flex-1 basis-[14rem]">
                                 <input type="email" id="signupEmail" name="email" value="{{ old('email') }}" class="{{ $inputClass }} pr-12 @error('email') {{ $fieldErrorClass }} @enderror" placeholder="you@example.com" autocomplete="email">
-                                <span id="signupEmailVerifiedIcon" class="hidden absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-emerald-500">
+                                <span id="signupEmailVerifiedIcon" class="hidden absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-primary-600">
                                     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16Zm3.78-9.72a.75.75 0 10-1.06-1.06L9.25 10.69 7.78 9.22a.75.75 0 10-1.06 1.06l2 2a.75.75 0 001.06 0l4-4Z" clip-rule="evenodd" />
                                     </svg>

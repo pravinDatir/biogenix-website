@@ -229,7 +229,7 @@
                             <div class="flex flex-wrap gap-3">
                                 <a href="{{ route('orders.show', $order->id) }}" class="{{ $buttonSecondary }}">View</a>
                                 <a href="{{ route('orders.index', ['edit_order_id' => $order->id]) }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-primary-200 bg-primary-50 px-4 text-sm font-semibold text-primary-700 transition hover:bg-primary-100">Edit</a>
-                                <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100" data-reorder-order-id="{{ $order->id }}">Reorder</button>
+                                <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-primary-200 bg-primary-50 px-4 text-sm font-semibold text-primary-600 transition hover:bg-emerald-100" data-reorder-order-id="{{ $order->id }}">Reorder</button>
                                 <form method="POST" action="{{ route('orders.destroy', $order->id) }}">
                                     @csrf
                                     @method('DELETE')

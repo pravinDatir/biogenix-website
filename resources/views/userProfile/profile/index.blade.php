@@ -24,7 +24,7 @@
 
             <div class="flex flex-wrap items-center justify-end gap-3">
                 <a href="{{ route('customer.profile.preview') }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none no-underline">Cancel</a>
-                <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 focus-visible:outline-none cursor-pointer">Save Changes</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none cursor-pointer">Save Changes</button>
             </div>
         </form>
 
@@ -43,21 +43,21 @@
                 @endif
                 <div class="space-y-2">
                     <label for="current_password" class="text-[13px] font-semibold text-slate-700">Current Password</label>
-                    <input type="password" id="current_password" name="current_password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('current_password', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Enter current password" required>
+                    <input type="password" id="current_password" name="current_password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 @error('current_password', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Enter current password" required>
                     @error('current_password', 'updatePassword')
                         <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="space-y-2">
                     <label for="password" class="text-[13px] font-semibold text-slate-700">New Password</label>
-                    <input type="password" id="password" name="password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('password', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Enter new password (min. 8 characters)" required>
+                    <input type="password" id="password" name="password" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 @error('password', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Enter new password (min. 8 characters)" required>
                     @error('password', 'updatePassword')
                         <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div class="space-y-2">
                     <label for="password_confirmation" class="text-[13px] font-semibold text-slate-700">Confirm New Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] @error('password_confirmation', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Confirm new password" required>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 @error('password_confirmation', 'updatePassword') border-rose-300 focus:border-rose-400 focus:ring-rose-100 @enderror" placeholder="Confirm new password" required>
                     @error('password_confirmation', 'updatePassword')
                         <p class="text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
@@ -66,7 +66,7 @@
 
             <x-slot:footer>
                 <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" onclick="toggleModal('changePasswordModal', false)">Cancel</button>
-                <button type="submit" form="changePasswordForm" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">Update Password</button>
+                <button type="submit" form="changePasswordForm" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700">Update Password</button>
             </x-slot:footer>
         </x-modal>
 
@@ -77,7 +77,7 @@
             <div id="email-step-1" class="space-y-4">
                 <div class="space-y-2">
                     <label for="new_email" class="text-[13px] font-semibold text-slate-700">New Email Address</label>
-                    <input type="email" id="new_email" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="Enter new email address">
+                    <input type="email" id="new_email" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Enter new email address">
                     <p id="email-error" class="hidden text-xs text-red-500"></p>
                 </div>
             </div>
@@ -87,40 +87,40 @@
                 <p class="text-[13px] text-slate-600">We've sent a 6-digit OTP to <span id="display-new-email" class="font-semibold text-slate-900"></span>. Please enter it below to verify.</p>
                 <div class="space-y-2">
                     <label for="email_otp" class="text-[13px] font-semibold text-slate-700">Enter OTP</label>
-                    <input type="text" id="email_otp" maxlength="6" class="h-11 w-full text-center tracking-[0.5em] rounded-xl border border-slate-200 bg-white px-4 text-xl font-bold text-slate-900 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]" placeholder="000000">
+                    <input type="text" id="email_otp" maxlength="6" class="h-11 w-full text-center tracking-[0.5em] rounded-xl border border-slate-200 bg-white px-4 text-xl font-bold text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="000000">
                     <p id="otp-error" class="hidden text-xs text-red-500"></p>
                 </div>
                 <div class="flex items-center justify-between">
-                    <button type="button" id="btn-resend-otp" class="text-[13px] font-semibold text-[#091b3f] hover:underline disabled:text-slate-400">Resend OTP</button>
+                    <button type="button" id="btn-resend-otp" class="text-[13px] font-semibold text-primary-800 hover:underline disabled:text-slate-400">Resend OTP</button>
                     <span id="resend-timer" class="text-[12px] text-slate-500"></span>
                 </div>
             </div>
 
             {{-- Step 3: Success & Final Update --}}
             <div id="email-step-3" class="hidden space-y-4">
-                <div class="rounded-xl bg-green-50 p-4 text-center border border-green-100">
+                <div class="rounded-xl bg-primary-50 p-4 text-center border border-primary-200">
                     <div class="flex justify-center">
-                        <svg class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="h-12 w-12 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h3 class="mt-2 text-sm font-bold text-green-900">Email Verified!</h3>
-                    <p class="mt-1 text-xs text-green-700">Your new email has been verified. Click 'Submit' to update your profile.</p>
+                    <h3 class="mt-2 text-sm font-bold text-primary-600">Email Verified!</h3>
+                    <p class="mt-1 text-xs text-primary-600">Your new email has been verified. Click 'Submit' to update your profile.</p>
                 </div>
             </div>
 
             <x-slot:footer>
                 <div id="email-footer-step-1" class="flex w-full items-center justify-end gap-3">
                     <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" onclick="toggleModal('changeEmailModal', false)">Cancel</button>
-                    <button type="button" id="btn-get-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50">Get OTP</button>
+                    <button type="button" id="btn-get-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700 disabled:opacity-50">Get OTP</button>
                 </div>
                 <div id="email-footer-step-2" class="hidden w-full items-center justify-end gap-3">
                     <button type="button" id="btn-back-to-email" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Back</button>
-                    <button type="button" id="btn-verify-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50">Verify OTP</button>
+                    <button type="button" id="btn-verify-otp" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700 disabled:opacity-50">Verify OTP</button>
                 </div>
                 <div id="email-footer-step-3" class="hidden w-full items-center justify-end gap-3">
                     <button type="button" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50" data-modal-close="changeEmailModal">Cancel</button>
-                    <button type="button" id="btn-final-email-submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">Submit Change</button>
+                    <button type="button" id="btn-final-email-submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700">Submit Change</button>
                 </div>
             </x-slot:footer>
         </x-modal>

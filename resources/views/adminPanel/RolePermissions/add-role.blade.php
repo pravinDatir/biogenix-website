@@ -38,14 +38,14 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Add New System Role</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Add New System Role</h1>
             <p class="text-sm text-slate-500 mt-1">Create a custom role template and define primary permission buckets.</p>
         </div>
 
         {{-- Role Details Card --}}
         <div class="rounded-[20px] border border-slate-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] p-6 sm:p-8">
             <div class="flex items-center gap-2.5 mb-6">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-primary-600">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -90,7 +90,7 @@
             <div class="divide-y divide-slate-100" id="permissionsList">
                 @foreach ($allPermissions as $perm)
                     <label class="permission-item flex items-start gap-4 py-4 cursor-pointer hover:bg-slate-50/50 transition rounded-lg px-2 -mx-2" data-name="{{ strtolower($perm['name']) }}">
-                        <input type="checkbox" class="mt-1 h-[18px] w-[18px] rounded border-slate-300 text-[#12367d] focus:ring-[#12367d] shrink-0 cursor-pointer">
+                        <input type="checkbox" class="mt-1 h-[18px] w-[18px] rounded border-slate-300 text-slate-600 focus:ring-slate-200 shrink-0 cursor-pointer">
                         <div class="min-w-0">
                             <div class="text-[14px] font-bold text-slate-900">{{ $perm['name'] }}</div>
                             <div class="mt-0.5 text-[12px] text-slate-500">{{ $perm['desc'] }}</div>
@@ -103,7 +103,7 @@
         {{-- Action Buttons --}}
         <div class="flex items-center justify-end gap-3 pb-4">
             <a href="{{ route('adminPanel.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-            <button type="button" id="addRoleSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b255e] px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
+            <button type="button" id="addRoleSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                 </svg>

@@ -99,7 +99,7 @@
         @case('petri')
             <div class="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-primary-100 bg-amber-100 shadow-2xl"></div>
             @foreach ($petriOffsets as $offsetClass)
-                <span class="{{ $offsetClass }} absolute h-2.5 w-2.5 rounded-full bg-emerald-500/80"></span>
+                <span class="{{ $offsetClass }} absolute h-2.5 w-2.5 rounded-full bg-primary-600/80"></span>
             @endforeach
             @break
 
@@ -117,7 +117,7 @@
                 <div class="{{ $tubeLeftClass }} absolute top-[20%] h-44 w-8 rounded-t-full bg-primary-100 rotate-[18deg] shadow-lg"></div>
                 <div class="{{ $tipLeftClass }} absolute top-[48%] h-20 w-4 rounded-b-full bg-white rotate-[18deg]"></div>
             @endforeach
-            <div class="absolute bottom-8 left-1/2 h-16 w-28 -translate-x-1/2 rounded-[2rem] bg-amber-500 shadow-xl"></div>
+            <div class="absolute bottom-8 left-1/2 h-16 w-28 -translate-x-1/2 rounded-[2rem] bg-secondary-600 shadow-xl"></div>
             @break
 
         @case('vortex')

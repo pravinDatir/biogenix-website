@@ -11,7 +11,7 @@
         <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
             <div class="flex items-center gap-3">
                 <h2 id="cartSidebarTitle" class="text-lg font-bold text-slate-950">Your Cart</h2>
-                <span id="cartSidebarBadge" class="inline-flex items-center justify-center rounded-full bg-[#1A62E8] px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white">0 ITEMS</span>
+                <span id="cartSidebarBadge" class="inline-flex items-center justify-center rounded-full bg-primary-600 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white">0 ITEMS</span>
             </div>
             <button
                 id="cartSidebarClose"
@@ -25,15 +25,15 @@
             </button>
         </div>
 
-        <div class="mx-5 mt-3 flex shrink-0 items-center gap-3 rounded-2xl border border-emerald-200 bg-[linear-gradient(135deg,#ecfdf5_0%,#d1fae5_100%)] px-4 py-3">
-            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white">
+        <div class="mx-5 mt-3 flex shrink-0 items-center gap-3 rounded-2xl border border-primary-200 bg-[linear-gradient(135deg,#ecfdf5_0%,#d1fae5_100%)] px-4 py-3">
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-white">
                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <path d="M20 6 9 17l-5-5"></path>
                 </svg>
             </span>
             <div>
                 <p class="text-[11px] font-bold uppercase tracking-wide text-slate-900">Lucknow order detected</p>
-                <p class="text-[10px] font-semibold text-emerald-600">Eligible for Same-day Delivery!</p>
+                <p class="text-[10px] font-semibold text-primary-600">Eligible for Same-day Delivery!</p>
             </div>
         </div>
 
@@ -47,7 +47,7 @@
             </svg>
             <p class="mt-4 text-sm font-semibold text-slate-700">Your cart is empty</p>
             <p class="mt-1 text-xs text-slate-500">Add products from the catalog to get started.</p>
-            <a href="{{ route('products.index') }}" class="mt-5 inline-flex min-h-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#1a62e8_0%,#164db8_100%)] px-5 text-sm font-semibold text-white no-underline shadow-[0_14px_28px_rgba(26,98,232,0.22)] transition hover:-translate-y-0.5 hover:text-white hover:shadow-[0_18px_32px_rgba(26,98,232,0.26)]">
+            <a href="{{ route('products.index') }}" class="mt-5 inline-flex min-h-11 items-center justify-center rounded-2xl bg-primary-600 px-5 text-sm font-semibold text-white no-underline shadow-md shadow-primary-600/30 transition hover:-translate-y-0.5 hover:text-white hover:shadow-md shadow-primary-600/30">
                 Continue Shopping
             </a>
         </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="flex items-center justify-between text-slate-600">
                     <span>Delivery Charge</span>
-                    <span class="font-bold text-emerald-600">FREE</span>
+                    <span class="font-bold text-primary-600">FREE</span>
                 </div>
             </div>
 
@@ -81,7 +81,7 @@
             <a
                 id="cartSidebarCheckout"
                 href="{{ route('checkout.page') }}"
-                class="mt-4 inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#1a62e8_0%,#164db8_100%)] px-4 py-3 text-center text-sm font-bold text-white no-underline shadow-[0_18px_34px_rgba(26,98,232,0.24)] transition hover:-translate-y-0.5 hover:text-white hover:shadow-[0_22px_40px_rgba(26,98,232,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
+                class="mt-4 inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-2xl bg-primary-600 px-4 py-3 text-center text-sm font-bold text-white no-underline shadow-md shadow-primary-600/30 transition hover:-translate-y-0.5 hover:text-white hover:shadow-md shadow-primary-600/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
             >
                 Proceed to Checkout &rarr;
             </a>
@@ -237,7 +237,7 @@
                     </div>
                     <div class="flex shrink-0 flex-col items-end justify-between">
                         <div class="text-[13px] font-bold text-slate-900">${formatInr(lineTotal)}</div>
-                        <div class="text-[8px] font-bold uppercase tracking-[0.08em] text-sky-500">Arriving tomorrow</div>
+                        <div class="text-[8px] font-bold uppercase tracking-[0.08em] text-primary-600">Arriving tomorrow</div>
                     </div>
                 </div>
             `;

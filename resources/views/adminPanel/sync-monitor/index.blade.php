@@ -10,11 +10,11 @@
             'status' => 'Active',
             'rate' => '99.8%',
             'last_sync' => '2m ago',
-            'icon_bg' => 'bg-emerald-50',
-            'icon_color' => 'text-emerald-500',
-            'status_bg' => 'bg-emerald-50',
-            'status_text' => 'text-emerald-600',
-            'rate_text' => 'text-emerald-600',
+            'icon_bg' => 'bg-primary-50',
+            'icon_color' => 'text-primary-600',
+            'status_bg' => 'bg-primary-50',
+            'status_text' => 'text-primary-600',
+            'rate_text' => 'text-primary-600',
             'card_class' => '',
             'icon_path' => 'M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V9m-5-4a2 2 0 002 2m-2-2a2 2 0 00-2 2m2-2h2a2 2 0 012 2v2m-7 7 2 2 4-4',
         ],
@@ -23,11 +23,11 @@
             'status' => 'Active',
             'rate' => '100%',
             'last_sync' => '45s ago',
-            'icon_bg' => 'bg-emerald-50',
-            'icon_color' => 'text-emerald-500',
-            'status_bg' => 'bg-emerald-50',
-            'status_text' => 'text-emerald-600',
-            'rate_text' => 'text-emerald-600',
+            'icon_bg' => 'bg-primary-50',
+            'icon_color' => 'text-primary-600',
+            'status_bg' => 'bg-primary-50',
+            'status_text' => 'text-primary-600',
+            'rate_text' => 'text-primary-600',
             'card_class' => '',
             'icon_path' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0',
         ],
@@ -36,11 +36,11 @@
             'status' => 'Warning',
             'rate' => '94.2%',
             'last_sync' => '12m ago',
-            'icon_bg' => 'bg-amber-50',
-            'icon_color' => 'text-amber-500',
-            'status_bg' => 'bg-amber-50',
-            'status_text' => 'text-amber-600',
-            'rate_text' => 'text-amber-600',
+            'icon_bg' => 'bg-secondary-50',
+            'icon_color' => 'text-secondary-700',
+            'status_bg' => 'bg-secondary-50',
+            'status_text' => 'text-secondary-700',
+            'rate_text' => 'text-secondary-700',
             'card_class' => '',
             'icon_path' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0',
         ],
@@ -85,7 +85,7 @@
             'time' => 'Just Now',
             'title' => 'Orders Sync Completed',
             'body' => '428 records synchronized successfully from North America Cluster.',
-            'dot' => 'bg-emerald-500',
+            'dot' => 'bg-primary-600',
             'ring' => 'ring-emerald-50',
             'title_color' => 'text-slate-900',
         ],
@@ -93,7 +93,7 @@
             'time' => '4 mins ago',
             'title' => 'Manual Trigger Initialized',
             'body' => "Admin 'S. Thompson' triggered full inventory refresh.",
-            'dot' => 'bg-[#091b3f]',
+            'dot' => 'bg-primary-600',
             'ring' => 'ring-indigo-50',
             'title_color' => 'text-slate-900',
         ],
@@ -109,7 +109,7 @@
             'time' => '1 hour ago',
             'title' => 'Security Protocol Update',
             'body' => 'All sync tokens rotated successfully for the next cycle.',
-            'dot' => 'bg-emerald-400',
+            'dot' => 'bg-primary-600',
             'ring' => 'ring-emerald-50',
             'title_color' => 'text-slate-900',
         ],
@@ -124,14 +124,14 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3">
-            <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#091b3f] px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.18)] transition hover:bg-[#112347]">
+            <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.18)] transition hover:bg-primary-700">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m14.836 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 Trigger Full System Sync
             </button>
 
-            <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-[#091b3f]">
+            <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-primary-800">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10m-10 6h7" />
                 </svg>
@@ -142,7 +142,7 @@
 
     <div>
         <div class="mb-4 flex items-center gap-2">
-            <div class="flex h-6 w-6 items-center justify-center rounded bg-[#091b3f]">
+            <div class="flex h-6 w-6 items-center justify-center rounded bg-primary-600">
                 <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16M7 16V9m5 7V5m5 11v-4" />
                 </svg>
@@ -202,7 +202,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    <input type="text" placeholder="Search error codes..." class="w-full bg-white border border-slate-200 shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-700 placeholder:text-slate-400">
+                    <input type="text" placeholder="Search error codes..." class="w-full bg-white border border-slate-200 shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-700 placeholder:text-slate-400">
                 </div>
             </div>
 
@@ -237,7 +237,7 @@
                                         </div>
                                     </td>
                                     <td class="px-5 lg:px-7 py-4 lg:py-5 align-top text-right">
-                                        <button type="button" class="inline-flex items-center gap-1.5 text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2">
+                                        <button type="button" class="inline-flex items-center gap-1.5 text-[12px] lg:text-[13px] font-bold text-primary-800 hover:underline underline-offset-2">
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m14.836 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                             </svg>
@@ -251,14 +251,14 @@
                 </div>
 
                 <div class="px-5 lg:px-7 py-4 border-t border-slate-100 bg-slate-50/50 text-center">
-                    <a href="#" class="text-[12px] lg:text-[13px] font-bold text-[#091b3f] hover:underline underline-offset-2">View Full Archive</a>
+                    <a href="#" class="text-[12px] lg:text-[13px] font-bold text-primary-800 hover:underline underline-offset-2">View Full Archive</a>
                 </div>
             </div>
         </div>
 
         <div class="lg:col-span-4">
             <div class="mb-4 flex items-center gap-2">
-                <div class="flex h-5 w-5 items-center justify-center text-emerald-500">
+                <div class="flex h-5 w-5 items-center justify-center text-primary-600">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>

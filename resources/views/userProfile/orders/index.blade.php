@@ -11,16 +11,16 @@
     $periodFilters = ['Last 3 months', 'Last 6 months', '2023'];
     $statusStyles = [
         'delivered' => [
-            'badge' => 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200',
-            'reorder' => 'bg-[#091b3f] text-white shadow-sm hover:bg-slate-800',
+            'badge' => 'bg-primary-50 text-primary-600 ring-1 ring-inset ring-primary-200',
+            'reorder' => 'bg-primary-600 text-white shadow-sm hover:bg-primary-700',
         ],
         'processing' => [
-            'badge' => 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200',
-            'reorder' => 'bg-[#091b3f] text-white shadow-sm hover:bg-slate-800',
+            'badge' => 'bg-secondary-50 text-secondary-700 ring-1 ring-inset ring-amber-200',
+            'reorder' => 'bg-primary-600 text-white shadow-sm hover:bg-primary-700',
         ],
         'shipped' => [
-            'badge' => 'bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-200',
-            'reorder' => 'bg-[#091b3f] text-white shadow-sm hover:bg-slate-800',
+            'badge' => 'bg-primary-50 text-primary-600 ring-1 ring-inset ring-primary-200',
+            'reorder' => 'bg-primary-600 text-white shadow-sm hover:bg-primary-700',
         ],
         'archived' => [
             'badge' => 'bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200',
@@ -37,7 +37,7 @@
             'date' => 'Oct 12, 2023',
             'total' => '$1,240.00',
             'image' => asset('upload/categories/image1.jpg'),
-            'image_background' => 'bg-[#fdf2e9]',
+            'image_background' => 'bg-slate-50',
             'summary_note' => 'Priority temperature-safe delivery',
             'tracking_id' => 'BGX-7742019902',
             'carrier' => 'Via Biogenix Logistics Pro',
@@ -60,7 +60,7 @@
                     'price' => '$420.00',
                     'total' => '$840.00',
                     'image' => asset('upload/categories/image1.jpg'),
-                    'background' => 'bg-emerald-50',
+                    'background' => 'bg-primary-50',
                 ],
                 [
                     'name' => 'Agarose Sterile Plates',
@@ -70,7 +70,7 @@
                     'price' => '$80.00',
                     'total' => '$400.00',
                     'image' => asset('upload/categories/image2.jpg'),
-                    'background' => 'bg-[#fdf2e9]',
+                    'background' => 'bg-slate-50',
                 ],
             ],
         ],
@@ -116,7 +116,7 @@
                     'price' => '$400.00',
                     'total' => '$400.00',
                     'image' => asset('upload/categories/image1.jpg'),
-                    'background' => 'bg-sky-50',
+                    'background' => 'bg-primary-50',
                 ],
             ],
         ],
@@ -178,7 +178,7 @@
                         @foreach ($statusFilters as $filter)
                             <button
                                 type="button"
-                                class="inline-flex h-10 items-center justify-center rounded-xl px-4 text-[13px] font-bold transition {{ $filter === 'All' ? 'bg-[#091b3f] text-white shadow-md hover:bg-slate-800' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm' }}"
+                                class="inline-flex h-10 items-center justify-center rounded-xl px-4 text-[13px] font-bold transition {{ $filter === 'All' ? 'bg-primary-600 text-white shadow-md hover:bg-primary-700' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm' }}"
                             >
                                 {{ $filter }}
                             </button>
@@ -196,7 +196,7 @@
                         </div>
                         <select
                             id="order-range"
-                            class="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-10 text-[13px] font-semibold text-slate-700 outline-none transition focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]"
+                            class="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-10 text-[13px] font-semibold text-slate-700 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
                         >
                             @foreach ($periodFilters as $period)
                                 <option>{{ $period }}</option>

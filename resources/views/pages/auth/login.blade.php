@@ -69,7 +69,7 @@
                             <span>{{ $errorMessage }}</span>
                         </div>
                     @elseif ($successMessage)
-                        <div class="mt-8 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm font-medium leading-6 text-emerald-700" role="status">
+                        <div class="mt-8 flex items-start gap-3 rounded-2xl border border-primary-200 bg-primary-50 px-4 py-4 text-sm font-medium leading-6 text-primary-600" role="status">
                             <svg class="mt-0.5 h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M5 13l4 4L19 7"></path>
                             </svg>

@@ -47,7 +47,7 @@
 <div class="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
     <section class="rounded-[32px] border border-slate-200 bg-[linear-gradient(145deg,#ffffff_0%,#f8fbff_55%,#ecfdf5_100%)] p-6 shadow-sm md:p-8">
         <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
-            <span class="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-100 text-emerald-600 shadow-sm">
+            <span class="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-100 text-primary-600 shadow-sm">
                 <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
                 </svg>
@@ -55,7 +55,7 @@
 
             <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-2">
-                    <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Confirmed</span>
+                    <span class="inline-flex items-center rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-600">Confirmed</span>
                     <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">{{ strtoupper($portal) }}</span>
                 </div>
 
@@ -85,8 +85,8 @@
             </div>
         </div>
 
-        <div class="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-5">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Confirmation Message</p>
+        <div class="mt-6 rounded-3xl border border-primary-200 bg-primary-50/70 p-5">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">Confirmation Message</p>
             <p class="mt-3 text-base font-semibold leading-7 text-slate-900">
                 Hello {{ $recipientName }}, your order {{ $orderId }} has been confirmed successfully. We have shared the latest order confirmation to {{ $recipientEmail }}.
             </p>

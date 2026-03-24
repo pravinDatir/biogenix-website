@@ -18,7 +18,7 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Grant Impersonation Access</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Grant Impersonation Access</h1>
             <p class="text-sm text-slate-500 mt-1 max-w-2xl">Configure impersonation permissions for administrative users.</p>
         </div>
 
@@ -92,7 +92,7 @@
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer shrink-0">
                                 <input type="checkbox" class="sr-only peer" checked>
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0b255e]"></div>
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-100"></div>
                             </label>
                         </div>
                         
@@ -105,7 +105,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer shrink-0">
                                     <input type="checkbox" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0b255e]"></div>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-100"></div>
                                 </label>
                             </div>
                             <div class="flex items-center gap-3">
@@ -132,7 +132,7 @@
                 {{-- Action Buttons --}}
                 <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
                     <a href="{{ route('adminPanel.role-permission') }}" class="ajax-link px-6 py-3 text-[14px] font-bold border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-                    <button type="button" id="grantImpersonationBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b255e] px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
+                    <button type="button" id="grantImpersonationBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
                         Grant Access
                     </button>
                 </div>

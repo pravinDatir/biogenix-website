@@ -1,6 +1,6 @@
 @php
     $panelClass = 'space-y-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] md:p-7';
-    $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]';
+    $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600';
     $savedAddresses = $savedAddresses ?? collect();
     $editingAddressId = (string) session('editing_address_id');
     $countryOptions = ['India', 'United States', 'United Kingdom'];
@@ -30,16 +30,16 @@
                 <div class="flex flex-wrap items-center gap-2">
                     <h3 class="text-lg font-bold text-slate-900">Saved Address #{{ $loop->iteration }}</h3>
                     @if ($address->is_default_shipping)
-                        <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">Default Shipping</span>
+                        <span class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-1 text-xs font-semibold text-primary-600">Default Shipping</span>
                     @endif
                     @if ($address->is_default_billing)
-                        <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">Default Billing</span>
+                        <span class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-1 text-xs font-semibold text-primary-600">Default Billing</span>
                     @endif
                 </div>
                 <p class="mt-1 text-sm text-slate-500">Update this saved address directly and keep your delivery details current.</p>
             </div>
 
-            <button type="submit" class="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">
+            <button type="submit" class="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700">
                 Save Address
             </button>
         </div>
@@ -122,7 +122,7 @@
                 <h3 class="text-lg font-bold text-slate-900">No saved addresses yet</h3>
                 <p class="mt-1 text-sm text-slate-500">Add your first address so future delivery and billing flows can reuse it quickly.</p>
             </div>
-            <button type="button" onclick="toggleModal('addAddressModal', true)" class="inline-flex h-10 items-center justify-center rounded-xl bg-[#091b3f] px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800">
+            <button type="button" onclick="toggleModal('addAddressModal', true)" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700">
                 Add Address
             </button>
         </div>

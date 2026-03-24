@@ -14,8 +14,8 @@
 
     $toneClasses = [
         'primary' => 'border-primary-100 bg-primary-50 text-primary-700',
-        'success' => 'border-emerald-100 bg-emerald-50 text-emerald-700',
-        'warning' => 'border-amber-100 bg-amber-50 text-amber-700',
+        'success' => 'border-emerald-100 bg-primary-50 text-primary-600',
+        'warning' => 'border-amber-100 bg-secondary-50 text-secondary-700',
         'neutral' => 'border-slate-200 bg-slate-50 text-slate-700',
     ];
 @endphp
@@ -87,7 +87,7 @@
 
             <section class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
                 <div class="flex items-start gap-4">
-                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
                             <path d="M5 13l4 4L19 7"></path>
                         </svg>

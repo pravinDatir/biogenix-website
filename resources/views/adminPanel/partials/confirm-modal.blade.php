@@ -42,7 +42,7 @@ window.AdminConfirm = {
         document.getElementById('confirm-message').textContent = opts.message || 'This action cannot be undone.';
         const actionBtn = document.getElementById('confirm-action-btn');
         actionBtn.textContent = opts.confirmText || 'Confirm';
-        actionBtn.className = `px-5 py-2.5 rounded-xl text-sm font-bold text-white transition shadow-sm ${opts.danger !== false ? 'bg-rose-500 hover:bg-rose-600' : 'bg-[#091b3f] hover:bg-slate-800'}`;
+        actionBtn.className = `px-5 py-2.5 rounded-xl text-sm font-bold text-white transition shadow-sm ${opts.danger !== false ? 'bg-rose-500 hover:bg-rose-600' : 'bg-primary-600 hover:bg-primary-700'}`;
 
         this.modal.classList.remove('hidden');
         this.isOpen = true;

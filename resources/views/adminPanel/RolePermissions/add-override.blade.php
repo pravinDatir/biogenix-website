@@ -21,7 +21,7 @@
 
         {{-- Page Header --}}
         <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Create User Exception</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Create User Exception</h1>
             <p class="text-sm text-slate-500 mt-1">Configure direct permission overrides bypassing default role mappings.</p>
         </div>
 
@@ -31,7 +31,7 @@
             {{-- Step 1: Select User --}}
             <div class="mb-8">
                 <div class="flex items-center gap-2.5 mb-5">
-                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0b255e] text-white text-[12px] font-extrabold">1</span>
+                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-white text-[12px] font-extrabold">1</span>
                     <h2 class="text-[17px] font-extrabold text-slate-950">Select User</h2>
                 </div>
 
@@ -69,7 +69,7 @@
             {{-- Step 2: Configure Override --}}
             <div>
                 <div class="flex items-center gap-2.5 mb-5">
-                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#0b255e] text-white text-[12px] font-extrabold">2</span>
+                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-white text-[12px] font-extrabold">2</span>
                     <h2 class="text-[17px] font-extrabold text-slate-950">Configure Override</h2>
                 </div>
 
@@ -87,7 +87,7 @@
                 <div class="divide-y divide-slate-100 mb-6" id="overridePermList">
                     <label class="override-perm-item flex items-center justify-between gap-4 py-4 cursor-pointer" data-name="lab.results.export_raw">
                         <div class="flex items-center gap-3">
-                            <input type="radio" name="overridePerm" value="lab.results.export_raw" class="h-[18px] w-[18px] border-slate-300 text-[#0b255e] focus:ring-[#0b255e] cursor-pointer" checked>
+                            <input type="radio" name="overridePerm" value="lab.results.export_raw" class="h-[18px] w-[18px] border-slate-300 text-slate-600 focus:ring-slate-200 cursor-pointer" checked>
                             <div>
                                 <div class="text-[14px] font-bold font-mono text-slate-900">lab.results.export_raw</div>
                                 <div class="text-[12px] text-slate-500">Ability to export raw laboratory research datasets</div>
@@ -96,21 +96,21 @@
                         <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Selected</span>
                     </label>
                     <label class="override-perm-item flex items-center gap-3 py-4 cursor-pointer" data-name="lab.results.view_sensitive">
-                        <input type="radio" name="overridePerm" value="lab.results.view_sensitive" class="h-[18px] w-[18px] border-slate-300 text-[#0b255e] focus:ring-[#0b255e] cursor-pointer">
+                        <input type="radio" name="overridePerm" value="lab.results.view_sensitive" class="h-[18px] w-[18px] border-slate-300 text-slate-600 focus:ring-slate-200 cursor-pointer">
                         <div>
                             <div class="text-[14px] font-bold font-mono text-slate-900">lab.results.view_sensitive</div>
                             <div class="text-[12px] text-slate-500">Access to view anonymized patient sensitivity markers</div>
                         </div>
                     </label>
                     <label class="override-perm-item flex items-center gap-3 py-4 cursor-pointer" data-name="billing.invoice.void">
-                        <input type="radio" name="overridePerm" value="billing.invoice.void" class="h-[18px] w-[18px] border-slate-300 text-[#0b255e] focus:ring-[#0b255e] cursor-pointer">
+                        <input type="radio" name="overridePerm" value="billing.invoice.void" class="h-[18px] w-[18px] border-slate-300 text-slate-600 focus:ring-slate-200 cursor-pointer">
                         <div>
                             <div class="text-[14px] font-bold font-mono text-slate-900">billing.invoice.void</div>
                             <div class="text-[12px] text-slate-500">Authority to void issued customer invoices</div>
                         </div>
                     </label>
                     <label class="override-perm-item flex items-center gap-3 py-4 cursor-pointer" data-name="user.profile.delete">
-                        <input type="radio" name="overridePerm" value="user.profile.delete" class="h-[18px] w-[18px] border-slate-300 text-[#0b255e] focus:ring-[#0b255e] cursor-pointer">
+                        <input type="radio" name="overridePerm" value="user.profile.delete" class="h-[18px] w-[18px] border-slate-300 text-slate-600 focus:ring-slate-200 cursor-pointer">
                         <div>
                             <div class="text-[14px] font-bold font-mono text-slate-900">user.profile.delete</div>
                             <div class="text-[12px] text-slate-500">Permanently delete user accounts from the system</div>
@@ -125,7 +125,7 @@
                         <div class="text-[12px] text-slate-500">Decide whether to explicitly allow or strictly deny this permission.</div>
                     </div>
                     <div class="flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1">
-                        <button type="button" id="overrideAllowBtn" class="px-4 py-1.5 rounded-md text-[12px] font-extrabold uppercase tracking-widest bg-[#0b255e] text-white transition cursor-pointer">Allow</button>
+                        <button type="button" id="overrideAllowBtn" class="px-4 py-1.5 rounded-md text-[12px] font-extrabold uppercase tracking-widest bg-slate-100 text-white transition cursor-pointer">Allow</button>
                         <button type="button" id="overrideDenyBtn" class="px-4 py-1.5 rounded-md text-[12px] font-extrabold uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition cursor-pointer">Deny</button>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
             {{-- Action Buttons --}}
             <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
                 <a href="{{ route('adminPanel.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-                <button type="button" id="addOverrideSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b255e] px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
+                <button type="button" id="addOverrideSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
                     Save Override
                 </button>
             </div>
@@ -161,15 +161,15 @@
     var denyBtn = document.getElementById('overrideDenyBtn');
     if (allowBtn && denyBtn) {
         allowBtn.addEventListener('click', function() {
-            allowBtn.classList.add('bg-[#0b255e]', 'text-white');
+            allowBtn.classList.add('bg-slate-100', 'text-white');
             allowBtn.classList.remove('text-slate-500', 'hover:bg-slate-50');
-            denyBtn.classList.remove('bg-[#0b255e]', 'text-white');
+            denyBtn.classList.remove('bg-slate-100', 'text-white');
             denyBtn.classList.add('text-slate-500', 'hover:bg-slate-50');
         });
         denyBtn.addEventListener('click', function() {
-            denyBtn.classList.add('bg-[#0b255e]', 'text-white');
+            denyBtn.classList.add('bg-slate-100', 'text-white');
             denyBtn.classList.remove('text-slate-500', 'hover:bg-slate-50');
-            allowBtn.classList.remove('bg-[#0b255e]', 'text-white');
+            allowBtn.classList.remove('bg-slate-100', 'text-white');
             allowBtn.classList.add('text-slate-500', 'hover:bg-slate-50');
         });
     }

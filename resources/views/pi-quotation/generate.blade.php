@@ -29,196 +29,243 @@
 <div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
 
     {{-- ═══ PI Header Info ═══ --}}
-    <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="mb-5 flex items-center gap-2.5">
-            <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#fff3e0] text-[#e65100]">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </span>
-            <h2 class="text-lg font-bold tracking-tight text-slate-900">PI Header Info</h2>
-        </div>
-        <div class="grid grid-cols-2 gap-5 sm:grid-cols-4">
+    <div class="mb-5 rounded-xl bg-white border border-slate-100 p-6 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">PI Number</label>
-                <input id="piNumber" type="text" readonly
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-800 outline-none">
+                <h1 class="text-[2rem] font-bold tracking-tight text-primary-800 leading-none">Create Proforma Invoice</h1>
+                <p class="mt-2 text-sm font-medium text-slate-600">Drafting clinical supply order</p>
             </div>
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Date</label>
-                <input id="piDate" type="date"
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none focus:border-blue-500">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">State</label>
-                <input id="piStateCode" type="text" placeholder="Maharashtra"
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
-            </div>
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">GSTIN</label>
-                <input id="piGstin" type="text" placeholder="27AAACB1234F1Z5"
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
+            <div class="rounded-xl bg-slate-50 p-5 md:w-[450px]">
+                <div class="grid grid-cols-2 gap-y-4 gap-x-6">
+                    <div>
+                        <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">PI Number</label>
+                        <input id="piNumber" type="text" readonly value="PI/2023-24/0842"
+                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Date</label>
+                        <input id="piDate" type="date" value="2023-10-24"
+                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">State Code</label>
+                        <input id="piStateCode" type="text" value="27 (Maharashtra)"
+                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">GSTIN</label>
+                        <input id="piGstin" type="text" value="27AAFCB1234A1Z5"
+                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     {{-- ═══ Customer Details ═══ --}}
-    <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="mb-5 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#e3f2fd] text-[#1565c0]">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5.5 21a7.5 7.5 0 0113 0"/></svg>
-                </span>
-                <h2 class="text-lg font-bold tracking-tight text-slate-900">Customer Details</h2>
-            </div>
-            <div class="flex items-center gap-2 select-none">
-                <span class="text-sm font-semibold text-slate-600">Same as Billing</span>
-                <button id="toggleTrack" type="button" role="switch" aria-checked="false"
-                    class="relative h-6 w-[42px] rounded-full bg-slate-300 transition-colors duration-200">
-                    <span id="toggleThumb"
-                        class="absolute left-[3px] top-[3px] h-[18px] w-[18px] translate-x-0 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-transform duration-200"></span>
-                </button>
-                <input id="sameAsBilling" type="checkbox" class="hidden">
-            </div>
-        </div>
-
-        <div class="mb-1.5 grid grid-cols-1 gap-5 md:grid-cols-2">
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Billing Address</label>
-                <textarea id="billingAddress" rows="4" placeholder="Enter full billing address..."
-                    class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500"></textarea>
-            </div>
-            <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Shipping Address</label>
-                <textarea id="shippingAddress" rows="4" placeholder="Enter full shipping address..."
-                    class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500"></textarea>
+    <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+        {{-- Billing Address Card --}}
+        <div class="rounded-xl bg-white border border-slate-100 p-6 shadow-sm">
+            <h2 class="mb-5 flex items-center gap-2 text-sm font-bold text-slate-900 leading-none">
+                <svg class="h-4 w-4 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Billing Address
+            </h2>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Company Name</label>
+                    <input type="text" id="contactPerson" placeholder="Enter full legal company name"
+                        class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600 placeholder:text-slate-400">
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Address</label>
+                    <textarea id="billingAddress" rows="3" placeholder="Street, Building, Area..."
+                        class="w-full rounded-md border-0 bg-slate-100 px-3 py-2 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600 placeholder:text-slate-400"></textarea>
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">GST Number</label>
+                    <input id="customerGstin" type="text" placeholder="27XXXXXXXXXXXXX"
+                        class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600 placeholder:text-slate-400">
+                </div>
             </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-                <input id="contactPerson" type="text" value="{{ old('customer_name', $loggedInUser?->name) }}" placeholder="Contact Person"
-                    class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
+        {{-- Shipping Address Card --}}
+        <div class="rounded-xl bg-white border border-slate-100 p-6 shadow-sm">
+            <div class="mb-5 flex items-center justify-between">
+                <h2 class="flex items-center gap-2 text-sm font-bold text-slate-900 leading-none">
+                    <svg class="h-4 w-4 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M12 8v8m-4-4h8"/></svg>
+                    Shipping Address
+                </h2>
+                <div class="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                    Same as Billing
+                    <button id="toggleTrack" type="button" role="switch" aria-checked="false"
+                        class="relative h-5 w-[34px] rounded-full bg-slate-100 transition-colors duration-200">
+                        <span id="toggleThumb"
+                            class="absolute left-[2px] top-[2px] h-4 w-4 translate-x-0 rounded-full bg-white shadow-sm transition-transform duration-200"></span>
+                    </button>
+                    <input id="sameAsBilling" type="checkbox" class="hidden">
+                    <input id="customerEmail" type="hidden" value="{{ old('customer_email', $loggedInUser?->email) }}">
+                </div>
             </div>
-            <div>
-                <input id="customerEmail" type="email" value="{{ old('customer_email', $loggedInUser?->email) }}" placeholder="Customer Email"
-                    class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
-            </div>
-            <div>
-                <input id="customerGstin" type="text" placeholder="GSTIN (Customer)"
-                    class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
-            </div>
-            <div>
-                <input id="deliveryPhone" type="text" value="{{ old('customer_phone', $loggedInUser?->phone) }}" placeholder="Delivery Contact / Phone"
-                    class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500">
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Address</label>
+                    <textarea id="shippingAddress" rows="2" placeholder="Delivery location details"
+                        class="w-full rounded-md border-0 bg-slate-100 px-3 py-2 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600 placeholder:text-slate-400"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Contact Person</label>
+                        <input type="text"
+                            class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600">
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Phone / Mobile</label>
+                        <input id="deliveryPhone" type="text" value="{{ old('customer_phone', $loggedInUser?->phone) }}"
+                            class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600">
+                    </div>
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-600">Enquiry Reference No.</label>
+                    <input type="text" placeholder="REF/2023/BIOG-01"
+                        class="h-10 w-full rounded-md border-0 bg-slate-100 px-3 text-xs text-slate-700 outline-none focus:ring-1 focus:ring-primary-600 placeholder:text-slate-400">
+                </div>
             </div>
         </div>
     </div>
 
     {{-- ═══ Product Details ═══ --}}
-    <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div class="mb-4 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#fff3e0] text-[#e65100]">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                </span>
-                <h2 class="text-lg font-bold tracking-tight text-slate-900">Product Details</h2>
-            </div>
+    <div class="mb-5 rounded-xl bg-slate-50 shadow-sm border border-slate-100 overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-5">
+            <h2 class="flex items-center gap-2 text-sm font-bold text-slate-900 leading-none">
+                <svg class="h-4 w-4 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+                Product Line Items
+            </h2>
             <button id="addProductRow" type="button"
-                class="inline-flex items-center gap-1.5 rounded-xl bg-[#e65100] px-4 py-2 text-[0.82rem] font-bold text-white shadow-[0_2px_8px_rgba(230,81,0,0.2)] transition-colors hover:bg-[#bf360c]">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
-                Add Product Row
+                class="flex items-center gap-1.5 text-xs font-bold text-slate-800 hover:text-primary-600 transition-colors">
+                <span class="text-lg leading-none pt-0.5">+</span> Add Product Row
             </button>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm" id="productTable">
+        <div class="overflow-x-auto bg-white/50 border-t border-slate-100">
+            <table class="w-full text-xs text-left" id="productTable">
                 <thead>
-                    <tr class="border-b-2 border-slate-200 bg-slate-50">
-                        <th class="w-[45px] whitespace-nowrap px-2 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-slate-500">S.No</th>
-                        <th class="w-[130px] whitespace-nowrap px-2 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Cat. No</th>
-                        <th class="min-w-[130px] whitespace-nowrap px-2 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Product Name</th>
-                        <th class="w-[100px] whitespace-nowrap px-2 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Pack Size</th>
-                        <th class="w-[60px] whitespace-nowrap px-2 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Qty</th>
-                        <th class="w-[95px] whitespace-nowrap px-2 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Rate (&#8377;)</th>
-                        <th class="w-[95px] whitespace-nowrap px-2 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Value (&#8377;)</th>
-                        <th class="w-[60px] whitespace-nowrap px-2 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-slate-500">GST %</th>
-                        <th class="w-[100px] whitespace-nowrap px-2 py-2.5 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Total (&#8377;)</th>
+                    <tr class="bg-white">
+                        <th class="w-[45px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">S.No</th>
+                        <th class="w-[100px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">Cat. No</th>
+                        <th class="min-w-[150px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">Product Name</th>
+                        <th class="w-[80px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">Pack</th>
+                        <th class="w-[60px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">Qty</th>
+                        <th class="w-[80px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">Rate</th>
+                        <th class="w-[90px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">Value</th>
+                        <th class="w-[50px] whitespace-nowrap px-4 py-3 font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">GST %</th>
+                        <th class="w-[100px] whitespace-nowrap px-4 py-3 text-right font-bold uppercase tracking-widest text-slate-400 text-[0.65rem]">Total</th>
                         <th class="w-9"></th>
                     </tr>
                 </thead>
-                <tbody id="productTableBody">
+                <tbody id="productTableBody" class="font-medium text-slate-800">
                 </tbody>
             </table>
-            <p id="emptyTableMsg" class="py-6 text-center text-sm text-slate-400">No products added yet. Click "Add Product Row" to add items.</p>
+            <p id="emptyTableMsg" class="py-6 text-center text-xs text-slate-400 bg-white">No products added yet.</p>
         </div>
     </div>
 
-    {{-- ═══ Bottom: Terms & Totals ═══ --}}
-    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+    {{-- ═══ Bottom: Actions, Terms & Totals ═══ --}}
+    <!-- Actions Row -->
+    <div class="mb-6 mt-8 flex items-center justify-between">
+        <div class="flex gap-3">
+            <button id="saveDraftBtn" type="button"
+                class="inline-flex items-center justify-center rounded-xl bg-slate-200/60 px-5 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-300 cursor-pointer">
+                Save Draft
+            </button>
+            <button id="previewPiBtn" type="button"
+                class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
+                Preview PI
+            </button>
+        </div>
+        <div class="flex gap-3">
+            <button id="sendEmailBtn" type="button"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary-600 px-6 py-2.5 text-sm font-bold text-primary-800 shadow-sm transition-colors hover:bg-secondary-500 cursor-pointer">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                Send Email
+            </button>
+            <button id="generatePdfBtn" type="button"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-800 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-primary-700 cursor-pointer">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                Generate PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
 
         {{-- Terms & Conditions --}}
-        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div class="mb-3 flex items-center gap-2.5">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#fce4ec] text-[#c62828]">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                </span>
-                <h2 class="text-lg font-bold tracking-tight text-slate-900">Terms & Conditions</h2>
+        <div>
+            <h2 class="mb-4 text-xs font-bold uppercase tracking-widest text-slate-800">Terms & Conditions</h2>
+            <div class="rounded-xl bg-slate-50 p-6">
+                <ol id="termsList" class="space-y-4">
+                    <li class="flex items-start gap-4 text-sm text-slate-700">
+                        <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400">01</span>
+                        <input type="text" value="Payment 100% advance along with confirmed Purchase"
+                            class="w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">
+                    </li>
+                    <li class="flex items-start gap-4 text-sm text-slate-700">
+                        <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400">02</span>
+                        <input type="text" value="Delivery within 7-10 working days from date of payment"
+                            class="w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">
+                    </li>
+                    <li class="flex items-start gap-4 text-sm text-slate-700">
+                        <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400">03</span>
+                        <input type="text" value="Validity of this Proforma Invoice is 15 days only."
+                            class="w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">
+                    </li>
+                </ol>
+                <button id="addTermBtn" type="button" class="mt-5 flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary-600 hover:text-primary-800 transition-colors cursor-pointer">
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    Add Custom Term
+                </button>
             </div>
-            <ol id="termsList" class="space-y-2">
-                <li class="flex items-baseline gap-2 text-sm text-slate-700">
-                    <span class="shrink-0 font-bold text-[#e65100]">1.</span>
-                    <input type="text" value="Supply within 3-4 week after confirmation order along with 100% advance payment."
-                        class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">
-                </li>
-                <li class="flex items-baseline gap-2 text-sm text-slate-700">
-                    <span class="shrink-0 font-bold text-[#e65100]">2.</span>
-                    <input type="text" value="All Disputes are subject to Lucknow Jurisdiction only"
-                        class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">
-                </li>
-            </ol>
-            </ol>
         </div>
 
         {{-- Summary / Totals --}}
-        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div>
-                <div class="flex justify-between border-b border-slate-100 py-2.5 text-sm">
-                    <span class="text-slate-500">Subtotal</span>
-                    <span class="font-semibold text-slate-800" id="sumSubtotal">₹ 0.00</span>
+        <div class="rounded-xl bg-primary-600 text-white shadow-xl relative overflow-hidden flex flex-col justify-between">
+            <div class="p-6 space-y-4">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-primary-200 font-medium">Subtotal</span>
+                    <span class="font-medium" id="sumSubtotal">₹ 0.00</span>
                 </div>
-                <div class="flex justify-between border-b border-slate-100 py-2.5 text-sm">
-                    <span class="text-slate-500">GST Total</span>
-                    <span class="font-semibold text-slate-800" id="sumGst">₹ 0.00</span>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-primary-200 font-medium">Items GST</span>
+                    <span class="font-medium" id="sumGst">₹ 0.00</span>
                 </div>
-                <div class="flex items-center justify-between border-b border-slate-100 py-2.5 text-sm">
-                    <span class="text-slate-500">Freight Charges</span>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-primary-200 font-medium flex items-center gap-2">Freight Charges <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg></span>
                     <input id="freightCharges" type="number" value="0" min="0" step="1"
-                        class="w-24 rounded-lg border border-slate-200 bg-white px-2 py-1 text-right text-sm font-semibold text-slate-800 outline-none focus:border-blue-500">
+                        class="w-24 rounded border-none bg-white/10 px-2 py-1 text-right text-sm font-medium text-white outline-none focus:bg-white/20 transition-colors h-8">
                 </div>
-                <div class="flex justify-between border-b border-slate-100 py-2.5 text-sm">
-                    <span class="text-slate-500">Freight Tax (18%)</span>
-                    <span class="font-semibold text-slate-800" id="sumFreightTax">₹ 0.00</span>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-primary-200 font-medium">Freight GST (18%)</span>
+                    <span class="font-medium" id="sumFreightTax">₹ 0.00</span>
                 </div>
-                <div class="flex justify-between py-2.5 text-sm">
-                    <span class="text-slate-500">Round Off</span>
-                    <span class="font-semibold text-slate-800" id="sumRoundOff">₹ 0.00</span>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-primary-200 font-medium">Round Off</span>
+                    <span class="font-medium" id="sumRoundOff">₹ 0.00</span>
                 </div>
             </div>
 
-            <div class="mt-3 flex items-center justify-between border-t-2 border-slate-800 pt-3">
-                <span class="text-xs font-extrabold uppercase tracking-widest text-slate-900">Grand Total</span>
-                <span class="text-2xl font-extrabold text-slate-900" id="sumGrandTotal">₹ 0.00</span>
+            <div class="mt-6 p-6 pt-0 flex justify-between gap-3">
+                <div class="flex-1 self-end pb-1.5">
+                    <p class="text-[0.65rem] font-bold uppercase tracking-widest text-secondary-600 mb-1.5">Grand Total</p>
+                    <p class="text-[0.65rem] italic text-primary-100/70 leading-relaxed pr-4" id="sumAmountWords">Zero Only</p>
+                </div>
+                <div class="flex flex-col items-start gap-0 shrink-0">
+                    <span class="text-lg font-bold text-secondary-600 leading-none">₹</span>
+                    <span class="text-[2.1rem] font-black tracking-tight text-secondary-600 leading-none" id="sumGrandTotal">0.00</span>
+                </div>
             </div>
-
-            <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p class="text-xs font-bold uppercase tracking-widest text-[#e65100]">Amount in Words</p>
-                <p class="mt-0.5 text-sm font-medium italic text-slate-700" id="sumAmountWords">Zero Only</p>
-            </div>
-
-            <button id="requestPiBtn" type="button"
-                class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e3a5f] px-5 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(30,58,95,0.25)] transition-transform transition-colors hover:-translate-y-px hover:bg-[#15294a]">
-                <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                Request Proforma Invoice
-            </button>
+            
+            <!-- Hidden Request PI btn (for form submit logic via JS if needed) -->
+            <button id="requestPiBtn" type="button" class="hidden">Request</button>
         </div>
     </div>
 </div>
@@ -259,7 +306,7 @@
                 {{-- Category --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Category</label>
-                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
+                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                         </span>
@@ -272,7 +319,7 @@
                 {{-- Subcategory --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Subcategory</label>
-                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
+                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
                         </span>
@@ -286,7 +333,7 @@
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Product Name</label>
                     <div class="relative">
-                        <div id="modalProductNameField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
+                        <div id="modalProductNameField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
                             <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                             </span>
@@ -312,7 +359,7 @@
                 {{-- Quantity --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Quantity</label>
-                    <div id="modalQtyField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500">
+                    <div id="modalQtyField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
                         </span>
@@ -360,13 +407,13 @@
             {{-- Total Calculated Amount --}}
             <div class="mt-5 flex items-center justify-between rounded-[14px] border border-slate-200 bg-slate-50 px-5 py-4">
                 <div class="flex items-center gap-2">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#e3f2fd] text-[#1565c0]">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
                     </span>
                     <span class="text-[0.88rem] font-semibold text-slate-600">Total Calculated Amount</span>
                 </div>
                 <div class="text-right">
-                    <p class="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#e65100]">INCL. TAXES</p>
+                    <p class="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-primary-600">INCL. TAXES</p>
                     <p id="modalTotalAmount" class="text-2xl font-extrabold text-slate-800">&#8377; 0.00</p>
                 </div>
             </div>
@@ -378,7 +425,7 @@
                     Cancel
                 </button>
                 <button id="modalAddBtn" type="button"
-                    class="inline-flex h-11 items-center gap-2 rounded-xl bg-[#e65100] px-7 text-sm font-bold text-white shadow-[0_2px_10px_rgba(230,81,0,0.25)] transition-colors hover:bg-[#bf360c]">
+                    class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary-600 px-7 text-sm font-bold text-white shadow-sm transition-colors hover:bg-primary-700">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
                     Add to Invoice
                 </button>
@@ -426,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function syncShippingToggleState() {
         sameCheckbox.checked = toggleOn;
         toggleTrack.setAttribute('aria-checked', toggleOn ? 'true' : 'false');
-        toggleTrack.classList.toggle('bg-[#1e3a5f]', toggleOn);
+        toggleTrack.classList.toggle('bg-primary-600', toggleOn);
         toggleTrack.classList.toggle('bg-slate-300', !toggleOn);
         toggleThumb.classList.toggle('translate-x-[18px]', toggleOn);
         toggleThumb.classList.toggle('translate-x-0', !toggleOn);
@@ -461,18 +508,18 @@ document.addEventListener('DOMContentLoaded', function () {
         var total = value + gstAmt;
 
         var tr = document.createElement('tr');
-        tr.className = 'product-row border-b border-slate-100';
+        tr.className = 'product-row border-b border-slate-100 hover:bg-white/60 transition-colors';
         tr.innerHTML =
-            '<td class="sno px-2 py-2 text-center text-sm font-semibold text-slate-500">' + String(sno).padStart(2, '0') + '</td>' +
-            '<td class="px-2 py-2 text-[0.85rem] text-slate-800">' + escHtml(data.catNo) + '</td>' +
-            '<td class="px-2 py-2 text-[0.85rem] text-slate-800">' + escHtml(data.productName) + '</td>' +
-            '<td class="px-2 py-2 text-[0.85rem] text-slate-800">' + escHtml(data.packSize) + '</td>' +
-            '<td class="row-qty-val px-2 py-2 text-center text-[0.85rem] text-slate-800">' + data.qty + '</td>' +
-            '<td class="row-rate-val px-2 py-2 text-right text-[0.85rem] text-slate-800">' + formatNum(data.rate) + '</td>' +
-            '<td class="row-value px-2 py-2 text-right text-[0.85rem] text-slate-600">' + formatNum(value) + '</td>' +
-            '<td class="row-gst-val px-2 py-2 text-center text-[0.85rem] text-slate-800">' + data.gst + '</td>' +
-            '<td class="row-total px-2 py-2 text-right text-sm font-bold text-slate-800">' + formatNum(total) + '</td>' +
-            '<td class="px-2 py-2 text-center"><button type="button" class="del-row-btn inline-flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-colors hover:bg-rose-50"><svg class="h-[15px] w-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td>';
+            '<td class="sno px-4 py-3 text-left text-xs font-bold text-slate-900">' + String(sno).padStart(2, '0') + '</td>' +
+            '<td class="px-4 py-3 text-xs font-semibold text-slate-800 whitespace-nowrap">' + escHtml(data.catNo) + '</td>' +
+            '<td class="px-4 py-3 text-xs font-semibold text-slate-800">' + escHtml(data.productName) + '</td>' +
+            '<td class="px-4 py-3 text-xs font-semibold text-slate-800">' + escHtml(data.packSize) + '</td>' +
+            '<td class="row-qty-val px-4 py-3 text-left text-xs font-semibold text-slate-800">' + data.qty + '</td>' +
+            '<td class="row-rate-val px-4 py-3 text-left text-xs font-semibold text-slate-800">' + formatNum(data.rate) + '</td>' +
+            '<td class="row-value px-4 py-3 text-left text-xs font-semibold text-slate-600">' + formatNum(value) + '</td>' +
+            '<td class="row-gst-val px-4 py-3 text-left text-xs font-semibold text-slate-800">' + data.gst + '%</td>' +
+            '<td class="row-total px-4 py-3 text-right text-xs font-bold text-slate-900">' + formatNum(total) + '</td>' +
+            '<td class="px-4 py-3 text-center"><button type="button" class="del-row-btn inline-flex h-6 w-6 items-center justify-center rounded border border-rose-200 text-rose-500 transition-colors hover:bg-rose-50 hover:text-rose-600"><svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></td>';
 
         // Store data attributes for calc
         tr.setAttribute('data-product-id', data.productId || '');
@@ -512,6 +559,15 @@ document.addEventListener('DOMContentLoaded', function () {
         emptyMsg.classList.toggle('hidden', rows.length > 0);
     }
 
+    function renumberRows() {
+        tableBody.querySelectorAll('.product-row').forEach(function (row, index) {
+            var snoCol = row.querySelector('.sno');
+            if (snoCol) {
+                snoCol.textContent = String(index + 1).padStart(2, '0');
+            }
+        });
+    }
+
     function recalcTotals() {
         var subtotal = 0;
         var gstTotal = 0;
@@ -530,12 +586,18 @@ document.addEventListener('DOMContentLoaded', function () {
         var rounded = Math.round(rawTotal);
         var roundOff = rounded - rawTotal;
 
-        document.getElementById('sumSubtotal').textContent = '\u20B9 ' + formatNum(subtotal);
-        document.getElementById('sumGst').textContent = '\u20B9 ' + formatNum(gstTotal);
-        document.getElementById('sumFreightTax').textContent = '\u20B9 ' + formatNum(freightTax);
-        document.getElementById('sumRoundOff').textContent = '\u20B9 ' + (roundOff >= 0 ? '' : '-') + formatNum(Math.abs(roundOff));
-        document.getElementById('sumGrandTotal').textContent = '\u20B9 ' + formatNum(rounded);
-        document.getElementById('sumAmountWords').textContent = numberToWords(rounded) + ' Only';
+        setElText('sumSubtotal', '\u20B9 ' + formatNum(subtotal));
+        setElText('sumGst', '\u20B9 ' + formatNum(gstTotal));
+        setElText('sumFreightTax', '\u20B9 ' + formatNum(freightTax));
+        setElText('sumRoundOff', '\u20B9 ' + (roundOff >= 0 ? '' : '-') + formatNum(Math.abs(roundOff)));
+        // Only insert the formatted number; the Rupee symbol is handled by external HTML layout.
+        setElText('sumGrandTotal', formatNum(rounded));
+        setElText('sumAmountWords', numberToWords(rounded) + ' Only');
+    }
+
+    function setElText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text;
     }
 
     function formatNum(n) {
@@ -557,6 +619,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + convert(n % 10000000) : '');
         }
         return convert(Math.abs(Math.round(num)));
+    }
+
+    function escHtml(text) {
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     // Business step: collect compact notes so the internal team can review delivery, tax, and commercial context from this request page.
@@ -813,7 +881,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     '<span class="block truncate text-[0.76rem] text-slate-500">' + escHtml(product.sku || 'No catalogue number') + '</span>' +
                 '</span>' +
                 '<span class="ml-3 shrink-0 text-right">' +
-                    '<span class="block text-[0.76rem] font-semibold text-[#e65100]">' + escHtml(product.pack_size) + '</span>' +
+                    '<span class="block text-[0.76rem] font-semibold text-secondary-700">' + escHtml(product.pack_size) + '</span>' +
                     '<span class="block text-[0.76rem] text-slate-500">&#8377; ' + formatNum(product.rate) + '</span>' +
                 '</span>' +
             '</button>';
@@ -1018,8 +1086,33 @@ document.addEventListener('DOMContentLoaded', function () {
     // ─── Freight input recalc ───
     document.getElementById('freightCharges').addEventListener('input', recalcTotals);
 
-    // ─── Generate PDF (placeholder) ───
-    document.getElementById('requestPiBtn').addEventListener('click', submitPiRequest);
+    // ─── Action Buttons ───
+    var saveDraftBtn = document.getElementById('saveDraftBtn');
+    if (saveDraftBtn) saveDraftBtn.addEventListener('click', function() { alert('Draft saved.'); });
+
+    var previewPiBtn = document.getElementById('previewPiBtn');
+    if (previewPiBtn) previewPiBtn.addEventListener('click', function() { alert('Preview not available in request mode.'); });
+
+    var sendEmailBtn = document.getElementById('sendEmailBtn');
+    if (sendEmailBtn) sendEmailBtn.addEventListener('click', submitPiRequest);
+
+    var generatePdfBtn = document.getElementById('generatePdfBtn');
+    if (generatePdfBtn) generatePdfBtn.addEventListener('click', submitPiRequest);
+
+    // ─── Custom Terms Logic ───
+    var addTermBtn = document.getElementById('addTermBtn');
+    if (addTermBtn) {
+        addTermBtn.addEventListener('click', function () {
+            var list = document.getElementById('termsList');
+            var count = list.querySelectorAll('li').length + 1;
+            var formattedCount = String(count).padStart(2, '0');
+            var li = document.createElement('li');
+            li.className = 'flex items-start gap-3 text-sm text-slate-700';
+            li.innerHTML = '<span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400">' + formattedCount + '</span>' +
+                '<input type="text" value="" placeholder="Enter term..." class="w-full border-0 bg-transparent p-0 text-sm text-slate-800 outline-none hover:bg-slate-50 focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">';
+            list.appendChild(li);
+        });
+    }
 
     // ─── Show empty message initially ───
     toggleEmptyMsg();

@@ -34,7 +34,7 @@
         <x-slot:metrics>
             <div class="grid gap-4 sm:grid-cols-3">
                 <div class="flex items-center gap-5 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                     </div>
                     <div>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-5 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-secondary-50 text-secondary-700">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
                     </div>
                     <div>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-5 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <div>
@@ -70,7 +70,7 @@
                     <h2 class="text-lg font-bold text-slate-900">Ticket History</h2>
                     <div class="flex items-center gap-3">
                         <div class="relative w-full sm:w-64">
-                            <input type="text" placeholder="Search tickets..." class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f]">
+                            <input type="text" placeholder="Search tickets..." class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             <div class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                             </div>
@@ -98,10 +98,10 @@
                                 @php
                                     $activityAt = $ticket->created_at;
                                     $statusColors = [
-                                        'open' => ['dot' => 'bg-blue-600', 'text' => 'text-blue-700'],
-                                        'in_progress' => ['dot' => 'bg-amber-500', 'text' => 'text-amber-700'],
-                                        'resolved' => ['dot' => 'bg-emerald-500', 'text' => 'text-emerald-700'],
-                                        'closed' => ['dot' => 'bg-emerald-500', 'text' => 'text-emerald-700'],
+                                        'open' => ['dot' => 'bg-primary-600', 'text' => 'text-primary-600'],
+                                        'in_progress' => ['dot' => 'bg-secondary-600', 'text' => 'text-secondary-700'],
+                                        'resolved' => ['dot' => 'bg-primary-600', 'text' => 'text-primary-600'],
+                                        'closed' => ['dot' => 'bg-primary-600', 'text' => 'text-primary-600'],
                                         'awaiting_response' => ['dot' => 'bg-purple-500', 'text' => 'text-purple-700']
                                     ];
                                     $sColor = $statusColors[$ticket->status] ?? ['dot' => 'bg-slate-400', 'text' => 'text-slate-700'];
@@ -111,7 +111,7 @@
                                 @endphp
                                 <tr class="transition hover:bg-slate-50/50">
                                     <td class="whitespace-nowrap px-6 py-4 md:px-8">
-                                        <span class="text-[13px] font-bold text-[#0369a1]">{{ $ticket->ticket_number }}</span>
+                                        <span class="text-[13px] font-bold text-primary-600">{{ $ticket->ticket_number }}</span>
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-[13px] font-medium text-slate-500">
                                         {{ $activityAt ? \Illuminate\Support\Carbon::parse($activityAt)->format('M d, Y') : 'N/A' }}
@@ -131,7 +131,7 @@
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 md:px-8 text-right">
-                                        <a href="{{ route('support-tickets.show', $ticket->id) }}" class="text-[13px] font-bold text-[#0369a1] transition hover:text-[#0284c7]">View Details</a>
+                                        <a href="{{ route('support-tickets.show', $ticket->id) }}" class="text-[13px] font-bold text-primary-600 transition hover:text-primary-700">View Details</a>
                                     </td>
                                 </tr>
                             @empty
@@ -154,23 +154,23 @@
             </div>
 
             {{-- Knowledge Base Card --}}
-            <div class="flex flex-col gap-6 rounded-3xl bg-[#f0f4f8] p-6 lg:flex-row lg:items-center lg:justify-between lg:p-10">
+            <div class="flex flex-col gap-6 rounded-3xl bg-slate-50 p-6 lg:flex-row lg:items-center lg:justify-between lg:p-10">
                 <div class="max-w-xl">
                     <h3 class="text-xl font-bold text-slate-900">Need immediate help?</h3>
                     <p class="mt-3 text-[14px] leading-relaxed text-slate-600">Our knowledge base contains answers to 90% of technical questions regarding bio-storage and shipping protocols.</p>
-                    <a href="#" class="mt-5 inline-flex flex-wrap items-center gap-2 text-[14px] font-bold text-[#0369a1] transition hover:text-[#0284c7]">
+                    <a href="#" class="mt-5 inline-flex flex-wrap items-center gap-2 text-[14px] font-bold text-primary-600 transition hover:text-primary-700">
                         Visit Help Center 
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </a>
                 </div>
                 <div class="flex flex-col gap-4 sm:flex-row">
                     <a href="#" class="flex min-w-[180px] flex-col justify-center rounded-2xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                        <svg class="h-6 w-6 text-[#0369a1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                        <svg class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                         <p class="mt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Documentation</p>
                         <p class="mt-1 text-[14px] font-bold text-slate-900">Storage Guide</p>
                     </a>
                     <a href="#" class="flex min-w-[180px] flex-col justify-center rounded-2xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                        <svg class="h-6 w-6 text-[#0369a1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        <svg class="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                         <p class="mt-4 text-[10px] font-bold uppercase tracking-wider text-slate-400">Live Support</p>
                         <p class="mt-1 text-[14px] font-bold text-slate-900">24/7 Chat</p>
                     </a>

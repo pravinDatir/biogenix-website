@@ -22,7 +22,7 @@
         $paymentCardInactiveClass = 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md';
         $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700';
         $iconTileNeutralClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-600';
-        $iconTileSuccessClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700';
+        $iconTileSuccessClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600';
         $buttonPrimaryClass = 'inline-flex h-14 items-center justify-center rounded-2xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
         $buttonSecondaryClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50';
         $inputClass = 'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 placeholder-slate-400 outline-none transition focus:border-primary-400 focus:bg-white focus:ring-2 focus:ring-primary-600/15';
@@ -415,11 +415,11 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>Shipping (Same-Day)</span>
-                                <span class="font-semibold text-emerald-700">FREE</span>
+                                <span class="font-semibold text-primary-600">FREE</span>
                             </div>
                             <div class="hidden items-center justify-between" id="couponDiscountRow">
-                                <span class="text-emerald-700">Coupon Discount</span>
-                                <span id="couponDiscountAmount" class="font-semibold text-emerald-700">– Rs. 0.00</span>
+                                <span class="text-primary-600">Coupon Discount</span>
+                                <span id="couponDiscountAmount" class="font-semibold text-primary-600">– Rs. 0.00</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span>GST</span>
@@ -462,7 +462,7 @@
 
                         @guest
                             {{-- Step 1: guide guest buyers to login before they can submit the checkout order. --}}
-                            <div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
+                            <div class="mt-4 rounded-2xl border border-amber-200 bg-secondary-50 px-4 py-4 text-sm text-amber-900">
                                 <p class="font-semibold">Login required</p>
                                 <p class="mt-1 leading-6 text-amber-800">Please sign in before placing the order so we can save the cart, billing context, and final order reference correctly.</p>
                                 <a href="{{ route('login') }}" class="{{ $buttonPrimaryClass }} mt-4">Login</a>
@@ -540,8 +540,8 @@
                         {{-- ─── PROMINENT TRUST BADGES ─── --}}
                         <div class="mt-5 grid grid-cols-3 gap-2">
                             @foreach ([
-                                ['icon' => 'M12 3 5 6v6c0 5 3.5 8 7 9 3.5-1 7-4 7-9V6l-7-3Zm0 4v5m0 2.5h.01', 'title' => 'SSL Secured', 'sub' => '256-bit encryption', 'color' => 'bg-emerald-50 text-emerald-700'],
-                                ['icon' => 'M3 6h18M3 10h18M5 6v14h14V6M9 10v8M15 10v8',                          'title' => 'Secure Pay',   'sub' => 'PCI-DSS compliant', 'color' => 'bg-blue-50 text-blue-700'],
+                                ['icon' => 'M12 3 5 6v6c0 5 3.5 8 7 9 3.5-1 7-4 7-9V6l-7-3Zm0 4v5m0 2.5h.01', 'title' => 'SSL Secured', 'sub' => '256-bit encryption', 'color' => 'bg-primary-50 text-primary-600'],
+                                ['icon' => 'M3 6h18M3 10h18M5 6v14h14V6M9 10v8M15 10v8',                          'title' => 'Secure Pay',   'sub' => 'PCI-DSS compliant', 'color' => 'bg-primary-50 text-primary-600'],
                                 ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',                       'title' => 'Safe Order',   'sub' => '100% guaranteed',   'color' => 'bg-violet-50 text-violet-700'],
                             ] as $badge)
                                 <div class="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-slate-50 p-3 text-center">
@@ -683,7 +683,7 @@
                             return;
                         }
                         couponMsg.textContent = 'Coupon saved. It will be validated during final order placement.';
-                        couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-emerald-700';
+                        couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-primary-600';
                     });
                 }
 

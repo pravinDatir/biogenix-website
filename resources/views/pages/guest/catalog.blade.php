@@ -562,8 +562,8 @@
                                         </div>
 
                                         @if ($bulkSummary)
-                                            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/80 px-3 py-2.5">
-                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-700">Bulk Offer</p>
+                                            <div class="rounded-2xl border border-emerald-100 bg-primary-50/80 px-3 py-2.5">
+                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-600">Bulk Offer</p>
                                                 <p class="mt-1 text-xs font-semibold text-emerald-900">
                                                     {{ $bulkSummary['label'] ?? 'Bulk pricing available' }}
                                                     @if (filled($bulkSummary['discount'] ?? null))
@@ -619,11 +619,11 @@
                                             {{-- Buy Now --}}
                                             <div style="width: 70%;">
                                                 @guest
-                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
+                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:-translate-y-px hover:shadow-md hover:shadow-[rgba(255,106,0,0.3)]">
                                                         <span>Buy Now</span>
                                                     </a>
                                                 @else
-                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[#ff5f00] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-[0_14px_26px_rgba(255,95,0,0.2)] transition hover:-translate-y-px hover:shadow-[0_18px_32px_rgba(255,95,0,0.26)]">
+                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:-translate-y-px hover:shadow-md hover:shadow-[rgba(255,106,0,0.3)]">
                                                         <span>Buy Now</span>
                                                     </button>
                                                 @endguest
@@ -814,7 +814,7 @@
                 const icon = document.createElement('div');
                 icon.className = variant === 'warn'
                     ? 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-orange-50 text-orange-600'
-                    : 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-blue-50 text-primary-600';
+                    : 'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-primary-50 text-primary-600';
                 icon.innerHTML = variant === 'warn'
                     ? '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M12 9v4\"></path><path d=\"M12 17h.01\"></path><path d=\"M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z\"></path></svg>'
                     : '<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M20 6 9 17l-5-5\"></path></svg>';

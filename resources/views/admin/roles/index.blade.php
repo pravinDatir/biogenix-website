@@ -45,7 +45,7 @@
         </section>
 
         @if (session('status'))
-            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm font-medium text-emerald-700">
+            <div class="rounded-2xl border border-primary-200 bg-primary-50 px-4 py-4 text-sm font-medium text-primary-600">
                 {{ session('status') }}
             </div>
         @endif
@@ -118,7 +118,7 @@
 
             <section class="{{ $panelClass }}">
                 <div class="flex items-start gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary-50 text-secondary-700">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
                         </svg>
@@ -227,7 +227,7 @@
                     <h2 class="{{ $sectionTitleClass }}">Existing Permissions</h2>
                     <p class="{{ $sectionCopyClass }}">Compare reuse across roles and watch for overrides that may indicate missing role-level rules.</p>
                 </div>
-                <span class="inline-flex items-center rounded-full border border-amber-100 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">{{ $permissions->count() }} available</span>
+                <span class="inline-flex items-center rounded-full border border-amber-100 bg-secondary-50 px-3 py-1 text-xs font-semibold text-secondary-700">{{ $permissions->count() }} available</span>
             </div>
 
             @if ($permissions->count())
@@ -277,7 +277,7 @@
 
         <section class="{{ $panelClass }}">
             <div class="flex items-start gap-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>

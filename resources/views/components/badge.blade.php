@@ -4,8 +4,8 @@
 
 @php
     $style = match ($variant) {
-        'success' => 'border-emerald-200 bg-emerald-50 text-emerald-700',
-        'warning' => 'border-amber-200 bg-amber-50 text-amber-700',
+        'success' => 'border-primary-200 bg-primary-50 text-primary-600',
+        'warning' => 'border-amber-200 bg-secondary-50 text-secondary-700',
         'danger' => 'border-rose-200 bg-rose-50 text-rose-700',
         'info' => 'border-primary-200 bg-primary-50 text-primary-700',
         'inverse' => 'border-white/20 bg-white/10 text-white',

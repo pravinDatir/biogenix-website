@@ -48,7 +48,7 @@
         </section>
 
         @if (session('status'))
-            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm font-medium text-emerald-700">
+            <div class="rounded-2xl border border-primary-200 bg-primary-50 px-4 py-4 text-sm font-medium text-primary-600">
                 {{ session('status') }}
             </div>
         @endif
@@ -218,7 +218,7 @@
                                     </td>
                                     <td class="{{ $tableCellClass }}">
                                         @if ($faq->is_active)
-                                            <span class="{{ $badgeClass }} border-emerald-200 bg-emerald-50 text-emerald-700">Active</span>
+                                            <span class="{{ $badgeClass }} border-primary-200 bg-primary-50 text-primary-600">Active</span>
                                         @else
                                             <span class="{{ $badgeClass }} border-rose-200 bg-rose-50 text-rose-700">Inactive</span>
                                         @endif

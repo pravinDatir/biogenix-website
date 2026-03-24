@@ -18,7 +18,7 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-[#0f172a] tracking-tight">Order Management</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Order Management</h1>
             <p class="text-sm text-slate-500 mt-1">Review and track medical supply chain operations across all regions.</p>
         </div>
         <button id="exportCsvBtn" onclick="exportOrdersCSV()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition shadow-sm shrink-0 cursor-pointer">
@@ -40,17 +40,17 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input id="orderSearch" type="text" placeholder="Search Order ID, Client, or SKU..." class="w-full bg-[#f8fafc] border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-[#091b3f] focus:ring-1 focus:ring-[#091b3f] transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                <input id="orderSearch" type="text" placeholder="Search Order ID, Client, or SKU..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
             </div>
 
             <!-- Status Pills -->
             <div id="statusPills" class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
-                <button data-status="all" class="status-pill active inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-[#091b3f] text-white cursor-pointer">All Orders</button>
-                <button data-status="Pending" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Pending</button>
-                <button data-status="Processing" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Processing</button>
-                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Dispatched</button>
-                <button data-status="Delivered" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Delivered</button>
-                <button data-status="Cancelled" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer">Cancelled</button>
+                <button data-status="all" class="status-pill active inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-600 text-white cursor-pointer">All Orders</button>
+                <button data-status="Pending" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60 hover:bg-amber-100 transition cursor-pointer">Pending</button>
+                <button data-status="Processing" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-primary-100 transition cursor-pointer">Processing</button>
+                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-violet-50 text-violet-700 border border-violet-200/60 hover:bg-violet-100 transition cursor-pointer">Dispatched</button>
+                <button data-status="Delivered" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition cursor-pointer">Delivered</button>
+                <button data-status="Cancelled" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/60 hover:bg-rose-100 transition cursor-pointer">Cancelled</button>
             </div>
         </div>
 
@@ -73,7 +73,7 @@
                     <!-- Row 1 -->
                     <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99281</span>
+                            <span class="text-[13px] font-bold text-slate-900">#ORD-99281</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
                             <div class="flex flex-col">
@@ -88,22 +88,22 @@
                             <span class="text-[13px] font-bold text-slate-900">$1,240.00</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#ecfdf5] text-[#10b981] text-[11px] font-bold rounded-md">Paid</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-md">Paid</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#eff6ff] text-[#3b82f6] text-[11px] font-bold rounded-full">Processing</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">Processing</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
+                            <div class="flex items-center justify-end gap-2">
+                                <x-ui.action-icon type="view" href="{{ route('adminPanel.orders.view') }}" class="ajax-link">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="document">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="edit">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </button>
+                                </x-ui.action-icon>
                             </div>
                         </td>
                     </tr>
@@ -111,7 +111,7 @@
                     <!-- Row 2 -->
                     <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99280</span>
+                            <span class="text-[13px] font-bold text-slate-900">#ORD-99280</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
                             <div class="flex flex-col">
@@ -126,22 +126,22 @@
                             <span class="text-[13px] font-bold text-slate-900">$850.00</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#fffbeb] text-[#d97706] text-[11px] font-bold rounded-md">Pending</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[11px] font-bold rounded-md">Pending</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#f1f5f9] text-[#64748b] text-[11px] font-bold rounded-full">Hold</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-slate-50 text-slate-600 border border-slate-200/60 text-[11px] font-bold rounded-full">Hold</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
+                            <div class="flex items-center justify-end gap-2">
+                                <x-ui.action-icon type="view" href="{{ route('adminPanel.orders.view') }}" class="ajax-link">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="document">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="edit">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </button>
+                                </x-ui.action-icon>
                             </div>
                         </td>
                     </tr>
@@ -149,7 +149,7 @@
                     <!-- Row 3 -->
                     <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99279</span>
+                            <span class="text-[13px] font-bold text-slate-900">#ORD-99279</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
                             <div class="flex flex-col">
@@ -164,22 +164,22 @@
                             <span class="text-[13px] font-bold text-slate-900">$2,100.00</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#ecfdf5] text-[#10b981] text-[11px] font-bold rounded-md">Paid</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-md">Paid</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#f5f3ff] text-[#7c3aed] text-[11px] font-bold rounded-full">Dispatched</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[11px] font-bold rounded-full">Dispatched</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
+                            <div class="flex items-center justify-end gap-2">
+                                <x-ui.action-icon type="view" href="{{ route('adminPanel.orders.view') }}" class="ajax-link">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="document">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="edit">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </button>
+                                </x-ui.action-icon>
                             </div>
                         </td>
                     </tr>
@@ -187,7 +187,7 @@
                     <!-- Row 4 -->
                     <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99278</span>
+                            <span class="text-[13px] font-bold text-slate-900">#ORD-99278</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
                             <div class="flex flex-col">
@@ -202,22 +202,22 @@
                             <span class="text-[13px] font-bold text-slate-900">$450.00</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#fff1f2] text-[#e11d48] text-[11px] font-bold rounded-md">Refunded</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[11px] font-bold rounded-md">Refunded</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#f1f5f9] text-[#64748b] text-[11px] font-bold rounded-full">Cancelled</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200/60 text-[11px] font-bold rounded-full">Cancelled</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.943 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
+                            <div class="flex items-center justify-end gap-2">
+                                <x-ui.action-icon type="view" href="{{ route('adminPanel.orders.view') }}" class="ajax-link">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="document">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="edit">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </button>
+                                </x-ui.action-icon>
                             </div>
                         </td>
                     </tr>
@@ -225,7 +225,7 @@
                     <!-- Row 5 -->
                     <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="text-[13px] font-bold text-[#0f172a]">#ORD-99277</span>
+                            <span class="text-[13px] font-bold text-slate-900">#ORD-99277</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
                             <div class="flex flex-col">
@@ -240,22 +240,22 @@
                             <span class="text-[13px] font-bold text-slate-900">$3,200.00</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#ecfdf5] text-[#10b981] text-[11px] font-bold rounded-md">Paid</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-md">Paid</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-[#ecfdf5] text-[#10b981] text-[11px] font-bold rounded-full">Delivered</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-full">Delivered</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('adminPanel.orders.view') }}" class="ajax-link p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="View Details">
+                            <div class="flex items-center justify-end gap-2">
+                                <x-ui.action-icon type="view" href="{{ route('adminPanel.orders.view') }}" class="ajax-link">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </a>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Download Invoice">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="document">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </button>
-                                <button class="p-2 text-slate-400 hover:text-[#091b3f] hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Edit Order">
+                                </x-ui.action-icon>
+                                <x-ui.action-icon type="edit">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </button>
+                                </x-ui.action-icon>
                             </div>
                         </td>
                     </tr>
@@ -273,7 +273,7 @@
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <div class="flex font-semibold text-[13px]">
-                    <button class="h-9 w-9 flex items-center justify-center rounded bg-[#091b3f] text-white cursor-pointer">1</button>
+                    <button class="h-9 w-9 flex items-center justify-center rounded bg-primary-600 text-white cursor-pointer">1</button>
                     <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">2</button>
                     <button class="h-9 w-9 flex items-center justify-center rounded bg-white text-slate-600 hover:bg-slate-50 transition border border-transparent hover:border-slate-200 cursor-pointer">3</button>
                 </div>
@@ -295,11 +295,20 @@
 document.querySelectorAll('.status-pill').forEach(pill => {
     pill.addEventListener('click', () => {
         document.querySelectorAll('.status-pill').forEach(p => {
-            p.classList.remove('bg-[#091b3f]', 'text-white', 'active');
-            p.classList.add('bg-slate-50', 'text-slate-600', 'border', 'border-slate-200');
+            p.classList.remove('bg-primary-600', 'text-white', 'active', 'border-transparent');
+            // Restore original subtle classes based on data-status
+            const s = p.dataset.status;
+            let cls = 'bg-slate-50 text-slate-600 border-slate-200';
+            if(s === 'Pending') cls = 'bg-amber-50 text-amber-700 border-amber-200/60';
+            else if(s === 'Processing') cls = 'bg-primary-50 text-primary-700 border-primary-200/60';
+            else if(s === 'Dispatched') cls = 'bg-violet-50 text-violet-700 border-violet-200/60';
+            else if(s === 'Delivered') cls = 'bg-emerald-50 text-emerald-700 border-emerald-200/60';
+            else if(s === 'Cancelled') cls = 'bg-rose-50 text-rose-700 border-rose-200/60';
+            
+            p.className = `status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${cls}`;
         });
-        pill.classList.remove('bg-slate-50', 'text-slate-600', 'border', 'border-slate-200');
-        pill.classList.add('bg-[#091b3f]', 'text-white', 'active');
+        pill.classList.remove('bg-slate-50', 'bg-amber-50', 'bg-primary-50', 'bg-violet-50', 'bg-emerald-50', 'bg-rose-50', 'text-slate-600', 'text-amber-700', 'text-primary-700', 'text-violet-700', 'text-emerald-700', 'text-rose-700', 'border-slate-200', 'border-amber-200/60', 'border-primary-200/60', 'border-violet-200/60', 'border-emerald-200/60', 'border-rose-200/60');
+        pill.classList.add('bg-primary-600', 'text-white', 'active', 'border-transparent');
         filterOrders();
     });
 });

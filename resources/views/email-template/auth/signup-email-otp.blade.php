@@ -12,7 +12,7 @@
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px; margin:0 auto; background:#ffffff; border:1px solid #e2e8f0; border-radius:16px; overflow:hidden;">
         <tr>
             <td style="padding:32px;">
-                <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#2563eb;">Email Verification</p>
+                <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#1A4D2E;">Email Verification</p>
                 <h1 style="margin:16px 0 0; font-size:28px; line-height:1.25; color:#0f172a;">Confirm your email address</h1>
                 <p style="margin:16px 0 0; font-size:15px; line-height:1.8; color:#475569;">
                     We received a request to verify this email for a new {{ $appName }} customer account.
