@@ -92,6 +92,7 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 
    //Route::view('/homeAdmin', 'home')->name('home');
    Route::view('/about', 'prelogin.about')->name('about');
+   Route::view('/diagnostic-quiz', 'pages.guest.diagnostic-quiz')->name('diagnostic-quiz');
    Route::get('/contact', [ContactUsController::class, 'index'])->name('contact');
    Route::post('/contact', [ContactUsController::class, 'store'])->name('contact.store');
 

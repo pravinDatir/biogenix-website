@@ -715,7 +715,7 @@
             </div>
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
                 <article class="home-route-card home-reveal">
-                    <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="B2B healthcare procurement" loading="lazy" decoding="async">
+                    <img src="{{ asset('upload/corousel/b2b-enterprise-bg.png') }}" alt="B2B Enterprise Solutions" loading="lazy" decoding="async">
                     <span class="home-route-card__chip">B2B Operations</span>
                     <div class="home-route-card__content">
                         <div class="home-route-card__panel">
@@ -730,7 +730,7 @@
                     </div>
                 </article>
                 <article class="home-route-card home-reveal">
-                    <img src="{{ asset('upload/corousel/image5.jpg') }}" alt="B2C healthcare retail buying" loading="lazy" decoding="async">
+                    <img src="{{ asset('upload/corousel/b2c-consumer-bg.png') }}" alt="B2C Direct-to-Consumer" loading="lazy" decoding="async">
                     <span class="home-route-card__chip">B2C Access</span>
                     <div class="home-route-card__content">
                         <div class="home-route-card__panel">
@@ -788,6 +788,92 @@
    
 
    
+
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- STRATEGIC PRESENCE: NORTHERN HUB --}}
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    <section class="home-northern-hub bg-transparent py-12 md:py-16">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
+            <div class="home-reveal relative overflow-hidden rounded-3xl border border-slate-200/80 shadow-[0_24px_55px_rgba(15,23,42,0.07)]" style="background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.92))">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    {{-- Left: Content --}}
+                    <div class="flex flex-col justify-center p-6 sm:p-8 lg:p-10 xl:p-12">
+                        <h2 class="font-['Sora'] text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl lg:text-[2rem]">Strategic Presence: Northern Hub</h2>
+                        <p class="mt-4 max-w-lg text-sm leading-6 text-slate-600 md:text-[15px] md:leading-7">
+                            Our state-of-the-art reference laboratory in Lucknow serves as the nerve center for North India, ensuring specialized pathology samples reach analysis within 6 hours of collection.
+                        </p>
+
+                        <ul class="mt-6 space-y-3">
+                            <li class="flex items-center gap-3">
+                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#2B4A2B">
+                                    <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <span class="text-sm font-semibold text-slate-800">24/7 Operational Diagnostic Facility</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#2B4A2B">
+                                    <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <span class="text-sm font-semibold text-slate-800">Dedicated Cold-Chain Logistics Hub</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#2B4A2B">
+                                    <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <span class="text-sm font-semibold text-slate-800">AI-Integrated Result Validation</span>
+                            </li>
+                        </ul>
+
+                        <div class="mt-8">
+                            <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B">
+                                Find a Collection Center
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Right: Image with location badge --}}
+                    <div class="relative min-h-[280px] lg:min-h-[420px]">
+                        <img
+                            src="{{ asset('upload/corousel/image4.jpg') }}"
+                            alt="Biogenix Northern Hub Laboratory in Lucknow"
+                            class="absolute inset-0 h-full w-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        {{-- Location badge --}}
+                        <div class="absolute bottom-4 right-4 z-10 rounded-2xl border border-white/70 bg-white/90 px-5 py-3 shadow-lg backdrop-blur-sm sm:bottom-6 sm:right-6">
+                            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Center of Excellence</p>
+                            <p class="mt-1 text-lg font-bold tracking-tight text-slate-950">Lucknow, UP</p>
+                            <p class="text-xs font-medium text-slate-500">Regional Reference Lab #01</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- TEST YOUR DIAGNOSTIC PRECISION --}}
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    <section class="home-quiz-cta bg-transparent py-6 md:py-8">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
+            <div class="home-reveal overflow-hidden rounded-3xl px-6 py-10 shadow-[0_24px_55px_rgba(43,74,43,0.2)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16" style="background:#2B4A2B">
+                <div class="max-w-xl">
+                    <h2 class="font-['Sora'] text-2xl font-semibold tracking-tight text-white md:text-3xl lg:text-[2rem]">Test Your Diagnostic<br>Precision</h2>
+                    <p class="mt-3 text-sm leading-6 text-white/70 md:text-[15px] md:leading-7">
+                        Take our 4-minute kit assessment and unlock a 15% discount code on your first clinical order.
+                    </p>
+                </div>
+                <div class="mt-6 md:mt-0 md:ml-8 md:shrink-0">
+                    <a href="{{ route('diagnostic-quiz') }}" class="inline-flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/15 px-7 py-3.5 text-sm font-semibold text-white shadow-sm backdrop-blur transition hover:bg-white/25 hover:-translate-y-0.5 hover:shadow-md">
+                        Start Quiz
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- FINAL CTA STRIP --}}
