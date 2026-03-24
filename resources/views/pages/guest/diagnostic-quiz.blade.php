@@ -176,6 +176,33 @@
 @endpush
 
 @section('content')
+@php
+    $quizQuestionsPayload = collect($quizQuestions ?? [])
+        ->values()
+        ->map(function ($quizQuestion): array {
+            return [
+                'id' => (int) $quizQuestion->id,
+                'phase_title' => (string) $quizQuestion->phase_title,
+                'question_text' => (string) $quizQuestion->question_text,
+                'question_support_details' => is_array($quizQuestion->question_support_details ?? null)
+                    ? $quizQuestion->question_support_details
+                    : [],
+                'answer_options' => collect($quizQuestion->answerOptions ?? [])
+                    ->values()
+                    ->map(function ($answerOption): array {
+                        return [
+                            'id' => (int) $answerOption->id,
+                            'option_label' => (string) $answerOption->option_label,
+                            'option_text' => (string) $answerOption->option_text,
+                        ];
+                    })
+                    ->all(),
+            ];
+        })
+        ->all();
+    $hasQuizData = count($quizQuestionsPayload) > 0;
+    $firstQuizQuestion = $hasQuizData ? $quizQuestionsPayload[0] : null;
+@endphp
 <div class="quiz-page" id="quizApp">
 
     {{-- ═══ HEADER BAR ═══ --}}
@@ -183,15 +210,15 @@
         <div class="mx-auto w-full max-w-none px-4 py-5 sm:px-6 lg:px-8 xl:px-10">
             <div class="flex items-end justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500" id="quizPhaseLabel">Assessment Phase: 01</p>
-                    <h1 class="mt-1 font-['Sora'] text-2xl font-bold tracking-tight text-slate-950 md:text-3xl" id="quizTitle">Biogenix Kits Mastery</h1>
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500" id="quizPhaseLabel">{{ $hasQuizData ? 'Assessment Phase: 01' : 'Assessment Setup' }}</p>
+                    <h1 class="mt-1 font-['Sora'] text-2xl font-bold tracking-tight text-slate-950 md:text-3xl" id="quizTitle">{{ $firstQuizQuestion['phase_title'] ?? 'Diagnostic Precision Quiz' }}</h1>
                     <div class="quiz-progress-track mt-3 w-48 sm:w-64">
-                        <div class="quiz-progress-fill" id="quizProgressBar" style="width: 25%"></div>
+                        <div class="quiz-progress-fill" id="quizProgressBar" style="width: {{ $hasQuizData ? round(100 / count($quizQuestionsPayload)) : 0 }}%"></div>
                     </div>
                 </div>
                 <div class="text-right">
-                    <p class="text-base font-bold text-slate-950" id="quizStepLabel">Step 1 of 4</p>
-                    <p class="text-sm text-slate-500" id="quizPercentLabel">25% Complete</p>
+                    <p class="text-base font-bold text-slate-950" id="quizStepLabel">{{ $hasQuizData ? 'Step 1 of '.count($quizQuestionsPayload) : '' }}</p>
+                    <p class="text-sm text-slate-500" id="quizPercentLabel">{{ $hasQuizData ? round(100 / count($quizQuestionsPayload)).'% Complete' : '0% Complete' }}</p>
                 </div>
             </div>
         </div>
@@ -199,6 +226,12 @@
 
     {{-- ═══ QUIZ CONTENT ═══ --}}
     <div class="mx-auto w-full max-w-none px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
+        @if (! $hasQuizData)
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                <h2 class="text-xl font-bold text-slate-950">Quiz is not available right now.</h2>
+                <p class="mt-3 text-sm leading-6 text-slate-600">Please run the quiz migration and seeder, then reload this page.</p>
+            </div>
+        @else
 
         {{-- ────────── STEP 1 ────────── --}}
         <div class="quiz-step active" data-step="1">
@@ -546,7 +579,7 @@
                             <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Email Address</label>
                             <input type="email" id="quizEmail" class="quiz-field" placeholder="john.doe@medical-cloud.com">
                         </div>
-                        <button type="button" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B" onclick="showResults()">
+                        <button type="button" id="quizSubmitButton" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#2B4A2B" onclick="showResults()">
                             Unlock My Score & Reward
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
@@ -565,8 +598,8 @@
                 <span class="inline-flex rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white" style="background:#16a34a">Assessment Complete</span>
                 <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <div>
-                        <h2 class="font-['Sora'] text-3xl font-bold tracking-tight text-slate-950 md:text-4xl lg:text-5xl">Advanced<br>Proficiency Level<br>Attained.</h2>
-                        <p class="mt-4 max-w-lg text-sm leading-6 text-slate-600 md:text-base">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
+                        <h2 class="font-['Sora'] text-3xl font-bold tracking-tight text-slate-950 md:text-4xl lg:text-5xl" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
+                        <p class="mt-4 max-w-lg text-sm leading-6 text-slate-600 md:text-base" id="quizResultDescription">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
                     </div>
                     <div class="flex items-center justify-center">
                         <div class="score-ring relative">
@@ -591,16 +624,16 @@
                     </h3>
                     <div class="mt-6 space-y-5">
                         <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800">Kits Mastery</span><span class="font-bold text-slate-950">98%</span></div>
-                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" data-perf="98" style="width:0%"></div></div>
+                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800" id="quizPerfLabel1">Kits Mastery</span><span class="font-bold text-slate-950" id="quizPerfValue1">98%</span></div>
+                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" id="quizPerfBar1" data-perf="98" style="width:0%"></div></div>
                         </div>
                         <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800">Storage Requirements</span><span class="font-bold text-slate-950">85%</span></div>
-                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" data-perf="85" style="width:0%"></div></div>
+                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800" id="quizPerfLabel2">Storage Requirements</span><span class="font-bold text-slate-950" id="quizPerfValue2">85%</span></div>
+                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" id="quizPerfBar2" data-perf="85" style="width:0%"></div></div>
                         </div>
                         <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800">System Compatibility</span><span class="font-bold text-slate-950">94%</span></div>
-                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" data-perf="94" style="width:0%"></div></div>
+                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800" id="quizPerfLabel3">System Compatibility</span><span class="font-bold text-slate-950" id="quizPerfValue3">94%</span></div>
+                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" id="quizPerfBar3" data-perf="94" style="width:0%"></div></div>
                         </div>
                     </div>
                 </div>
@@ -621,23 +654,310 @@
                 </div>
             </div>
         </div>
-
+        @endif
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
+    var quizQuestions = @json($quizQuestionsPayload);
     var quizAnswers = {};
     var currentStep = 1;
-    var totalQuestions = 4;
+    var totalQuestions = quizQuestions.length;
+    var quizSubmitUrl = @json(route('diagnostic-quiz.store'));
+    var quizSubmitButtonDefaultHtml = '';
+    var currentVoucherCode = document.getElementById('voucherCode') ? document.getElementById('voucherCode').textContent : 'BIOGENIX15';
 
-    function selectOption(question, element) {
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function resolveAssetUrl(path) {
+        if (!path) {
+            return '';
+        }
+
+        if (/^https?:\/\//i.test(path)) {
+            return path;
+        }
+
+        return window.location.origin + '/' + String(path).replace(/^\/+/, '');
+    }
+
+    function getQuestionByStep(step) {
+        return quizQuestions[step - 1] || null;
+    }
+
+    function findSidebarCard(questionSupportDetails, cardType) {
+        var sidebarCards = Array.isArray(questionSupportDetails && questionSupportDetails.sidebar_cards)
+            ? questionSupportDetails.sidebar_cards
+            : [];
+
+        return sidebarCards.find(function (sidebarCard) {
+            return sidebarCard && sidebarCard.card_type === cardType;
+        }) || null;
+    }
+
+    function iconMarkup(iconName) {
+        if (iconName === 'check-circle') {
+            return '<svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        }
+
+        if (iconName === 'clock') {
+            return '<svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>';
+        }
+
+        if (iconName === 'file-green') {
+            return '<svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>';
+        }
+
+        if (iconName === 'download') {
+            return '<svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>';
+        }
+
+        if (iconName === 'external-link') {
+            return '<svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>';
+        }
+
+        return '<svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>';
+    }
+
+    function buildOptionMarkup(stepNumber, questionData) {
+        return (questionData.answer_options || []).map(function (answerOption) {
+            return '<div class="quiz-option" data-answer="' + escapeHtml(answerOption.option_label) + '" data-question-id="' + escapeHtml(questionData.id) + '" data-option-id="' + escapeHtml(answerOption.id) + '" onclick="selectOption(' + stepNumber + ', this)">' +
+                '<span class="quiz-option-radio">' + escapeHtml(answerOption.option_label) + '</span>' +
+                '<span class="text-sm font-semibold text-slate-800">' + escapeHtml(answerOption.option_text) + '</span>' +
+                '<span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>' +
+            '</div>';
+        }).join('');
+    }
+
+    function buildContextListMarkup(items) {
+        return (Array.isArray(items) ? items : []).map(function (item) {
+            return '<li class="flex items-center gap-2.5 text-sm text-slate-700">' +
+                iconMarkup(item.icon) +
+                escapeHtml(item.text) +
+            '</li>';
+        }).join('');
+    }
+
+    function buildContextSectionMarkup(sections) {
+        return (Array.isArray(sections) ? sections : []).map(function (section) {
+            return '<li>' +
+                '<p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full" style="background:#d4a017"></span> ' + escapeHtml(section.title) + '</p>' +
+                '<p class="mt-1 text-sm leading-6 text-slate-600">' + escapeHtml(section.description) + '</p>' +
+            '</li>';
+        }).join('');
+    }
+
+    function buildReferenceListMarkup(items) {
+        return (Array.isArray(items) ? items : []).map(function (item) {
+            return '<div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">' +
+                '<span class="flex items-center gap-2 text-sm font-medium text-slate-700">' +
+                    iconMarkup(item.leading_icon) +
+                    escapeHtml(item.document_name) +
+                '</span>' +
+                iconMarkup(item.trailing_icon) +
+            '</div>';
+        }).join('');
+    }
+
+    function hydrateQuestionStep(stepNumber) {
+        var questionData = getQuestionByStep(stepNumber);
+        var stepElement = document.querySelector('.quiz-step[data-step="' + stepNumber + '"]');
+
+        if (!questionData || !stepElement) {
+            return;
+        }
+
+        // Step 1: replace the question text and answer options with the database-backed quiz content.
+        var questionTitle = stepElement.querySelector('.lg\\:col-span-2 h2');
+        var optionsContainer = document.getElementById('q' + stepNumber + 'Options');
+
+        if (questionTitle) {
+            questionTitle.textContent = questionData.question_text || '';
+        }
+
+        if (optionsContainer) {
+            optionsContainer.innerHTML = buildOptionMarkup(stepNumber, questionData);
+        }
+
+        // Step 2: update the sidebar cards shown beside the question while keeping the same visual layout.
+        var questionSupportDetails = questionData.question_support_details || {};
+        var tipCard = findSidebarCard(questionSupportDetails, 'tip');
+        var contextListCard = findSidebarCard(questionSupportDetails, 'context_list');
+        var contextSectionsCard = findSidebarCard(questionSupportDetails, 'context_sections');
+        var insightCard = findSidebarCard(questionSupportDetails, 'insight');
+        var referenceListCard = findSidebarCard(questionSupportDetails, 'reference_list');
+        var imageCard = findSidebarCard(questionSupportDetails, 'image');
+
+        if (stepNumber === 1) {
+            if (tipCard) {
+                var stepOneTipCard = stepElement.querySelector('.quiz-tip-card');
+                if (stepOneTipCard) {
+                    var stepOneTipTitle = stepOneTipCard.querySelector('h3');
+                    var stepOneTipBody = stepOneTipCard.querySelector('p.mt-2.text-sm');
+
+                    if (stepOneTipTitle) stepOneTipTitle.textContent = tipCard.title || '';
+                    if (stepOneTipBody) stepOneTipBody.textContent = tipCard.description || '';
+                }
+            }
+
+            if (contextListCard) {
+                var stepOneContextCard = stepElement.querySelector('.quiz-context-card');
+                if (stepOneContextCard) {
+                    var stepOneContextTitle = stepOneContextCard.querySelector('h4');
+                    var stepOneContextList = stepOneContextCard.querySelector('ul');
+
+                    if (stepOneContextTitle) stepOneContextTitle.textContent = contextListCard.title || '';
+                    if (stepOneContextList) stepOneContextList.innerHTML = buildContextListMarkup(contextListCard.items);
+                }
+            }
+
+            if (imageCard) {
+                var stepOneImage = stepElement.querySelector('img');
+                var stepOneImageCaption = stepElement.querySelector('.relative p');
+
+                if (stepOneImage) {
+                    stepOneImage.src = resolveAssetUrl(imageCard.image_path);
+                    stepOneImage.alt = imageCard.image_alt_text || 'Diagnostic quiz supporting visual';
+                }
+
+                if (stepOneImageCaption) {
+                    stepOneImageCaption.textContent = imageCard.image_caption || '';
+                }
+            }
+        }
+
+        if (stepNumber === 2) {
+            if (contextSectionsCard) {
+                var stepTwoContextCard = stepElement.querySelector('.quiz-context-card');
+                if (stepTwoContextCard) {
+                    var stepTwoContextTitle = stepTwoContextCard.querySelector('h3');
+                    var stepTwoContextSections = stepTwoContextCard.querySelector('ul');
+
+                    if (stepTwoContextTitle) {
+                        stepTwoContextTitle.innerHTML = '<svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg> ' + escapeHtml(contextSectionsCard.title || '');
+                    }
+
+                    if (stepTwoContextSections) {
+                        stepTwoContextSections.innerHTML = buildContextSectionMarkup(contextSectionsCard.sections);
+                    }
+                }
+            }
+
+            if (insightCard) {
+                var stepTwoInsightCard = stepElement.querySelector('.quiz-insight-card');
+                if (stepTwoInsightCard) {
+                    var stepTwoInsightParagraphs = stepTwoInsightCard.querySelectorAll('p');
+
+                    if (stepTwoInsightParagraphs[0]) {
+                        stepTwoInsightParagraphs[0].innerHTML = '<span class="inline-block h-2 w-2 rounded-full" style="background:#d4a017"></span> ' + escapeHtml(insightCard.eyebrow || 'Clinical Insight');
+                    }
+
+                    if (stepTwoInsightParagraphs[1]) {
+                        stepTwoInsightParagraphs[1].textContent = insightCard.description || '';
+                    }
+                }
+            }
+
+            if (referenceListCard) {
+                var stepTwoReferenceCard = stepElement.querySelector('.quiz-ref-card');
+                if (stepTwoReferenceCard) {
+                    var stepTwoReferenceTitle = stepTwoReferenceCard.querySelector('h4');
+                    var stepTwoReferenceList = stepTwoReferenceCard.querySelector('.mt-3.space-y-2');
+
+                    if (stepTwoReferenceTitle) stepTwoReferenceTitle.textContent = referenceListCard.title || '';
+                    if (stepTwoReferenceList) stepTwoReferenceList.innerHTML = buildReferenceListMarkup(referenceListCard.items);
+                }
+            }
+        }
+
+        if (stepNumber === 3) {
+            if (tipCard) {
+                var stepThreeTipCard = stepElement.querySelector('.quiz-tip-card');
+                if (stepThreeTipCard) {
+                    var stepThreeTipTitle = stepThreeTipCard.querySelector('h3');
+                    var stepThreeTipBody = stepThreeTipCard.querySelector('p.mt-2.text-sm');
+
+                    if (stepThreeTipTitle) stepThreeTipTitle.textContent = tipCard.title || '';
+                    if (stepThreeTipBody) stepThreeTipBody.textContent = tipCard.description || '';
+                }
+            }
+
+            if (contextListCard) {
+                var stepThreeContextCard = stepElement.querySelector('.quiz-context-card');
+                if (stepThreeContextCard) {
+                    var stepThreeContextTitle = stepThreeContextCard.querySelector('h4');
+                    var stepThreeContextList = stepThreeContextCard.querySelector('ul');
+
+                    if (stepThreeContextTitle) stepThreeContextTitle.textContent = contextListCard.title || '';
+                    if (stepThreeContextList) stepThreeContextList.innerHTML = buildContextListMarkup(contextListCard.items);
+                }
+            }
+        }
+
+        if (stepNumber === 4) {
+            if (tipCard) {
+                var stepFourTipCard = stepElement.querySelector('.quiz-tip-card');
+                if (stepFourTipCard) {
+                    var stepFourTipTitle = stepFourTipCard.querySelector('h3');
+                    var stepFourTipBody = stepFourTipCard.querySelector('p.mt-2.text-sm');
+
+                    if (stepFourTipTitle) stepFourTipTitle.textContent = tipCard.title || '';
+                    if (stepFourTipBody) stepFourTipBody.textContent = tipCard.description || '';
+                }
+            }
+
+            if (imageCard) {
+                var stepFourImage = stepElement.querySelector('img');
+                var stepFourImageCaption = stepElement.querySelector('.relative p');
+
+                if (stepFourImage) {
+                    stepFourImage.src = resolveAssetUrl(imageCard.image_path);
+                    stepFourImage.alt = imageCard.image_alt_text || 'Diagnostic quiz supporting visual';
+                }
+
+                if (stepFourImageCaption) {
+                    stepFourImageCaption.textContent = imageCard.image_caption || '';
+                }
+            }
+        }
+    }
+
+    function hydrateQuizContent() {
+        if (totalQuestions === 0) {
+            return;
+        }
+
+        for (var stepNumber = 1; stepNumber <= totalQuestions; stepNumber++) {
+            hydrateQuestionStep(stepNumber);
+        }
+
+        updateHeader(1);
+    }
+
+    function selectOption(stepNumber, element) {
         var container = element.parentNode;
         var options = container.querySelectorAll('.quiz-option');
-        options.forEach(function(opt) { opt.classList.remove('selected'); });
+        options.forEach(function (optionElement) {
+            optionElement.classList.remove('selected');
+        });
+
         element.classList.add('selected');
-        quizAnswers[question] = element.getAttribute('data-answer');
+
+        var questionData = getQuestionByStep(stepNumber);
+        var selectedOptionId = Number(element.getAttribute('data-option-id'));
+
+        if (questionData && selectedOptionId > 0) {
+            quizAnswers[questionData.id] = selectedOptionId;
+        }
     }
 
     function updateHeader(step) {
@@ -648,19 +968,22 @@
         var progressBar = document.getElementById('quizProgressBar');
 
         if (step <= totalQuestions) {
-            var pct = Math.round((step / totalQuestions) * 100);
-            phaseLabel.textContent = 'Assessment Phase: 0' + step;
-            title.textContent = step === 1 ? 'Biogenix Kits Mastery' : step === 2 ? 'Biogenix Kits Proficiency' : step === 3 ? 'Compliance Standards' : 'Sample Preparation';
+            var questionData = getQuestionByStep(step);
+            var pct = totalQuestions > 0 ? Math.round((step / totalQuestions) * 100) : 0;
+            var normalizedStepLabel = step < 10 ? '0' + step : String(step);
+
+            phaseLabel.textContent = 'Assessment Phase: ' + normalizedStepLabel;
+            title.textContent = questionData ? questionData.phase_title : 'Diagnostic Precision Quiz';
             stepLabel.textContent = 'Step ' + step + ' of ' + totalQuestions;
             percentLabel.textContent = pct + '% Complete';
             progressBar.style.width = pct + '%';
-        } else if (step === 5) {
+        } else if (step === totalQuestions + 1) {
             phaseLabel.textContent = 'Final Step';
             title.textContent = 'Claim Your Results';
             stepLabel.textContent = '';
             percentLabel.textContent = '100% Complete';
             progressBar.style.width = '100%';
-        } else if (step === 6) {
+        } else if (step === totalQuestions + 2) {
             phaseLabel.textContent = 'Assessment Complete';
             title.textContent = 'Your Results';
             stepLabel.textContent = '';
@@ -671,7 +994,9 @@
 
     function goToStep(step) {
         var allSteps = document.querySelectorAll('.quiz-step');
-        allSteps.forEach(function(s) { s.classList.remove('active'); });
+        allSteps.forEach(function (stepElement) {
+            stepElement.classList.remove('active');
+        });
 
         var target = document.querySelector('[data-step="' + step + '"]');
         if (target) {
@@ -683,7 +1008,29 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function validateCurrentQuestionSelection(step) {
+        var questionData = getQuestionByStep(step);
+
+        if (!questionData) {
+            return true;
+        }
+
+        if (quizAnswers[questionData.id]) {
+            return true;
+        }
+
+        if (window.BiogenixToast) {
+            window.BiogenixToast.show('Please select one answer before moving ahead.', 'warning');
+        }
+
+        return false;
+    }
+
     function nextStep(step) {
+        if (currentStep <= totalQuestions && !validateCurrentQuestionSelection(currentStep)) {
+            return;
+        }
+
         goToStep(step);
     }
 
@@ -691,34 +1038,234 @@
         goToStep(step);
     }
 
-    function showResults() {
-        goToStep(6);
+    function clearFieldValidationState(field) {
+        if (!field) {
+            return;
+        }
 
-        // Animate score ring
-        setTimeout(function() {
-            var score = 92;
+        field.classList.remove('border-rose-400', 'ring-4', 'ring-rose-500/10');
+    }
+
+    function markFieldInvalid(field) {
+        if (!field) {
+            return;
+        }
+
+        field.classList.add('border-rose-400', 'ring-4', 'ring-rose-500/10');
+    }
+
+    function validateLeadDetails() {
+        var firstNameField = document.getElementById('quizFirstName');
+        var lastNameField = document.getElementById('quizLastName');
+        var emailField = document.getElementById('quizEmail');
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        clearFieldValidationState(firstNameField);
+        clearFieldValidationState(lastNameField);
+        clearFieldValidationState(emailField);
+
+        if (!firstNameField || firstNameField.value.trim() === '') {
+            markFieldInvalid(firstNameField);
+
+            if (window.BiogenixToast) {
+                window.BiogenixToast.show('Please enter the first name before submitting the quiz.', 'warning');
+            }
+
+            return false;
+        }
+
+        if (!emailField || !emailPattern.test(emailField.value.trim())) {
+            markFieldInvalid(emailField);
+
+            if (window.BiogenixToast) {
+                window.BiogenixToast.show('Please enter a valid email address before submitting the quiz.', 'warning');
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    function buildSelectedAnswersPayload() {
+        var selectedAnswers = {};
+
+        quizQuestions.forEach(function (questionData) {
+            if (quizAnswers[questionData.id]) {
+                selectedAnswers[questionData.id] = quizAnswers[questionData.id];
+            }
+        });
+
+        return selectedAnswers;
+    }
+
+    function toggleSubmitButtonState(isSubmitting) {
+        var submitButton = document.getElementById('quizSubmitButton');
+
+        if (!submitButton) {
+            return;
+        }
+
+        if (!quizSubmitButtonDefaultHtml) {
+            quizSubmitButtonDefaultHtml = submitButton.innerHTML;
+        }
+
+        submitButton.disabled = isSubmitting;
+        submitButton.classList.toggle('cursor-not-allowed', isSubmitting);
+        submitButton.classList.toggle('opacity-70', isSubmitting);
+
+        if (isSubmitting) {
+            submitButton.innerHTML = 'Submitting Quiz...';
+            return;
+        }
+
+        submitButton.innerHTML = quizSubmitButtonDefaultHtml;
+    }
+
+    function applyQuizResult(resultData) {
+        var resultTitle = document.getElementById('quizResultTitle');
+        var resultDescription = document.getElementById('quizResultDescription');
+        var voucherCode = document.getElementById('voucherCode');
+        var performanceBreakdown = Array.isArray(resultData.performance_breakdown) ? resultData.performance_breakdown : [];
+
+        if (resultTitle) {
+            resultTitle.innerHTML = resultData.result_title_html || 'Assessment Complete';
+        }
+
+        if (resultDescription) {
+            resultDescription.textContent = resultData.result_description || '';
+        }
+
+        if (voucherCode) {
+            voucherCode.textContent = resultData.reward_coupon_code || '';
+            currentVoucherCode = voucherCode.textContent;
+        }
+
+        for (var index = 0; index < 3; index++) {
+            var performanceItem = performanceBreakdown[index] || { label: 'Result Segment', percentage: 0 };
+            var perfLabel = document.getElementById('quizPerfLabel' + (index + 1));
+            var perfValue = document.getElementById('quizPerfValue' + (index + 1));
+            var perfBar = document.getElementById('quizPerfBar' + (index + 1));
+
+            if (perfLabel) perfLabel.textContent = performanceItem.label || 'Result Segment';
+            if (perfValue) perfValue.textContent = String(performanceItem.percentage || 0) + '%';
+            if (perfBar) {
+                perfBar.setAttribute('data-perf', String(performanceItem.percentage || 0));
+                perfBar.style.width = '0%';
+            }
+        }
+    }
+
+    function animateQuizResults(scorePercentage) {
+        setTimeout(function () {
+            var score = Number(scorePercentage || 0);
             var circumference = 534;
             var offset = circumference - (score / 100) * circumference;
             var ring = document.getElementById('scoreRingFill');
-            var scoreVal = document.getElementById('scoreValue');
+            var scoreValue = document.getElementById('scoreValue');
 
-            if (ring) ring.style.strokeDashoffset = offset;
+            if (ring) {
+                ring.style.strokeDashoffset = offset;
+            }
 
-            // Animate counter
             var current = 0;
-            var interval = setInterval(function() {
+            var interval = setInterval(function () {
                 current += 1;
-                if (current > score) { clearInterval(interval); return; }
-                if (scoreVal) scoreVal.textContent = current + '%';
+
+                if (current > score) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                if (scoreValue) {
+                    scoreValue.textContent = current + '%';
+                }
             }, 15);
 
-            // Animate performance bars
-            var perfBars = document.querySelectorAll('[data-perf]');
-            perfBars.forEach(function(bar) {
-                bar.style.width = bar.getAttribute('data-perf') + '%';
+            var performanceBars = [
+                document.getElementById('quizPerfBar1'),
+                document.getElementById('quizPerfBar2'),
+                document.getElementById('quizPerfBar3'),
+            ];
+
+            performanceBars.forEach(function (performanceBar) {
+                if (!performanceBar) {
+                    return;
+                }
+
+                performanceBar.style.width = performanceBar.getAttribute('data-perf') + '%';
             });
         }, 300);
     }
+
+    async function showResults() {
+        if (totalQuestions === 0) {
+            if (window.BiogenixToast) {
+                window.BiogenixToast.show('Quiz questions are not available right now.', 'error');
+            }
+
+            return;
+        }
+
+        for (var stepNumber = 1; stepNumber <= totalQuestions; stepNumber++) {
+            if (!validateCurrentQuestionSelection(stepNumber)) {
+                goToStep(stepNumber);
+                return;
+            }
+        }
+
+        if (!validateLeadDetails()) {
+            return;
+        }
+
+        var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        var firstNameField = document.getElementById('quizFirstName');
+        var lastNameField = document.getElementById('quizLastName');
+        var emailField = document.getElementById('quizEmail');
+
+        toggleSubmitButtonState(true);
+
+        try {
+            var response = await fetch(quizSubmitUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({
+                    participant_first_name: firstNameField ? firstNameField.value.trim() : '',
+                    participant_last_name: lastNameField ? lastNameField.value.trim() : '',
+                    participant_email: emailField ? emailField.value.trim() : '',
+                    selected_answers: buildSelectedAnswersPayload(),
+                }),
+            });
+
+            var result = await response.json();
+
+            if (!response.ok || result.status !== 'success') {
+                if (window.BiogenixToast) {
+                    window.BiogenixToast.show(result.message || 'Unable to submit the quiz right now.', 'error');
+                }
+
+                return;
+            }
+
+            applyQuizResult(result.data || {});
+            goToStep(totalQuestions + 2);
+            animateQuizResults((result.data || {}).score_percentage || 0);
+        } catch (error) {
+            if (window.BiogenixToast) {
+                window.BiogenixToast.show('Unable to submit the quiz right now. Please try again.', 'error');
+            }
+        } finally {
+            toggleSubmitButtonState(false);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        hydrateQuizContent();
+    });
 
     function copyVoucher() {
         var code = document.getElementById('voucherCode');
@@ -737,7 +1284,7 @@
         }
 
         if (window.BiogenixToast) {
-            window.BiogenixToast.show('Voucher code copied! Use BIOGENIX15 at checkout.', 'success');
+            window.BiogenixToast.show('Voucher code copied! Use ' + currentVoucherCode + ' at checkout.', 'success');
         }
     }
 </script>

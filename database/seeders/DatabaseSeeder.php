@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             ProductTechnicalResourceSeeder::class,
             PricingRulesSeeder::class,
+            QuizeSeeder::class,
             OrderSeeder::class,
         ]);
     }

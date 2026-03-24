@@ -26,8 +26,7 @@ class AdminUserManagementController extends Controller
     }
 
     // This approves a pending B2B user.
-    public function approveB2b( Request $request, int $userId, AdminUserManagementService $adminUserManagementService,
-        RolePermissionService $rolePermissionService, ): RedirectResponse
+    public function approveB2b( Request $request, int $userId, AdminUserManagementService $adminUserManagementService, RolePermissionService $rolePermissionService, ): RedirectResponse
     {
         try {
             // Step 1: allow only admins to approve B2B users.

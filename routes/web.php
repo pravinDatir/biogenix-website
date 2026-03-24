@@ -17,6 +17,7 @@ use App\Http\Controllers\Profile\CustomerAddressController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Product\ProductCrudController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Quize\QuizeController;
 use App\Http\Controllers\SupportTicket\SupportTicketController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -92,7 +93,8 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 
    //Route::view('/homeAdmin', 'home')->name('home');
    Route::view('/about', 'prelogin.about')->name('about');
-   Route::view('/diagnostic-quiz', 'pages.guest.diagnostic-quiz')->name('diagnostic-quiz');
+   Route::get('/diagnostic-quiz', [QuizeController::class, 'index'])->name('diagnostic-quiz');
+   Route::post('/diagnostic-quiz', [QuizeController::class, 'store'])->name('diagnostic-quiz.store');
    Route::get('/contact', [ContactUsController::class, 'index'])->name('contact');
    Route::post('/contact', [ContactUsController::class, 'store'])->name('contact.store');
 
