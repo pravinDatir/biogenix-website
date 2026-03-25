@@ -190,11 +190,11 @@
     ];
 @endphp
 
-<div class="mx-auto w-full max-w-none px-4 md:-mt-8 md:px-6 xl:px-10">
+<div class="mx-auto w-full max-w-none px-4 md:mt-0 md:px-6 xl:px-10">
     <div class="w-full max-w-none box-border px-4 sm:px-6 xl:px-7">
-        <div id="catalogMobileBackdrop" class="pointer-events-none fixed inset-0 z-[60] bg-slate-950/45 opacity-0 transition-opacity duration-200 xl:hidden" aria-hidden="true"></div>
-        <div id="catalogLoadingOverlay" class="pointer-events-none fixed inset-0 z-[75] flex items-center justify-center bg-slate-950/18 px-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
-            <div class="w-full max-w-sm rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.16)]">
+        <div id="catalogMobileBackdrop" class="pointer-events-none fixed inset-0 z-[60] bg-primary-950/45 opacity-0 transition-opacity duration-200 xl:hidden" aria-hidden="true"></div>
+        <div id="catalogLoadingOverlay" class="pointer-events-none fixed inset-0 z-[75] flex items-center justify-center bg-primary-950/18 px-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
+            <div class="w-full max-w-sm rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_30px_90px_rgba(26,30,26,0.1)]">
                 <div class="flex items-center gap-3">
                     <span class="h-10 w-10 animate-spin rounded-full border-4 border-primary-100 border-t-primary-600" aria-hidden="true"></span>
                     <p class="text-sm font-semibold text-slate-900">Updating results</p>
@@ -204,10 +204,10 @@
         </div>
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
         <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="space-y-4 md:space-y-5">
-            <section class="w-full pt-2 md:pt-3">
-                <div class="rounded-[var(--ui-radius-card)] border border-white/70 bg-[radial-gradient(circle_at_top_right,rgba(47,143,255,0.12),transparent_24%),linear-gradient(135deg,#ffffff_0%,#f8fbff_52%,#eef5fd_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-5 glass-card">
+            <section class="relative z-50 w-full pt-4 md:pt-10">
+                <div class="rounded-[var(--ui-radius-card)] border border-white/70 bg-[radial-gradient(circle_at_top_right,rgba(26,77,46,0.08),transparent_24%),linear-gradient(135deg,#ffffff_0%,#f0faf4_52%,#f9faf9_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-5 glass-card">
                     <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
-                        <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-slate-700">Home</a>
+                        <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-primary-700">Home</a>
                         <span>/</span>
                         <span>Catalog</span>
                         <span>/</span>
@@ -223,7 +223,7 @@
                         </div>
 
                         <div class="grid gap-3.5 md:grid-cols-[minmax(0,1fr)_minmax(220px,260px)]">
-                            <label class="flex min-h-[3.875rem] flex-wrap items-stretch gap-3 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(15,23,42,0.06)] md:flex-nowrap md:items-center md:gap-3.5 md:px-4 md:py-2.5">
+                            <label class="flex min-h-[3.875rem] flex-wrap items-stretch gap-3 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(26,30,26,0.06)] md:flex-nowrap md:items-center md:gap-3.5 md:px-4 md:py-2.5">
                                 <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="11" cy="11" r="7"></circle>
                                     <path d="m20 20-3.5-3.5"></path>
@@ -236,17 +236,45 @@
                                     class="min-w-0 flex-1 border-0 bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400"
                                     aria-label="Search products"
                                 >
-                                <button type="submit" class="w-full rounded-[0.875rem] bg-gradient-to-r from-primary-600 to-primary-700 px-5 py-4 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:shadow-[0_20px_36px_rgba(35,131,235,0.24)] md:w-auto">Search</button>
+                                <button type="submit" class="w-full rounded-[0.875rem] bg-gradient-to-r from-primary-600 to-primary-700 px-5 py-4 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(26,77,46,0.18)] transition hover:-translate-y-px hover:shadow-[0_20px_36px_rgba(26,77,46,0.22)] md:w-auto">Search</button>
                             </label>
 
-                            <div class="flex min-h-[3.5rem] items-center justify-between gap-3.5 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(15,23,42,0.06)] md:min-h-[3.875rem]">
+                            <div class="flex min-h-[3.5rem] relative items-center justify-between gap-3.5 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(26,30,26,0.06)] md:min-h-[3.875rem]" id="customSortDropdown">
                                 <span class="text-sm font-medium text-slate-400">Sort by:</span>
-                                <select id="catalogSort" name="sort" class="border-0 bg-transparent pr-6 text-sm font-semibold text-slate-800 outline-none">
+                                <select id="catalogSort" name="sort" class="hidden">
                                     <option value="relevant" @selected($sort === 'relevant')>Most Relevant</option>
                                     <option value="name_az" @selected($sort === 'name_az')>Name A-Z</option>
                                     <option value="price_low" @selected($sort === 'price_low')>Price Low to High</option>
                                     <option value="price_high" @selected($sort === 'price_high')>Price High to Low</option>
                                 </select>
+                                <button type="button" id="customSortButton" class="flex min-w-[9rem] items-center justify-between gap-2 border-0 bg-transparent text-sm font-semibold text-slate-800 outline-none">
+                                    <span id="customSortLabel">
+                                        @switch($sort)
+                                            @case('name_az') Name A-Z @break
+                                            @case('price_low') Price Low to High @break
+                                            @case('price_high') Price High to Low @break
+                                            @default Most Relevant
+                                        @endswitch
+                                    </span>
+                                    <svg class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div id="customSortMenu" class="absolute right-0 top-full mt-2 hidden w-48 origin-top-right rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg ring-1 ring-black ring-opacity-5 z-[80]">
+                                    @php
+                                        $options = [
+                                            'relevant' => 'Most Relevant',
+                                            'name_az' => 'Name A-Z',
+                                            'price_low' => 'Price Low to High',
+                                            'price_high' => 'Price High to Low',
+                                        ];
+                                    @endphp
+                                    @foreach($options as $val => $label)
+                                        <button type="button" data-sort-value="{{ $val }}" class="custom-sort-option flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors {{ $sort === $val ? 'bg-primary-50 text-primary-700' : 'text-slate-700 hover:bg-primary-50 hover:text-primary-700' }}">
+                                            {{ $label }}
+                                        </button>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -519,7 +547,7 @@
                                                 data-min-quantity="{{ $defaultQuantity }}"
                                                 data-max-quantity="{{ $maxQuantity ?? '' }}"
                                                 data-lot-size="{{ $lotSize }}"
-                                                class="absolute bottom-3 right-3 z-10 flex h-8 min-w-[5rem] items-center rounded-full border border-white/90 bg-white/95 px-1 shadow-[0_12px_22px_rgba(15,23,42,0.16)] backdrop-blur-sm"
+                                                class="absolute bottom-3 right-3 z-10 flex h-8 min-w-[5rem] items-center rounded-full border border-white/90 bg-white/95 px-1 shadow-[0_12px_22px_rgba(26,30,26,0.1)] backdrop-blur-sm"
                                             >
                                                 <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-[1rem] font-medium text-white shadow-[0_8px_14px_rgba(244,63,94,0.22)] transition hover:bg-rose-600">-</button>
                                                 <span data-catalog-quantity-value class="inline-flex min-w-0 flex-1 items-center justify-center px-2 text-[0.82rem] font-semibold tracking-tight text-slate-900">{{ number_format($defaultQuantity) }}</span>
@@ -609,7 +637,7 @@
                                                 <div class="flex h-full min-w-0 flex-1 items-center rounded-full bg-slate-50 px-1.5">
                                                     <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[1.4rem] font-medium text-primary-600 shadow-[0_6px_14px_rgba(15,23,42,0.06)] transition">-</button>
                                                     <span data-catalog-quantity-value class="inline-flex min-w-0 flex-1 items-center justify-center px-3 text-[1.05rem] font-semibold tracking-tight text-slate-900">{{ number_format($defaultQuantity) }}</span>
-                                                    <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary-100 bg-primary-600 text-[1.4rem] font-medium text-white shadow-[0_10px_18px_rgba(35,131,235,0.2)] transition">+</button>
+                                                    <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary-100 bg-primary-600 text-[1.4rem] font-medium text-white shadow-[0_10px_18px_rgba(26,77,46,0.2)] transition">+</button>
                                                 </div>
                                                 <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-full w-9 shrink-0 items-center justify-center text-[1.6rem] font-medium text-slate-300 transition">+</button>
                                             </div>
@@ -617,7 +645,7 @@
 
                                         <div data-catalog-action-group class="mt-auto flex w-full items-center gap-2">
                                             {{-- Buy Now --}}
-                                            <div style="width: 70%;">
+                                             <div style="width: 70%;">
                                                 @guest
                                                     <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
                                                         <span>Buy Now</span>
@@ -632,7 +660,7 @@
                                             {{-- Add to Cart --}}
                                             <div style="width: 30%;">
                                                 @guest
-                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(26,77,46,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(26,77,46,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                             <circle cx="8" cy="20" r="1.5"></circle>
                                                             <circle cx="18" cy="20" r="1.5"></circle>
@@ -641,7 +669,7 @@
                                                         </svg>
                                                     </a>
                                                 @else
-                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(26,77,46,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(26,77,46,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                             <circle cx="8" cy="20" r="1.5"></circle>
                                                             <circle cx="18" cy="20" r="1.5"></circle>
@@ -717,7 +745,7 @@
                     sidebar.classList.toggle('overflow-y-auto', Boolean(open));
                     sidebar.classList.toggle('rounded-r-[28px]', Boolean(open));
                     sidebar.classList.toggle('rounded-l-none', Boolean(open));
-                    sidebar.classList.toggle('shadow-[0_36px_90px_rgba(15,23,42,0.22)]', Boolean(open));
+                    sidebar.classList.toggle('shadow-[0_36px_90px_rgba(26,30,26,0.18)]', Boolean(open));
                 }
             };
 
@@ -773,6 +801,36 @@
                     if (form) {
                         form.submit();
                     }
+                });
+            }
+
+            const customSortDropdown = document.getElementById('customSortDropdown');
+            const customSortButton = document.getElementById('customSortButton');
+            const customSortMenu = document.getElementById('customSortMenu');
+            const customSortOptions = document.querySelectorAll('.custom-sort-option');
+
+            if (customSortButton && customSortMenu) {
+                customSortButton.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    customSortMenu.classList.toggle('hidden');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!customSortDropdown.contains(e.target)) {
+                        customSortMenu.classList.add('hidden');
+                    }
+                });
+
+                customSortOptions.forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const val = this.getAttribute('data-sort-value');
+                        if (sort.value !== val) {
+                            sort.value = val;
+                            sort.dispatchEvent(new Event('change'));
+                        }
+                        customSortMenu.classList.add('hidden');
+                    });
                 });
             }
 

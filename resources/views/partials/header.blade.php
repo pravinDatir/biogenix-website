@@ -14,9 +14,8 @@
         ['label' => 'Generate Quote', 'route' => 'quotation.create', 'href' => route('quotation.create')],
         ['label' => 'PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
         ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
-        ['label' => 'FAQ', 'route' => 'faq', 'href' => route('faq')],
-        ['label' => 'Contact Us', 'route' => 'contact', 'href' => route('contact')],
         ['label' => 'Book Meeting', 'route' => 'book-meeting', 'href' => route('book-meeting')],
+        ['label' => 'Contact Us', 'route' => 'contact', 'href' => route('contact')],
     ];
     $mobileQuickActions = [
         ['label' => 'My Profile', 'href' => $profileHref, 'icon' => 'profile'],
@@ -64,8 +63,8 @@
     </style>
     <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10"
     style="background: radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.08), transparent 24%),
-            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.08), transparent 18%),
-            linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)"
+            radial-gradient(circle at 88% 10%, rgba(26, 77, 46, 0.08), transparent 18%),
+            linear-gradient(180deg, #ffffff 0%, #f9faf9 100%)"
     >
         <a href="{{ route('home') }}" class="shrink-0 xl:col-start-1">
             <img src="{{ asset('upload/icons/biogenixlogo5.png') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
@@ -152,11 +151,11 @@
 </header>
 
 <div id="mobileMenuOverlay" class="fixed inset-0 z-[70] hidden xl:hidden" aria-hidden="true">
-    <button id="mobileMenuBackdrop" type="button" class="absolute inset-0 bg-slate-950/45 opacity-0 backdrop-blur-sm transition duration-300" aria-label="Close mobile menu"></button>
+    <button id="mobileMenuBackdrop" type="button" class="absolute inset-0 bg-primary-950/45 opacity-0 backdrop-blur-sm transition duration-300" aria-label="Close mobile menu"></button>
 
     <aside
         id="mobileMenuDrawer"
-        class="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] max-w-full translate-x-full flex-col bg-white shadow-[0_24px_80px_rgba(15,23,42,0.24)] transition duration-300 ease-out"
+        class="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] max-w-full translate-x-full flex-col bg-white shadow-[0_24px_80px_rgba(26,77,46,0.15)] transition duration-300 ease-out"
         role="dialog"
         aria-modal="true"
         aria-labelledby="mobileMenuTitle"
@@ -165,7 +164,7 @@
             <div class="flex items-center gap-3">
                 <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="40" height="40" decoding="async" class="h-10 w-10 rounded-2xl object-cover">
                 <div>
-                    <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-slate-950">Biogenix Menu</p>
+                    <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-primary-800">Biogenix Menu</p>
                     <p class="text-xs font-medium text-slate-400">Mobile navigation</p>
                 </div>
             </div>
@@ -183,7 +182,7 @@
         </div>
 
         <div class="flex-1 space-y-4 overflow-y-auto px-4 py-4">
-            <section class="rounded-[28px] border border-slate-200 bg-[linear-gradient(145deg,#eff6ff_0%,#dbeafe_100%)] p-4 shadow-sm">
+            <section class="rounded-[28px] border border-primary-100 bg-[linear-gradient(145deg,#f0faf4_0%,#d1f0dd_100%)] p-4 shadow-sm">
                 <div class="flex items-start gap-3">
                     <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-primary-700 shadow-sm">
                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
@@ -212,7 +211,7 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-slate-950 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
+                        <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline transition hover:bg-primary-700 hover:text-white">
                             Login
                         </a>
                         <a href="{{ route('signup') }}" class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-50 hover:text-slate-900">

@@ -10,7 +10,7 @@
         $class
     );
 
-    $wrapperClass = trim('relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 before:absolute before:inset-0 before:z-0 before:content-[\'\'] before:bg-[radial-gradient(circle_at_30%_20%,rgba(37,99,235,0.28),transparent_42%)] after:absolute after:inset-0 after:z-0 after:content-[\'\'] after:bg-[radial-gradient(circle_at_72%_28%,rgba(255,255,255,0.12),transparent_25%)] [&>*]:relative [&>*]:z-10 ' . $resolvedClass);
+    $wrapperClass = trim('relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-primary-950 via-primary-900 to-primary-800 before:absolute before:inset-0 before:z-0 before:content-[\'\'] before:bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.15),transparent_42%)] after:absolute after:inset-0 after:z-0 after:content-[\'\'] after:bg-[radial-gradient(circle_at_72%_28%,rgba(255,255,255,0.08),transparent_25%)] [&>*]:relative [&>*]:z-10 ' . $resolvedClass);
 
     $vialOffsets = ['left-[16%]', 'left-[24%]', 'left-[32%]', 'left-[40%]', 'left-[48%]'];
     $trayOffsets = ['left-[52%]', 'left-[56%]', 'left-[60%]', 'left-[64%]', 'left-[68%]', 'left-[72%]'];

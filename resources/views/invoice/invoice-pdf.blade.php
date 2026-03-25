@@ -97,7 +97,7 @@
                     <p class="mb-1 text-slate-600">{{ $line }}</p>
                 @endforeach
                 <p class="mb-1"><span class="inline-block w-24 font-bold">GSTIN</span>{{ $sellerGstin }}</p>
-                <p><span class="inline-block w-24 font-bold">State Code</span>{{ $sellerStateCode }}</p>
+                <p><span class="inline-block w-24 font-bold">State</span>{{ $sellerStateCode }}</p>
             </td>
         </tr>
     </table>

@@ -17,13 +17,13 @@
     $canSubmitEnquiry = isset($enquiryTypes) && $enquiryTypes->isNotEmpty();
 @endphp
 
-<div class="bg-slate-50">
-    <section class="relative overflow-hidden bg-slate-900 py-20 text-white lg:py-28">
+<div class="bg-primary-50/10">
+    <section class="relative overflow-hidden bg-primary-800 py-20 text-white lg:py-28">
         <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="Contact Biogenix" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/60 to-slate-900/40"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
-            <h1 class="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">Let's Connect</h1>
-            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">Whether you need product inquiries, partnerships, or dedicated technical support, our specialized teams are ready to guide you.</p>
+            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">Let's Connect</h1>
+            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-secondary-600 md:text-lg">Whether you need product inquiries, partnerships, or dedicated technical support, our specialized teams are ready to guide you.</p>
         </div>
     </section>
 
@@ -31,7 +31,7 @@
         <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8 xl:px-10">
             <div class="flex flex-col justify-start space-y-6 lg:col-span-5">
                 <article class="{{ $panelClass }}">
-                    <div class="relative h-64 w-full overflow-hidden rounded-2xl bg-slate-200">
+                    <div class="relative h-64 w-full overflow-hidden rounded-2xl bg-primary-50">
                         <iframe
                             id="contactMap"
                             class="h-full w-full border-0"

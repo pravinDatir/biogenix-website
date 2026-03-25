@@ -5,7 +5,7 @@
 @endphp
 
 @if (! $productExists)
-    <div class="w-screen bg-slate-50 py-8 md:py-10 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
+    <div class="w-screen bg-primary-50/20 py-8 md:py-10 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
         <div class="mx-auto w-full px-4 py-6 md:px-6 md:py-8">
             <x-ui.empty-state
                 icon="product"
@@ -119,8 +119,8 @@
         $relatedProducts = collect($related_products ?? [])->filter();
         $compactCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-4 shadow-[var(--ui-shadow-card)] md:p-5 glass-card';
         $sectionCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-5 shadow-[var(--ui-shadow-card)] md:p-6 glass-card';
-        $purchaseCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.08),transparent_36%),linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(248,250,252,0.96)_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-6 xl:sticky xl:top-6 glass-card';
-        $featurePanelClass = 'mt-3 rounded-[var(--ui-radius-tab)] bg-[linear-gradient(135deg,rgba(248,251,255,1)_0%,rgba(238,244,255,1)_100%)] p-4 md:p-5';
+        $purchaseCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(26,77,46,0.06),transparent_36%),linear-gradient(180deg,rgba(255,255,255,1)_0%,#f9faf9_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-6 xl:sticky xl:top-6 glass-card';
+        $featurePanelClass = 'mt-3 rounded-[var(--ui-radius-tab)] bg-[linear-gradient(135deg,#f0faf4_0%,#f9faf9_100%)] p-4 md:p-5';
         $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-[var(--ui-radius-tab)] bg-primary-50 text-primary-700';
         $primaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-primary-700';
         $secondaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:scale-[1.02]';
@@ -153,10 +153,10 @@
         }
     @endphp
 
-    <div class="-mt-6 w-screen bg-slate-50 py-4 md:-mt-8 md:py-6 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
+    <div class="w-screen bg-[linear-gradient(180deg,#ffffff_0%,#f0faf4_100%)] py-4 md:mt-0 md:py-8 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
-        <div class="mx-auto w-full px-4 py-6 md:px-6 md:py-8">
-            <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition duration-200 hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
+        <div class="mx-auto w-full px-4 py-8 md:px-6 md:py-10">
+            <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-[0_10px_24px_rgba(26,30,26,0.06)] transition duration-200 hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m15 18-6-6 6-6"></path>
                 </svg>
@@ -178,7 +178,7 @@
             <section class="mt-4 grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:items-start">
                 <div class="space-y-3 self-start">
                     <div class="{{ $compactCardClass }}">
-                        <div class="group relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.14),transparent_40%),linear-gradient(135deg,#ffffff_0%,#eef4ff_100%)]">
+                        <div class="group relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top_left,rgba(26,77,46,0.1),transparent_40%),linear-gradient(135deg,#ffffff_0%,#f0faf4_100%)]">
                             <img id="catalogProductMainImage" src="{{ $galleryImages->first()['src'] }}" alt="{{ $productTitle }}" class="h-80 w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-[1.04] sm:h-96 xl:h-[32rem]" loading="lazy" decoding="async">
                             <button id="productImageZoomBtn" type="button" class="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-primary-700" aria-label="Zoom image">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -195,7 +195,6 @@
                         @foreach ($galleryImages as $galleryImage)
                             <button type="button" class="{{ $loop->first ? 'border-primary-600 bg-white ring-2 ring-primary-600/20 shadow-lg' : 'border-slate-200 bg-white' }} rounded-2xl border p-2 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary-600 hover:shadow-md" data-gallery-thumb data-image="{{ $galleryImage['src'] }}" data-alt="{{ $productTitle . ' ' . $galleryImage['label'] }}">
                                 <img src="{{ $galleryImage['src'] }}" alt="{{ $galleryImage['label'] }}" class="h-20 w-full rounded-xl object-cover sm:h-24" loading="lazy" decoding="async">
-                                <span class="mt-2 block px-1 text-left text-xs font-medium text-slate-400">{{ $galleryImage['label'] }}</span>
                             </button>
                         @endforeach
                     </div>
@@ -237,22 +236,28 @@
                             <p class="text-sm leading-7 text-slate-600 md:text-base">{{ $product->description ?: 'Professional scientific product engineered for institutional procurement and precision workflows.' }}</p>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
-                            <div class="flex items-center gap-1 text-secondary-700">
-                                @for ($star = 0; $star < 5; $star++)
-                                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="m10 1.5 2.5 5.1 5.7.8-4.1 4 1 5.7L10 14.4 4.9 17l1-5.7-4.1-4 5.7-.8L10 1.5Z"></path></svg>
+                        <div class="flex flex-col gap-2.5">
+                            @php
+                                $filteredHighlights = collect($shippingHighlights)
+                                    ->filter(fn($h) => trim($h) !== 'Priority support available')
+                                    ->values();
+                            @endphp
+                            
+                            <div class="flex flex-wrap items-center gap-2">
+                                <x-ui.status-badge type="cart" value="Priority support available" label="Priority support available" dot />
+                                <x-ui.status-badge type="product" :value="$stockStatus" :label="$stockStatus" dot />
+                                @if ($filteredHighlights->isNotEmpty())
+                                    <x-ui.status-badge type="cart" :value="$filteredHighlights[0]" :label="$filteredHighlights[0]" dot />
+                                @endif
+                            </div>
+                            
+                            @if ($filteredHighlights->count() > 1)
+                            <div class="flex flex-wrap items-center gap-2">
+                                @for ($i = 1; $i < $filteredHighlights->count(); $i++)
+                                    <x-ui.status-badge type="cart" :value="$filteredHighlights[$i]" :label="$filteredHighlights[$i]" dot />
                                 @endfor
                             </div>
-                            <span>{{ $ratingValue }}</span>
-                            <span class="text-slate-300">|</span>
-                            <span>{{ $reviewCount }} Customer Reviews</span>
-                            <x-ui.status-badge type="product" :value="$stockStatus" :label="$stockStatus" dot />
-                        </div>
-
-                        <div class="flex flex-wrap gap-2">
-                            @foreach ($shippingHighlights as $highlight)
-                                <x-ui.status-badge type="cart" :value="$highlight" :label="$highlight" dot />
-                            @endforeach
+                            @endif
                         </div>
                     </div>
 
@@ -325,7 +330,7 @@
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
                                 @guest
-                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
+                                     <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
@@ -342,7 +347,7 @@
                                         <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="{{ $requestedQuantity }}">
 
                                         {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
-                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
+                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-secondary-600 px-4 text-sm font-bold uppercase tracking-wide text-primary-950 shadow-sm transition hover:bg-secondary-500 hover-lift">
                                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M5 12h14"></path>
                                                 <path d="m12 5 7 7-7 7"></path>
@@ -387,21 +392,7 @@
             {{-- ═══════════════════════════════════════════════════════ --}}
             {{-- STICKY TAB NAVIGATION BAR --}}
             {{-- ═══════════════════════════════════════════════════════ --}}
-            <nav id="productTabBar" class="glass-header sticky top-0 z-40 -mx-3 mt-6 border-b border-slate-200 px-3 transition-shadow duration-300 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:-mx-10 xl:px-10" aria-label="Product sections">
-                <div class="flex gap-0.5 overflow-x-auto py-0 scrollbar-hide">
-                    @foreach ([
-                        ['id' => 'sectionBulkPricing',  'label' => 'Pricing'],
-                        ['id' => 'sectionOverview',     'label' => 'Overview'],
-                        ['id' => 'sectionResources',    'label' => 'Browsers'],
-                        ['id' => 'sectionSpecs',        'label' => 'Specs'],
-                        ['id' => 'sectionRelated',      'label' => 'Related'],
-                    ] as $tab)
-                        <button type="button" class="product-tab-btn shrink-0 whitespace-nowrap rounded-none border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-slate-500 transition hover:text-primary-700" data-tab-target="{{ $tab['id'] }}">
-                            {{ $tab['label'] }}
-                        </button>
-                    @endforeach
-                </div>
-            </nav>
+
 
             <section id="sectionBulkPricing" class="mt-5 scroll-mt-16">
                 <div class="{{ $sectionCardClass }}">
@@ -553,7 +544,7 @@
     {{-- ═══════════════════════════════════════════════════════ --}}
     {{-- STICKY ADD-TO-CART BAR (mobile / scroll-down) --}}
     {{-- ═══════════════════════════════════════════════════════ --}}
-    <div id="stickyAddToCartBar" class="fixed inset-x-0 bottom-0 z-50 translate-y-full border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-4px_24px_rgba(15,23,42,0.08)] backdrop-blur transition-transform duration-300 xl:hidden">
+    <div id="stickyAddToCartBar" class="fixed inset-x-0 bottom-0 z-50 translate-y-full border-t border-slate-200 bg-white/95 px-4 py-3 shadow-[0_-4px_24px_rgba(26,30,26,0.08)] backdrop-blur transition-transform duration-300 xl:hidden">
         <div class="mx-auto flex max-w-xl items-center gap-3">
             <img src="{{ $imageUrl }}" alt="{{ $productTitle }}" class="h-11 w-11 shrink-0 rounded-xl border border-slate-100 object-cover">
             <div class="min-w-0 flex-1">
@@ -569,7 +560,7 @@
 
     <div id="productImageLightbox" class="fixed inset-0 z-[100] flex items-center justify-center p-5 opacity-0 pointer-events-none transition-opacity duration-200" aria-hidden="true">
         <button type="button" class="absolute inset-0 border-0 bg-slate-950/60 backdrop-blur-xl" data-lightbox-close aria-label="Close image preview"></button>
-        <div class="relative w-full max-w-[980px] overflow-hidden rounded-[28px] border border-white/20 bg-white/95 shadow-[0_36px_110px_rgba(15,23,42,0.35)]" role="dialog" aria-modal="true" aria-label="Product image preview">
+        <div class="relative w-full max-w-[980px] overflow-hidden rounded-[28px] border border-white/20 bg-white/95 shadow-[0_36px_110px_rgba(26,30,26,0.25)]" role="dialog" aria-modal="true" aria-label="Product image preview">
             <div class="flex items-center justify-between gap-3 border-b border-slate-200/90 px-4 py-3">
                 <p id="productImageLightboxTitle" class="max-w-[70ch] overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold text-slate-900">{{ $productTitle }}</p>
                 <button type="button" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-[13px] font-bold text-slate-700 transition hover:-translate-y-px hover:border-primary-200 hover:text-primary-700" data-lightbox-close>Close</button>
@@ -647,7 +638,7 @@
 
                     if (primaryAction && primaryAction.href && primaryAction.label) {
                         const primary = document.createElement('a');
-                        primary.className = 'rounded-xl bg-primary-600 px-3 py-2 text-[13px] font-bold text-white shadow-[0_14px_26px_rgba(35,131,235,0.2)] transition hover:-translate-y-px hover:bg-primary-700';
+                        primary.className = 'rounded-xl bg-primary-600 px-3 py-2 text-[13px] font-bold text-white shadow-[0_14px_26px_rgba(26,77,46,0.2)] transition hover:-translate-y-px hover:bg-primary-700';
                         primary.href = String(primaryAction.href);
                         primary.textContent = String(primaryAction.label);
                         actions.appendChild(primary);

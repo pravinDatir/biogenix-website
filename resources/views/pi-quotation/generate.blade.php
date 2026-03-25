@@ -48,7 +48,7 @@
                             class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
                     </div>
                     <div>
-                        <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">State Code</label>
+                        <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">State</label>
                         <input id="piStateCode" type="text" value="27 (Maharashtra)"
                             class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
                     </div>
@@ -174,14 +174,6 @@
     <!-- Actions Row -->
     <div class="mb-6 mt-8 flex items-center justify-between">
         <div class="flex gap-3">
-            <button id="saveDraftBtn" type="button"
-                class="inline-flex items-center justify-center rounded-xl bg-slate-200/60 px-5 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-300 cursor-pointer">
-                Save Draft
-            </button>
-            <button id="previewPiBtn" type="button"
-                class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
-                Preview PI
-            </button>
         </div>
         <div class="flex gap-3">
             <button id="sendEmailBtn" type="button"
@@ -637,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'PI Header',
             'PI Number: ' + String(piNumberInput.value || '').trim(),
             'PI Date: ' + String(piDateInput.value || '').trim(),
-            'State Code: ' + String(stateCodeInput.value || '').trim(),
+            'State: ' + String(stateCodeInput.value || '').trim(),
             'GSTIN: ' + String(piGstinInput.value || '').trim(),
             'Customer GSTIN: ' + String(customerGstinInput.value || '').trim(),
             'Billing Address: ' + String(billingAddr.value || '').trim(),

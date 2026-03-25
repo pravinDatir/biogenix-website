@@ -10,6 +10,8 @@
     --color-primary-600: #1A4D2E;
     --color-primary-700: #133D23;
     --color-primary-800: #0D2B19;
+    --color-primary-900: #091D11;
+    --color-primary-950: #051009;
 
     /* Secondary – Yellow (#FDE047) */
     --color-secondary-50: #fefce8;
@@ -88,11 +90,10 @@
 
 @utility hover-lift {
     transition: transform 0.3s var(--transition-premium), box-shadow 0.3s var(--transition-premium);
-}
-
-@utility hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--ui-shadow-card);
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--ui-shadow-card);
+    }
 }
 
 .font-display {

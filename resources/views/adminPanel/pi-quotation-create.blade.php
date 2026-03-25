@@ -51,7 +51,7 @@
                     class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none focus:border-primary-600">
             </div>
             <div>
-                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">State Code</label>
+                <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">State</label>
                 <input id="piStateCode" type="text" placeholder="27 (Maharashtra)"
                     class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
             </div>

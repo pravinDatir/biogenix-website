@@ -3,12 +3,49 @@
     $fieldClass = 'grid gap-2';
     $labelClass = 'text-sm font-semibold text-slate-700';
     $inputClass = 'h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-base font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/10';
-    $submitClass = 'inline-flex h-14 w-full items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(37,99,235,0.7)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
+    $submitClass = 'inline-flex h-14 w-full items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
 @endphp
 
-<div class="mx-auto w-full max-w-xl py-4 md:py-8">
-    <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_60px_-30px_rgba(15,23,42,0.32)]">
-        <div class="bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(252,253,255,1)_100%)] px-5 py-7 sm:px-6 sm:py-8">
+<div class="mx-auto w-full max-w-6xl py-2 md:py-4">
+    <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_28px_70px_-32px_rgba(15,23,42,0.35)]">
+        <div class="grid min-h-[40rem] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)]">
+            <aside class="relative hidden overflow-hidden lg:flex lg:items-end lg:p-9">
+                <img
+                    src="{{ asset('upload/corousel/home2.jpg') }}"
+                    alt="Biogenix laboratory"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                >
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,43,25,0.24)_0%,rgba(13,43,25,0.72)_46%,#1A4D2E_100%)]"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_62%_18%,rgba(255,255,255,0.22),transparent_28%)]"></div>
+                <div class="absolute left-7 top-5 h-4 w-72 rounded-full bg-white/75 shadow-lg"></div>
+                <div class="absolute left-[3.2rem] top-0 h-6 w-px bg-white/25"></div>
+                <div class="absolute left-[18.8rem] top-0 h-6 w-px bg-white/25"></div>
+
+                <div class="relative z-10 max-w-sm">
+                    <div class="flex items-center gap-3">
+                        <svg class="h-8 w-8 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M7 3h10"></path>
+                            <path d="M10 3v3"></path>
+                            <path d="M14 3v3"></path>
+                            <path d="M7 6h10l-1 2.5v4.5a5 5 0 0 1-4 4.9V21"></path>
+                            <path d="M17 6l1 2.5"></path>
+                            <path d="M7 6 6 8.5"></path>
+                            <path d="M8.5 13h7"></path>
+                            <path d="M9 21h6"></path>
+                            <path d="M6 21h12"></path>
+                        </svg>
+                        <p class="text-4xl font-bold tracking-tight text-secondary-600">Biogenix</p>
+                    </div>
+
+                    <p class="mt-6 text-lg font-semibold leading-9 text-secondary-600">
+                        Please confirm your identity by re-entering your password. This ensures your account remains secure during sensitive actions.
+                    </p>
+                </div>
+            </aside>
+
+            <div class="flex items-center bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(252,253,255,1)_100%)] px-5 py-8 sm:px-7 lg:px-10">
             <div class="mx-auto w-full max-w-md">
                 <div class="text-center">
                     <div class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary-50 text-primary-700 shadow-sm">

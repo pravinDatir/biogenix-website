@@ -7,7 +7,7 @@
     $inputBaseClass = 'h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-base font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/10';
     $inputWithIconClass = $inputBaseClass . ' px-12';
     $linkClass = 'font-semibold text-primary-700 no-underline transition hover:text-primary-600';
-    $submitClass = 'inline-flex h-14 w-full items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(37,99,235,0.7)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
+    $submitClass = 'inline-flex h-14 w-full items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
 @endphp
 
 <div class="mx-auto w-full max-w-6xl py-2 md:py-4">
@@ -21,7 +21,7 @@
                     loading="lazy"
                     decoding="async"
                 >
-                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,42,0.24)_0%,rgba(15,23,42,0.72)_46%,rgba(37,99,235,0.84)_100%)]"></div>
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,43,25,0.24)_0%,rgba(13,43,25,0.72)_46%,#1A4D2E_100%)]"></div>
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_62%_18%,rgba(255,255,255,0.22),transparent_28%)]"></div>
                 <div class="absolute left-7 top-5 h-4 w-72 rounded-full bg-white/75 shadow-lg"></div>
                 <div class="absolute left-[3.2rem] top-0 h-6 w-px bg-white/25"></div>
@@ -40,10 +40,10 @@
                             <path d="M9 21h6"></path>
                             <path d="M6 21h12"></path>
                         </svg>
-                        <p class="text-4xl font-bold tracking-tight text-white">Biogenix</p>
+                        <p class="text-4xl font-bold tracking-tight text-secondary-600">Biogenix</p>
                     </div>
 
-                    <p class="mt-6 text-lg font-semibold leading-9 text-white/95">
+                    <p class="mt-6 text-lg font-semibold leading-9 text-secondary-600">
                         Sign in to manage catalog access, quotations, and procurement workflows from one consistent portal.
                     </p>
                 </div>

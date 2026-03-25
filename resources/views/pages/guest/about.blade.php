@@ -2,26 +2,22 @@
     $cardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl';
     $accentCardClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm md:p-8';
     $titleClass = 'text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-7xl';
-    $copyClass = 'mt-8 max-w-2xl text-lg leading-8 text-slate-300';
+    $copyClass = 'mt-8 max-w-2xl text-lg leading-8 text-primary-50/80';
     $primaryIconClass = 'mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-50 text-primary-700 transition-colors group-hover:bg-primary-600 group-hover:text-white';
 @endphp
 
-<div class="bg-slate-50 min-h-screen">
+<div class="bg-primary-50/20 min-h-screen">
     <!-- Premium Hero Section -->
-    <section class="relative overflow-hidden bg-slate-900 py-10 text-white lg:py-16">
+    <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
         <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix company profile" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/70 to-primary-900/30"></div>
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
-           
-            <div class="max-w-4xl">
-                <x-badge variant="inverse" class="mb-6">Company Profile</x-badge>
-                <h1 class="{{ $titleClass }}">
-                    Driving trustworthy diagnostics access across India.
-                </h1>
-                <p class="{{ $copyClass }}">
-                    Biogenix blends product quality, responsive service, and healthcare domain expertise to support institutions, labs, and care providers.
-                </p>
-            </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
+        <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">
+                Driving trustworthy diagnostics access across India.
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-secondary-600 md:text-lg">
+                Biogenix blends product quality, responsive service, and healthcare domain expertise to support institutions, labs, and care providers.
+            </p>
         </div>
     </section>
 
@@ -29,7 +25,7 @@
 
     <!-- Vision/Mission/Values -->
     <section class="py-16 md:py-24 relative overflow-hidden">
-        <div class="absolute inset-0 bg-primary-900/[0.02] transform -skew-y-3 origin-top-left -z-10"></div>
+        <div class="absolute inset-0 bg-primary-800/[0.02] transform -skew-y-3 origin-top-left -z-10"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Our Philosophy" subtitle="Vision, Mission, and Values driving our long-term healthcare impact." />
             <div class="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -77,21 +73,31 @@
                     ['year' => '2017', 'title' => 'Foundation', 'desc' => 'Biogenix launched with a mission to improve access to reliable diagnostic products in North India.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
                     ['year' => '2020', 'title' => 'Portfolio Expansion', 'desc' => 'Added advanced instruments, reagents, and consumables for wider clinical workflows.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
                     ['year' => '2023', 'title' => 'Digital Enablement', 'desc' => 'Introduced online catalog and quotation workflows for B2B/B2C customer journeys.', 'year_class' => 'text-primary-600', 'node_class' => 'bg-primary-500'],
-                    ['year' => '2026', 'title' => 'Scale & Compliance', 'desc' => 'Strengthened quality controls, partner onboarding, and logistics-led fulfillment execution.', 'year_class' => 'text-slate-700', 'node_class' => 'bg-slate-500'],
+                    ['year' => '2026', 'title' => 'Scale & Compliance', 'desc' => 'Strengthened quality controls, partner onboarding, and logistics-led fulfillment execution.', 'year_class' => 'text-primary-700', 'node_class' => 'bg-primary-600'],
                 ] as $idx => $milestone)
-                    <div class="relative flex flex-col md:flex-row items-center justify-between group">
+                    <div class="relative flex flex-col md:flex-row items-center group">
                         <!-- Desktop Line -->
                         @if(!$loop->last)
                             <div class="hidden md:block absolute left-1/2 top-16 bottom-[-3rem] w-px bg-slate-200 -translate-x-1/2"></div>
                         @endif
+
+                        <!-- Spacer for right-side items -->
+                        @if($idx % 2 != 0)
+                            <div class="hidden md:block md:w-1/2"></div>
+                        @endif
                         
-                        <div class="w-full md:w-[45%] {{ $idx % 2 == 0 ? 'md:text-right md:pr-12' : 'md:order-3 md:pl-12' }}">
+                        <div class="w-full md:w-1/2 {{ $idx % 2 == 0 ? 'md:text-right md:pr-12' : 'md:pl-12 mt-4 md:mt-0' }}">
                             <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-xl transition-all duration-700 opacity-0 translate-y-8 scroll-reveal-item hover:-translate-y-1 hover:shadow-2xl">
                                 <p class="text-3xl font-bold tracking-tight {{ $milestone['year_class'] }}">{{ $milestone['year'] }}</p>
                                 <h3 class="mt-2 text-xl font-bold text-slate-900">{{ $milestone['title'] }}</h3>
                                 <p class="mt-3 text-base text-slate-600">{{ $milestone['desc'] }}</p>
                             </div>
                         </div>
+
+                        <!-- Spacer for left-side items -->
+                        @if($idx % 2 == 0)
+                            <div class="hidden md:block md:w-1/2"></div>
+                        @endif
                         
                         <!-- Center Node -->
                         <div class="absolute left-1/2 z-10 hidden h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white text-white shadow-xl transform transition-all duration-700 opacity-0 scale-50 scroll-reveal-node group-hover:scale-125 md:flex {{ $milestone['node_class'] }}">
@@ -107,23 +113,21 @@
     </section>
 
     <!-- Leadership / Quality Split -->
-    <section class="py-16 md:py-24 bg-slate-950 text-white relative overflow-hidden">
+    <section class="py-16 md:py-32 bg-[rgba(255,106,0,0.96)] text-white relative overflow-hidden glow-orange">
         <!-- Abstract Bg -->
-        <div class="absolute top-0 right-0 -mr-48 -mt-48 h-96 w-96 rounded-full bg-primary-600 opacity-20 blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 -ml-48 -mb-48 h-96 w-96 rounded-full bg-primary-600 opacity-20 blur-3xl"></div>
+        <div class="absolute top-0 right-0 -mr-48 -mt-48 h-96 w-96 rounded-full bg-white opacity-10 blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-48 -mb-48 h-96 w-96 rounded-full bg-white opacity-10 blur-3xl"></div>
         
-        <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10">
-            <article class="rounded-3xl border border-white/10 bg-white/5 p-8 md:p-12 backdrop-blur-sm flex flex-col items-center text-center">
-                <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Quality & Compliance</h2>
-                <p class="mt-4 max-w-2xl text-lg text-slate-300">Biogenix follows robust quality and compliance practices to ensure safe and consistent product delivery across all lines.</p>
-                <div class="mt-10 grid w-full grid-cols-2 gap-4 md:grid-cols-4">
-                    @foreach (['ISO 13485', 'GMP Aligned', 'QA Audited', 'CDSCO Ready'] as $badge)
-                        <div class="flex items-center justify-center rounded-2xl border border-primary-500/30 bg-primary-900/40 p-6 text-center shadow-inner transition hover:bg-primary-800/50">
-                            <span class="text-base font-bold text-primary-50 tracking-wide">{{ $badge }}</span>
-                        </div>
-                    @endforeach
-                </div>
-            </article>
+        <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
+            <h2 class="text-3xl font-bold tracking-tight md:text-5xl">Quality & Compliance</h2>
+            <p class="mt-6 max-w-2xl text-lg text-white/90 leading-8">Biogenix follows robust quality and compliance practices to ensure safe and consistent product delivery across all lines.</p>
+            <div class="mt-12 grid w-full grid-cols-2 gap-4 md:grid-cols-4">
+                @foreach (['ISO 13485', 'GMP Aligned', 'QA Audited', 'CDSCO Ready'] as $badge)
+                    <div class="inline-flex items-center justify-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:scale-105 hover:bg-secondary-500 glow-orange cursor-default md:text-base">
+                        {{ $badge }}
+                    </div>
+                @endforeach
+            </div>
         </div>
     </section>
 
@@ -154,27 +158,7 @@
         </div>
     </section>
 
-    <!-- Customer Outcomes -->
-    <section class="py-16 md:py-24 bg-slate-50">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <x-ui.section-heading title="Customer Outcomes" subtitle="Measurable reliability across procurement, delivery, and post-install support." />
-            <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ([
-                    ['label' => 'On-Time Dispatch', 'value' => '97.4%', 'copy' => 'Priority routes from Lucknow hub with QA cleared stock.'],
-                    ['label' => 'Mean Response', 'value' => '< 45m', 'copy' => 'Support desk triage to the right specialist within minutes.'],
-                    ['label' => 'Active Install Base', 'value' => '1,200+', 'copy' => 'Devices and kits live across labs, hospitals, and research centers.'],
-                    ['label' => 'Satisfaction', 'value' => '4.8 / 5', 'copy' => 'Post-service CSAT across ticket closures and deliveries.'],
-                ] as $impact)
-                    <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ $impact['label'] }}</p>
-                        <p class="mt-3 text-3xl font-bold text-slate-950">{{ $impact['value'] }}</p>
-                        <p class="mt-3 text-sm leading-6 text-slate-600">{{ $impact['copy'] }}</p>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
+    
     <!-- Service Blueprint -->
     
 

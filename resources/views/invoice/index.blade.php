@@ -7,7 +7,7 @@
     $tableWrapClass = 'overflow-hidden rounded-2xl border border-slate-200';
     $tableHeadClass = 'bg-slate-50 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500';
     $tableCellClass = 'px-4 py-4 align-top text-sm text-slate-700';
-    $secondaryButtonClass = 'inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50';
+    $secondaryButtonClass = 'inline-flex h-10 items-center justify-center rounded-xl bg-neutral-800 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-700';
 @endphp
 
 @section('content')

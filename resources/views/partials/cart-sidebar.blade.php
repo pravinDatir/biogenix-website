@@ -25,7 +25,7 @@
             </button>
         </div>
 
-        <div class="mx-5 mt-3 flex shrink-0 items-center gap-3 rounded-2xl border border-primary-200 bg-[linear-gradient(135deg,#ecfdf5_0%,#d1fae5_100%)] px-4 py-3">
+        <!-- <div class="mx-5 mt-3 flex shrink-0 items-center gap-3 rounded-2xl border border-primary-200 bg-[linear-gradient(135deg,#ecfdf5_0%,#d1fae5_100%)] px-4 py-3">
             <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-white">
                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <path d="M20 6 9 17l-5-5"></path>
@@ -35,7 +35,7 @@
                 <p class="text-[11px] font-bold uppercase tracking-wide text-slate-900">Lucknow order detected</p>
                 <p class="text-[10px] font-semibold text-primary-600">Eligible for Same-day Delivery!</p>
             </div>
-        </div>
+        </div> -->
 
         <div id="cartSidebarItems" class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-5 py-3"></div>
 
@@ -70,9 +70,9 @@
 
             <div class="mt-4 border-t border-slate-200 pt-4">
                 <div class="flex items-baseline justify-between">
-                    <span class="text-sm font-semibold text-primary-700">Estimated Total</span>
+                    <span class="text-sm font-bold text-secondary-600">Estimated Total</span>
                     <div class="text-right">
-                        <span id="cartSidebarTotal" class="text-2xl font-extrabold tracking-tight text-slate-950">Rs. 0.00</span>
+                        <span id="cartSidebarTotal" class="text-2xl font-extrabold tracking-tight text-secondary-600">Rs. 0.00</span>
                         <p class="mt-0.5 text-[10px] text-slate-400">Tax calculated for Other Product</p>
                     </div>
                 </div>

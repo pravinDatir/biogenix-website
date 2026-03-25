@@ -7,7 +7,7 @@
     $searchValue = trim((string) $__env->yieldContent('storefront_search', request('search_text', request('search', ''))));
     $searchValue = $searchValue !== '' ? $searchValue : 'Search by SKU, Product Name, or Application...';
     $navLinkBaseClass = 'inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900';
-    $navLinkActiveClass = 'bg-slate-900 text-white hover:bg-slate-900 hover:text-white';
+    $navLinkActiveClass = 'bg-primary-950 text-white hover:bg-primary-900 hover:text-white';
     $profileHref = $authUser
         ? route('customer.profile.preview', ['user_type' => $portal])
         : route('customer.profile.preview', ['user_type' => $portal]);
@@ -123,7 +123,7 @@
                     <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-800">Company</h3>
                     <ul class="mt-5 space-y-3 text-sm text-slate-500">
                         @foreach ($companyLinks as $link)
-                            <li><a href="{{ $link['href'] }}" class="text-inherit no-underline hover:text-slate-800">{{ $link['label'] }}</a></li>
+                            <li><a href="{{ $link['href'] }}" class="text-inherit no-underline transition hover:text-primary-700">{{ $link['label'] }}</a></li>
                         @endforeach
                     </ul>
                 </div>
@@ -132,7 +132,7 @@
                     <h3 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-800">Resources</h3>
                     <ul class="mt-5 space-y-3 text-sm text-slate-500">
                         @foreach ($resourceLinks as $link)
-                            <li><a href="{{ $link['href'] }}" class="text-inherit no-underline hover:text-slate-800">{{ $link['label'] }}</a></li>
+                            <li><a href="{{ $link['href'] }}" class="text-inherit no-underline transition hover:text-primary-700">{{ $link['label'] }}</a></li>
                         @endforeach
                     </ul>
                 </div>

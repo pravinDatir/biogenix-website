@@ -1,5 +1,5 @@
 @php
-    $inputClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500/40';
+    $inputClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-primary-600/40';
     $faqCategories = [
         ['key' => 'product-info', 'label' => 'Product Info'],
         ['key' => 'ordering-process', 'label' => 'Ordering Process'],
@@ -9,12 +9,12 @@
 @endphp
 
 <div class="min-h-screen bg-slate-50">
-    <section class="relative overflow-hidden bg-slate-900 py-16 text-white lg:py-20">
+    <section class="relative overflow-hidden bg-primary-800 py-16 text-white lg:py-20">
         <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
-        <div class="absolute inset-0 bg-gradient-to-b from-primary-900/50 to-slate-950/80"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-primary-800/60 to-primary-900/90"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
             <h1 class="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">Frequently Asked Questions</h1>
-            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300">Got questions about products, ordering, or delivery? We&apos;ve got answers.</p>
+            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-primary-50/80">Got questions about products, ordering, or delivery? We&apos;ve got answers.</p>
         </div>
     </section>
 
@@ -22,7 +22,7 @@
         <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-3">
                         <label for="faqSearch" class="mb-2 block text-sm font-semibold text-slate-700">Search FAQs</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
@@ -34,7 +34,7 @@
                     <div class="mt-2 md:col-span-3">
                         <label class="mb-3 block text-sm font-semibold text-slate-700">Filter by Category</label>
                         <div id="faqFilterTabs" class="flex flex-wrap gap-2">
-                            <button type="button" data-filter="all" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition">All Categories</button>
+                            <button type="button" data-filter="all" class="rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition">All Categories</button>
                             @foreach ($faqCategories as $faqCategory)
                                 <button type="button" data-filter="{{ $faqCategory['key'] }}" class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200">
                                     {{ $faqCategory['label'] }}
@@ -48,7 +48,7 @@
     </section>
 
     <section class="py-12">
-        <div class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 xl:px-10">
             @if ($faqs->count())
                 <div id="faqAccordion" class="space-y-6">
                     @foreach ($faqs as $faq)
@@ -58,7 +58,7 @@
                             $searchText = strtolower($faq->category . ' ' . $faq->question . ' ' . $faq->answer);
                         @endphp
                         <div
-                            class="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm transition hover:border-primary-100"
+                            class="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm transition hover:border-primary-200"
                             data-faq-item
                             data-faq-category="{{ $categoryKey }}"
                             data-faq-search-text="{{ $searchText }}"
@@ -132,12 +132,12 @@
         tabs.forEach(tab => {
             tab.addEventListener('click', function () {
                 tabs.forEach(t => {
-                    t.classList.remove('bg-slate-900', 'text-white');
+                    t.classList.remove('bg-primary-600', 'text-white');
                     t.classList.add('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200');
                 });
 
                 this.classList.remove('bg-slate-100', 'text-slate-600', 'hover:bg-slate-200');
-                this.classList.add('bg-slate-900', 'text-white');
+                this.classList.add('bg-primary-600', 'text-white');
 
                 currentFilter = this.getAttribute('data-filter');
                 applyFilter();

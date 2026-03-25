@@ -212,8 +212,8 @@
                                 <span>GST (18%)</span>
                                 <span id="cartSummaryTax" class="font-medium text-slate-900">Rs. 0.00</span>
                             </div>
-                            <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-semibold text-slate-950">
-                                <span>Total</span>
+                            <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-bold text-secondary-600">
+                                <span>Estimated Total</span>
                                 <span id="cartSummaryTotal">Rs. 0.00</span>
                             </div>
                         </div>

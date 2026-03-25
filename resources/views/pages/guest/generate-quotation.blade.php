@@ -4,7 +4,7 @@
     $isPiRequestFlow = $quotationFlowMode === 'pi_request';
     $oldProductIds = old('product_id', $prefilledProductId ? [$prefilledProductId] : ['']);
     $oldQuantities = old('quantity', array_fill(0, max(1, count($oldProductIds)), 1));
-    $pageShellClass = 'mx-auto w-full max-w-none space-y-8 px-4 py-6 sm:px-6 lg:px-8 xl:px-10';
+    $pageShellClass = 'mx-auto w-full max-w-none space-y-8 px-4 py-8 sm:px-6 lg:px-8 xl:px-10 md:py-12';
     $formCardClass = 'space-y-5 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
     $sidebarCardClass = 'space-y-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm';
     $inputClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500/40';
@@ -50,33 +50,30 @@
     }
 @endphp
 
-<div class="{{ $pageShellClass }}">
+<div>
   
-
-    <section class="space-y-4">
-        <div class="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-primary-950 p-5 text-white shadow-xl md:p-8">
-            <div class="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-end">
-                <div class="lg:col-span-8">
-                    <x-badge variant="inverse">{{ $pageBadgeLabel }}</x-badge>
-                    <h1 class="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl">{{ $pageTitle }}</h1>
-                    <p class="mt-3 max-w-2xl text-base leading-8 text-slate-100">
-                        {{ $pageDescription }}
-                    </p>
-                </div>
-                <div class="lg:col-span-4">
-                    <div class="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Access Rules</p>
-                        <p class="mt-2 text-sm text-slate-100">{{ $accessRulePrimary }}</p>
-                        <p class="mt-1 text-sm text-slate-100">{{ $accessRuleSecondary }}</p>
-                    </div>
-                </div>
-            </div>
+    <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+        <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Biogenix Quotation" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+        <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
+        <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">
+                {{ $pageTitle }}
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-secondary-600 md:text-lg">
+                {{ $pageDescription }}
+            </p>
         </div>
     </section>
 
-    <section class="space-y-4">
-        <x-ui.section-heading title="Product Selection" :subtitle="$sectionSubtitle" />
+    <div class="{{ $pageShellClass }}">
+
+    <section class="space-y-6">
         <div class="mx-auto max-w-4xl">
+            <div class="mb-6 space-y-1">
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Product Selection</h2>
+                <p class="text-base text-slate-500">{{ $sectionSubtitle }}</p>
+            </div>
+
             <div>
                 <x-ui.surface-card class="{{ $formCardClass }}">
                     @if ($errors->any())
@@ -136,7 +133,7 @@
                                         <p class="text-sm text-slate-500" data-quote-rule>Select a product to view quantity constraints.</p>
                                         <p class="text-sm text-slate-500" data-quote-line-total>Estimated MRP line total will appear here.</p>
 
-                                        <button type="button" class="{{ $buttonSecondaryClass }} remove-quote-item @if (count($oldProductIds) === 1) hidden @endif">Remove Item</button>
+                                        <button type="button" class="{{ $buttonSecondaryClass }} remove-quote-item @if ($index === 0 || count($oldProductIds) === 1) hidden @endif">Remove Item</button>
                                     </div>
                                 @endforeach
                             </div>
@@ -202,7 +199,7 @@
                         <div class="flex flex-wrap items-center gap-2 pt-1">
                             <button type="submit" id="generateQuoteSubmitBtn" class="{{ $buttonPrimaryClass }} w-full sm:w-auto">{{ $primarySubmitLabel }}</button>
                             @if ($showDownloadActions)
-                                <button type="submit" id="downloadQuoteSubmitBtn" name="download_pdf" value="1" class="{{ $buttonSecondaryClass }} w-full sm:w-auto">Download PDF</button>
+                                <button type="submit" id="downloadQuoteSubmitBtn" name="download_pdf" value="1" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-neutral-800 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-700 sm:w-auto">Download PDF</button>
                             @endif
                             <p class="text-xs text-slate-500">{{ $actionHelpText }}</p>
                             <p id="quoteDraftStatus" class="w-full text-xs text-slate-500"></p>
@@ -212,6 +209,7 @@
             </div>
 
     </section>
+    </div>
 </div>
 
 @push('scripts')
@@ -260,9 +258,9 @@
 
         function updateRemoveButtons() {
             const rows = itemList.querySelectorAll('[data-quote-row]');
-            rows.forEach(function (row) {
+            rows.forEach(function (row, index) {
                 const removeButton = row.querySelector('.remove-quote-item');
-                removeButton.classList.toggle('hidden', rows.length <= 1);
+                removeButton.classList.toggle('hidden', index === 0 || rows.length <= 1);
             });
         }
 
@@ -274,6 +272,8 @@
         }
 
         function updateSummary() {
+            if (!summaryBody) return;
+
             let itemCount = 0;
             let total = 0;
             let currency = 'INR';
@@ -479,7 +479,7 @@
             });
         }
 
-        if (clearDraftBtn) {
+        if (clearDraftBtn && summaryBody) {
             clearDraftBtn.addEventListener('click', function () {
                 localStorage.removeItem(draftKey);
                 summaryBody.innerHTML = '<div class="py-4 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50"><svg class="mx-auto h-8 w-8 text-slate-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><p class="text-xs text-slate-500">Select products and quantities<br>to preview estimated MRP totals.</p></div>';

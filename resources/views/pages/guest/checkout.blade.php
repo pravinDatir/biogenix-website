@@ -425,7 +425,7 @@
                                 <span>GST</span>
                                 <span id="checkoutTax" class="font-medium text-slate-900">Rs. 0.00</span>
                             </div>
-                            <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-semibold text-slate-950">
+                            <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-bold text-secondary-600">
                                 <span>Total</span>
                                 <span id="checkoutTotal">Rs. 0.00</span>
                             </div>

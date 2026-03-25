@@ -1,18 +1,18 @@
 @push('styles')
 <style>
     .home-page {
-        --home-orange: var(--color-primary-600);
+        --home-accent: var(--color-secondary-600);
         --home-cyan: #38bdf8;
-        --home-navy: #07111f;
+        --home-navy: var(--color-primary-800);
         --home-panel: rgba(255, 255, 255, 0.74);
         background: transparent;
     }
 
     .home-page .home-card,
     .home-page .home-panel {
-        border-color: rgba(148, 163, 184, 0.18);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.78));
-        box-shadow: 0 24px 55px rgba(15, 23, 42, 0.07);
+        border-color: rgba(26, 77, 46, 0.12);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.82));
+        box-shadow: 0 24px 55px rgba(26, 30, 26, 0.06);
         backdrop-filter: blur(18px);
         padding: 1.5rem;
     }
@@ -30,7 +30,7 @@
     }
 
     .hero-gradient-overlay {
-        background: linear-gradient(135deg, rgba(7, 17, 31, 0.92) 0%, rgba(13, 30, 56, 0.88) 50%, rgba(7, 17, 31, 0.95) 100%);
+        background: linear-gradient(to top, var(--color-primary-800) 5%, rgba(26, 77, 46, 0.7) 60%, rgba(26, 77, 46, 0.3) 100%);
     }
 
     /* ─── Premium Testimonial Card ─── */
@@ -48,7 +48,7 @@
         font-family: 'Sora', serif;
         font-size: 8rem;
         font-weight: 800;
-        color: rgba(15, 23, 42, 0.04);
+        color: rgba(26, 77, 46, 0.04);
         pointer-events: none;
         z-index: -1;
         line-height: 1;
@@ -83,13 +83,13 @@
 
     .home-page .home-card:hover,
     .home-page .home-panel:hover {
-        border-color: rgba(255, 106, 0, 0.2);
-        box-shadow: 0 28px 60px rgba(15, 23, 42, 0.11);
+        border-color: rgba(255, 106, 0, 0.25);
+        box-shadow: 0 28px 60px rgba(26, 30, 26, 0.09);
     }
 
     .home-page .home-input {
         border-radius: 1rem;
-        border-color: rgba(148, 163, 184, 0.28);
+        border-color: rgba(26, 77, 46, 0.18);
         background: rgba(255, 255, 255, 0.95);
     }
 
@@ -139,10 +139,6 @@
     .home-hero-copy-shell {
         position: relative;
         max-width: 64rem;
-        border-radius: var(--ui-radius-card);
-        background: linear-gradient(180deg, rgba(7, 17, 31, 0.16), rgba(7, 17, 31, 0.04));
-        padding: 0.35rem 1.2rem 1.25rem 0;
-        backdrop-filter: blur(4px);
     }
 
     .home-hero-title,
@@ -155,7 +151,7 @@
         width: 100%;
         border-radius: var(--ui-radius-card);
         border: 1px solid rgba(255, 255, 255, 0.18);
-        background: linear-gradient(180deg, rgba(7, 17, 31, 0.56), rgba(7, 17, 31, 0.78));
+        background: linear-gradient(180deg, rgba(13, 43, 25, 0.6), rgba(13, 43, 25, 0.85));
         box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
         padding: 1.25rem;
         backdrop-filter: blur(18px);
@@ -203,8 +199,8 @@
         overflow: hidden;
         min-height: 25rem;
         border-radius: var(--ui-radius-card);
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        box-shadow: 0 26px 64px rgba(15, 23, 42, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 26px 64px rgba(26, 30, 26, 0.12);
     }
 
     .home-route-card img {
@@ -221,7 +217,7 @@
         position: absolute;
         inset: 0;
         background:
-            linear-gradient(180deg, rgba(7, 17, 31, 0.08) 0%, rgba(7, 17, 31, 0.22) 32%, rgba(7, 17, 31, 0.84) 100%);
+            linear-gradient(180deg, rgba(13, 43, 25, 0.08) 0%, rgba(13, 43, 25, 0.22) 32%, rgba(13, 43, 25, 0.84) 100%);
         z-index: 0;
     }
 
@@ -271,7 +267,7 @@
     .home-route-card__panel {
         border-radius: 1.6rem;
         border: 1px solid rgba(255, 255, 255, 0.12);
-        background: linear-gradient(180deg, rgba(7, 17, 31, 0.34), rgba(7, 17, 31, 0.52));
+        background: linear-gradient(180deg, rgba(13, 43, 25, 0.34), rgba(13, 43, 25, 0.52));
         padding: 1.25rem;
         backdrop-filter: blur(10px);
     }
@@ -286,7 +282,7 @@
         position: absolute;
         inset: 0;
         background:
-            linear-gradient(135deg, rgba(255, 106, 0, 0.96), rgba(255, 147, 71, 0.84)),
+            linear-gradient(135deg, rgba(255, 106, 0, 0.96), rgba(255, 60, 0, 0.92)),
             url('{{ asset('upload/corousel/lucknow-map.svg') }}');
         background-position: center, center;
         background-repeat: no-repeat, no-repeat;
@@ -299,8 +295,8 @@
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 26%),
-            linear-gradient(90deg, rgba(122, 38, 0, 0.14), transparent 52%);
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.15), transparent 26%),
+            linear-gradient(90deg, rgba(255, 106, 0, 0.14), transparent 52%);
     }
 
     .home-delivery-content {
@@ -314,9 +310,9 @@
     }
 
     .home-stats-shell {
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.72));
-        box-shadow: 0 28px 70px rgba(15, 23, 42, 0.1);
+        border: 1px solid rgba(26, 77, 46, 0.12);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.76));
+        box-shadow: 0 28px 70px rgba(26, 30, 26, 0.08);
         backdrop-filter: blur(24px);
     }
 
@@ -328,7 +324,7 @@
 
     .home-category-grid {
         display: flex;
-        gap: 0.9rem;
+        gap: 1rem;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
@@ -347,11 +343,11 @@
         display: flex;
         flex-direction: column;
         border-radius: var(--ui-radius-card);
-        border: 1px solid rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(26, 77, 46, 0.1);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
+        box-shadow: 0 14px 30px rgba(26, 30, 26, 0.05);
         isolation: isolate;
-        flex: 0 0 100%;
+        flex: 0 0 calc(100% - 1rem); /* 1 init */
         scroll-snap-align: start;
     }
 
@@ -434,7 +430,7 @@
 
     .home-category-copy {
         max-width: 28rem;
-        color: #64748b;
+        color: var(--ui-text-muted);
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 3;
@@ -464,25 +460,25 @@
 
     @media (min-width: 640px) {
         .home-category-tile {
-            flex: 0 0 calc(50% - 0.45rem);
+            flex: 0 0 calc(50% - 0.5rem);
         }
     }
 
     @media (min-width: 768px) {
         .home-category-tile {
-            flex: 0 0 calc(33.333% - 0.6rem);
+            flex: 0 0 calc(33.333% - 0.666rem);
         }
     }
 
     @media (min-width: 1024px) {
         .home-category-tile {
-            flex: 0 0 calc(25% - 0.675rem);
+            flex: 0 0 calc(25% - 0.75rem); /* exactly 4 items horizontally */
         }
     }
 
     @media (min-width: 1280px) {
         .home-category-tile {
-            flex: 0 0 calc(25% - 0.675rem);
+            flex: 0 0 calc(25% - 0.75rem); /* exactly 4 items horizontally */
         }
     }
 
@@ -499,8 +495,8 @@
 
     .home-cta {
         background:
-            radial-gradient(circle at top right, rgba(26, 77, 46, 0.18), transparent 28%),
-            linear-gradient(135deg, #07111f 0%, #102243 52%, #112d60 100%);
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.15), transparent 28%),
+            linear-gradient(135deg, rgba(255, 106, 0, 0.96), rgba(255, 60, 0, 0.92));
     }
 
     .home-reveal {
@@ -538,11 +534,11 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- HERO CAROUSEL --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-hero relative min-h-[calc(100vh-88px)] overflow-hidden bg-slate-900 text-white">
+    <section class="home-hero relative overflow-hidden bg-primary-800 text-white" style="min-height: 72vh; background-color: #0D2B19;">
         <div class="home-hero-track-overlay absolute inset-0 opacity-30"></div>
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
             <div id="heroTrack" class="flex h-full w-full translate-x-0 transition-transform duration-700 ease-out">
-                @foreach ($heroSlides ?? [] as $slide)
+                @forelse ($heroSlides ?? [] as $slide)
                     <article class="relative h-full w-full shrink-0">
                         <img
                             src="{{ asset($slide['image']) }}"
@@ -553,59 +549,35 @@
                         >
                         <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
 
-                        <div class="relative z-10 mx-auto grid min-h-[calc(100vh-88px)] w-full max-w-none grid-cols-1 gap-8 px-4 py-8 pb-12 sm:px-6 md:py-10 lg:grid-cols-12 lg:px-8 xl:px-10">
-                            <div class="home-reveal flex flex-col justify-start lg:col-span-7">
-                                <div class="home-hero-copy-shell">
-                                    <div class="mb-4 inline-flex items-center gap-2.5 rounded-full border border-primary-500/20 bg-primary-500/10 px-4 py-1.5 backdrop-blur-md">
-                                        <span class="relative flex h-2 w-2">
-                                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-500 opacity-75"></span>
-                                            <span class="relative inline-flex h-2 w-2 rounded-full bg-primary-600"></span>
-                                        </span>
-                                        <span class="text-xs font-bold tracking-widest text-primary-600 uppercase">Trusted Diagnostics Partner</span>
-                                    </div>
-                                    <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                                        Next-Gen <span class="bg-gradient-to-r from-primary-400 via-emerald-400 to-primary-500 bg-clip-text text-transparent">Healthcare</span> Solutions
-                                    </h1>
-                                    <p class="home-hero-copy mt-6 max-w-2xl text-base leading-8 text-slate-100 md:text-xl">{{ $slide['copy'] }}</p>
-
-                                    <div class="mt-8 flex flex-wrap items-center gap-3">
-                                        <x-ui.action-link :href="route('products.index')" variant="secondary" class="min-h-11 px-5 hover-lift">Browse Catalog</x-ui.action-link>
-                                        <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5 hover-lift glow-orange">Generate Quote</x-ui.action-link>
-                                        <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book Meeting</x-ui.action-link>
-                                    </div>
-
-                                    <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-200">
-                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Healthcare-first sourcing</span>
-                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Fast quotation workflow</span>
-                                        <span class="home-hero-chip-text rounded-full border border-white/12 bg-white/8 px-4 py-2 backdrop-blur">Structured support handoff</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="home-reveal flex items-start lg:col-span-5">
-                                <div class="home-hero-focus-card">
-                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-50">Featured Focus</p>
-                                    <h2 class="home-hero-focus-title mt-2 text-xl font-semibold text-white md:text-2xl">Trusted diagnostics for labs, hospitals, and care networks.</h2>
-                                    <p class="home-hero-focus-copy mt-3 text-sm text-slate-100">Biogenix combines category expertise with enterprise-ready support to improve continuity across procurement and delivery operations.</p>
-                                    <div class="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                                        <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
-                                            <p class="text-xl font-semibold text-white">24h</p>
-                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Dispatch promise</p>
-                                        </div>
-                                        <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
-                                            <p class="text-xl font-semibold text-white">200+</p>
-                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Institutional clients</p>
-                                        </div>
-                                        <div class="rounded-2xl border border-white/10 bg-white/8 px-4 py-3">
-                                            <p class="text-xl font-semibold text-white">98%</p>
-                                            <p class="home-hero-focus-meta text-xs uppercase tracking-[0.18em] text-white/70">Satisfaction score</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-8 pb-12 text-center sm:px-6 md:py-10 lg:px-8 xl:px-10">
+                            <div class="home-hero-copy-shell flex max-w-5xl flex-col items-center justify-center text-visible">
+                                <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                    Next-Gen <span class="text-secondary-600">Healthcare</span> Solutions
+                                </h1>
+                                <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">{{ $slide['copy'] }}</p>
                             </div>
                         </div>
                     </article>
-                @endforeach
+                @empty
+                    <article class="relative h-full w-full shrink-0">
+                        <img
+                            src="{{ asset('upload/corousel/image1.jpg') }}"
+                            alt="Precision Diagnostics"
+                            class="absolute inset-0 h-full w-full object-cover"
+                            fetchpriority="high"
+                            decoding="async"
+                        >
+                        <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
+                        <div class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-8 pb-12 text-center sm:px-6 md:py-10 lg:px-8 xl:px-10">
+                            <div class="home-hero-copy-shell flex max-w-5xl flex-col items-center justify-center text-visible">
+                                <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                    Next-Gen <span class="text-secondary-600">Healthcare</span> Solutions
+                                </h1>
+                                <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">Biogenix delivers precision diagnostic tools and intelligent instrument ecosystems for North India's labs and care networks.</p>
+                            </div>
+                        </div>
+                    </article>
+                @endforelse
             </div>
         </div>
 
@@ -624,14 +596,12 @@
                     @endforeach
                 </div>
                 <div class="pointer-events-auto flex gap-2">
-                    {{-- Icon-only Prev button --}}
                     <button id="heroPrev" type="button" aria-label="Previous slide"
                         class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-white/10 text-white transition hover:bg-white/25 hover:scale-105">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
                         </svg>
                     </button>
-                    {{-- Icon-only Next button --}}
                     <button id="heroNext" type="button" aria-label="Next slide"
                         class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-white/10 text-white transition hover:bg-white/25 hover:scale-105">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
@@ -639,7 +609,7 @@
                         </svg>
                     </button>
                 </div>
-    <!-- ... -->
+            </div>
         </div>
     </section>
 
@@ -649,7 +619,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- CORE PRODUCT CATEGORIES (with hover overlay + count badge) --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-categories bg-transparent py-12 md:py-16">
+      <section class="home-categories bg-transparent py-12 md:py-16">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <x-ui.section-heading title="Core Product Categories" subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
@@ -678,7 +648,7 @@
                         $imagePath = $category->default_image_path ?: 'upload/categories/image1.jpg';
                         $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
                     @endphp
-                    <article class="glass-card hover-lift home-reveal group {{ $tileClass }} rounded-[var(--ui-radius-card)]">
+                    <article class="home-category-tile glass-card hover-lift home-reveal group {{ $tileClass }} rounded-[var(--ui-radius-card)]">
                         <div class="home-category-tile__media">
                             <img
                                 src="{{ asset($imagePath) }}"
@@ -716,7 +686,6 @@
             </div>
         </div>
     </section>
-
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- CLINICAL & BUSINESS SOLUTIONS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
@@ -726,14 +695,14 @@
                 <x-ui.section-heading title="Clinical Business Solutions" subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
             </div>
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <article class="home-route-card home-reveal">
+                <article class="home-route-card home-reveal ">
                     <img src="{{ asset('upload/corousel/b2b-enterprise-bg.png') }}" alt="B2B Enterprise Solutions" loading="lazy" decoding="async">
                     <span class="home-route-card__chip">B2B Operations</span>
                     <div class="home-route-card__content">
                         <div class="home-route-card__panel">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For institutions and channel partners</p>
                             <h3 class="mt-3 text-2xl font-semibold text-white">Distributor, lab, and hospital buying with structured support.</h3>
-                            <p class="mt-3 text-sm leading-7 text-slate-200">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
+                            <p class="mt-3 text-sm leading-7 text-primary-50/90">Account-based ordering, product discovery, quotation approval flow, and coordinated support for healthcare institutions.</p>
                             <div class="mt-5 flex flex-wrap gap-3">
                                 <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])" variant="inverse">B2B Login</x-ui.action-link>
                                 <x-ui.action-link href="{{ url('/b2b-signup') }}" class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2B Sign Up</x-ui.action-link>
@@ -748,7 +717,7 @@
                         <div class="home-route-card__panel">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For direct and retail buyers</p>
                             <h3 class="mt-3 text-2xl font-semibold text-white">A cleaner buying path for faster product access.</h3>
-                            <p class="mt-3 text-sm leading-7 text-slate-200">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
+                            <p class="mt-3 text-sm leading-7 text-primary-50/90">Simple MRP-visible catalog flow with quick quotation generation and immediate assistance through support channels.</p>
                             <div class="mt-5 flex flex-wrap gap-3">
                                 <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])" variant="inverse">B2C Login</x-ui.action-link>
                                 <x-ui.action-link href="{{ url('/signup') }}" class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2C Sign Up</x-ui.action-link>
@@ -764,21 +733,18 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- SAME-DAY DELIVERY + NEWSLETTER --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-newsletter bg-transparent py-12 md:py-16">
-        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
+     <section class="home-newsletter bg-transparent py-12 md:py-16">
+        <div class="mx-auto grid w-full max-w-none   grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
             <article class="home-delivery-card home-reveal rounded-[var(--ui-radius-card)] p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8">
                 <div class="home-delivery-content">
                     <span class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow local support</span>
                     <h2 class="mt-4 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
                     <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
-                    <div class="mt-5 flex flex-wrap gap-3">
-                        <x-ui.action-link :href="route('quotation.create')" variant="contrast" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
-                        <x-ui.action-link :href="route('contact')" variant="inverse" class="min-h-11 px-5">Talk to Support</x-ui.action-link>
-                    </div>
+                   
                 </div>
             </article>
 
-            <article class="home-panel home-reveal rounded-3xl xl:col-span-5">
+            <article class="home-panel home-reveal rounded-[var(--ui-radius-card)] xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
                 <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
                 <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
@@ -804,7 +770,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- STRATEGIC PRESENCE: NORTHERN HUB --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-northern-hub bg-transparent py-12 md:py-16">
+    <section class="home-northern-hub bg-transparent py-12 md:py-14">
             <div class="home-reveal relative overflow-hidden rounded-[var(--ui-radius-card)] border border-slate-200/80 shadow-[var(--ui-shadow-card)] glass-card">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
                     <div class="flex flex-col justify-center p-6 sm:p-8 lg:p-10 xl:p-12">
@@ -843,7 +809,7 @@
                     </div>
 
                     {{-- Right: Image with location badge --}}
-                    <div class="relative min-h-[280px] lg:min-h-[420px]">
+                    <div class="relative min-h-[280px] lg:min-h-[420px] overflow-hidden rounded-[var(--ui-radius-card)]">
                         <img
                             src="{{ asset('upload/corousel/image4.jpg') }}"
                             alt="Biogenix Northern Hub Laboratory in Lucknow"
@@ -868,7 +834,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-quiz-cta bg-transparent py-6 md:py-8">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="home-reveal overflow-hidden rounded-3xl bg-primary-600 px-6 py-10 shadow-[0_24px_55px_rgba(26,77,46,0.25)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16">
+            <div class="home-reveal overflow-hidden rounded-[var(--ui-radius-card)] bg-primary-600 px-6 py-10 shadow-[0_24px_55px_rgba(26,77,46,0.25)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16">
                 <div class="max-w-xl">
                     <h2 class="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl lg:text-[2rem]">Test Your Diagnostic<br>Precision</h2>
                     <p class="mt-3 text-sm leading-6 text-white/80 md:text-[15px] md:leading-7">
@@ -888,15 +854,15 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- FINAL CTA STRIP --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-cta py-12 text-white md:py-14">
+    <section class="home-cta py-12 text-white md:py-14 rounded-[var(--ui-radius-card)]">
         <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
                 <h2 class="font-display text-2xl font-semibold text-white md:text-4xl">Need a faster procurement decision?</h2>
-                <p class="mx-auto mt-3 max-w-3xl text-sm text-slate-200 md:text-base">
+                <p class="mx-auto mt-3 max-w-3xl text-sm text-primary-50/90 md:text-base">
                     Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
                 </p>
                 <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5 hover-lift glow-orange">Generate Quote</x-ui.action-link>
+                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-6 bg-primary-600 hover:bg-primary-700 text-white shadow-lg border-none">Generate Quote</x-ui.action-link>
                     <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5 hover-lift">Book a Meeting</x-ui.action-link>
                 </div>
             </div>
@@ -1064,11 +1030,12 @@
             
             catScrollInterval = setInterval(() => {
                 const maxScrollLeft = catCarousel.scrollWidth - catCarousel.clientWidth;
-                if (catCarousel.scrollLeft >= maxScrollLeft - 1) {
+                // Add a small buffer for precision issues
+                if (catCarousel.scrollLeft >= maxScrollLeft - 10) {
                     catCarousel.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                    const itemWidth = catCarousel.children[0]?.clientWidth || 300;
-                    const gap = 14; // ≈ 0.9rem
+                    const itemWidth = catCarousel.children[0]?.offsetWidth || 300;
+                    const gap = 16; // 1rem
                     catCarousel.scrollBy({ left: itemWidth + gap, behavior: 'smooth' });
                 }
             }, 3000);
@@ -1079,7 +1046,11 @@
         }
         
         if (catCarousel) {
-            startCatScroll();
+            // Slight delay to show initial 4 images before starting scroll
+            setTimeout(() => {
+                startCatScroll();
+            }, 1500);
+            
             catCarousel.addEventListener('mouseenter', stopCatScroll);
             catCarousel.addEventListener('mouseleave', startCatScroll);
             catCarousel.addEventListener('touchstart', stopCatScroll, { passive: true });
@@ -1092,8 +1063,8 @@
                 catPrev.addEventListener('mouseenter', stopCatScroll);
                 catPrev.addEventListener('mouseleave', startCatScroll);
                 catPrev.addEventListener('click', () => {
-                    const itemWidth = catCarousel.children[0]?.clientWidth || 300;
-                    catCarousel.scrollBy({ left: -(itemWidth + 14), behavior: 'smooth' });
+                    const itemWidth = catCarousel.children[0]?.offsetWidth || 300;
+                    catCarousel.scrollBy({ left: -(itemWidth + 16), behavior: 'smooth' });
                 });
             }
 
@@ -1101,8 +1072,8 @@
                 catNext.addEventListener('mouseenter', stopCatScroll);
                 catNext.addEventListener('mouseleave', startCatScroll);
                 catNext.addEventListener('click', () => {
-                    const itemWidth = catCarousel.children[0]?.clientWidth || 300;
-                    catCarousel.scrollBy({ left: itemWidth + 14, behavior: 'smooth' });
+                    const itemWidth = catCarousel.children[0]?.offsetWidth || 300;
+                    catCarousel.scrollBy({ left: itemWidth + 16, behavior: 'smooth' });
                 });
             }
         }
