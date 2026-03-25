@@ -205,7 +205,7 @@
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
         <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="space-y-4 md:space-y-5">
             <section class="w-full pt-2 md:pt-3">
-                <div class="rounded-[2rem] border border-white/70 bg-[radial-gradient(circle_at_top_right,rgba(47,143,255,0.16),transparent_24%),linear-gradient(135deg,#ffffff_0%,#f8fbff_52%,#eef5fd_100%)] p-5 shadow-[0_32px_70px_rgba(15,23,42,0.08)] md:p-5">
+                <div class="rounded-[var(--ui-radius-card)] border border-white/70 bg-[radial-gradient(circle_at_top_right,rgba(47,143,255,0.12),transparent_24%),linear-gradient(135deg,#ffffff_0%,#f8fbff_52%,#eef5fd_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-5 glass-card">
                     <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
                         <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-slate-700">Home</a>
                         <span>/</span>
@@ -216,7 +216,7 @@
 
                     <div class="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(36rem,0.9fr)] xl:items-end">
                         <div class="max-w-3xl">
-                            <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Product Catalog</h1>
+                            <h1 class="font-display text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Product Catalog</h1>
                             <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">
                                 Explore our comprehensive range of high-performance biotech reagents, IVD kits, and life science research tools engineered for precision.
                             </p>
@@ -254,7 +254,7 @@
             </section>
 
             <section class="grid items-start gap-5 pb-4 md:pb-5 xl:grid-cols-[18rem_minmax(0,1fr)] min-[1680px]:grid-cols-[18.5rem_minmax(0,1fr)]">
-                <aside id="catalogSidebar" class="hidden min-w-0 space-y-5 rounded-[32px] border border-slate-200 bg-white p-4 shadow-sm md:p-5 xl:sticky xl:top-6 xl:block">
+                <aside id="catalogSidebar" class="hidden min-w-0 space-y-5 rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-4 shadow-[var(--ui-shadow-card)] md:p-5 xl:sticky xl:top-6 xl:block glass-card">
                     <div class="flex items-center justify-between gap-3 xl:hidden">
                         <div>
                             <p class="text-sm font-semibold text-slate-900">Filters</p>
@@ -502,9 +502,9 @@
                                     $visualVariant = $resolveVisualVariant($product, $loop->index);
                                     $bulkSummary = $product->catalog_bulk_summary ?? null;
                                 @endphp
-                                <article data-catalog-product-card data-product-id="{{ $product->id }}" class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                                <article data-catalog-product-card data-product-id="{{ $product->id }}" class="group flex h-full flex-col overflow-hidden rounded-[var(--ui-radius-card)] border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl hover-lift">
                                     <div class="relative px-3 pt-3">
-                                        <div class="relative overflow-hidden rounded-2xl group/image">
+                                        <div class="relative overflow-hidden rounded-3xl group/image">
                                             <a href="{{ $detailUrl }}" data-catalog-detail-link data-base-url="{{ $detailUrl }}" class="block cursor-pointer">
                                                 @if ($imageUrl)
                                                     <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover/image:scale-[1.04]" loading="lazy" decoding="async">
@@ -538,7 +538,7 @@
                                     <div class="flex flex-1 flex-col gap-2.5 px-4 pb-4 pt-3.5">
                                         <div class="space-y-1.5">
                                             <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{{ $product->brand ?? 'Biogenix' }}</p>
-                                            <h3 class="overflow-hidden text-[15px] font-semibold leading-snug text-slate-950 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] transition-colors hover:text-primary-600">
+                                            <h3 class="font-display overflow-hidden text-[15px] font-semibold leading-snug text-slate-950 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] transition-colors hover:text-primary-600">
                                                 <a href="{{ $detailUrl }}" data-catalog-detail-link data-base-url="{{ $detailUrl }}">{{ Str::limit((string) $product->name, 58) }}</a>
                                             </h3>
                                             <div>
@@ -551,7 +551,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="rounded-2xl bg-slate-50 px-3 py-2.5">
+                                        <div class="rounded-3xl bg-slate-50 px-3 py-2.5">
                                             <div class="flex items-end justify-between gap-3">
                                                 <span class="text-sm font-semibold text-slate-500">Price:</span>
                                                 <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
@@ -562,7 +562,7 @@
                                         </div>
 
                                         @if ($bulkSummary)
-                                            <div class="rounded-2xl border border-emerald-100 bg-primary-50/80 px-3 py-2.5">
+                                            <div class="rounded-3xl border border-emerald-100 bg-primary-50/80 px-3 py-2.5">
                                                 <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-600">Bulk Offer</p>
                                                 <p class="mt-1 text-xs font-semibold text-emerald-900">
                                                     {{ $bulkSummary['label'] ?? 'Bulk pricing available' }}
@@ -619,11 +619,11 @@
                                             {{-- Buy Now --}}
                                             <div style="width: 70%;">
                                                 @guest
-                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:-translate-y-px hover:shadow-md hover:shadow-[rgba(255,106,0,0.3)]">
+                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
                                                         <span>Buy Now</span>
                                                     </a>
                                                 @else
-                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:-translate-y-px hover:shadow-md hover:shadow-[rgba(255,106,0,0.3)]">
+                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
                                                         <span>Buy Now</span>
                                                     </button>
                                                 @endguest
@@ -632,7 +632,7 @@
                                             {{-- Add to Cart --}}
                                             <div style="width: 30%;">
                                                 @guest
-                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                             <circle cx="8" cy="20" r="1.5"></circle>
                                                             <circle cx="18" cy="20" r="1.5"></circle>
@@ -641,7 +641,7 @@
                                                         </svg>
                                                     </a>
                                                 @else
-                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)]" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(35,131,235,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(35,131,235,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                             <circle cx="8" cy="20" r="1.5"></circle>
                                                             <circle cx="18" cy="20" r="1.5"></circle>

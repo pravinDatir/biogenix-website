@@ -38,6 +38,11 @@
     --color-neutral-700: #434543;
     --color-neutral-800: #2c2d2b;
 
+    /* Brand Accents */
+    --color-accent-orange: #FF6A00;
+    --color-accent-navy: #07111F;
+    --color-accent-cyan: #38BDF8;
+
     /* UI – Neutral tones (harmonized with green primary) */
     --ui-page-bg: #f9faf9;
     --ui-surface: #ffffff;
@@ -46,11 +51,50 @@
     --ui-border: #e0e2e0;
     --ui-text: #1a1e1a;
     --ui-text-muted: #6b706b;
-    --ui-radius-card: 1.5rem;
+    --ui-radius-card: 2.5rem;
     --ui-radius-field: 0.875rem;
     --ui-radius-button: 0.875rem;
     --ui-shadow-soft: 0 12px 28px rgba(26, 30, 26, 0.06);
     --ui-shadow-card: 0 18px 42px rgba(26, 30, 26, 0.08);
     --ui-shadow-panel: 0 28px 70px rgba(26, 30, 26, 0.1);
     --ui-container-max: 100%;
+
+    /* Glassmorphism Classes */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-blur: 16px;
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(7, 17, 31, 0.1);
+
+    /* Animations & Interactions */
+    --transition-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+@utility glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--ui-border);
+}
+
+@utility glow-orange {
+    box-shadow: 0 0 15px rgba(255, 106, 0, 0.4);
+}
+
+@utility hover-lift {
+    transition: transform 0.3s var(--transition-premium), box-shadow 0.3s var(--transition-premium);
+}
+
+@utility hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ui-shadow-card);
+}
+
+.font-display {
+    font-family: var(--font-display);
 }

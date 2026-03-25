@@ -117,16 +117,16 @@
         $selectedTierRow = $bulkTierRows->first();
         $bestBulkTier = $bulkTierRows->sortByDesc('discount_value')->first();
         $relatedProducts = collect($related_products ?? [])->filter();
-        $compactCardClass = 'rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm md:p-5';
-        $sectionCardClass = 'rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm md:p-6';
-        $purchaseCardClass = 'rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.1),transparent_36%),linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(248,250,252,0.96)_100%)] p-5 shadow-sm md:p-6 xl:sticky xl:top-6';
-        $featurePanelClass = 'mt-3 rounded-3xl bg-[linear-gradient(135deg,rgba(248,251,255,1)_0%,rgba(238,244,255,1)_100%)] p-4 md:p-5';
-        $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700';
-        $primaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700';
-        $secondaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50';
-        $qtyPickerClass = 'inline-flex h-12 w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-1';
+        $compactCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-4 shadow-[var(--ui-shadow-card)] md:p-5 glass-card';
+        $sectionCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-5 shadow-[var(--ui-shadow-card)] md:p-6 glass-card';
+        $purchaseCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.08),transparent_36%),linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(248,250,252,0.96)_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-6 xl:sticky xl:top-6 glass-card';
+        $featurePanelClass = 'mt-3 rounded-[var(--ui-radius-tab)] bg-[linear-gradient(135deg,rgba(248,251,255,1)_0%,rgba(238,244,255,1)_100%)] p-4 md:p-5';
+        $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-[var(--ui-radius-tab)] bg-primary-50 text-primary-700';
+        $primaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-primary-700';
+        $secondaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:scale-[1.02]';
+        $qtyPickerClass = 'inline-flex h-12 w-full items-center justify-between rounded-3xl border border-slate-200 bg-slate-50 p-1';
         $qtyButtonClass = 'inline-flex h-8 w-8 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition hover:bg-white hover:text-primary-700';
-        $estimateClass = 'rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3';
+        $estimateClass = 'rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3';
         $actionsClass = 'grid gap-3 sm:grid-cols-2';
         $inlineChipClass = 'inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600';
         $sectionHeadingClass = 'text-xl font-semibold text-slate-950';
@@ -230,7 +230,7 @@
                         </div>
 
                         <div class="space-y-3">
-                            <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">{{ $productTitle }}</h1>
+                            <h1 class="font-display text-3xl font-bold tracking-tight text-slate-950 md:text-4xl leading-tight">{{ $productTitle }}</h1>
                             <div class="space-y-1 text-sm font-medium text-slate-500">
                                 <p>Model No: {{ $modelLabel }} | Professional Grade Biotech System</p>
                             </div>
@@ -304,7 +304,7 @@
                             <div class="{{ $actionsClass }}">
                                 {{-- Step 1: keep the core storefront purchase actions together inside the pricing card. --}}
                                 @guest
-                                    <a href="{{ $loginUrl }}" class="{{ $primaryButtonClass }} js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
+                                    <a href="{{ $loginUrl }}" class="{{ $primaryButtonClass }} js-add-to-cart hover-lift" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="9" cy="20" r="1"></circle>
                                             <circle cx="18" cy="20" r="1"></circle>
@@ -313,7 +313,7 @@
                                         <span>Add to Cart</span>
                                     </a>
                                 @else
-                                    <button type="button" class="{{ $primaryButtonClass }} js-add-to-cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
+                                    <button type="button" class="{{ $primaryButtonClass }} js-add-to-cart hover-lift" data-product-id="{{ $product->id }}" data-variant-id="{{ $cartVariantId }}" data-product-name="{{ e($productTitle) }}">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="9" cy="20" r="1"></circle>
                                             <circle cx="18" cy="20" r="1"></circle>
@@ -325,7 +325,7 @@
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
                                 @guest
-                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)]">
+                                    <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
@@ -342,7 +342,7 @@
                                         <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="{{ $requestedQuantity }}">
 
                                         {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
-                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)]">
+                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
                                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M5 12h14"></path>
                                                 <path d="m12 5 7 7-7 7"></path>
@@ -387,7 +387,7 @@
             {{-- ═══════════════════════════════════════════════════════ --}}
             {{-- STICKY TAB NAVIGATION BAR --}}
             {{-- ═══════════════════════════════════════════════════════ --}}
-            <nav id="productTabBar" class="sticky top-0 z-40 -mx-3 mt-6 border-b border-slate-200 bg-white/95 px-3 backdrop-blur transition-shadow duration-300 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:-mx-10 xl:px-10" aria-label="Product sections">
+            <nav id="productTabBar" class="glass-header sticky top-0 z-40 -mx-3 mt-6 border-b border-slate-200 px-3 transition-shadow duration-300 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:-mx-10 xl:px-10" aria-label="Product sections">
                 <div class="flex gap-0.5 overflow-x-auto py-0 scrollbar-hide">
                     @foreach ([
                         ['id' => 'sectionBulkPricing',  'label' => 'Pricing'],
@@ -409,7 +409,7 @@
                         <h2 class="{{ $sectionHeadingClass }}">Bulk Tier Pricing</h2>
                         <x-ui.status-badge id="bulkTierHint" type="cart" value="best_value_tier" :label="$bestBulkTier ? 'Best value on ' . $bestBulkTier['label'] : 'Current price available'" />
                     </div>
-                    <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200">
+                    <div class="mt-5 overflow-hidden rounded-3xl border border-slate-200">
                         <div class="grid grid-cols-3 bg-slate-50 px-5 py-3 table-label">
                             <span>Quantity</span>
                             <span>Discount</span>
@@ -452,7 +452,7 @@
                     </div>
                     <div class="mt-5 space-y-3">
                         @forelse ($technicalResources as $resource)
-                            <a href="{{ $resource['href'] }}" data-download-label="{{ e((string) $resource['title']) }}" class="js-download-resource group flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 no-underline transition duration-200 hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:shadow-md">
+                            <a href="{{ $resource['href'] }}" data-download-label="{{ e((string) $resource['title']) }}" class="js-download-resource group flex items-center justify-between rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 no-underline transition duration-200 hover:-translate-y-0.5 hover:border-primary-100 hover:bg-white hover:shadow-md">
                                 <div class="flex items-start gap-3">
                                     <span class="{{ $iconTilePrimaryClass }} mt-0.5 bg-white">
                                         @if ($resource['icon'] === 'clipboard')
@@ -489,7 +489,7 @@
                         <div class="mt-6 grid gap-4 sm:grid-cols-2">
                             {{-- Step 3: render the saved visible-variant technical specs directly from the database payload. --}}
                             @foreach ($technicalSpecificationRows as $row)
-                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+                                <div class="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4">
                                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{{ $row['label'] }}</p>
                                     <p class="mt-3 text-base font-medium leading-7 text-slate-900">{{ $row['value'] }}</p>
                                 </div>
@@ -524,7 +524,7 @@
                                     $relatedPrice = $relatedProduct->visible_price !== null ? (float) $relatedProduct->visible_price : null;
                                     $relatedReviews = 38 + (((int) ($relatedProduct->id ?? 1)) * 3);
                                 @endphp
-                                <article class="group w-[280px] shrink-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl snap-start">
+                                <article class="group w-[280px] shrink-0 overflow-hidden rounded-[var(--ui-radius-card)] border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl snap-start">
                                     <div class="overflow-hidden">
                                         <img src="{{ $relatedImage }}" alt="{{ $relatedProduct->name }}" class="h-[200px] w-full object-cover transition duration-300 group-hover:scale-[1.04]" loading="lazy" decoding="async">
                                     </div>

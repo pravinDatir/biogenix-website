@@ -29,6 +29,10 @@
         }
     }
 
+    .hero-gradient-overlay {
+        background: linear-gradient(135deg, rgba(7, 17, 31, 0.92) 0%, rgba(13, 30, 56, 0.88) 50%, rgba(7, 17, 31, 0.95) 100%);
+    }
+
     /* ─── Premium Testimonial Card ─── */
     .testimonial-card {
         position: relative;
@@ -135,7 +139,7 @@
     .home-hero-copy-shell {
         position: relative;
         max-width: 64rem;
-        border-radius: 2rem;
+        border-radius: var(--ui-radius-card);
         background: linear-gradient(180deg, rgba(7, 17, 31, 0.16), rgba(7, 17, 31, 0.04));
         padding: 0.35rem 1.2rem 1.25rem 0;
         backdrop-filter: blur(4px);
@@ -149,7 +153,7 @@
 
     .home-hero-focus-card {
         width: 100%;
-        border-radius: 1.75rem;
+        border-radius: var(--ui-radius-card);
         border: 1px solid rgba(255, 255, 255, 0.18);
         background: linear-gradient(180deg, rgba(7, 17, 31, 0.56), rgba(7, 17, 31, 0.78));
         box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
@@ -166,7 +170,7 @@
     .home-route-visual {
         position: relative;
         overflow: hidden;
-        border-radius: 1.5rem;
+        border-radius: var(--ui-radius-card);
         min-height: 11rem;
     }
 
@@ -198,7 +202,7 @@
         position: relative;
         overflow: hidden;
         min-height: 25rem;
-        border-radius: 2rem;
+        border-radius: var(--ui-radius-card);
         border: 1px solid rgba(255, 255, 255, 0.7);
         box-shadow: 0 26px 64px rgba(15, 23, 42, 0.14);
     }
@@ -342,7 +346,7 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
-        border-radius: 1.5rem;
+        border-radius: var(--ui-radius-card);
         border: 1px solid rgba(255, 255, 255, 0.72);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
         box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
@@ -547,18 +551,26 @@
                             @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif
                             decoding="async"
                         >
-                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_22%_28%,rgba(7,17,31,0.28),transparent_22%),linear-gradient(105deg,rgba(7,17,31,0.98)_10%,rgba(7,17,31,0.84)_44%,rgba(7,17,31,0.62)_62%,rgba(7,17,31,0.9)_100%)]"></div>
+                        <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
 
                         <div class="relative z-10 mx-auto grid min-h-[calc(100vh-88px)] w-full max-w-none grid-cols-1 gap-8 px-4 py-8 pb-12 sm:px-6 md:py-10 lg:grid-cols-12 lg:px-8 xl:px-10">
                             <div class="home-reveal flex flex-col justify-start lg:col-span-7">
                                 <div class="home-hero-copy-shell">
-                                    <x-badge variant="inverse" class="w-fit">{{ $slide['tag'] }}</x-badge>
-                                    <h1 class="home-hero-title mt-5 max-w-4xl font-['Sora'] text-5xl font-semibold tracking-tight text-white md:text-6xl lg:text-7xl">{{ $slide['title'] }}</h1>
+                                    <div class="mb-4 inline-flex items-center gap-2.5 rounded-full border border-primary-500/20 bg-primary-500/10 px-4 py-1.5 backdrop-blur-md">
+                                        <span class="relative flex h-2 w-2">
+                                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-500 opacity-75"></span>
+                                            <span class="relative inline-flex h-2 w-2 rounded-full bg-primary-600"></span>
+                                        </span>
+                                        <span class="text-xs font-bold tracking-widest text-primary-600 uppercase">Trusted Diagnostics Partner</span>
+                                    </div>
+                                    <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                        Next-Gen <span class="bg-gradient-to-r from-primary-400 via-emerald-400 to-primary-500 bg-clip-text text-transparent">Healthcare</span> Solutions
+                                    </h1>
                                     <p class="home-hero-copy mt-6 max-w-2xl text-base leading-8 text-slate-100 md:text-xl">{{ $slide['copy'] }}</p>
 
                                     <div class="mt-8 flex flex-wrap items-center gap-3">
-                                        <x-ui.action-link :href="route('products.index')" variant="secondary" class="min-h-11 px-5">Browse Catalog</x-ui.action-link>
-                                        <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
+                                        <x-ui.action-link :href="route('products.index')" variant="secondary" class="min-h-11 px-5 hover-lift">Browse Catalog</x-ui.action-link>
+                                        <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5 hover-lift glow-orange">Generate Quote</x-ui.action-link>
                                         <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book Meeting</x-ui.action-link>
                                     </div>
 
@@ -666,7 +678,7 @@
                         $imagePath = $category->default_image_path ?: 'upload/categories/image1.jpg';
                         $categoryCopy = \Illuminate\Support\Str::limit($category->description ?: $category->application ?: 'Explore products from this category.', 60);
                     @endphp
-                    <article class="home-category-tile home-reveal group {{ $tileClass }}">
+                    <article class="glass-card hover-lift home-reveal group {{ $tileClass }} rounded-[var(--ui-radius-card)]">
                         <div class="home-category-tile__media">
                             <img
                                 src="{{ asset($imagePath) }}"
@@ -684,13 +696,13 @@
                         </div>
                         <div class="home-category-tile__content">
                             <div>
-                                <h3 class="font-['Sora'] text-lg font-semibold tracking-tight text-slate-950">{{ $category->name }}</h3>
+                                <h3 class="font-display text-lg font-semibold tracking-tight text-slate-950">{{ $category->name }}</h3>
                                 <p class="home-category-copy mt-1.5 text-[13px] leading-5.5">
                                     {{ $categoryCopy }}
                                 </p>
                             </div>
                             <div class="mt-auto">
-                                <a href="{{ route('products.index') }}" class="home-category-action">Explore</a>
+                                <a href="{{ route('products.index') }}" class="home-category-action hover-lift glow-orange">Explore</a>
                             </div>
                         </div>
                     </article>
@@ -754,7 +766,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-newsletter bg-transparent py-12 md:py-16">
         <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
-            <article class="home-delivery-card home-reveal rounded-3xl p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8">
+            <article class="home-delivery-card home-reveal rounded-[var(--ui-radius-card)] p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8">
                 <div class="home-delivery-content">
                     <span class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow local support</span>
                     <h2 class="mt-4 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
@@ -793,12 +805,10 @@
     {{-- STRATEGIC PRESENCE: NORTHERN HUB --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section class="home-northern-hub bg-transparent py-12 md:py-16">
-        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="home-reveal relative overflow-hidden rounded-3xl border border-slate-200/80 shadow-[0_24px_55px_rgba(15,23,42,0.07)]" style="background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.92))">
+            <div class="home-reveal relative overflow-hidden rounded-[var(--ui-radius-card)] border border-slate-200/80 shadow-[var(--ui-shadow-card)] glass-card">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
-                    {{-- Left: Content --}}
                     <div class="flex flex-col justify-center p-6 sm:p-8 lg:p-10 xl:p-12">
-                        <h2 class="font-['Sora'] text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl lg:text-[2rem]">Strategic Presence: Northern Hub</h2>
+                        <h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl lg:text-[2rem]">Strategic Presence: Northern Hub</h2>
                         <p class="mt-4 max-w-lg text-sm leading-6 text-slate-600 md:text-[15px] md:leading-7">
                             Our state-of-the-art reference laboratory in Lucknow serves as the nerve center for North India, ensuring specialized pathology samples reach analysis within 6 hours of collection.
                         </p>
@@ -817,7 +827,7 @@
                                 <span class="text-sm font-semibold text-slate-800">Dedicated Cold-Chain Logistics Hub</span>
                             </li>
                             <li class="flex items-center gap-3">
-                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#1A4D2E">
+                                <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-600">
                                     <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                                 <span class="text-sm font-semibold text-slate-800">AI-Integrated Result Validation</span>
@@ -825,7 +835,7 @@
                         </ul>
 
                         <div class="mt-8">
-                            <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md" style="background:#1A4D2E">
+                            <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:scale-105 hover:bg-primary-700">
                                 Find a Collection Center
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             </a>
@@ -842,9 +852,9 @@
                             decoding="async"
                         >
                         {{-- Location badge --}}
-                        <div class="absolute bottom-4 right-4 z-10 rounded-2xl border border-white/70 bg-white/90 px-5 py-3 shadow-lg backdrop-blur-sm sm:bottom-6 sm:right-6">
+                        <div class="absolute bottom-4 right-4 z-10 glass-card rounded-2xl px-5 py-3 sm:bottom-6 sm:right-6">
                             <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Center of Excellence</p>
-                            <p class="mt-1 text-lg font-bold tracking-tight text-slate-950">Lucknow, UP</p>
+                            <p class="font-display mt-1 text-lg font-bold tracking-tight text-slate-950">Lucknow, UP</p>
                             <p class="text-xs font-medium text-slate-500">Regional Reference Lab #01</p>
                         </div>
                     </div>
@@ -860,13 +870,13 @@
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal overflow-hidden rounded-3xl bg-primary-600 px-6 py-10 shadow-[0_24px_55px_rgba(26,77,46,0.25)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16">
                 <div class="max-w-xl">
-                    <h2 class="font-['Sora'] text-2xl font-semibold tracking-tight text-white md:text-3xl lg:text-[2rem]">Test Your Diagnostic<br>Precision</h2>
+                    <h2 class="font-display text-2xl font-semibold tracking-tight text-white md:text-3xl lg:text-[2rem]">Test Your Diagnostic<br>Precision</h2>
                     <p class="mt-3 text-sm leading-6 text-white/80 md:text-[15px] md:leading-7">
                         Take our 4-minute kit assessment and unlock a 15% discount code on your first clinical order.
                     </p>
                 </div>
                 <div class="mt-6 md:mt-0 md:ml-8 md:shrink-0">
-                    <a href="{{ route('diagnostic-quiz') }}" class="inline-flex items-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:bg-secondary-200 hover:-translate-y-0.5 hover:shadow-md">
+                    <a href="{{ route('diagnostic-quiz') }}" class="inline-flex items-center gap-2.5 rounded-xl border border-secondary-700/20 bg-secondary-600 px-7 py-3.5 text-sm font-semibold text-primary-800 shadow-sm transition hover:scale-105 hover:bg-secondary-500 glow-orange">
                         Start Quiz
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     </a>
@@ -881,13 +891,13 @@
     <section class="home-cta py-12 text-white md:py-14">
         <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
-                <h2 class="font-['Sora'] text-2xl font-semibold text-white md:text-4xl">Need a faster procurement decision?</h2>
+                <h2 class="font-display text-2xl font-semibold text-white md:text-4xl">Need a faster procurement decision?</h2>
                 <p class="mx-auto mt-3 max-w-3xl text-sm text-slate-200 md:text-base">
                     Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
                 </p>
                 <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5">Generate Quote</x-ui.action-link>
-                    <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5">Book a Meeting</x-ui.action-link>
+                    <x-ui.action-link :href="route('quotation.create')" class="min-h-11 px-5 hover-lift glow-orange">Generate Quote</x-ui.action-link>
+                    <x-ui.action-link :href="route('book-meeting')" variant="inverse" class="min-h-11 px-5 hover-lift">Book a Meeting</x-ui.action-link>
                 </div>
             </div>
         </div>

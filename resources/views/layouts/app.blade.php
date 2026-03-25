@@ -34,6 +34,23 @@
     <style>
         html {
             scrollbar-gutter: stable both-edges;
+            scroll-behavior: smooth;
+        }
+
+        /* Premium Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 5px;
+            border: 2px solid #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary-500);
         }
 
         html.biogenix-loading,
@@ -57,6 +74,7 @@
             animation: loader 1.6s ease-in-out infinite;
             will-change: transform;
         }
+
     </style>
 
     <div id="pageWrapper" class="flex min-h-screen flex-col">

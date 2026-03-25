@@ -26,7 +26,7 @@
     ];
 @endphp
 
-<header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+<header class="glass-header sticky top-0 z-50">
     <style>
         /* Fluid navbar sizing that scales with viewport */
         .header-nav-link {
@@ -63,8 +63,8 @@
         }
     </style>
     <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10"
-    style="background: radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.11), transparent 24%),
-            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.12), transparent 18%),
+    style="background: radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.08), transparent 24%),
+            radial-gradient(circle at 88% 10%, rgba(56, 189, 248, 0.08), transparent 18%),
             linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)"
     >
         <a href="{{ route('home') }}" class="shrink-0 xl:col-start-1">
@@ -138,7 +138,7 @@
             {{-- Profile icon --}}
             <a
                 href="{{ $profileHref }}"
-                class="header-profile-button inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 text-primary-700 no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
+                class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 text-primary-700 no-underline shadow-sm transition hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
                 aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}"
                 title="Profile"
             >
