@@ -9,12 +9,12 @@
 @endphp
 
 <div class="min-h-screen bg-slate-50">
-    <section class="relative overflow-hidden bg-primary-800 py-16 text-white lg:py-20">
-        <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
-        <div class="absolute inset-0 bg-gradient-to-b from-primary-800/60 to-primary-900/90"></div>
+    <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+        <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="FAQ Background" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
+        <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
-            <h1 class="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">Frequently Asked Questions</h1>
-            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-primary-50/80">Got questions about products, ordering, or delivery? We&apos;ve got answers.</p>
+            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">Frequently Asked Questions</h1>
+            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-secondary-600 md:text-lg">Got questions about products, ordering, or delivery? We&apos;ve got answers.</p>
         </div>
     </section>
 

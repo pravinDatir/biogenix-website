@@ -207,31 +207,6 @@
             </div>
         </div>
 
-        {{-- Need immediate help section --}}
-        <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                    <h2 class="text-base font-bold text-slate-900">Need immediate help?</h2>
-                    <p class="mt-2 max-w-md text-[13px] leading-6 text-slate-500">Our knowledge base contains answers to 90% of technical questions regarding bio-storage and shipping protocols.</p>
-                    <a href="{{ route('faq') }}" class="mt-3 inline-flex items-center gap-1 text-[13px] font-bold text-primary-800 no-underline hover:underline">
-                        Visit Help Center
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </a>
-                </div>
-                <div class="flex flex-wrap gap-4">
-                    <div class="flex flex-col items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50/50 px-8 py-5 text-center">
-                        <svg class="h-5 w-5 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Documentation</p>
-                        <p class="text-[13px] font-bold text-slate-900">Storage Guide</p>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50/50 px-8 py-5 text-center">
-                        <svg class="h-5 w-5 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Live Support</p>
-                        <p class="text-[13px] font-bold text-slate-900">24/7 Chat</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </x-account.workspace>
 
 {{-- New Ticket Modal --}}

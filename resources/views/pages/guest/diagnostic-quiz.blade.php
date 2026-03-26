@@ -1,179 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', 'Diagnostic Precision Quiz – Biogenix')
+@section('title', 'Diagnostic Precision Quiz â€“ Biogenix')
 @section('meta_description', 'Test your diagnostic knowledge with the Biogenix Kits Mastery quiz. Answer 4 questions and unlock a 15% discount on your first clinical order.')
-
-@push('styles')
-<style>
-    .quiz-page {
-        min-height: calc(100vh - 88px);
-    }
-
-    /* ─── Progress bar ─── */
-    .quiz-progress-track {
-        height: 6px;
-        border-radius: 999px;
-        background: #e2e8f0;
-        overflow: hidden;
-    }
-    .quiz-progress-fill {
-        height: 100%;
-        border-radius: 999px;
-        background: var(--color-primary-600);
-        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ─── Option cards ─── */
-    .quiz-option {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1.1rem 1.25rem;
-        border-radius: 1rem;
-        border: 2px solid #e2e8f0;
-        background: #ffffff;
-        cursor: pointer;
-        transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
-    }
-    .quiz-option:hover {
-        border-color: #94a3b8;
-        background: #f8fafc;
-    }
-    .quiz-option.selected {
-        border-color: var(--color-primary-600);
-        background: rgba(26, 77, 46, 0.06);
-        box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
-    }
-    .quiz-option.correct {
-        border-color: var(--color-primary-500);
-        background: rgba(22, 163, 74, 0.06);
-    }
-
-    .quiz-option-radio {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 2.25rem;
-        width: 2.25rem;
-        border-radius: 9999px;
-        border: 2px solid #cbd5e1;
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #64748b;
-        flex-shrink: 0;
-        transition: background 0.25s, border-color 0.25s, color 0.25s;
-    }
-    .quiz-option.selected .quiz-option-radio {
-        background: var(--color-primary-600);
-        border-color: var(--color-primary-600);
-        color: #ffffff;
-    }
-
-    .quiz-option-check {
-        display: none;
-        margin-left: auto;
-    }
-    .quiz-option.selected .quiz-option-check {
-        display: flex;
-    }
-
-    /* ─── Clinical tip cards ─── */
-    .quiz-tip-card {
-        border-radius: 1.25rem;
-        border: 1px solid #e2e8f0;
-        background: #fffbeb;
-        padding: 1.25rem;
-    }
-    .quiz-context-card {
-        border-radius: 1.25rem;
-        border: 1px solid #e2e8f0;
-        background: #ffffff;
-        padding: 1.25rem;
-    }
-    .quiz-insight-card {
-        border-radius: 1rem;
-        border: 1px solid #e2e8f0;
-        background: #fef9c3;
-        padding: 1rem;
-    }
-    .quiz-ref-card {
-        border-radius: 1.25rem;
-        border: 1px solid #e2e8f0;
-        background: #ffffff;
-        padding: 1.25rem;
-    }
-
-    /* ─── Step transitions ─── */
-    .quiz-step {
-        display: none;
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    .quiz-step.active {
-        display: block;
-        animation: quizFadeIn 0.4s ease forwards;
-    }
-    @keyframes quizFadeIn {
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── Result score ring ─── */
-    .score-ring {
-        width: 200px;
-        height: 200px;
-    }
-    .score-ring-bg { stroke: #e2e8f0; }
-    .score-ring-fill {
-        stroke: var(--color-primary-600);
-        stroke-linecap: round;
-        transform: rotate(-90deg);
-        transform-origin: 50% 50%;
-        transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ─── Performance bars ─── */
-    .perf-bar-track {
-        height: 8px;
-        border-radius: 999px;
-        background: #e2e8f0;
-        overflow: hidden;
-    }
-    .perf-bar-fill {
-        height: 100%;
-        border-radius: 999px;
-        background: #0f172a;
-        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-    }
-
-    /* ─── Voucher code ─── */
-    .voucher-code {
-        letter-spacing: 0.3em;
-        font-family: 'Sora', monospace;
-    }
-
-    /* ─── Form fields ─── */
-    .quiz-field {
-        height: 3rem;
-        width: 100%;
-        border-radius: 0.75rem;
-        border: 1.5px solid #e2e8f0;
-        background: #f8fafc;
-        padding: 0 1rem;
-        font-size: 0.875rem;
-        color: #0f172a;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .quiz-field:focus {
-        outline: none;
-        border-color: var(--color-primary-600);
-        box-shadow: 0 0 0 3px rgba(26, 77, 46, 0.1);
-    }
-    .quiz-field::placeholder {
-        color: #94a3b8;
-    }
-</style>
-@endpush
 
 @section('content')
 @php
@@ -202,77 +30,98 @@
         ->all();
     $hasQuizData = count($quizQuestionsPayload) > 0;
     $firstQuizQuestion = $hasQuizData ? $quizQuestionsPayload[0] : null;
+    $quizPageClass = 'min-h-[calc(100vh-88px)]';
+    $quizPanelClass = 'rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-6 shadow-[var(--ui-shadow-soft)] sm:p-8';
+    $quizProgressTrackClass = 'h-1.5 overflow-hidden rounded-full bg-[var(--ui-border)]';
+    $quizProgressFillClass = 'h-full rounded-full bg-primary-600 transition-[width] duration-500 ease-in-out';
+    $quizStepClass = 'quiz-step hidden translate-y-3 opacity-0 transition-all duration-300 [&.active]:block [&.active]:translate-y-0 [&.active]:opacity-100';
+    $quizOptionClass = 'quiz-option group relative flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-[var(--ui-border)] bg-[var(--ui-surface)] px-5 py-[1.1rem] transition-[border-color,background-color,box-shadow] duration-200 hover:border-[var(--color-neutral-200)] hover:bg-[var(--ui-surface-muted)] [&.selected]:border-primary-600 [&.selected]:bg-primary-600/5 [&.selected]:ring-2 [&.selected]:ring-primary-600/10';
+    $quizOptionRadioClass = 'quiz-option-radio inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-neutral-200)] text-[0.8rem] font-bold text-[var(--ui-text-muted)] transition-[background-color,border-color,color] duration-200 group-[.selected]:border-primary-600 group-[.selected]:bg-primary-600 group-[.selected]:text-white';
+    $quizOptionCheckClass = 'quiz-option-check ml-auto hidden group-[.selected]:flex';
+    $quizTipCardClass = 'quiz-tip-card rounded-[1.25rem] border border-[var(--ui-border)] bg-secondary-50 p-5';
+    $quizContextCardClass = 'quiz-context-card rounded-[1.25rem] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5';
+    $quizInsightCardClass = 'quiz-insight-card rounded-2xl border border-[var(--ui-border)] bg-secondary-100 p-4';
+    $quizRefCardClass = 'quiz-ref-card rounded-[1.25rem] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5';
+    $quizFieldClass = 'quiz-field h-12 w-full rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 text-sm text-[var(--ui-text)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-[var(--color-neutral-500)] focus:border-primary-600 focus:ring-2 focus:ring-primary-600/10';
+    $quizPrimaryButtonClass = 'quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
+    $quizSubmitButtonClass = 'mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-3.5 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
+    $quizScoreRingClass = 'relative h-[200px] w-[200px]';
+    $quizPerfTrackClass = 'h-2 overflow-hidden rounded-full bg-[var(--ui-border)]';
+    $quizPerfFillClass = 'h-full rounded-full bg-[var(--ui-text)] transition-[width] delay-300 duration-1000 ease-in-out';
+    $quizVoucherCodeClass = "mt-2 font-display text-2xl font-bold tracking-[0.3em] text-[var(--ui-surface)]";
+    $quizImageOverlayClass = 'absolute inset-0 bg-gradient-to-b from-primary-600/20 to-primary-600/85';
 @endphp
-<div class="quiz-page" id="quizApp">
+{{-- tailwind-width-safelist: w-0 w-[1%] w-[2%] w-[3%] w-[4%] w-[5%] w-[6%] w-[7%] w-[8%] w-[9%] w-[10%] w-[11%] w-[12%] w-[13%] w-[14%] w-[15%] w-[16%] w-[17%] w-[18%] w-[19%] w-[20%] w-[21%] w-[22%] w-[23%] w-[24%] w-[25%] w-[26%] w-[27%] w-[28%] w-[29%] w-[30%] w-[31%] w-[32%] w-[33%] w-[34%] w-[35%] w-[36%] w-[37%] w-[38%] w-[39%] w-[40%] w-[41%] w-[42%] w-[43%] w-[44%] w-[45%] w-[46%] w-[47%] w-[48%] w-[49%] w-[50%] w-[51%] w-[52%] w-[53%] w-[54%] w-[55%] w-[56%] w-[57%] w-[58%] w-[59%] w-[60%] w-[61%] w-[62%] w-[63%] w-[64%] w-[65%] w-[66%] w-[67%] w-[68%] w-[69%] w-[70%] w-[71%] w-[72%] w-[73%] w-[74%] w-[75%] w-[76%] w-[77%] w-[78%] w-[79%] w-[80%] w-[81%] w-[82%] w-[83%] w-[84%] w-[85%] w-[86%] w-[87%] w-[88%] w-[89%] w-[90%] w-[91%] w-[92%] w-[93%] w-[94%] w-[95%] w-[96%] w-[97%] w-[98%] w-[99%] w-full --}}
+<div class="{{ $quizPageClass }}" id="quizApp">
 
-    {{-- ═══ HEADER BAR ═══ --}}
-    <div class="border-b border-slate-200 bg-white">
+    {{-- â•â•â• HEADER BAR â•â•â• --}}
+    <div class="border-b border-[var(--ui-border)] bg-[var(--ui-surface)]">
         <div class="mx-auto w-full max-w-none px-4 py-5 sm:px-6 lg:px-8 xl:px-10">
             <div class="flex items-end justify-between">
                 <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500" id="quizPhaseLabel">{{ $hasQuizData ? 'Assessment Phase: 01' : 'Assessment Setup' }}</p>
-                    <h1 class="mt-1 font-['Sora'] text-2xl font-bold tracking-tight text-slate-950 md:text-3xl" id="quizTitle">{{ $firstQuizQuestion['phase_title'] ?? 'Diagnostic Precision Quiz' }}</h1>
-                    <div class="quiz-progress-track mt-3 w-48 sm:w-64">
-                        <div class="quiz-progress-fill" id="quizProgressBar" style="width: {{ $hasQuizData ? round(100 / count($quizQuestionsPayload)) : 0 }}%"></div>
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ui-text-muted)]" id="quizPhaseLabel">{{ $hasQuizData ? 'Assessment Phase: 01' : 'Assessment Setup' }}</p>
+                    <h1 class="font-display mt-1 text-2xl font-bold tracking-tight text-[var(--ui-text)] md:text-3xl" id="quizTitle">{{ $firstQuizQuestion['phase_title'] ?? 'Diagnostic Precision Quiz' }}</h1>
+                    <div class="{{ $quizProgressTrackClass }} mt-3 w-48 sm:w-64">
+                        <div class="{{ $quizProgressFillClass }} w-0" id="quizProgressBar"></div>
                     </div>
                 </div>
                 <div class="text-right">
-                    <p class="text-base font-bold text-slate-950" id="quizStepLabel">{{ $hasQuizData ? 'Step 1 of '.count($quizQuestionsPayload) : '' }}</p>
-                    <p class="text-sm text-slate-500" id="quizPercentLabel">{{ $hasQuizData ? round(100 / count($quizQuestionsPayload)).'% Complete' : '0% Complete' }}</p>
+                    <p class="text-base font-bold text-[var(--ui-text)]" id="quizStepLabel">{{ $hasQuizData ? 'Step 1 of '.count($quizQuestionsPayload) : '' }}</p>
+                    <p class="text-sm text-[var(--ui-text-muted)]" id="quizPercentLabel">{{ $hasQuizData ? round(100 / count($quizQuestionsPayload)).'% Complete' : '0% Complete' }}</p>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- ═══ QUIZ CONTENT ═══ --}}
+    {{-- â•â•â• QUIZ CONTENT â•â•â• --}}
     <div class="mx-auto w-full max-w-none px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
         @if (! $hasQuizData)
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                <h2 class="text-xl font-bold text-slate-950">Quiz is not available right now.</h2>
-                <p class="mt-3 text-sm leading-6 text-slate-600">Please run the quiz migration and seeder, then reload this page.</p>
+            <div class="{{ $quizPanelClass }}">
+                <h2 class="text-xl font-bold text-[var(--ui-text)]">Quiz is not available right now.</h2>
+                <p class="mt-3 text-sm leading-6 text-[var(--ui-text-muted)]">Please run the quiz migration and seeder, then reload this page.</p>
             </div>
         @else
 
-        {{-- ────────── STEP 1 ────────── --}}
-        <div class="quiz-step active" data-step="1">
+        {{-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ STEP 1 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+        <div class="{{ $quizStepClass }} active" data-step="1">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div class="lg:col-span-2">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                    <div class="{{ $quizPanelClass }}">
                         <div class="flex items-start gap-3">
                             <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">1</span>
-                            <h2 class="text-lg font-bold text-slate-950 sm:text-xl">Which reagent kit is best suited for high-throughput automation?</h2>
+                            <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">Which reagent kit is best suited for high-throughput automation?</h2>
                         </div>
 
                         <div class="mt-6 space-y-3" id="q1Options">
-                            <div class="quiz-option" data-answer="A" onclick="selectOption(1, this)">
-                                <span class="quiz-option-radio">A</span>
-                                <span class="text-sm font-semibold text-slate-800">Precision-X LIMS Kit</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(1, this)">
+                                <span class="{{ $quizOptionRadioClass }}">A</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Precision-X LIMS Kit</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="B" onclick="selectOption(1, this)">
-                                <span class="quiz-option-radio">B</span>
-                                <span class="text-sm font-semibold text-slate-800">Bio-RGT Standard</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(1, this)">
+                                <span class="{{ $quizOptionRadioClass }}">B</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Bio-RGT Standard</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="C" onclick="selectOption(1, this)">
-                                <span class="quiz-option-radio">C</span>
-                                <span class="text-sm font-semibold text-slate-800">Clinical-Max Assay</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(1, this)">
+                                <span class="{{ $quizOptionRadioClass }}">C</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Clinical-Max Assay</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="D" onclick="selectOption(1, this)">
-                                <span class="quiz-option-radio">D</span>
-                                <span class="text-sm font-semibold text-slate-800">Eco-Lite Consumable</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(1, this)">
+                                <span class="{{ $quizOptionRadioClass }}">D</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Eco-Lite Consumable</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 cursor-not-allowed" disabled>
+                        <button type="button" class="inline-flex cursor-not-allowed items-center gap-2 text-sm font-semibold text-[var(--color-neutral-500)]" disabled>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(2)">
+                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(2)">
                             Next
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
@@ -281,28 +130,28 @@
 
                 {{-- Sidebar --}}
                 <div class="space-y-5">
-                    <div class="quiz-tip-card">
+                    <div class="{{ $quizTipCardClass }}">
                         <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
                             <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
                             Clinical Tip
                         </p>
                         <h3 class="mt-2 text-base font-bold text-primary-600">Automation Integration</h3>
-                        <p class="mt-2 text-sm leading-6 text-slate-600">Automation-compatible kits utilize standard SBS footprints and barcoded vials. When selecting a kit for high-throughput environments, prioritize those with liquid-level sensing compatibility to minimize aspiration errors.</p>
+                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Automation-compatible kits utilize standard SBS footprints and barcoded vials. When selecting a kit for high-throughput environments, prioritize those with liquid-level sensing compatibility to minimize aspiration errors.</p>
                     </div>
 
-                    <div class="quiz-context-card">
-                        <h4 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Assessment Context</h4>
+                    <div class="{{ $quizContextCardClass }}">
+                        <h4 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Assessment Context</h4>
                         <ul class="mt-3 space-y-3">
-                            <li class="flex items-center gap-2.5 text-sm text-slate-700">
-                                <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
+                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
+                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
                                 Module: Reagent Classification
                             </li>
-                            <li class="flex items-center gap-2.5 text-sm text-slate-700">
-                                <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
+                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 Difficulty: Intermediate
                             </li>
-                            <li class="flex items-center gap-2.5 text-sm text-slate-700">
-                                <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
+                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
+                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
                                 Time Limit: No constraints
                             </li>
                         </ul>
@@ -310,93 +159,93 @@
 
                     <div class="relative overflow-hidden rounded-2xl min-h-[180px]">
                         <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Automated pipetting system" class="absolute inset-0 h-full w-full object-cover" loading="lazy">
-                        <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(26,77,46,0.2),rgba(26,77,46,0.85))"></div>
-                        <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-white/90">Fig 1.1: Automated pipetting system with Biogenix reagents.</p>
+                        <div class="{{ $quizImageOverlayClass }}"></div>
+                        <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-[var(--ui-surface)] opacity-90">Fig 1.1: Automated pipetting system with Biogenix reagents.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- ────────── STEP 2 ────────── --}}
-        <div class="quiz-step" data-step="2">
+        {{-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ STEP 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+        <div class="{{ $quizStepClass }}" data-step="2">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div class="lg:col-span-2">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                        <h2 class="text-lg font-bold text-slate-950 sm:text-xl">What is the required storage temperature for the DNA Polymerase High Fidelity kit?</h2>
+                    <div class="{{ $quizPanelClass }}">
+                        <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">What is the required storage temperature for the DNA Polymerase High Fidelity kit?</h2>
                         <div class="mt-6 space-y-3" id="q2Options">
-                            <div class="quiz-option" data-answer="A" onclick="selectOption(2, this)">
-                                <span class="quiz-option-radio">A</span>
-                                <span class="text-sm font-semibold text-slate-800">Room Temperature</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(2, this)">
+                                <span class="{{ $quizOptionRadioClass }}">A</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Room Temperature</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="B" onclick="selectOption(2, this)">
-                                <span class="quiz-option-radio">B</span>
-                                <span class="text-sm font-semibold text-slate-800">4°C</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(2, this)">
+                                <span class="{{ $quizOptionRadioClass }}">B</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">4Â°C</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="C" onclick="selectOption(2, this)">
-                                <span class="quiz-option-radio">C</span>
-                                <span class="text-sm font-semibold text-slate-800">-20°C</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(2, this)">
+                                <span class="{{ $quizOptionRadioClass }}">C</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">-20Â°C</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="D" onclick="selectOption(2, this)">
-                                <span class="quiz-option-radio">D</span>
-                                <span class="text-sm font-semibold text-slate-800">-80°C</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(2, this)">
+                                <span class="{{ $quizOptionRadioClass }}">D</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">-80Â°C</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-900" onclick="prevStep(1)">
+                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ui-text-muted)] transition hover:text-[var(--ui-text)]" onclick="prevStep(1)">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(3)">
+                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(3)">
                             Next Question
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
                     </div>
                 </div>
                 <div class="space-y-5">
-                    <div class="quiz-context-card">
-                        <h3 class="flex items-center gap-2 text-base font-bold text-slate-950">
-                            <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
+                    <div class="{{ $quizContextCardClass }}">
+                        <h3 class="flex items-center gap-2 text-base font-bold text-[var(--ui-text)]">
+                            <svg class="h-5 w-5 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
                             Storage Best Practices
                         </h3>
                         <ul class="mt-4 space-y-4">
                             <li>
-                                <p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Enzymatic Stability</p>
-                                <p class="mt-1 text-sm leading-6 text-slate-600">Most high-fidelity polymerases lose activity if exposed to repeated freeze-thaw cycles. Always use a cooling block during use.</p>
+                                <p class="flex items-center gap-2 text-sm font-bold text-[var(--ui-text)]"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Enzymatic Stability</p>
+                                <p class="mt-1 text-sm leading-6 text-[var(--ui-text-muted)]">Most high-fidelity polymerases lose activity if exposed to repeated freeze-thaw cycles. Always use a cooling block during use.</p>
                             </li>
                             <li>
-                                <p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Reagent Segregation</p>
-                                <p class="mt-1 text-sm leading-6 text-slate-600">Keep dNTPs and primers in separate aliquots to prevent cross-contamination during library preparation.</p>
+                                <p class="flex items-center gap-2 text-sm font-bold text-[var(--ui-text)]"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Reagent Segregation</p>
+                                <p class="mt-1 text-sm leading-6 text-[var(--ui-text-muted)]">Keep dNTPs and primers in separate aliquots to prevent cross-contamination during library preparation.</p>
                             </li>
                         </ul>
                     </div>
-                    <div class="quiz-insight-card">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-800">
+                    <div class="{{ $quizInsightCardClass }}">
+                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
                             <span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span>
                             Clinical Insight
                         </p>
-                        <p class="mt-2 text-sm leading-6 text-slate-700">Storing at -20°C in a non-frost-free freezer is critical for maintaining long-term buffer molarity.</p>
+                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Storing at -20Â°C in a non-frost-free freezer is critical for maintaining long-term buffer molarity.</p>
                     </div>
-                    <div class="quiz-ref-card">
-                        <h4 class="text-base font-bold text-slate-950">Reference Material</h4>
+                    <div class="{{ $quizRefCardClass }}">
+                        <h4 class="text-base font-bold text-[var(--ui-text)]">Reference Material</h4>
                         <div class="mt-3 space-y-2">
-                            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                <span class="flex items-center gap-2 text-sm font-medium text-slate-700">
+                            <div class="flex items-center justify-between rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 py-3">
+                                <span class="flex items-center gap-2 text-sm font-medium text-[var(--ui-text-muted)]">
                                     <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                     Kit_Datasheet_V4.pdf
                                 </span>
-                                <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                <svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             </div>
-                            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                <span class="flex items-center gap-2 text-sm font-medium text-slate-700">
+                            <div class="flex items-center justify-between rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 py-3">
+                                <span class="flex items-center gap-2 text-sm font-medium text-[var(--ui-text-muted)]">
                                     <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                     Storage_Protocol_Guide
                                 </span>
-                                <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                <svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             </div>
                         </div>
                     </div>
@@ -404,67 +253,67 @@
             </div>
         </div>
 
-        {{-- ────────── STEP 3 ────────── --}}
-        <div class="quiz-step" data-step="3">
+        {{-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ STEP 3 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+        <div class="{{ $quizStepClass }}" data-step="3">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div class="lg:col-span-2">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                    <div class="{{ $quizPanelClass }}">
                         <div class="flex items-start gap-3">
                             <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">3</span>
-                            <h2 class="text-lg font-bold text-slate-950 sm:text-xl">Which certification standard governs IVD reagent manufacturing quality?</h2>
+                            <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">Which certification standard governs IVD reagent manufacturing quality?</h2>
                         </div>
                         <div class="mt-6 space-y-3" id="q3Options">
-                            <div class="quiz-option" data-answer="A" onclick="selectOption(3, this)">
-                                <span class="quiz-option-radio">A</span>
-                                <span class="text-sm font-semibold text-slate-800">ISO 9001:2015</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(3, this)">
+                                <span class="{{ $quizOptionRadioClass }}">A</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">ISO 9001:2015</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="B" onclick="selectOption(3, this)">
-                                <span class="quiz-option-radio">B</span>
-                                <span class="text-sm font-semibold text-slate-800">ISO 13485:2016</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(3, this)">
+                                <span class="{{ $quizOptionRadioClass }}">B</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">ISO 13485:2016</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="C" onclick="selectOption(3, this)">
-                                <span class="quiz-option-radio">C</span>
-                                <span class="text-sm font-semibold text-slate-800">CE-IVD Directive 98/79/EC</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(3, this)">
+                                <span class="{{ $quizOptionRadioClass }}">C</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">CE-IVD Directive 98/79/EC</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="D" onclick="selectOption(3, this)">
-                                <span class="quiz-option-radio">D</span>
-                                <span class="text-sm font-semibold text-slate-800">GMP Annex 15</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(3, this)">
+                                <span class="{{ $quizOptionRadioClass }}">D</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">GMP Annex 15</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-900" onclick="prevStep(2)">
+                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ui-text-muted)] transition hover:text-[var(--ui-text)]" onclick="prevStep(2)">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(4)">
+                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(4)">
                             Next Question
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
                     </div>
                 </div>
                 <div class="space-y-5">
-                    <div class="quiz-tip-card">
+                    <div class="{{ $quizTipCardClass }}">
                         <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
                             <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
                             Clinical Tip
                         </p>
                         <h3 class="mt-2 text-base font-bold text-primary-600">Regulatory Compliance</h3>
-                        <p class="mt-2 text-sm leading-6 text-slate-600">ISO 13485 is the primary quality management standard for medical devices and IVD products. It ensures traceability, risk management, and process validation throughout the product lifecycle.</p>
+                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">ISO 13485 is the primary quality management standard for medical devices and IVD products. It ensures traceability, risk management, and process validation throughout the product lifecycle.</p>
                     </div>
-                    <div class="quiz-context-card">
-                        <h4 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Assessment Context</h4>
+                    <div class="{{ $quizContextCardClass }}">
+                        <h4 class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Assessment Context</h4>
                         <ul class="mt-3 space-y-3">
-                            <li class="flex items-center gap-2.5 text-sm text-slate-700">
-                                <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
+                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
+                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
                                 Module: Compliance Standards
                             </li>
-                            <li class="flex items-center gap-2.5 text-sm text-slate-700">
-                                <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
+                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 Difficulty: Advanced
                             </li>
                         </ul>
@@ -473,81 +322,81 @@
             </div>
         </div>
 
-        {{-- ────────── STEP 4 ────────── --}}
-        <div class="quiz-step" data-step="4">
+        {{-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ STEP 4 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+        <div class="{{ $quizStepClass }}" data-step="4">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div class="lg:col-span-2">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                    <div class="{{ $quizPanelClass }}">
                         <div class="flex items-start gap-3">
                             <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">4</span>
-                            <h2 class="text-lg font-bold text-slate-950 sm:text-xl">Which sample preparation method yields highest DNA purity for NGS workflows?</h2>
+                            <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">Which sample preparation method yields highest DNA purity for NGS workflows?</h2>
                         </div>
                         <div class="mt-6 space-y-3" id="q4Options">
-                            <div class="quiz-option" data-answer="A" onclick="selectOption(4, this)">
-                                <span class="quiz-option-radio">A</span>
-                                <span class="text-sm font-semibold text-slate-800">Phenol-chloroform extraction</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(4, this)">
+                                <span class="{{ $quizOptionRadioClass }}">A</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Phenol-chloroform extraction</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="B" onclick="selectOption(4, this)">
-                                <span class="quiz-option-radio">B</span>
-                                <span class="text-sm font-semibold text-slate-800">Magnetic bead-based purification</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(4, this)">
+                                <span class="{{ $quizOptionRadioClass }}">B</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Magnetic bead-based purification</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="C" onclick="selectOption(4, this)">
-                                <span class="quiz-option-radio">C</span>
-                                <span class="text-sm font-semibold text-slate-800">Silica membrane column</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(4, this)">
+                                <span class="{{ $quizOptionRadioClass }}">C</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Silica membrane column</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
-                            <div class="quiz-option" data-answer="D" onclick="selectOption(4, this)">
-                                <span class="quiz-option-radio">D</span>
-                                <span class="text-sm font-semibold text-slate-800">Salting-out precipitation</span>
-                                <span class="quiz-option-check"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(4, this)">
+                                <span class="{{ $quizOptionRadioClass }}">D</span>
+                                <span class="text-sm font-semibold text-[var(--ui-text)]">Salting-out precipitation</span>
+                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-900" onclick="prevStep(3)">
+                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ui-text-muted)] transition hover:text-[var(--ui-text)]" onclick="prevStep(3)">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
                             Previous
                         </button>
-                        <button type="button" class="quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="nextStep(5)">
+                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(5)">
                             Finish Quiz
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
                     </div>
                 </div>
                 <div class="space-y-5">
-                    <div class="quiz-tip-card">
+                    <div class="{{ $quizTipCardClass }}">
                         <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
                             <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
                             Clinical Tip
                         </p>
                         <h3 class="mt-2 text-base font-bold text-primary-600">NGS Library Prep</h3>
-                        <p class="mt-2 text-sm leading-6 text-slate-600">Magnetic bead-based purification provides the best combination of purity and automation compatibility for next-generation sequencing, with minimal carry-over contamination.</p>
+                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Magnetic bead-based purification provides the best combination of purity and automation compatibility for next-generation sequencing, with minimal carry-over contamination.</p>
                     </div>
                     <div class="relative overflow-hidden rounded-2xl min-h-[180px]">
                         <img src="{{ asset('upload/corousel/image5.jpg') }}" alt="NGS sample preparation" class="absolute inset-0 h-full w-full object-cover" loading="lazy">
-                        <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(26,77,46,0.2),rgba(26,77,46,0.85))"></div>
-                        <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-white/90">Fig 4.1: NGS library preparation workflow.</p>
+                        <div class="{{ $quizImageOverlayClass }}"></div>
+                        <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-[var(--ui-surface)] opacity-90">Fig 4.1: NGS library preparation workflow.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- ────────── STEP 5: LEAD CAPTURE FORM ────────── --}}
-        <div class="quiz-step" data-step="5">
+        {{-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ STEP 5: LEAD CAPTURE FORM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+        <div class="{{ $quizStepClass }}" data-step="5">
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div class="flex flex-col justify-center">
                     <span class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-800">Final Step</span>
-                    <h2 class="mt-4 font-['Sora'] text-3xl font-bold tracking-tight text-slate-950 md:text-4xl lg:text-5xl">You're almost<br>there!</h2>
-                    <p class="mt-4 max-w-md text-sm leading-6 text-slate-600 md:text-base">Enter your details to calculate your precision score and unlock your exclusive coupon code.</p>
+                    <h2 class="font-display mt-4 text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl">You're almost<br>there!</h2>
+                    <p class="mt-4 max-w-md text-sm leading-6 text-[var(--ui-text-muted)] md:text-base">Enter your details to calculate your precision score and unlock your exclusive coupon code.</p>
                     <div class="mt-6">
-                        <div class="flex items-center justify-between text-sm font-semibold text-slate-800">
+                        <div class="flex items-center justify-between text-sm font-semibold text-[var(--ui-text)]">
                             <span>Analysis Completion</span>
                             <span>100%</span>
                         </div>
-                        <div class="quiz-progress-track mt-2">
-                            <div class="quiz-progress-fill" style="width:100%"></div>
+                        <div class="{{ $quizProgressTrackClass }} mt-2">
+                            <div class="{{ $quizProgressFillClass }} w-full"></div>
                         </div>
                     </div>
                     <div class="mt-8 flex items-start gap-3">
@@ -555,35 +404,35 @@
                             <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         </span>
                         <div>
-                            <p class="text-sm font-bold text-slate-950">Privacy Protocol</p>
-                            <p class="mt-1 text-xs leading-5 text-slate-500">Your clinical data is encrypted using 256-bit AES standards. We never share your results with third-party providers.</p>
+                            <p class="text-sm font-bold text-[var(--ui-text)]">Privacy Protocol</p>
+                            <p class="mt-1 text-xs leading-5 text-[var(--ui-text-muted)]">Your clinical data is encrypted using 256-bit AES standards. We never share your results with third-party providers.</p>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                        <div class="quiz-progress-track mb-6">
-                            <div class="quiz-progress-fill" style="width:100%;background:var(--color-secondary-600)"></div>
+                    <div class="{{ $quizPanelClass }}">
+                        <div class="{{ $quizProgressTrackClass }} mb-6">
+                            <div class="h-full w-full rounded-full bg-secondary-600"></div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">First Name</label>
-                                <input type="text" id="quizFirstName" class="quiz-field" placeholder="John">
+                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">First Name</label>
+                                <input type="text" id="quizFirstName" class="{{ $quizFieldClass }}" placeholder="John">
                             </div>
                             <div>
-                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Last Name</label>
-                                <input type="text" id="quizLastName" class="quiz-field" placeholder="Doe">
+                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Last Name</label>
+                                <input type="text" id="quizLastName" class="{{ $quizFieldClass }}" placeholder="Doe">
                             </div>
                         </div>
                         <div class="mt-4">
-                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Email Address</label>
-                            <input type="email" id="quizEmail" class="quiz-field" placeholder="john.doe@medical-cloud.com">
+                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Email Address</label>
+                            <input type="email" id="quizEmail" class="{{ $quizFieldClass }}" placeholder="john.doe@medical-cloud.com">
                         </div>
-                        <button type="button" id="quizSubmitButton" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-md" onclick="showResults()">
+                        <button type="button" id="quizSubmitButton" class="{{ $quizSubmitButtonClass }}" onclick="showResults()">
                             Unlock My Score & Reward
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                         </button>
-                        <p class="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-400">
+                        <p class="mt-3 flex items-center justify-center gap-1.5 text-xs text-[var(--color-neutral-500)]">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                             Secure submission via Biogenix Clinical Gateway
                         </p>
@@ -592,24 +441,24 @@
             </div>
         </div>
 
-        {{-- ────────── STEP 6: RESULTS ────────── --}}
-        <div class="quiz-step" data-step="6">
+        {{-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ STEP 6: RESULTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ --}}
+        <div class="{{ $quizStepClass }}" data-step="6">
             <div class="mb-8">
                 <span class="inline-flex rounded-full bg-primary-500 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white">Assessment Complete</span>
                 <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <div>
-                        <h2 class="font-['Sora'] text-3xl font-bold tracking-tight text-slate-950 md:text-4xl lg:text-5xl" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
-                        <p class="mt-4 max-w-lg text-sm leading-6 text-slate-600 md:text-base" id="quizResultDescription">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
+                        <h2 class="font-display text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
+                        <p class="mt-4 max-w-lg text-sm leading-6 text-[var(--ui-text-muted)] md:text-base" id="quizResultDescription">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
                     </div>
                     <div class="flex items-center justify-center">
-                        <div class="score-ring relative">
+                        <div class="{{ $quizScoreRingClass }}">
                             <svg viewBox="0 0 200 200" class="h-full w-full">
-                                <circle class="score-ring-bg" cx="100" cy="100" r="85" fill="none" stroke-width="10"/>
-                                <circle class="score-ring-fill" id="scoreRingFill" cx="100" cy="100" r="85" fill="none" stroke-width="10" stroke-dasharray="534" stroke-dashoffset="534"/>
+                                <circle class="stroke-[var(--ui-border)]" cx="100" cy="100" r="85" fill="none" stroke-width="10"/>
+                                <circle class="stroke-primary-600 transition-[stroke-dashoffset] duration-[1200ms] ease-in-out" id="scoreRingFill" cx="100" cy="100" r="85" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="534" stroke-dashoffset="534" transform="rotate(-90 100 100)"/>
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                <span class="font-['Sora'] text-5xl font-bold text-slate-950" id="scoreValue">0%</span>
-                                <span class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Precision Score</span>
+                                <span class="font-display text-5xl font-bold text-[var(--ui-text)]" id="scoreValue">0%</span>
+                                <span class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--ui-text-muted)]">Precision Score</span>
                             </div>
                         </div>
                     </div>
@@ -617,38 +466,38 @@
             </div>
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                    <h3 class="flex items-center gap-2 text-base font-bold text-slate-950">
-                        <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <div class="{{ $quizPanelClass }}">
+                    <h3 class="flex items-center gap-2 text-base font-bold text-[var(--ui-text)]">
+                        <svg class="h-5 w-5 text-[var(--ui-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         Phase Performance Breakdown
                     </h3>
                     <div class="mt-6 space-y-5">
                         <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800" id="quizPerfLabel1">Kits Mastery</span><span class="font-bold text-slate-950" id="quizPerfValue1">98%</span></div>
-                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" id="quizPerfBar1" data-perf="98" style="width:0%"></div></div>
+                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-[var(--ui-text)]" id="quizPerfLabel1">Kits Mastery</span><span class="font-bold text-[var(--ui-text)]" id="quizPerfValue1">98%</span></div>
+                            <div class="{{ $quizPerfTrackClass }} mt-2"><div class="{{ $quizPerfFillClass }} w-0" id="quizPerfBar1" data-perf="98"></div></div>
                         </div>
                         <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800" id="quizPerfLabel2">Storage Requirements</span><span class="font-bold text-slate-950" id="quizPerfValue2">85%</span></div>
-                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" id="quizPerfBar2" data-perf="85" style="width:0%"></div></div>
+                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-[var(--ui-text)]" id="quizPerfLabel2">Storage Requirements</span><span class="font-bold text-[var(--ui-text)]" id="quizPerfValue2">85%</span></div>
+                            <div class="{{ $quizPerfTrackClass }} mt-2"><div class="{{ $quizPerfFillClass }} w-0" id="quizPerfBar2" data-perf="85"></div></div>
                         </div>
                         <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-slate-800" id="quizPerfLabel3">System Compatibility</span><span class="font-bold text-slate-950" id="quizPerfValue3">94%</span></div>
-                            <div class="perf-bar-track mt-2"><div class="perf-bar-fill" id="quizPerfBar3" data-perf="94" style="width:0%"></div></div>
+                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-[var(--ui-text)]" id="quizPerfLabel3">System Compatibility</span><span class="font-bold text-[var(--ui-text)]" id="quizPerfValue3">94%</span></div>
+                            <div class="{{ $quizPerfTrackClass }} mt-2"><div class="{{ $quizPerfFillClass }} w-0" id="quizPerfBar3" data-perf="94"></div></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="overflow-hidden rounded-2xl bg-primary-600 p-6 text-white shadow-sm sm:p-8">
-                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl" style="background:rgba(212,160,23,0.25)">
-                        <svg class="h-6 w-6 text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary-600/25">
+                        <svg class="h-6 w-6 text-secondary-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </div>
-                    <h3 class="mt-4 font-['Sora'] text-2xl font-bold text-white">Certification<br>Reward</h3>
-                    <p class="mt-3 text-sm leading-6 text-white/70">Redeem your exclusive proficiency discount on any premium diagnostic kit.</p>
-                    <div class="mt-5 rounded-xl border border-white/15 px-5 py-4 text-center" style="background:rgba(255,255,255,0.08)">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/60">Voucher Code</p>
-                        <p class="voucher-code mt-2 text-2xl font-bold text-white" id="voucherCode">BIOGENIX15</p>
+                    <h3 class="font-display mt-4 text-2xl font-bold text-[var(--ui-surface)]">Certification<br>Reward</h3>
+                    <p class="mt-3 text-sm leading-6 text-[var(--ui-surface)] opacity-70">Redeem your exclusive proficiency discount on any premium diagnostic kit.</p>
+                    <div class="mt-5 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-border)] px-5 py-4 text-center">
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--ui-surface)] opacity-60">Voucher Code</p>
+                        <p class="{{ $quizVoucherCodeClass }}" id="voucherCode">BIOGENIX15</p>
                     </div>
-                    <button type="button" class="mt-4 inline-flex w-full items-center justify-center rounded-xl border-2 border-white/20 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10" onclick="copyVoucher()">
+                    <button type="button" class="mt-4 inline-flex w-full items-center justify-center rounded-xl border-2 border-[var(--glass-border)] px-6 py-3 text-sm font-bold text-[var(--ui-surface)] transition hover:bg-[var(--glass-border)]" onclick="copyVoucher()">
                         Copy and Shop
                     </button>
                 </div>
@@ -668,6 +517,9 @@
     var quizSubmitUrl = @json(route('diagnostic-quiz.store'));
     var quizSubmitButtonDefaultHtml = '';
     var currentVoucherCode = document.getElementById('voucherCode') ? document.getElementById('voucherCode').textContent : 'BIOGENIX15';
+    var quizOptionClassName = @json($quizOptionClass);
+    var quizOptionRadioClassName = @json($quizOptionRadioClass);
+    var quizOptionCheckClassName = @json($quizOptionCheckClass);
 
     function escapeHtml(value) {
         return String(value || '')
@@ -706,41 +558,41 @@
 
     function iconMarkup(iconName) {
         if (iconName === 'check-circle') {
-            return '<svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+            return '<svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
         }
 
         if (iconName === 'clock') {
-            return '<svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>';
+            return '<svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>';
         }
 
         if (iconName === 'file-green') {
-            return '<svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>';
+            return '<svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>';
         }
 
         if (iconName === 'download') {
-            return '<svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>';
+            return '<svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>';
         }
 
         if (iconName === 'external-link') {
-            return '<svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>';
+            return '<svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>';
         }
 
-        return '<svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>';
+        return '<svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>';
     }
 
     function buildOptionMarkup(stepNumber, questionData) {
         return (questionData.answer_options || []).map(function (answerOption) {
-            return '<div class="quiz-option" data-answer="' + escapeHtml(answerOption.option_label) + '" data-question-id="' + escapeHtml(questionData.id) + '" data-option-id="' + escapeHtml(answerOption.id) + '" onclick="selectOption(' + stepNumber + ', this)">' +
-                '<span class="quiz-option-radio">' + escapeHtml(answerOption.option_label) + '</span>' +
-                '<span class="text-sm font-semibold text-slate-800">' + escapeHtml(answerOption.option_text) + '</span>' +
-                '<span class="quiz-option-check"><svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>' +
+            return '<div class="' + quizOptionClassName + '" data-answer="' + escapeHtml(answerOption.option_label) + '" data-question-id="' + escapeHtml(questionData.id) + '" data-option-id="' + escapeHtml(answerOption.id) + '" onclick="selectOption(' + stepNumber + ', this)">' +
+                '<span class="' + quizOptionRadioClassName + '">' + escapeHtml(answerOption.option_label) + '</span>' +
+                '<span class="text-sm font-semibold text-[var(--ui-text)]">' + escapeHtml(answerOption.option_text) + '</span>' +
+                '<span class="' + quizOptionCheckClassName + '"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>' +
             '</div>';
         }).join('');
     }
 
     function buildContextListMarkup(items) {
         return (Array.isArray(items) ? items : []).map(function (item) {
-            return '<li class="flex items-center gap-2.5 text-sm text-slate-700">' +
+            return '<li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">' +
                 iconMarkup(item.icon) +
                 escapeHtml(item.text) +
             '</li>';
@@ -750,22 +602,48 @@
     function buildContextSectionMarkup(sections) {
         return (Array.isArray(sections) ? sections : []).map(function (section) {
             return '<li>' +
-                '<p class="flex items-center gap-2 text-sm font-bold text-slate-900"><span class="inline-block h-2 w-2 rounded-full" style="background:#d4a017"></span> ' + escapeHtml(section.title) + '</p>' +
-                '<p class="mt-1 text-sm leading-6 text-slate-600">' + escapeHtml(section.description) + '</p>' +
+                '<p class="flex items-center gap-2 text-sm font-bold text-[var(--ui-text)]"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> ' + escapeHtml(section.title) + '</p>' +
+                '<p class="mt-1 text-sm leading-6 text-[var(--ui-text-muted)]">' + escapeHtml(section.description) + '</p>' +
             '</li>';
         }).join('');
     }
 
     function buildReferenceListMarkup(items) {
         return (Array.isArray(items) ? items : []).map(function (item) {
-            return '<div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">' +
-                '<span class="flex items-center gap-2 text-sm font-medium text-slate-700">' +
+            return '<div class="flex items-center justify-between rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 py-3">' +
+                '<span class="flex items-center gap-2 text-sm font-medium text-[var(--ui-text-muted)]">' +
                     iconMarkup(item.leading_icon) +
                     escapeHtml(item.document_name) +
                 '</span>' +
                 iconMarkup(item.trailing_icon) +
             '</div>';
         }).join('');
+    }
+
+    function setPercentWidthClass(element, percent) {
+        if (!element) {
+            return;
+        }
+
+        var normalized = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
+
+        for (var widthValue = 0; widthValue <= 100; widthValue++) {
+            element.classList.remove(
+                widthValue === 0
+                    ? 'w-0'
+                    : widthValue === 100
+                        ? 'w-full'
+                        : 'w-[' + widthValue + '%]'
+            );
+        }
+
+        element.classList.add(
+            normalized === 0
+                ? 'w-0'
+                : normalized === 100
+                    ? 'w-full'
+                    : 'w-[' + normalized + '%]'
+        );
     }
 
     function hydrateQuestionStep(stepNumber) {
@@ -843,7 +721,7 @@
                     var stepTwoContextSections = stepTwoContextCard.querySelector('ul');
 
                     if (stepTwoContextTitle) {
-                        stepTwoContextTitle.innerHTML = '<svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg> ' + escapeHtml(contextSectionsCard.title || '');
+                        stepTwoContextTitle.innerHTML = '<svg class="h-5 w-5 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg> ' + escapeHtml(contextSectionsCard.title || '');
                     }
 
                     if (stepTwoContextSections) {
@@ -858,7 +736,7 @@
                     var stepTwoInsightParagraphs = stepTwoInsightCard.querySelectorAll('p');
 
                     if (stepTwoInsightParagraphs[0]) {
-                        stepTwoInsightParagraphs[0].innerHTML = '<span class="inline-block h-2 w-2 rounded-full" style="background:#d4a017"></span> ' + escapeHtml(insightCard.eyebrow || 'Clinical Insight');
+                        stepTwoInsightParagraphs[0].innerHTML = '<span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> ' + escapeHtml(insightCard.eyebrow || 'Clinical Insight');
                     }
 
                     if (stepTwoInsightParagraphs[1]) {
@@ -976,19 +854,19 @@
             title.textContent = questionData ? questionData.phase_title : 'Diagnostic Precision Quiz';
             stepLabel.textContent = 'Step ' + step + ' of ' + totalQuestions;
             percentLabel.textContent = pct + '% Complete';
-            progressBar.style.width = pct + '%';
+            setPercentWidthClass(progressBar, pct);
         } else if (step === totalQuestions + 1) {
             phaseLabel.textContent = 'Final Step';
             title.textContent = 'Claim Your Results';
             stepLabel.textContent = '';
             percentLabel.textContent = '100% Complete';
-            progressBar.style.width = '100%';
+            setPercentWidthClass(progressBar, 100);
         } else if (step === totalQuestions + 2) {
             phaseLabel.textContent = 'Assessment Complete';
             title.textContent = 'Your Results';
             stepLabel.textContent = '';
             percentLabel.textContent = 'Complete';
-            progressBar.style.width = '100%';
+            setPercentWidthClass(progressBar, 100);
         }
     }
 
@@ -1043,7 +921,7 @@
             return;
         }
 
-        field.classList.remove('border-rose-400', 'ring-4', 'ring-rose-500/10');
+        field.classList.remove('border-primary-600', 'ring-2', 'ring-primary-600/10');
     }
 
     function markFieldInvalid(field) {
@@ -1051,7 +929,7 @@
             return;
         }
 
-        field.classList.add('border-rose-400', 'ring-4', 'ring-rose-500/10');
+        field.classList.add('border-primary-600', 'ring-2', 'ring-primary-600/10');
     }
 
     function validateLeadDetails() {
@@ -1151,7 +1029,7 @@
             if (perfValue) perfValue.textContent = String(performanceItem.percentage || 0) + '%';
             if (perfBar) {
                 perfBar.setAttribute('data-perf', String(performanceItem.percentage || 0));
-                perfBar.style.width = '0%';
+                setPercentWidthClass(perfBar, 0);
             }
         }
     }
@@ -1165,7 +1043,7 @@
             var scoreValue = document.getElementById('scoreValue');
 
             if (ring) {
-                ring.style.strokeDashoffset = offset;
+                ring.setAttribute('stroke-dashoffset', String(offset));
             }
 
             var current = 0;
@@ -1193,7 +1071,7 @@
                     return;
                 }
 
-                performanceBar.style.width = performanceBar.getAttribute('data-perf') + '%';
+                setPercentWidthClass(performanceBar, performanceBar.getAttribute('data-perf'));
             });
         }, 300);
     }

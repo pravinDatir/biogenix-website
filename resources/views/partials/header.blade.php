@@ -13,8 +13,8 @@
         ['label' => 'Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
         ['label' => 'Generate Quote', 'route' => 'quotation.create', 'href' => route('quotation.create')],
         ['label' => 'PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
-        ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
         ['label' => 'Book Meeting', 'route' => 'book-meeting', 'href' => route('book-meeting')],
+        ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
         ['label' => 'Contact Us', 'route' => 'contact', 'href' => route('contact')],
     ];
     $mobileQuickActions = [
@@ -61,7 +61,7 @@
             }
         }
     </style>
-    <div class="relative mx-auto flex min-h-[72px] w-full max-w-none items-center gap-4 px-4 py-2 sm:px-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10"
+    <div class="relative mx-auto flex min-h-[64px] w-full max-w-none items-center gap-4 px-4 py-1 sm:px-6 sm:py-1.5 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10"
     style="background: radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.08), transparent 24%),
             radial-gradient(circle at 88% 10%, rgba(26, 77, 46, 0.08), transparent 18%),
             linear-gradient(180deg, #ffffff 0%, #f9faf9 100%)"
@@ -105,7 +105,7 @@
                 <span class="hidden max-w-[12rem] truncate text-sm text-slate-600 2xl:inline-block 2xl:max-w-[14rem]">{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
-                    <button type="submit" id="logoutBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-[13px] font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
+                    <button type="submit" id="logoutBtn" class="header-auth-button hover-lift inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-[13px] font-semibold text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
                 </form>
             @else
                 <a href="{{ route('login') }}" id="loginBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Login</a>
@@ -206,7 +206,7 @@
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="inline-flex h-11 w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
+                            <button type="submit" class="hover-lift inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md">
                                 Logout
                             </button>
                         </form>

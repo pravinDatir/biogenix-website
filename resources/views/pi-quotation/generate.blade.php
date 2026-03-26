@@ -39,23 +39,23 @@
                 <div class="grid grid-cols-2 gap-y-4 gap-x-6">
                     <div>
                         <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">PI Number</label>
-                        <input id="piNumber" type="text" readonly value="PI/2023-24/0842"
-                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                        <input id="piNumber" type="text" value="PI/2023-24/0842"
+                            class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                     </div>
                     <div>
                         <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">Date</label>
                         <input id="piDate" type="date" value="2023-10-24"
-                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                            class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                     </div>
                     <div>
                         <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">State</label>
                         <input id="piStateCode" type="text" value="27 (Maharashtra)"
-                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                            class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                     </div>
                     <div>
                         <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">GSTIN</label>
                         <input id="piGstin" type="text" value="27AAFCB1234A1Z5"
-                            class="w-full bg-transparent p-0 text-xs font-bold text-slate-800 outline-none">
+                            class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                     </div>
                 </div>
             </div>
@@ -212,10 +212,6 @@
                             class="w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">
                     </li>
                 </ol>
-                <button id="addTermBtn" type="button" class="mt-5 flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary-600 hover:text-primary-800 transition-colors cursor-pointer">
-                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                    Add Custom Term
-                </button>
             </div>
         </div>
 

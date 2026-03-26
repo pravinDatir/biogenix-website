@@ -1,5 +1,5 @@
-<div id="cartSidebarOverlay" class="pointer-events-none fixed inset-x-0 bottom-0 top-[73px] z-[100] hidden" aria-hidden="true">
-    <button id="cartSidebarBackdrop" type="button" class="pointer-events-auto absolute inset-0 bg-slate-950/20 opacity-0 backdrop-blur-[1px] transition duration-300 lg:hidden" aria-label="Close cart"></button>
+<div id="cartSidebarOverlay" class="pointer-events-none fixed inset-0 z-[100] hidden" aria-hidden="true">
+    <button id="cartSidebarBackdrop" type="button" class="pointer-events-auto absolute inset-0 bg-slate-950/20 opacity-0 backdrop-blur-[1px] transition duration-300" aria-label="Close cart"></button>
 
     <aside
         id="cartSidebarDrawer"
@@ -102,56 +102,52 @@
         const subtotalEl = document.getElementById('cartSidebarSubtotal');
         const taxEl = document.getElementById('cartSidebarTax');
         const totalEl = document.getElementById('cartSidebarTotal');
-        const shellMain = document.querySelector('#pageWrapper > main');
-        const siteFooter = document.getElementById('siteFooter');
-
         if (!overlay || !drawer || !itemsContainer || !badge || !subtotalEl || !taxEl || !totalEl) return;
 
-        const syncCatalogActionLayout = function (open) {
-            document.querySelectorAll('[data-catalog-product-grid]').forEach(function (element) {
-                element.classList.toggle('xl:grid-cols-4', !open);
-                element.classList.toggle('xl:grid-cols-3', open);
-            });
+        let previousHtmlOverflow = '';
+        let previousBodyOverflow = '';
+        let previousBodyPaddingRight = '';
 
-            document.querySelectorAll('[data-catalog-action-group]').forEach(function (element) {
-                element.classList.toggle('sm:grid-cols-2', !open);
-            });
+        const syncPageScrollLock = function (open) {
+            if (open) {
+                previousHtmlOverflow = document.documentElement.style.overflow;
+                previousBodyOverflow = document.body.style.overflow;
+                previousBodyPaddingRight = document.body.style.paddingRight;
 
-            document.querySelectorAll('[data-catalog-buy-now]').forEach(function (element) {
-                element.classList.toggle('sm:col-span-2', !open);
-            });
-        };
+                const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
 
-        const syncShellSpacing = function (open) {
-            syncCatalogActionLayout(open);
-            [shellMain, siteFooter].forEach(function (element) {
-                if (!element) return;
-                element.classList.toggle('lg:pr-[26rem]', open);
-                if (element === shellMain) {
-                    element.classList.toggle('js-cart-sidebar-open', open);
-                }
-            });
+                document.documentElement.style.overflow = 'hidden';
+                document.body.style.overflow = 'hidden';
+                document.body.style.paddingRight = scrollbarWidth > 0 ? scrollbarWidth + 'px' : previousBodyPaddingRight;
+                return;
+            }
+
+            document.documentElement.style.overflow = previousHtmlOverflow;
+            document.body.style.overflow = previousBodyOverflow;
+            document.body.style.paddingRight = previousBodyPaddingRight;
         };
 
         const revealSidebar = function () {
+            if (!overlay.classList.contains('hidden')) return;
             overlay.classList.remove('hidden');
             overlay.setAttribute('aria-hidden', 'false');
+            syncPageScrollLock(true);
             window.requestAnimationFrame(function () {
                 drawer.classList.remove('translate-x-full');
                 drawer.classList.add('translate-x-0');
                 backdrop.classList.remove('opacity-0');
                 backdrop.classList.add('opacity-100');
-                syncShellSpacing(true);
             });
         };
 
         const hideSidebar = function () {
+            if (overlay.classList.contains('hidden')) return;
             drawer.classList.remove('translate-x-0');
             drawer.classList.add('translate-x-full');
             backdrop.classList.remove('opacity-100');
             backdrop.classList.add('opacity-0');
             overlay.setAttribute('aria-hidden', 'true');
-            syncShellSpacing(false);
+            syncPageScrollLock(false);
             window.setTimeout(function () {
                 if (drawer.classList.contains('translate-x-full')) {
                     overlay.classList.add('hidden');

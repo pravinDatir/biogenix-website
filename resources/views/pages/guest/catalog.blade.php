@@ -190,11 +190,11 @@
     ];
 @endphp
 
-<div class="mx-auto w-full max-w-none px-4 md:mt-0 md:px-6 xl:px-10">
-    <div class="w-full max-w-none box-border px-4 sm:px-6 xl:px-7">
+<div class="mx-auto w-full max-w-none bg-gradient-to-b from-white via-primary-50/15 to-white md:mt-0">
+    <div class="w-full max-w-none box-border px-4 sm:px-6 lg:px-8 xl:px-10">
         <div id="catalogMobileBackdrop" class="pointer-events-none fixed inset-0 z-[60] bg-primary-950/45 opacity-0 transition-opacity duration-200 xl:hidden" aria-hidden="true"></div>
         <div id="catalogLoadingOverlay" class="pointer-events-none fixed inset-0 z-[75] flex items-center justify-center bg-primary-950/18 px-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
-            <div class="w-full max-w-sm rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_30px_90px_rgba(26,30,26,0.1)]">
+            <div class="w-full max-w-sm rounded-[var(--ui-radius-card)] border border-white/80 bg-white/95 p-6 shadow-[var(--ui-shadow-panel)] backdrop-blur">
                 <div class="flex items-center gap-3">
                     <span class="h-10 w-10 animate-spin rounded-full border-4 border-primary-100 border-t-primary-600" aria-hidden="true"></span>
                     <p class="text-sm font-semibold text-slate-900">Updating results</p>
@@ -205,16 +205,8 @@
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
         <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="space-y-4 md:space-y-5">
             <section class="relative z-50 w-full pt-4 md:pt-10">
-                <div class="rounded-[var(--ui-radius-card)] border border-white/70 bg-[radial-gradient(circle_at_top_right,rgba(26,77,46,0.08),transparent_24%),linear-gradient(135deg,#ffffff_0%,#f0faf4_52%,#f9faf9_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-5 glass-card">
-                    <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
-                        <a href="{{ route('home') }}" class="text-inherit no-underline hover:text-primary-700">Home</a>
-                        <span>/</span>
-                        <span>Catalog</span>
-                        <span>/</span>
-                        <span class="text-slate-700">{{ $selectedCategories->first() ?: ($selectedApplications->first() ?: 'IVD Kits & Reagents') }}</span>
-                    </div>
-
-                    <div class="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(36rem,0.9fr)] xl:items-end">
+                <div class="rounded-[var(--ui-radius-card)] border border-white/70 bg-gradient-to-br from-white via-primary-50/65 to-white p-5 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-6 glass-card">
+                    <div class="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(36rem,0.9fr)] xl:items-end">
                         <div class="max-w-3xl">
                             <h1 class="font-display text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Product Catalog</h1>
                             <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">
@@ -223,7 +215,7 @@
                         </div>
 
                         <div class="grid gap-3.5 md:grid-cols-[minmax(0,1fr)_minmax(220px,260px)]">
-                            <label class="flex min-h-[3.875rem] flex-wrap items-stretch gap-3 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(26,30,26,0.06)] md:flex-nowrap md:items-center md:gap-3.5 md:px-4 md:py-2.5">
+                            <label class="flex min-h-[3.875rem] flex-wrap items-stretch gap-3 rounded-[1.25rem] border border-slate-200/80 bg-white/95 px-4 py-3 shadow-[var(--ui-shadow-soft)] backdrop-blur md:flex-nowrap md:items-center md:gap-3.5 md:px-4 md:py-2.5">
                                 <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="11" cy="11" r="7"></circle>
                                     <path d="m20 20-3.5-3.5"></path>
@@ -236,10 +228,10 @@
                                     class="min-w-0 flex-1 border-0 bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400"
                                     aria-label="Search products"
                                 >
-                                <button type="submit" class="w-full rounded-[0.875rem] bg-gradient-to-r from-primary-600 to-primary-700 px-5 py-4 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(26,77,46,0.18)] transition hover:-translate-y-px hover:shadow-[0_20px_36px_rgba(26,77,46,0.22)] md:w-auto">Search</button>
+                                <button type="submit" class="w-full rounded-[0.875rem] bg-primary-600 px-5 py-4 text-sm font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 md:w-auto">Search</button>
                             </label>
 
-                            <div class="flex min-h-[3.5rem] relative items-center justify-between gap-3.5 rounded-[1.125rem] border border-slate-200 bg-white px-4 py-3 shadow-[0_16px_36px_rgba(26,30,26,0.06)] md:min-h-[3.875rem]" id="customSortDropdown">
+                            <div class="relative flex min-h-[3.5rem] items-center justify-between gap-3.5 rounded-[1.25rem] border border-slate-200/80 bg-white/95 px-4 py-3 shadow-[var(--ui-shadow-soft)] backdrop-blur md:min-h-[3.875rem]" id="customSortDropdown">
                                 <span class="text-sm font-medium text-slate-400">Sort by:</span>
                                 <select id="catalogSort" name="sort" class="hidden">
                                     <option value="relevant" @selected($sort === 'relevant')>Most Relevant</option>
@@ -282,7 +274,7 @@
             </section>
 
             <section class="grid items-start gap-5 pb-4 md:pb-5 xl:grid-cols-[18rem_minmax(0,1fr)] min-[1680px]:grid-cols-[18.5rem_minmax(0,1fr)]">
-                <aside id="catalogSidebar" class="hidden min-w-0 space-y-5 rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-4 shadow-[var(--ui-shadow-card)] md:p-5 xl:sticky xl:top-6 xl:block glass-card">
+                <aside id="catalogSidebar" class="hidden min-w-0 space-y-5 rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-4 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-5 xl:sticky xl:top-6 xl:block glass-card">
                     <div class="flex items-center justify-between gap-3 xl:hidden">
                         <div>
                             <p class="text-sm font-semibold text-slate-900">Filters</p>
@@ -527,15 +519,21 @@
                                     $detailUrl = route('products.productDetails', $product->id);
                                     $variantId = $product->visible_variant_id ?? null;
                                     $imageUrl = filled($product->image_path ?? null) ? asset($product->image_path) : null;
+                                    $catalogHoverImages = collect([
+                                        $imageUrl,
+                                        asset('upload/products/image1.jpg'),
+                                        asset('upload/products/image2.jpg'),
+                                        asset('upload/products/image3.jpg'),
+                                    ])->filter()->unique()->values();
                                     $visualVariant = $resolveVisualVariant($product, $loop->index);
                                     $bulkSummary = $product->catalog_bulk_summary ?? null;
                                 @endphp
-                                <article data-catalog-product-card data-product-id="{{ $product->id }}" class="group flex h-full flex-col overflow-hidden rounded-[var(--ui-radius-card)] border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl hover-lift">
+                                <article data-catalog-product-card data-product-id="{{ $product->id }}" class="group flex h-full flex-col overflow-hidden rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 shadow-[var(--ui-shadow-card)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-primary-100 hover:shadow-[var(--ui-shadow-panel)] hover-lift">
                                     <div class="relative px-3 pt-3">
-                                        <div class="relative overflow-hidden rounded-3xl group/image">
+                                        <div class="group/image relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-50/70 via-white to-slate-50" @if ($imageUrl) data-catalog-hover-card @endif>
                                             <a href="{{ $detailUrl }}" data-catalog-detail-link data-base-url="{{ $detailUrl }}" class="block cursor-pointer">
                                                 @if ($imageUrl)
-                                                    <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover/image:scale-[1.04]" loading="lazy" decoding="async">
+                                                    <img src="{{ $imageUrl }}" alt="{{ $product->name }}" data-catalog-hover-image data-hover-images='@json($catalogHoverImages->all())' data-hover-alt="{{ $product->name }}" class="h-[clamp(13.5rem,18vw,15rem)] w-full object-cover transition duration-300 group-hover/image:scale-[1.04]" loading="lazy" decoding="async">
                                                 @else
                                                     @include('customer.partials.product-visual', ['variant' => $visualVariant, 'class' => 'h-[clamp(13.5rem,18vw,15rem)] w-full rounded-2xl transition duration-300 group-hover/image:scale-[1.04]'])
                                                 @endif
@@ -547,11 +545,11 @@
                                                 data-min-quantity="{{ $defaultQuantity }}"
                                                 data-max-quantity="{{ $maxQuantity ?? '' }}"
                                                 data-lot-size="{{ $lotSize }}"
-                                                class="absolute bottom-3 right-3 z-10 flex h-8 min-w-[5rem] items-center rounded-full border border-white/90 bg-white/95 px-1 shadow-[0_12px_22px_rgba(26,30,26,0.1)] backdrop-blur-sm"
+                                                class="absolute bottom-3 right-3 z-10 flex h-8 min-w-[5rem] items-center rounded-full border border-white/90 bg-white/95 px-1 shadow-[var(--ui-shadow-soft)] backdrop-blur-sm"
                                             >
-                                                <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-[1rem] font-medium text-white shadow-[0_8px_14px_rgba(244,63,94,0.22)] transition hover:bg-rose-600">-</button>
+                                                <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary-100 bg-white text-[1rem] font-medium text-primary-700 shadow-sm transition hover:bg-primary-50">-</button>
                                                 <span data-catalog-quantity-value class="inline-flex min-w-0 flex-1 items-center justify-center px-2 text-[0.82rem] font-semibold tracking-tight text-slate-900">{{ number_format($defaultQuantity) }}</span>
-                                                <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-[1rem] font-medium text-white shadow-[0_8px_14px_rgba(244,63,94,0.22)] transition hover:bg-rose-600">+</button>
+                                                <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-600 text-[1rem] font-medium text-white shadow-md shadow-primary-600/25 transition hover:bg-primary-700">+</button>
                                             </div>
                                         </div>
                                         <div class="absolute left-6 top-6 flex flex-col gap-2">
@@ -579,7 +577,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="rounded-3xl bg-slate-50 px-3 py-2.5">
+                                        <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
                                             <div class="flex items-end justify-between gap-3">
                                                 <span class="text-sm font-semibold text-slate-500">Price:</span>
                                                 <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
@@ -590,7 +588,7 @@
                                         </div>
 
                                         @if ($bulkSummary)
-                                            <div class="rounded-3xl border border-emerald-100 bg-primary-50/80 px-3 py-2.5">
+                                            <div class="rounded-3xl border border-primary-100/80 bg-primary-50/70 px-3 py-2.5">
                                                 <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-600">Bulk Offer</p>
                                                 <p class="mt-1 text-xs font-semibold text-emerald-900">
                                                     {{ $bulkSummary['label'] ?? 'Bulk pricing available' }}
@@ -645,22 +643,22 @@
 
                                         <div data-catalog-action-group class="mt-auto flex w-full items-center gap-2">
                                             {{-- Buy Now --}}
-                                             <div style="width: 70%;">
+                                             <div class="w-[70%]">
                                                 @guest
-                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
+                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-orange-500 px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-orange-500/25 transition hover:bg-orange-600 hover-lift glow-orange">
                                                         <span>Buy Now</span>
                                                     </a>
                                                 @else
-                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-[rgba(255,106,0,0.96)] px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-[rgba(255,106,0,0.3)] transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
+                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-orange-500 px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-orange-500/25 transition hover:bg-orange-600 hover-lift glow-orange">
                                                         <span>Buy Now</span>
                                                     </button>
                                                 @endguest
                                             </div>
 
                                             {{-- Add to Cart --}}
-                                            <div style="width: 30%;">
+                                            <div class="w-[30%]">
                                                 @guest
-                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(26,77,46,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(26,77,46,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                             <circle cx="8" cy="20" r="1.5"></circle>
                                                             <circle cx="18" cy="20" r="1.5"></circle>
@@ -669,7 +667,7 @@
                                                         </svg>
                                                     </a>
                                                 @else
-                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-[0_12px_22px_rgba(26,77,46,0.18)] transition hover:bg-primary-700 hover:shadow-[0_16px_28px_rgba(26,77,46,0.24)] hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 hover-lift" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
                                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                                             <circle cx="8" cy="20" r="1.5"></circle>
                                                             <circle cx="18" cy="20" r="1.5"></circle>
@@ -925,6 +923,78 @@
                     }, 220);
                 }, Number(options && options.duration ? options.duration : 4200));
             };
+
+            document.querySelectorAll('[data-catalog-hover-card]').forEach(function (card) {
+                const image = card.querySelector('[data-catalog-hover-image]');
+                if (!image) {
+                    return;
+                }
+
+                let galleryImages = [];
+
+                try {
+                    galleryImages = JSON.parse(image.dataset.hoverImages || '[]');
+                } catch (error) {
+                    galleryImages = [];
+                }
+
+                galleryImages = galleryImages.filter(function (value) {
+                    return Boolean(String(value || '').trim());
+                });
+
+                if (galleryImages.length < 2) {
+                    return;
+                }
+
+                const baseAlt = String(image.dataset.hoverAlt || image.alt || 'Product image');
+                let activeIndex = 0;
+                let hoverTimer = null;
+                let fadeTimer = null;
+
+                const clearFadeTimer = function () {
+                    if (fadeTimer) {
+                        window.clearTimeout(fadeTimer);
+                        fadeTimer = null;
+                    }
+                };
+
+                const updateCardImage = function (index) {
+                    activeIndex = ((index % galleryImages.length) + galleryImages.length) % galleryImages.length;
+                    clearFadeTimer();
+                    image.classList.add('opacity-70');
+                    image.src = galleryImages[activeIndex];
+                    image.alt = activeIndex === 0 ? baseAlt : baseAlt + ' alternate view ' + activeIndex;
+
+                    fadeTimer = window.setTimeout(function () {
+                        image.classList.remove('opacity-70');
+                    }, 180);
+                };
+
+                const stopHoverRotation = function () {
+                    if (hoverTimer) {
+                        window.clearInterval(hoverTimer);
+                        hoverTimer = null;
+                    }
+
+                    if (activeIndex !== 0) {
+                        updateCardImage(0);
+                    }
+                };
+
+                card.addEventListener('mouseenter', function () {
+                    if (hoverTimer) {
+                        return;
+                    }
+
+                    hoverTimer = window.setInterval(function () {
+                        updateCardImage(activeIndex + 1);
+                    }, 2000);
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    stopHoverRotation();
+                });
+            });
 
             const syncLocalCart = function (target, quantity) {
                 if (!window.CartStore) {

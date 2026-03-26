@@ -1,8 +1,8 @@
 @php
-    $sectionCardClass = 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8';
-    $accentCardClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm md:p-8';
-    $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
-    $primaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
+    $sectionCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-6 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-8';
+    $accentCardClass = 'relative overflow-hidden rounded-[var(--ui-radius-card)] border border-primary-100/70 bg-gradient-to-br from-white via-primary-50/55 to-white p-6 shadow-[var(--ui-shadow-panel)] backdrop-blur md:p-8';
+    $inputClass = 'block min-h-12 w-full rounded-2xl border border-slate-200 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-[var(--ui-shadow-soft)] transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
+    $primaryButtonClass = 'inline-flex min-h-12 items-center justify-center rounded-2xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-px hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
     $meetingUser = auth()->user();
 
     // Business step: keep old values visible after validation so the user can correct only the fields that failed.
@@ -17,13 +17,13 @@
     $organizationNameValue = old('organization_name', '');
 @endphp
 
-<div>
+<div class="bg-gradient-to-b from-white via-primary-50/20 to-white">
     <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
         <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Biogenix Meeting" class="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-primary-800/95 via-primary-800/70 to-primary-600/30"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
            
-            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">
+            <h1 class="mx-auto max-w-5xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl">
                 Accelerate your diagnostics operations with Biogenix.
             </h1>
             <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-secondary-600 md:text-lg">
@@ -32,16 +32,16 @@
         </div>
     </section>
 
-    <section class="bg-primary-50/10 py-12 md:py-20">
+    <section class="bg-transparent py-12 md:py-20">
         <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8 xl:px-10">
             <div class="flex flex-col justify-center space-y-8 lg:col-span-5">
                 <div>
-                    <h2 class="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">Why book a meeting?</h2>
+                    <h2 class="font-display text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">Why book a meeting?</h2>
                     <p class="mt-3 max-w-none text-base leading-8 text-slate-600">We go beyond simple transactions. A dedicated session allows us to map our diagnostic solutions directly to your clinical throughput and budget requirements.</p>
                 </div>
 
                 <div class="space-y-6">
-                    <div class="flex items-start gap-4">
+                    <div class="flex items-start gap-4 rounded-3xl border border-slate-200/80 bg-white/80 p-4 shadow-[var(--ui-shadow-soft)] backdrop-blur">
                         <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                         </div>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-start gap-4">
+                    <div class="flex items-start gap-4 rounded-3xl border border-slate-200/80 bg-white/80 p-4 shadow-[var(--ui-shadow-soft)] backdrop-blur">
                         <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-primary-600">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                         </div>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-start gap-4">
+                    <div class="flex items-start gap-4 rounded-3xl border border-slate-200/80 bg-white/80 p-4 shadow-[var(--ui-shadow-soft)] backdrop-blur">
                         <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                         </div>
@@ -91,7 +91,7 @@
                     <div class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary-50 opacity-50 blur-3xl"></div>
 
                     <div class="mb-8 border-b border-slate-100 pb-5">
-                        <h2 class="text-3xl font-semibold tracking-tight text-slate-950">Schedule Your Session</h2>
+                        <h2 class="font-display text-3xl font-semibold tracking-tight text-slate-950">Schedule Your Session</h2>
                         <p class="mt-2 max-w-none text-base leading-8 text-slate-600">Choose your preferred date and time range, then share your details. Our team will confirm the meeting over email or phone.</p>
                     </div>
 
@@ -108,7 +108,7 @@
                             </div>
 
                             <div class="flex items-end">
-                                <p class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-600">
+                                <p class="w-full rounded-2xl border border-primary-100/80 bg-primary-50/70 px-4 py-3 text-sm font-medium text-slate-600">
                                     Meeting hours: <span class="font-semibold text-slate-900">09:00 to 18:00 IST</span>
                                 </p>
                             </div>
@@ -194,7 +194,7 @@
         </div>
     </section>
 
-    <section class="bg-white py-14 md:py-18">
+    <section class="bg-gradient-to-b from-white via-primary-50/10 to-white py-14 md:py-20">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Meeting Formats" subtitle="Pick a format that fits your objective: commercial, technical, or strategic." />
             <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -203,8 +203,8 @@
                     ['title' => 'Solution Deep Dive (30-40 min)', 'copy' => 'Technical deep dive with specs, compatibility, validation approach, and QA expectations.'],
                     ['title' => 'Procurement Alignment (25-30 min)', 'copy' => 'Commercial and logistics review: SLAs, delivery windows, payment terms, and governance.'],
                 ] as $format)
-                    <article class="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-2 hover:shadow-xl md:p-8">
-                        <h3 class="text-xl font-semibold text-slate-900">{{ $format['title'] }}</h3>
+                    <article class="h-full rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-6 shadow-[var(--ui-shadow-card)] backdrop-blur transition hover:-translate-y-1.5 hover:border-primary-100 hover:shadow-[var(--ui-shadow-panel)] md:p-8">
+                        <h3 class="font-display text-xl font-semibold text-slate-950">{{ $format['title'] }}</h3>
                         <p class="mt-3 text-sm leading-6 text-slate-600">{{ $format['copy'] }}</p>
                     </article>
                 @endforeach

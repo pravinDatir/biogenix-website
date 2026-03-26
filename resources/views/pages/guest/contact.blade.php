@@ -1,8 +1,8 @@
 @php
-    $panelClass = 'relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8';
-    $accentPanelClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm md:p-8';
+    $panelClass = 'relative overflow-hidden rounded-3xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5 shadow-[var(--ui-shadow-card)] md:p-7';
+    $accentPanelClass = 'relative overflow-hidden rounded-3xl border border-primary-100 bg-[var(--ui-surface)] p-5 shadow-[var(--ui-shadow-card)] md:p-7';
     $inputClass = 'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
-    $textareaClass = 'block min-h-[9rem] w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
+    $textareaClass = 'block min-h-[7.5rem] w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10';
     $primaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl bg-primary-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20';
     $labelClass = 'absolute left-4 top-4 z-10 origin-[0] -translate-y-3 scale-75 transform text-sm text-slate-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-primary-600 cursor-text';
     $contactUser = auth()->user();
@@ -27,11 +27,11 @@
         </div>
     </section>
 
-    <section class="py-12 pb-24">
-        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8 xl:px-10">
+    <section class="py-10 pb-20">
+        <div class="mx-auto grid w-full max-w-none grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8 xl:px-10">
             <div class="flex flex-col justify-start space-y-6 lg:col-span-5">
-                <article class="{{ $panelClass }}">
-                    <div class="relative h-64 w-full overflow-hidden rounded-2xl bg-primary-50">
+                <article class="{{ $panelClass }} bg-gradient-to-br from-[var(--ui-surface)] via-[var(--ui-surface-muted)] to-primary-50/35">
+                    <div class="relative h-56 w-full overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-gradient-to-br from-[var(--ui-surface-subtle)] via-primary-50/60 to-[var(--ui-surface-muted)]">
                         <iframe
                             id="contactMap"
                             class="h-full w-full border-0"
@@ -41,7 +41,7 @@
                             title="Biogenix Location Map"
                         ></iframe>
                     </div>
-                    <div class="mt-8">
+                    <div class="mt-6">
                         <h3 class="text-3xl font-semibold tracking-tight text-slate-950">Corporate Headquarters</h3>
                         <p class="mt-2 max-w-none text-base leading-8 text-slate-600">123 Medical Park Drive, Lucknow, Uttar Pradesh, India</p>
 
@@ -72,12 +72,12 @@
             <article class="{{ $accentPanelClass }} lg:col-span-7">
                 <div class="pointer-events-none absolute -right-20 -bottom-20 h-64 w-64 rounded-full bg-primary-50 opacity-50 blur-3xl"></div>
 
-                <div class="mb-8">
+                <div class="mb-6">
                     <h2 class="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">Send an Inquiry</h2>
                     <p class="mt-2 max-w-none text-base leading-8 text-slate-600">Tell us your requirement and our dedicated team will get back to you with the next steps quickly.</p>
                 </div>
 
-                <form id="contactForm" action="{{ route('contact.store') }}" method="POST" class="relative z-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <form id="contactForm" action="{{ route('contact.store') }}" method="POST" class="relative z-10 grid grid-cols-1 gap-5 md:grid-cols-2">
                     @csrf
 
                     <div class="relative">

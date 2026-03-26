@@ -1,3 +1,5 @@
+
+
 @push('styles')
 <style>
     .home-page {
@@ -29,11 +31,26 @@
         }
     }
 
+    .home-page .home-panel.home-newsletter-card {
+        padding: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+        .home-page .home-panel.home-newsletter-card {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .home-page .home-panel.home-newsletter-card {
+            padding: 2rem;
+        }
+    }
+
     .hero-gradient-overlay {
         background: linear-gradient(to top, var(--color-primary-800) 5%, rgba(26, 77, 46, 0.7) 60%, rgba(26, 77, 46, 0.3) 100%);
     }
 
-    /* ─── Premium Testimonial Card ─── */
     .testimonial-card {
         position: relative;
         isolation: isolate;
@@ -41,7 +58,7 @@
     }
 
     .testimonial-card::before {
-        content: '“';
+        content: '"';
         position: absolute;
         top: -1rem;
         right: 1.5rem;
@@ -68,7 +85,6 @@
         border: 2px solid rgba(255, 255, 255, 0.82);
     }
 
-    /* ─── Premium Insight Card ─── */
     .insight-card .insight-icon-shell {
         transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
     }
@@ -347,7 +363,7 @@
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
         box-shadow: 0 14px 30px rgba(26, 30, 26, 0.05);
         isolation: isolate;
-        flex: 0 0 calc(100% - 1rem); /* 1 init */
+        flex: 0 0 calc(100% - 1rem);
         scroll-snap-align: start;
     }
 
@@ -472,13 +488,13 @@
 
     @media (min-width: 1024px) {
         .home-category-tile {
-            flex: 0 0 calc(25% - 0.75rem); /* exactly 4 items horizontally */
+            flex: 0 0 calc(25% - 0.75rem);
         }
     }
 
     @media (min-width: 1280px) {
         .home-category-tile {
-            flex: 0 0 calc(25% - 0.75rem); /* exactly 4 items horizontally */
+            flex: 0 0 calc(25% - 0.75rem);
         }
     }
 
@@ -531,9 +547,9 @@
 
 <div class="home-page">
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     {{-- HERO CAROUSEL --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     <section class="home-hero relative overflow-hidden bg-primary-800 text-white" style="min-height: 72vh; background-color: #0D2B19;">
         <div class="home-hero-track-overlay absolute inset-0 opacity-30"></div>
         <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
@@ -549,7 +565,7 @@
                         >
                         <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
 
-                        <div class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-8 pb-12 text-center sm:px-6 md:py-10 lg:px-8 xl:px-10">
+                        <div class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
                             <div class="home-hero-copy-shell flex max-w-5xl flex-col items-center justify-center text-visible">
                                 <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                                     Next-Gen <span class="text-secondary-600">Healthcare</span> Solutions
@@ -568,7 +584,7 @@
                             decoding="async"
                         >
                         <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
-                        <div class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-8 pb-12 text-center sm:px-6 md:py-10 lg:px-8 xl:px-10">
+                        <div class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
                             <div class="home-hero-copy-shell flex max-w-5xl flex-col items-center justify-center text-visible">
                                 <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                                     Next-Gen <span class="text-secondary-600">Healthcare</span> Solutions
@@ -616,9 +632,9 @@
  
    
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     {{-- CORE PRODUCT CATEGORIES (with hover overlay + count badge) --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
       <section class="home-categories bg-transparent py-12 md:py-16">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
@@ -686,9 +702,9 @@
             </div>
         </div>
     </section>
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     {{-- CLINICAL & BUSINESS SOLUTIONS --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     <section class="home-solutions py-12 md:py-16">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal">
@@ -730,30 +746,30 @@
     </section>
 
     
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     {{-- SAME-DAY DELIVERY + NEWSLETTER --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
      <section class="home-newsletter bg-transparent py-12 md:py-16">
         <div class="mx-auto grid w-full max-w-none   grid-cols-1 gap-5 px-4 sm:px-6 xl:grid-cols-12 lg:px-8 xl:px-10">
-            <article class="home-delivery-card home-reveal rounded-[var(--ui-radius-card)] p-6 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-8">
+            <article class="home-delivery-card home-reveal rounded-[var(--ui-radius-card)] p-5 text-white shadow-[0_24px_55px_rgba(255,106,0,0.25)] xl:col-span-7 md:p-6">
                 <div class="home-delivery-content">
-                    <span class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow local support</span>
-                    <h2 class="mt-4 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
-                    <p class="mt-3 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
+                    <span class="inline-flex rounded-full border border-white/18 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur">Lucknow local support</span>
+                    <h2 class="mt-3 text-2xl font-semibold text-white md:text-3xl">Same-Day Delivery Support in Lucknow</h2>
+                    <p class="mt-2.5 max-w-2xl text-sm text-primary-50 md:text-base">For select products and serviceable pincodes, our local operations network enables faster diagnostics fulfillment.</p>
                    
                 </div>
             </article>
 
-            <article class="home-panel home-reveal rounded-[var(--ui-radius-card)] xl:col-span-5">
+            <article class="home-panel home-newsletter-card home-reveal rounded-[var(--ui-radius-card)] xl:col-span-5">
                 <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
-                <p class="mt-2 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
-                <form id="newsletterForm" class="mt-4 space-y-3" novalidate>
+                <p class="mt-1.5 text-sm text-slate-600">Get product updates, launch announcements, and support advisories.</p>
+                <form id="newsletterForm" class="mt-3 space-y-2.5" novalidate>
                     <div>
-                        <label for="newsletterEmail" class="mb-2 block text-sm font-semibold text-slate-700">Work Email</label>
-                        <input id="newsletterEmail" type="email" class="block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10" placeholder="you@organization.com" required>
+                        <label for="newsletterEmail" class="mb-1.5 block text-sm font-semibold text-slate-700">Work Email</label>
+                        <input id="newsletterEmail" type="email" class="block min-h-10 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10" placeholder="you@organization.com" required>
                     </div>
-                    <button type="submit" id="newsletterSubmitBtn" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20">Subscribe</button>
-                    <p id="newsletterStatus" class="min-h-[1.25rem] text-sm font-medium text-slate-600"></p>
+                    <button type="submit" id="newsletterSubmitBtn" class="inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20">Subscribe</button>
+                    <p id="newsletterStatus" class="min-h-[1rem] text-sm font-medium text-slate-600"></p>
                 </form>
             </article>
         </div>
@@ -767,19 +783,20 @@
 
    
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     {{-- STRATEGIC PRESENCE: NORTHERN HUB --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-northern-hub bg-transparent py-12 md:py-14">
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+    <section class="home-northern-hub bg-transparent py-10 md:py-12">
+        <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal relative overflow-hidden rounded-[var(--ui-radius-card)] border border-slate-200/80 shadow-[var(--ui-shadow-card)] glass-card">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
-                    <div class="flex flex-col justify-center p-6 sm:p-8 lg:p-10 xl:p-12">
+                    <div class="flex flex-col justify-center p-5 sm:p-7 lg:p-8 xl:p-10">
                         <h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl lg:text-[2rem]">Strategic Presence: Northern Hub</h2>
-                        <p class="mt-4 max-w-lg text-sm leading-6 text-slate-600 md:text-[15px] md:leading-7">
+                        <p class="mt-3 max-w-lg text-sm leading-6 text-slate-600 md:text-[15px] md:leading-7">
                             Our state-of-the-art reference laboratory in Lucknow serves as the nerve center for North India, ensuring specialized pathology samples reach analysis within 6 hours of collection.
                         </p>
 
-                        <ul class="mt-6 space-y-3">
+                        <ul class="mt-5 space-y-2.5">
                             <li class="flex items-center gap-3">
                                 <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style="background:#1A4D2E">
                                     <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -800,7 +817,7 @@
                             </li>
                         </ul>
 
-                        <div class="mt-8">
+                        <div class="mt-6">
                             <a href="{{ route('contact') }}" class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:scale-105 hover:bg-primary-700">
                                 Find a Collection Center
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -809,7 +826,7 @@
                     </div>
 
                     {{-- Right: Image with location badge --}}
-                    <div class="relative min-h-[280px] lg:min-h-[420px] overflow-hidden rounded-[var(--ui-radius-card)]">
+                    <div class="relative min-h-[240px] lg:min-h-[360px] overflow-hidden rounded-[var(--ui-radius-card)]">
                         <img
                             src="{{ asset('upload/corousel/image4.jpg') }}"
                             alt="Biogenix Northern Hub Laboratory in Lucknow"
@@ -818,7 +835,7 @@
                             decoding="async"
                         >
                         {{-- Location badge --}}
-                        <div class="absolute bottom-4 right-4 z-10 glass-card rounded-2xl px-5 py-3 sm:bottom-6 sm:right-6">
+                        <div class="absolute bottom-4 right-4 z-10 glass-card rounded-2xl px-4 py-2.5 sm:bottom-5 sm:right-5">
                             <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Center of Excellence</p>
                             <p class="font-display mt-1 text-lg font-bold tracking-tight text-slate-950">Lucknow, UP</p>
                             <p class="text-xs font-medium text-slate-500">Regional Reference Lab #01</p>
@@ -829,9 +846,9 @@
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     {{-- TEST YOUR DIAGNOSTIC PRECISION --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     <section class="home-quiz-cta bg-transparent py-6 md:py-8">
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <div class="home-reveal overflow-hidden rounded-[var(--ui-radius-card)] bg-primary-600 px-6 py-10 shadow-[0_24px_55px_rgba(26,77,46,0.25)] sm:px-10 md:flex md:items-center md:justify-between md:px-12 md:py-12 lg:px-16">
@@ -851,12 +868,12 @@
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
     {{-- FINAL CTA STRIP --}}
-    {{-- ═══════════════════════════════════════════════════════════ --}}
-    <section class="home-cta py-12 text-white md:py-14 rounded-[var(--ui-radius-card)]">
+    {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+    <section class="bg-transparent py-12 text-white md:py-14">
         <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
-            <div class="home-reveal">
+            <div class="home-cta home-reveal rounded-[var(--ui-radius-card)] px-6 py-10 sm:px-8 md:px-10 md:py-12">
                 <h2 class="font-display text-2xl font-semibold text-white md:text-4xl">Need a faster procurement decision?</h2>
                 <p class="mx-auto mt-3 max-w-3xl text-sm text-primary-50/90 md:text-base">
                     Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional onboarding and product consultation.
@@ -873,7 +890,7 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        /* ─── Hero Carousel ─── */
+        /* â”€â”€â”€ Hero Carousel â”€â”€â”€ */
         const track    = document.getElementById('heroTrack');
         const dots     = Array.from(document.querySelectorAll('[data-hero-dot]'));
         const nextBtn  = document.getElementById('heroNext');
@@ -919,7 +936,7 @@
         if (nextBtn) nextBtn.addEventListener('click', function () { moveTo(index + 1); startAuto(); });
         if (prevBtn) prevBtn.addEventListener('click', function () { moveTo(index - 1); startAuto(); });
 
-        /* ── Touch / Swipe support ── */
+        /* â”€â”€ Touch / Swipe support â”€â”€ */
         if (carousel) {
             let touchStartX = 0;
             let touchEndX   = 0;
@@ -984,7 +1001,7 @@
         window.addEventListener('resize', queueRevealRefresh);
         window.addEventListener('scroll', queueRevealRefresh, { passive: true });
 
-        /* ─── Newsletter ─── */
+        /* â”€â”€â”€ Newsletter â”€â”€â”€ */
         const newsletterForm   = document.getElementById('newsletterForm');
         const newsletterBtn    = document.getElementById('newsletterSubmitBtn');
         const newsletterStatus = document.getElementById('newsletterStatus');
@@ -1020,7 +1037,7 @@
             });
         }
 
-        /* ─── Category Carousel Auto Scroll ─── */
+        /* â”€â”€â”€ Category Carousel Auto Scroll â”€â”€â”€ */
         const catCarousel = document.getElementById('categoryCarousel');
         let catScrollInterval;
         

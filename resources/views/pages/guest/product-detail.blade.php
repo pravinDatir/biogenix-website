@@ -45,8 +45,12 @@
         $applicationLabel = trim((string) ($product->subcategory_name ?? 'Clinical Diagnostics'));
         $modelLabel = trim((string) ($product->visible_variant_sku ?? $product->sku ?? 'N/A'));
         $imageUrl = asset($product->image_path ?: 'upload/icons/logo.jpg');
-        $galleryImages = collect(['Main View', 'Pack View', 'Bench View', 'Workflow'])
-            ->map(fn (string $label) => ['label' => $label, 'src' => $imageUrl]);
+        $galleryImages = collect([
+            ['label' => 'Main View', 'src' => $imageUrl],
+            ['label' => 'Pack View', 'src' => asset('upload/products/image1.jpg')],
+            ['label' => 'Bench View', 'src' => asset('upload/products/image2.jpg')],
+            ['label' => 'Workflow', 'src' => asset('upload/products/image3.jpg')],
+        ]);
         $currentPrice = $product->visible_price !== null ? (float) $product->visible_price : null;
         // Step 1: keep the saved base price ready so the detail page can show the real MRP from backend data.
         $basePrice = $product->visible_base_price !== null ? (float) $product->visible_base_price : $currentPrice;
@@ -117,16 +121,16 @@
         $selectedTierRow = $bulkTierRows->first();
         $bestBulkTier = $bulkTierRows->sortByDesc('discount_value')->first();
         $relatedProducts = collect($related_products ?? [])->filter();
-        $compactCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-4 shadow-[var(--ui-shadow-card)] md:p-5 glass-card';
-        $sectionCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-white p-5 shadow-[var(--ui-shadow-card)] md:p-6 glass-card';
-        $purchaseCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200 bg-[radial-gradient(circle_at_top_right,rgba(26,77,46,0.06),transparent_36%),linear-gradient(180deg,rgba(255,255,255,1)_0%,#f9faf9_100%)] p-5 shadow-[var(--ui-shadow-card)] md:p-6 xl:sticky xl:top-6 glass-card';
-        $featurePanelClass = 'mt-3 rounded-[var(--ui-radius-tab)] bg-[linear-gradient(135deg,#f0faf4_0%,#f9faf9_100%)] p-4 md:p-5';
-        $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-[var(--ui-radius-tab)] bg-primary-50 text-primary-700';
-        $primaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-primary-700';
-        $secondaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:scale-[1.02]';
-        $qtyPickerClass = 'inline-flex h-12 w-full items-center justify-between rounded-3xl border border-slate-200 bg-slate-50 p-1';
-        $qtyButtonClass = 'inline-flex h-8 w-8 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition hover:bg-white hover:text-primary-700';
-        $estimateClass = 'rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3';
+        $compactCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-4 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-5 glass-card';
+        $sectionCardClass = 'rounded-[var(--ui-radius-card)] border border-slate-200/80 bg-white/95 p-5 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-6 glass-card';
+        $purchaseCardClass = 'rounded-[var(--ui-radius-card)] border border-primary-100/70 bg-gradient-to-br from-white via-primary-50/65 to-white p-5 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-6 xl:sticky xl:top-6 glass-card';
+        $featurePanelClass = 'mt-3 rounded-3xl border border-primary-100/70 bg-primary-50/70 p-4 md:p-5';
+        $iconTilePrimaryClass = 'inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700';
+        $primaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-px hover:bg-primary-700';
+        $secondaryButtonClass = 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white/95 px-4 text-sm font-semibold text-slate-700 shadow-[var(--ui-shadow-soft)] transition hover:-translate-y-px hover:bg-slate-50';
+        $qtyPickerClass = 'inline-flex h-12 w-full items-center justify-between rounded-3xl border border-slate-200/80 bg-white/90 p-1 shadow-[var(--ui-shadow-soft)]';
+        $qtyButtonClass = 'inline-flex h-8 w-8 items-center justify-center rounded-full border border-primary-100 bg-white text-lg font-semibold text-primary-700 transition hover:bg-primary-50 hover:text-primary-800';
+        $estimateClass = 'rounded-3xl border border-slate-200/80 bg-slate-50/85 px-4 py-3';
         $actionsClass = 'grid gap-3 sm:grid-cols-2';
         $inlineChipClass = 'inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600';
         $sectionHeadingClass = 'text-xl font-semibold text-slate-950';
@@ -153,10 +157,10 @@
         }
     @endphp
 
-    <div class="w-screen bg-[linear-gradient(180deg,#ffffff_0%,#f0faf4_100%)] py-4 md:mt-0 md:py-8 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
+    <div class="w-screen bg-gradient-to-b from-white via-primary-50/20 to-white py-4 md:mt-0 md:py-8 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
         <div class="mx-auto w-full px-4 py-8 md:px-6 md:py-10">
-            <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-[0_10px_24px_rgba(26,30,26,0.06)] transition duration-200 hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
+            <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-fit items-center gap-2 rounded-full border border-slate-200/80 bg-white/95 px-4 text-sm font-semibold text-slate-700 no-underline shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-px hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m15 18-6-6 6-6"></path>
                 </svg>
@@ -178,8 +182,25 @@
             <section class="mt-4 grid gap-5 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:items-start">
                 <div class="space-y-3 self-start">
                     <div class="{{ $compactCardClass }}">
-                        <div class="group relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top_left,rgba(26,77,46,0.1),transparent_40%),linear-gradient(135deg,#ffffff_0%,#f0faf4_100%)]">
-                            <img id="catalogProductMainImage" src="{{ $galleryImages->first()['src'] }}" alt="{{ $productTitle }}" class="h-80 w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-[1.04] sm:h-96 xl:h-[32rem]" loading="lazy" decoding="async">
+                        <div class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-primary-50/60 to-slate-50">
+                            <img id="catalogProductMainImage" src="{{ $galleryImages->first()['src'] }}" alt="{{ $productTitle }}" data-gallery-images='@json($galleryImages->pluck('src')->values()->all())' class="h-80 w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-[1.04] sm:h-96 xl:h-[32rem]" loading="lazy" decoding="async">
+                            
+                            {{-- Gallery Navigation Arrows --}}
+                            @if ($galleryImages->count() > 1)
+                                <button id="productPrevImage" type="button" aria-label="Previous image"
+                                    class="absolute left-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-[calc(50%+2px)] hover:text-primary-700 opacity-0 group-hover:opacity-100">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+                                    </svg>
+                                </button>
+                                <button id="productNextImage" type="button" aria-label="Next image"
+                                    class="absolute right-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-[calc(50%+2px)] hover:text-primary-700 opacity-0 group-hover:opacity-100">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
+                                    </svg>
+                                </button>
+                            @endif
+
                             <button id="productImageZoomBtn" type="button" class="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-primary-700" aria-label="Zoom image">
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <circle cx="11" cy="11" r="7"></circle>
@@ -189,14 +210,6 @@
                                 </svg>
                             </button>
                         </div>
-                    </div>
-
-                    <div class="grid grid-cols-4 gap-3">
-                        @foreach ($galleryImages as $galleryImage)
-                            <button type="button" class="{{ $loop->first ? 'border-primary-600 bg-white ring-2 ring-primary-600/20 shadow-lg' : 'border-slate-200 bg-white' }} rounded-2xl border p-2 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary-600 hover:shadow-md" data-gallery-thumb data-image="{{ $galleryImage['src'] }}" data-alt="{{ $productTitle . ' ' . $galleryImage['label'] }}">
-                                <img src="{{ $galleryImage['src'] }}" alt="{{ $galleryImage['label'] }}" class="h-20 w-full rounded-xl object-cover sm:h-24" loading="lazy" decoding="async">
-                            </button>
-                        @endforeach
                     </div>
                 </div>
 
@@ -330,7 +343,7 @@
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
                                 @guest
-                                     <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[rgba(255,106,0,0.96)] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[rgba(255,106,0,1)] hover-lift glow-orange">
+                                     <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-4 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition hover:-translate-y-px hover:bg-orange-600 hover-lift glow-orange">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
@@ -347,7 +360,7 @@
                                         <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="{{ $requestedQuantity }}">
 
                                         {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
-                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-secondary-600 px-4 text-sm font-bold uppercase tracking-wide text-primary-950 shadow-sm transition hover:bg-secondary-500 hover-lift">
+                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-secondary-600 px-4 text-sm font-bold uppercase tracking-wide text-primary-950 shadow-lg shadow-secondary-600/20 transition hover:-translate-y-px hover:bg-secondary-500 hover-lift">
                                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M5 12h14"></path>
                                                 <path d="m12 5 7 7-7 7"></path>
@@ -573,7 +586,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const mainImage = document.getElementById('catalogProductMainImage');
-                const thumbs = Array.from(document.querySelectorAll('[data-gallery-thumb]'));
+                const imageStage = mainImage ? mainImage.closest('.group') : null;
                 const quantityValue = document.getElementById('catalogQuantityValue');
                 const toastHost = document.getElementById('uiToastHost');
                 const lightbox = document.getElementById('productImageLightbox');
@@ -595,6 +608,26 @@
 
                 const loginUrl = @json(route('login'));
                 const isAuthenticated = @json(auth()->check());
+                let gallerySources = [];
+                let selectedGalleryIndex = 0;
+                let previewGalleryIndex = 0;
+                let hoverGalleryTimer = null;
+
+                if (mainImage) {
+                    try {
+                        gallerySources = JSON.parse(mainImage.dataset.galleryImages || '[]');
+                    } catch (error) {
+                        gallerySources = [];
+                    }
+                }
+
+                gallerySources = gallerySources.filter(function (value) {
+                    return Boolean(String(value || '').trim());
+                });
+
+                if (!gallerySources.length && mainImage && mainImage.src) {
+                    gallerySources = [mainImage.src];
+                }
 
                 const showToast = function (options) {
                     if (!toastHost) {
@@ -863,29 +896,77 @@
                     });
                 }
 
-                thumbs.forEach(function (thumb) {
-                    thumb.addEventListener('click', function () {
-                        if (!mainImage) {
-                            return;
-                        }
+                const setActiveGalleryImage = function (index, persistSelection) {
+                    if (!mainImage || !gallerySources.length) {
+                        return;
+                    }
 
-                        mainImage.classList.add('opacity-60');
-                        mainImage.src = thumb.dataset.image;
-                        mainImage.alt = thumb.dataset.alt;
+                    const safeIndex = ((index % gallerySources.length) + gallerySources.length) % gallerySources.length;
+                    previewGalleryIndex = safeIndex;
 
-                        window.setTimeout(function () {
-                            mainImage.classList.remove('opacity-60');
-                        }, 140);
+                    if (persistSelection) {
+                        selectedGalleryIndex = safeIndex;
+                    }
 
-                        thumbs.forEach(function (item) {
-                            item.classList.remove('border-primary-600', 'ring-2', 'ring-primary-600/20', 'shadow-lg');
-                            item.classList.add('border-slate-200');
-                        });
+                    mainImage.classList.add('opacity-60');
+                    mainImage.src = gallerySources[safeIndex];
+                    mainImage.alt = safeIndex === 0 ? @json($productTitle) : @json($productTitle) + ' alternate view ' + safeIndex;
 
-                        thumb.classList.remove('border-slate-200');
-                        thumb.classList.add('border-primary-600', 'ring-2', 'ring-primary-600/20', 'shadow-lg');
+                    window.setTimeout(function () {
+                        mainImage.classList.remove('opacity-60');
+                    }, 160);
+                };
+
+                const stopHoverGalleryRotation = function () {
+                    if (hoverGalleryTimer) {
+                        window.clearInterval(hoverGalleryTimer);
+                        hoverGalleryTimer = null;
+                    }
+
+                    if (previewGalleryIndex !== selectedGalleryIndex) {
+                        setActiveGalleryImage(selectedGalleryIndex, false);
+                    }
+                };
+
+                const startHoverGalleryRotation = function () {
+                    if (!imageStage || gallerySources.length < 2 || hoverGalleryTimer) {
+                        return;
+                    }
+
+                    hoverGalleryTimer = window.setInterval(function () {
+                        setActiveGalleryImage(previewGalleryIndex + 1, false);
+                    }, 2000);
+                };
+
+                if (imageStage && gallerySources.length > 1) {
+                    imageStage.addEventListener('mouseenter', function () {
+                        previewGalleryIndex = selectedGalleryIndex;
+                        startHoverGalleryRotation();
                     });
-                });
+
+                    imageStage.addEventListener('mouseleave', function () {
+                        stopHoverGalleryRotation();
+                    });
+
+                    const prevBtn = document.getElementById('productPrevImage');
+                    const nextBtn = document.getElementById('productNextImage');
+
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            stopHoverGalleryRotation();
+                            setActiveGalleryImage(selectedGalleryIndex - 1, true);
+                        });
+                    }
+
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            stopHoverGalleryRotation();
+                            setActiveGalleryImage(selectedGalleryIndex + 1, true);
+                        });
+                    }
+                }
 
                 document.querySelectorAll('[data-qty-button]').forEach(function (button) {
                     button.addEventListener('click', function () {
