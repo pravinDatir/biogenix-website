@@ -1,4 +1,4 @@
-@extends('customer.layout')
+@extends('customer.layouts.main')
 
 @section('title', 'Retry Payment')
 @section('customer_title', 'Retry Payment')

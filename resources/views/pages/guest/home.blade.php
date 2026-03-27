@@ -835,10 +835,10 @@
                             decoding="async"
                         >
                         {{-- Location badge --}}
-                        <div class="absolute bottom-4 right-4 z-10 glass-card rounded-2xl px-4 py-2.5 sm:bottom-5 sm:right-5">
-                            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Center of Excellence</p>
-                            <p class="font-display mt-1 text-lg font-bold tracking-tight text-slate-950">Lucknow, UP</p>
-                            <p class="text-xs font-medium text-slate-500">Regional Reference Lab #01</p>
+                        <div class="absolute bottom-4 right-4 z-10 rounded-2xl border border-secondary-700/20 bg-secondary-600 px-4 py-2.5 shadow-sm sm:bottom-5 sm:right-5">
+                            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-900">Center of Excellence</p>
+                            <p class="font-display mt-1 text-lg font-bold tracking-tight text-slate-900">Lucknow, UP</p>
+                            <p class="text-xs font-medium text-slate-900">Regional Reference Lab #01</p>
                         </div>
                     </div>
                 </div>
