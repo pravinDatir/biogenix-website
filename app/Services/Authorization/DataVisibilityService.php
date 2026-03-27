@@ -5,7 +5,7 @@ namespace App\Services\Authorization;
 use App\Models\Authorization\B2bClientAssignment;
 use App\Models\Authorization\DelegatedAdminScope;
 use App\Models\Authorization\User;
-use App\Models\Invoice\ProformaInvoice;
+use App\Models\Proforma\ProformaInvoice;
 use App\Models\Product\Product;
 use App\Services\Pricing\PriceService;
 use Illuminate\Database\Eloquent\Builder;

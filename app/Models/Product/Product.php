@@ -2,7 +2,7 @@
 
 namespace App\Models\Product;
 
-use App\Models\Invoice\ProformaInvoiceItem;
+use App\Models\Proforma\ProformaInvoiceItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

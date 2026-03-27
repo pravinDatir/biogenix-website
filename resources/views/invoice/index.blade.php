@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Visible Invoices')
+@section('title', 'Visible Proforma Invoices')
 
 @php
     $panelClass = 'rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
@@ -12,13 +12,13 @@
 
 @section('content')
     <div class="mx-auto w-full max-w-none space-y-6 px-4 py-6 sm:px-6 lg:px-8 xl:px-10">
-        <section class="rounded-[32px] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f8fafc_52%,#dcfce7_100%)] p-6 shadow-sm md:p-8">
+        <section class="rounded-[32px] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f9fafb_50%,#e0f2fe_100%)] p-6 shadow-sm md:p-8">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div class="max-w-3xl">
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">Billing Workspace</p>
-                    <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Visible Invoices</h1>
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">Finance Workspace</p>
+                    <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Visible Proforma Invoices</h1>
                     <p class="mt-3 text-sm leading-7 text-slate-600 md:text-base">
-                        Review invoice visibility within your current scope and open the generated document directly from the listing below.
+                        Review the PI records available to your role and visibility scope, then download each document directly from the list.
                     </p>
                 </div>
                 <div class="rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur">
@@ -31,10 +31,10 @@
         <section class="{{ $panelClass }}">
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h2 class="text-xl font-semibold text-slate-950">Invoice Library</h2>
-                    <p class="mt-1 text-sm leading-6 text-slate-500">Each record surfaces ownership, target details, status, totals, and a direct export action.</p>
+                    <h2 class="text-xl font-semibold text-slate-950">PI Library</h2>
+                    <p class="mt-1 text-sm leading-6 text-slate-500">Ownership, target company, status, and total value are surfaced here for faster review.</p>
                 </div>
-                <span class="inline-flex items-center rounded-full border border-emerald-100 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600">Role-filtered</span>
+                <span class="inline-flex items-center rounded-full border border-primary-100 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600">Scoped access</span>
             </div>
 
             <div class="mt-6 {{ $tableWrapClass }}">
@@ -91,8 +91,8 @@
                         @empty
                             <x-ui.table-empty-row
                                 colspan="7"
-                                title="No invoice records visible"
-                                description="There are no invoice records available for your current scope."
+                                title="No PI records visible"
+                                description="There are no proforma invoices available for your current scope."
                             />
                         @endforelse
                     </tbody>

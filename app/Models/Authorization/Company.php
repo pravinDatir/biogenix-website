@@ -2,7 +2,7 @@
 
 namespace App\Models\Authorization;
 
-use App\Models\Invoice\ProformaInvoice;
+use App\Models\Proforma\ProformaInvoice;
 use App\Models\Product\ProductPrice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

@@ -2,7 +2,7 @@
 
 namespace App\Models\Authorization;
 
-use App\Models\Invoice\ProformaInvoice;
+use App\Models\Proforma\ProformaInvoice;
 use App\Services\Notification\EmailNotificationService;
 use App\Models\SupportTicket\SupportTicket;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

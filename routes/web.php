@@ -9,8 +9,8 @@ use App\Http\Controllers\Faq\FaqController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
 use App\Http\Controllers\Authorization\SignupEmailOtpController;
-use App\Http\Controllers\Invoice\ProformaInvoiceController;
-use App\Http\Controllers\Invoice\QuotationController;
+use App\Http\Controllers\Proforma\ProformaInvoiceController;
+use App\Http\Controllers\Quotation\QuotationController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Profile\CustomerAddressController;
 use App\Http\Controllers\Profile\ProfileController;
@@ -38,12 +38,10 @@ Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page
 Route::view('/test-animation', 'TestAnimation.index')->name('test-animation');
 
 
-Route::get('/proforma/create', [ProformaInvoiceController::class, 'create'])->name('proforma.create');
-Route::post('/proforma', [ProformaInvoiceController::class, 'store'])->name('proforma.store');
-Route::get('/generate-quote', [QuotationController::class, 'showGenerateQuotePage'])->name('quotation.create');
-Route::post('/generate-quote', [QuotationController::class, 'createQuotationAndDownloadPdf'])->name('quotation.store');
-Route::get('/pi-quotation', [ProformaInvoiceController::class, 'showPiQuotationRequestPage'])->name('pi-quotation.generate');
-Route::post('/pi-quotation', [ProformaInvoiceController::class, 'submitPiQuotationRequest'])->name('pi-quotation.store');
+Route::get('/generate-quote', [QuotationController::class, 'showCreatePage'])->name('quotation.create');
+Route::post('/generate-quote', [QuotationController::class, 'generate'])->name('quotation.store');
+Route::get('/pi-quotation', [ProformaInvoiceController::class, 'showRequestPage'])->name('pi-quotation.generate');
+Route::post('/pi-quotation', [ProformaInvoiceController::class, 'submitRequest'])->name('pi-quotation.store');
 Route::view('/adminPanel/dashboard', 'adminPanel.dashboard')->name('adminPanel.dashboard');
 Route::view('/adminPanel/products', 'adminPanel.products.index')->name('adminPanel.products');
 Route::view('/adminPanel/products/create', 'adminPanel.products.create')->name('adminPanel.products.create');
@@ -126,7 +124,6 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
    Route::view('/order-confirmation', 'order.confirmation')->name('order.confirmation');
    Route::view('/maintenance', 'errors.503')->name('maintenance');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->middleware('auth')->name('proforma.index');
     Route::get('/proforma/{proformaId}/download', [ProformaInvoiceController::class, 'download'])->middleware('auth')->name('proforma.download');
     Route::middleware('auth')->group(function (): void {

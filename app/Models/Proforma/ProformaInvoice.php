@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Invoice;
+namespace App\Models\Proforma;
 
 use App\Models\Authorization\Company;
 use App\Models\Authorization\User;
@@ -47,31 +47,26 @@ class ProformaInvoice extends Model
         ];
     }
 
-    // This links the PI to the user who created it.
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by_user_id');
     }
 
-    // This links the PI to the owning user.
     public function ownerUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_user_id');
     }
 
-    // This links the PI to the owner company.
     public function ownerCompany(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'owner_company_id');
     }
 
-    // This links the PI to the target company.
     public function targetCompany(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'target_company_id');
     }
 
-    // This loads all line items for the PI.
     public function items(): HasMany
     {
         return $this->hasMany(ProformaInvoiceItem::class);

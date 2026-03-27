@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Models\Invoice;
+namespace App\Models\Proforma;
 
 use App\Models\Product\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class QuotationItem extends Model
+class ProformaInvoiceItem extends Model
 {
     protected $fillable = [
-        'quotation_id',
+        'proforma_invoice_id',
         'product_id',
         'product_variant_id',
         'product_name',
@@ -34,7 +34,7 @@ class QuotationItem extends Model
     protected function casts(): array
     {
         return [
-            'quotation_id' => 'integer',
+            'proforma_invoice_id' => 'integer',
             'product_id' => 'integer',
             'product_variant_id' => 'integer',
             'quantity' => 'integer',
@@ -52,13 +52,11 @@ class QuotationItem extends Model
         ];
     }
 
-    // This links the item to its saved quotation header.
-    public function quotation(): BelongsTo
+    public function proformaInvoice(): BelongsTo
     {
-        return $this->belongsTo(Quotation::class);
+        return $this->belongsTo(ProformaInvoice::class);
     }
 
-    // This links the item back to the product master.
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
