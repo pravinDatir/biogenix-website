@@ -30,8 +30,8 @@ Route::get('/products/{productId}', [ProductController::class, 'productDetails']
 Route::get('/products/{productId}/technical-resources/{resourceId}/download', [ProductController::class, 'downloadTechnicalResource'])->name('products.technical-resources.download');
 
 // flow incomplete 
- // Preview-only customer workspace pages (UI shells)
- Route::view('/customer/orders', 'userProfile.orders.index')->name('customer.orders.preview');
+ // Customer workspace routes that still use lightweight page wiring.
+ Route::get('/customer/orders', [OrderController::class, 'showCustomerOrdersPage'])->middleware('auth')->name('customer.orders.preview');
  Route::view('/customer/support-tickets', 'userProfile.support-tickets.preview')->name('customer.support.preview');
 
  // for testing PI flow only, will be removed later.
@@ -76,6 +76,9 @@ Route::middleware('auth')->post('/checkout/buy-now', [CartController::class, 'st
 Route::middleware('auth')->prefix('orders')->name('orders.')->group(function (): void {
     Route::get('/', [OrderController::class, 'showOrderCrud'])->name('index');
     Route::post('/', [OrderController::class, 'createOrder'])->name('store');
+    Route::get('/reorder/checkout', [OrderController::class, 'showReOrderCheckoutPage'])->name('reorder.checkout');
+    Route::post('/reorder/checkout', [OrderController::class, 'submitReOrderCheckout'])->name('reorder.checkout.submit');
+    Route::post('/{orderId}/reorder', [OrderController::class, 'ReOrder'])->name('reorder');
     Route::get('/{orderId}', [OrderController::class, 'getOrderById'])->name('show');
     Route::put('/{orderId}', [OrderController::class, 'editOrderById'])->name('update');
     Route::delete('/{orderId}', [OrderController::class, 'softDeleteOrderById'])->name('destroy');
@@ -137,8 +140,6 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
         Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
         Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
         Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
-        Route::post('/support-tickets/{ticketId}/comments', [SupportTicketController::class, 'addComment'])->name('support-tickets.comments.store');
-        Route::patch('/support-tickets/{ticketId}/status', [SupportTicketController::class, 'updateStatus'])->name('support-tickets.status.update');
     });
 
     Route::post('/impersonation/stop', [ImpersonationController::class, 'stop'])->name('impersonation.stop');

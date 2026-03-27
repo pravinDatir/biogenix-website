@@ -43,8 +43,7 @@ return [
             'api_key' => env('BREVO_API_KEY', ''),
             'base_url' => env('BREVO_BASE_URL', 'https://api.brevo.com/v3'),
             'timeout_seconds' => (int) env('BREVO_TIMEOUT_SECONDS', 15),
-            'verify_ssl' => env('BREVO_VERIFY_SSL', true),
-            'ca_bundle_path' => env('BREVO_CA_BUNDLE_PATH', ''),
+            'verify_ssl' => env('BREVO_VERIFY_SSL', true)
         ],
     ],
     'signup_email_otp' => [

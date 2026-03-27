@@ -114,6 +114,10 @@
     </div>
 </div>
 
+<form id="orderModalReorderForm" method="POST" class="hidden">
+    @csrf
+</form>
+
 <script>
     const previewOrders = @json($orders);
     const previewOrderToneClasses = @json($statusBadgeMap);
@@ -196,12 +200,31 @@
         taxElement.textContent = order.tax;
         shippingElement.textContent = order.shipping;
         grandTotalElement.textContent = order.grand_total;
+        reorderButton.setAttribute('data-reorder-url', order.reorder_url || '');
         reorderButton.disabled = order.status_key === 'archived';
         reorderButton.classList.toggle('cursor-not-allowed', order.status_key === 'archived');
         reorderButton.classList.toggle('opacity-70', order.status_key === 'archived');
 
         setOrderModalVisibility(true);
     }
+
+    document.addEventListener('click', function (event) {
+        const reorderButton = event.target.closest('#orderModalReorder');
+
+        if (!reorderButton || reorderButton.disabled) {
+            return;
+        }
+
+        const reorderForm = document.getElementById('orderModalReorderForm');
+        const reorderUrl = reorderButton.getAttribute('data-reorder-url');
+
+        if (!reorderForm || !reorderUrl) {
+            return;
+        }
+
+        reorderForm.action = reorderUrl;
+        reorderForm.submit();
+    });
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {

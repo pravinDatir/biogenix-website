@@ -30,6 +30,8 @@
         $savedAddressCollection = collect($savedAddresses ?? []);
         $selectedAddress = $savedAddressCollection->firstWhere('is_default_shipping', true) ?? $savedAddressCollection->first();
         $checkoutBusinessDetails = $checkoutBusinessDetails ?? [];
+        $isReOrderCheckout = (bool) ($isReOrderCheckout ?? false);
+        $reOrderCheckout = is_array($reOrderCheckout ?? null) ? $reOrderCheckout : [];
         $showBusinessInvoiceDetails = (bool) ($checkoutBusinessDetails['show_business_fields'] ?? false);
         $selectedAddressSource = old('selected_address_source', $selectedAddress ? 'existing' : (auth()->check() ? 'new' : 'existing'));
         $selectedAddressId = old('selected_user_address_id', $selectedAddress?->id);
@@ -470,8 +472,8 @@
                         @endguest
 
                         @auth
-                            {{-- Step 1: submit the current cart through the controller so checkout follows the standard MVC flow. --}}
-                            <form method="POST" action="{{ route('checkout.submit') }}" class="mt-5" onsubmit="
+                            {{-- Step 1: submit the current checkout through the correct backend flow. --}}
+                            <form method="POST" action="{{ $isReOrderCheckout ? route('orders.reorder.checkout.submit') : route('checkout.submit') }}" class="mt-5" onsubmit="
                                 const couponField = document.getElementById('checkoutCouponCodeField');
                                 const couponInput = document.getElementById('couponInput');
                                 if (couponField && couponInput) {
@@ -496,6 +498,9 @@
                                 copyFieldValue('checkoutGstinField', 'gstinInput', function (value) { return value.trim().toUpperCase(); });
                                 copyFieldValue('checkoutPanNumberField', 'panInput', function (value) { return value.trim().toUpperCase(); });
                                 copyFieldValue('checkoutRegisteredBusinessNameField', 'registeredBusinessNameInput');
+                                if (typeof window.syncCheckoutReOrderItems === 'function') {
+                                    window.syncCheckoutReOrderItems();
+                                }
                                 const btn = this.querySelector('button[type=submit]');
                                 btn.disabled = true;
                                 btn.innerHTML = `
@@ -509,7 +514,8 @@
                             ">
                                 @csrf
 
-                                {{-- Step 2: submit the current coupon code to backend checkout so the final discount stays server-validated. --}}
+                                {{-- Step 2: submit the current coupon code and reorder payload when needed. --}}
+                                <input type="hidden" name="reorder_items" id="checkoutReOrderItemsField" value="{{ old('reorder_items') }}">
                                 <input type="hidden" name="coupon_code" id="checkoutCouponCodeField" value="{{ old('coupon_code') }}">
                                 <input type="hidden" name="selected_address_source" id="checkoutSelectedAddressSourceField" value="{{ old('selected_address_source', $selectedAddressSource) }}">
                                 <input type="hidden" id="checkoutAddressSourceStateField" value="{{ old('selected_address_source', $selectedAddressSource) }}">
@@ -527,7 +533,7 @@
                                 <input type="hidden" name="registered_business_name" id="checkoutRegisteredBusinessNameField" value="{{ old('registered_business_name') }}">
                                 <input type="hidden" name="notes" id="checkoutNotesField" value="{{ old('notes') }}">
 
-                                {{-- Step 3: keep the submit action simple because the backend cart already holds the current checkout items. --}}
+                                {{-- Step 3: keep the submit action simple because backend already has the final payload. --}}
                                 <button type="submit" class="{{ $buttonPrimaryClass }} w-full gap-2 transition-all">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -688,6 +694,234 @@
                 }
 
                 /* ── formatInr ── */
+                const isReOrderCheckout = @json($isReOrderCheckout);
+                const initialReOrderItems = @json($reOrderCheckout['items'] ?? []);
+                let reOrderItems = [];
+
+                const normalizeReOrderItem = function (item) {
+                    const currentItem = item || {};
+                    let variantId = null;
+                    let productId = 0;
+                    let quantity = 1;
+                    let unitPrice = 0;
+                    let unitTaxAmount = 0;
+                    let unitPriceAfterGst = 0;
+                    let taxAmount = 0;
+                    let lineSubtotal = 0;
+                    let lineTotal = 0;
+                    let name = 'Product';
+                    let model = 'N/A';
+                    let image = 'https://via.placeholder.com/96x96?text=Bio';
+
+                    if (Object.prototype.hasOwnProperty.call(currentItem, 'variantId')) {
+                        variantId = currentItem.variantId;
+                    }
+
+                    if (productId === 0 && currentItem.productId) {
+                        productId = currentItem.productId;
+                    }
+
+                    if (productId === 0 && currentItem.product_id) {
+                        productId = currentItem.product_id;
+                    }
+
+                    if (currentItem.quantity) {
+                        quantity = currentItem.quantity;
+                    }
+
+                    if (currentItem.unitPrice !== undefined) {
+                        unitPrice = currentItem.unitPrice;
+                    } else if (currentItem.unit_price !== undefined) {
+                        unitPrice = currentItem.unit_price;
+                    }
+
+                    if (currentItem.unitTaxAmount !== undefined) {
+                        unitTaxAmount = currentItem.unitTaxAmount;
+                    } else if (currentItem.unit_tax_amount !== undefined) {
+                        unitTaxAmount = currentItem.unit_tax_amount;
+                    }
+
+                    if (currentItem.unitPriceAfterGst !== undefined) {
+                        unitPriceAfterGst = currentItem.unitPriceAfterGst;
+                    } else if (currentItem.unit_price_after_gst !== undefined) {
+                        unitPriceAfterGst = currentItem.unit_price_after_gst;
+                    }
+
+                    if (currentItem.taxAmount !== undefined) {
+                        taxAmount = currentItem.taxAmount;
+                    } else if (currentItem.tax_amount !== undefined) {
+                        taxAmount = currentItem.tax_amount;
+                    }
+
+                    if (currentItem.lineSubtotal !== undefined) {
+                        lineSubtotal = currentItem.lineSubtotal;
+                    } else if (currentItem.line_subtotal !== undefined) {
+                        lineSubtotal = currentItem.line_subtotal;
+                    }
+
+                    if (currentItem.lineTotal !== undefined) {
+                        lineTotal = currentItem.lineTotal;
+                    } else if (currentItem.line_total !== undefined) {
+                        lineTotal = currentItem.line_total;
+                    }
+
+                    if (currentItem.name) {
+                        name = currentItem.name;
+                    } else if (currentItem.product_name) {
+                        name = currentItem.product_name;
+                    }
+
+                    if (currentItem.model) {
+                        model = currentItem.model;
+                    } else if (currentItem.sku) {
+                        model = currentItem.sku;
+                    }
+
+                    if (currentItem.image) {
+                        image = currentItem.image;
+                    } else if (currentItem.image_url) {
+                        image = currentItem.image_url;
+                    }
+
+                    return {
+                        productId: Number(productId || 0),
+                        variantId: variantId === null || variantId === '' ? null : Number(variantId),
+                        quantity: Math.max(1, Number(quantity || 1)),
+                        unitPrice: Number(unitPrice || 0),
+                        unitTaxAmount: Number(unitTaxAmount || 0),
+                        unitPriceAfterGst: Number(unitPriceAfterGst || 0),
+                        taxAmount: Number(taxAmount || 0),
+                        lineSubtotal: Number(lineSubtotal || 0),
+                        lineTotal: Number(lineTotal || 0),
+                        name: String(name || 'Product'),
+                        model: String(model || 'N/A'),
+                        image: String(image || 'https://via.placeholder.com/96x96?text=Bio'),
+                    };
+                };
+
+                const recalculateReOrderItem = function (item) {
+                    const quantity = Math.max(1, Number(item.quantity || 1));
+                    const unitPrice = Number(item.unitPrice || 0);
+                    const unitTaxAmount = Number(item.unitTaxAmount || 0);
+                    const unitPriceAfterGst = Number(item.unitPriceAfterGst || (unitPrice + unitTaxAmount));
+
+                    item.quantity = quantity;
+                    item.lineSubtotal = unitPrice * quantity;
+                    item.taxAmount = unitTaxAmount * quantity;
+                    item.lineTotal = unitPriceAfterGst * quantity;
+
+                    return item;
+                };
+
+                const syncReOrderItemsField = function () {
+                    const reOrderItemsField = document.getElementById('checkoutReOrderItemsField');
+
+                    if (!reOrderItemsField) {
+                        return;
+                    }
+
+                    if (!isReOrderCheckout) {
+                        reOrderItemsField.value = '';
+                        return;
+                    }
+
+                    reOrderItemsField.value = JSON.stringify(reOrderItems);
+                };
+
+                if (Array.isArray(initialReOrderItems)) {
+                    reOrderItems = initialReOrderItems.map(function (item) {
+                        const normalizedItem = normalizeReOrderItem(item);
+
+                        return recalculateReOrderItem(normalizedItem);
+                    });
+                }
+
+                const getCheckoutItems = function () {
+                    if (isReOrderCheckout) {
+                        return reOrderItems;
+                    }
+
+                    return window.CartStore ? window.CartStore.getItems() : [];
+                };
+
+                window.syncCheckoutReOrderItems = function () {
+                    syncReOrderItemsField();
+                };
+
+                window.checkoutUpdateItem = function (productId, variantId, quantity) {
+                    if (isReOrderCheckout) {
+                        const normalizedProductId = Number(productId || 0);
+                        const normalizedVariantId = variantId === null || variantId === '' ? null : Number(variantId);
+                        const normalizedQuantity = Math.max(1, Number(quantity || 1));
+
+                        reOrderItems = reOrderItems.map(function (item) {
+                            const currentProductId = Number(item.productId || 0);
+                            const currentVariantId = item.variantId === null ? null : Number(item.variantId);
+
+                            if (currentProductId !== normalizedProductId) {
+                                return item;
+                            }
+
+                            if (currentVariantId !== normalizedVariantId) {
+                                return item;
+                            }
+
+                            item.quantity = normalizedQuantity;
+
+                            return recalculateReOrderItem(item);
+                        });
+
+                        syncReOrderItemsField();
+
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        return;
+                    }
+
+                    if (window.CartStore && typeof window.CartStore.updateQuantity === 'function') {
+                        window.CartStore.updateQuantity(
+                            Number(productId || 0),
+                            variantId === null || variantId === '' ? null : Number(variantId),
+                            Math.max(1, Number(quantity || 1))
+                        );
+                    }
+                };
+
+                window.checkoutRemoveItem = function (productId, variantId) {
+                    if (isReOrderCheckout) {
+                        const normalizedProductId = Number(productId || 0);
+                        const normalizedVariantId = variantId === null || variantId === '' ? null : Number(variantId);
+
+                        reOrderItems = reOrderItems.filter(function (item) {
+                            const currentProductId = Number(item.productId || 0);
+                            const currentVariantId = item.variantId === null ? null : Number(item.variantId);
+
+                            if (currentProductId !== normalizedProductId) {
+                                return true;
+                            }
+
+                            return currentVariantId !== normalizedVariantId;
+                        });
+
+                        syncReOrderItemsField();
+
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        return;
+                    }
+
+                    if (window.CartStore && typeof window.CartStore.removeItem === 'function') {
+                        window.CartStore.removeItem(
+                            Number(productId || 0),
+                            variantId === null || variantId === '' ? null : Number(variantId)
+                        );
+                    }
+                };
+
                 const formatInr = function (value) {
                     const numeric = Number(value);
                     if (!Number.isFinite(numeric)) return 'Rs. 0.00';
@@ -696,19 +930,37 @@
 
                 /* ── render summary row ── */
                 const getLineSubtotal = function (item) {
+                    let lineSubtotal = item.lineSubtotal;
+
+                    if (lineSubtotal === undefined) {
+                        lineSubtotal = item.line_subtotal;
+                    }
+
                     // Step 1: prefer the backend subtotal when the current cart line came from the authenticated cart.
-                    if (Number.isFinite(Number(item.lineSubtotal))) {
-                        return Number(item.lineSubtotal);
+                    if (Number.isFinite(Number(lineSubtotal))) {
+                        return Number(lineSubtotal);
                     }
 
                     // Step 2: keep the existing guest subtotal fallback for pre-login browsing.
-                    return Number(item.unitPrice || 0) * Math.max(1, Number(item.quantity || 1));
+                    let unitPrice = item.unitPrice;
+
+                    if (unitPrice === undefined) {
+                        unitPrice = item.unit_price;
+                    }
+
+                    return Number(unitPrice || 0) * Math.max(1, Number(item.quantity || 1));
                 };
 
                 const getLineTax = function (item) {
+                    let taxAmount = item.taxAmount;
+
+                    if (taxAmount === undefined) {
+                        taxAmount = item.tax_amount;
+                    }
+
                     // Step 1: prefer the backend tax when the current cart line came from the authenticated cart.
-                    if (Number.isFinite(Number(item.taxAmount))) {
-                        return Number(item.taxAmount);
+                    if (Number.isFinite(Number(taxAmount))) {
+                        return Number(taxAmount);
                     }
 
                     // Step 2: keep the existing guest GST fallback for pre-login browsing.
@@ -716,9 +968,15 @@
                 };
 
                 const getLineTotal = function (item) {
+                    let lineTotal = item.lineTotal;
+
+                    if (lineTotal === undefined) {
+                        lineTotal = item.line_total;
+                    }
+
                     // Step 1: prefer the backend total when the current cart line came from the authenticated cart.
-                    if (Number.isFinite(Number(item.lineTotal))) {
-                        return Number(item.lineTotal);
+                    if (Number.isFinite(Number(lineTotal))) {
+                        return Number(lineTotal);
                     }
 
                     // Step 2: keep the existing guest total fallback for pre-login browsing.
@@ -729,10 +987,22 @@
                     const quantity = Math.max(1, Number(item.quantity || 1));
                     // Step 1: show the product line price before GST so it stays aligned with the subtotal.
                     const subtotal = getLineSubtotal(item);
-                    const image    = String(item.image || 'https://via.placeholder.com/96x96?text=Bio');
-                    const name     = String(item.name || 'Product');
-                    const model    = String(item.model || 'N/A');
-                    const id       = String(item.id || item.productId || '');
+                    const image = String(item.image || item.image_url || 'https://via.placeholder.com/96x96?text=Bio');
+                    const name = String(item.name || item.product_name || 'Product');
+                    const model = String(item.model || item.sku || 'N/A');
+                    let productId = item.productId;
+                    let variantId = item.variantId;
+
+                    if (productId === undefined) {
+                        productId = item.product_id;
+                    }
+
+                    if (variantId === undefined) {
+                        variantId = item.product_variant_id;
+                    }
+
+                    productId = Number(productId || 0);
+                    const variantValue = variantId === null || variantId === '' ? 'null' : String(Number(variantId));
                     return `
                         <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3">
                             <div class="h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
@@ -743,15 +1013,15 @@
                                 <p class="mt-0.5 text-xs text-slate-500">${model}</p>
                                 <div class="mt-2 flex items-center gap-3">
                                     <div class="flex items-center rounded-lg border border-slate-200 bg-white">
-                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.CartStore.updateItemQuantity('${id}', Math.max(1, ${quantity} - 1)); render();">
+                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.checkoutUpdateItem(${productId}, ${variantValue}, Math.max(1, ${quantity} - 1));">
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" /></svg>
                                         </button>
                                         <input type="number" readonly class="w-8 border-x border-slate-200 bg-transparent text-center text-xs font-semibold text-slate-900 outline-none" value="${quantity}">
-                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.CartStore.updateItemQuantity('${id}', ${quantity} + 1); render();">
+                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.checkoutUpdateItem(${productId}, ${variantValue}, ${quantity} + 1);">
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                                         </button>
                                     </div>
-                                    <button type="button" class="text-xs font-medium text-slate-400 underline decoration-slate-300 underline-offset-2 transition hover:text-rose-600 hover:decoration-rose-300" onclick="window.CartStore.removeItem('${id}'); render();">
+                                    <button type="button" class="text-xs font-medium text-slate-400 underline decoration-slate-300 underline-offset-2 transition hover:text-rose-600 hover:decoration-rose-300" onclick="window.checkoutRemoveItem(${productId}, ${variantValue});">
                                         Remove
                                     </button>
                                 </div>
@@ -765,7 +1035,7 @@
 
                 /* ── render totals ── */
                 const render = function () {
-                    const items = window.CartStore ? window.CartStore.getItems() : [];
+                    const items = getCheckoutItems();
                     if (summaryItems) summaryItems.innerHTML = '';
 
                     if (!items.length) {
@@ -774,6 +1044,7 @@
                         if (subtotalEl) subtotalEl.innerHTML = 'Rs. 0.00';
                         if (taxEl)      taxEl.innerHTML      = 'Rs. 0.00';
                         if (totalEl)    totalEl.innerHTML    = 'Rs. 0.00';
+                        syncReOrderItemsField();
                         return;
                     }
 
@@ -793,6 +1064,7 @@
                     if (subtotalEl) subtotalEl.innerHTML = formatInr(subtotal);
                     if (taxEl) taxEl.innerHTML = formatInr(tax);
                     if (totalEl) totalEl.innerHTML = formatInr(total);
+                    syncReOrderItemsField();
                 };
 
                 /* ── address selection ── */
@@ -845,7 +1117,13 @@
                 if (panInput)   panInput.addEventListener('input',   function () { this.value = this.value.toUpperCase(); });
 
                 /* ── init ── */
-                if (window.CartStore) window.CartStore.subscribe(render);
+                if (isReOrderCheckout) {
+                    render();
+                }
+
+                if (!isReOrderCheckout && window.CartStore) {
+                    window.CartStore.subscribe(render);
+                }
                 if (selectedAddressSourceStateField && selectedAddressSourceStateField.value === 'new') {
                     activateNewAddressSelection(addForm && !addForm.classList.contains('hidden'));
                 } else {

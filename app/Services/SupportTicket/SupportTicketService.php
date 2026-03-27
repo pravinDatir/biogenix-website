@@ -3,17 +3,12 @@
 namespace App\Services\SupportTicket;
 
 use App\Models\Authorization\User;
-use App\Models\SupportTicket\SupportTicketCategory;
 use App\Models\SupportTicket\SupportTicket;
 use App\Models\SupportTicket\SupportTicketAttachment;
-use App\Models\SupportTicket\SupportTicketComment;
-use App\Models\SupportTicket\SupportTicketHistory;
-use App\Services\Authorization\RolePermissionService;
+use App\Models\SupportTicket\SupportTicketCategory;
 use App\Services\Utility\FileHandlingService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,468 +16,263 @@ use Throwable;
 
 class SupportTicketService
 {
-    public const STATUSES = ['open', 'in_progress', 'awaiting_response', 'closed'];
-
     // This fallback list keeps the ticket form usable until the category master is migrated and seeded.
     public const CATEGORIES = ['technical', 'billing', 'account', 'general', 'other'];
 
     public const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
 
-    public function __construct(
-        protected RolePermissionService $rolePermissionService,
-        protected FileHandlingService $fileHandlingService,
-    ) {
+    public function __construct(protected FileHandlingService $fileHandlingService)
+    {
     }
 
-    // This prepares the main support ticket page data for the current user.
+    // This prepares the support ticket list page for the signed-in user.
     public function indexPageData(User $user): array
     {
-        try {
-            return [
-                'tickets' => $this->listVisibleTickets($user),
-                // Step 1: load ticket categories from the backend master so the dropdown stays business-managed.
-                'categories' => $this->availableCategorySlugs(),
-                'priorities' => self::PRIORITIES,
-                'statuses' => self::STATUSES,
-                'selectedTicket' => null,
-                'ticketComments' => collect(),
-                'ticketHistory' => collect(),
-                'ticketAttachments' => collect(),
-                'canCreateTicket' => $this->canCreateTicket($user),
-                'canHandleTickets' => $this->canHandleTickets($user),
-                'canAddComment' => false,
-                'canUpdateStatus' => false,
-            ];
-        } catch (Throwable $exception) {
-            Log::error('Failed to build support ticket index.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
+        // Step 1: load the current user's support tickets.
+        $tickets = $this->listTicketsForUser($user);
+
+        // Step 2: prepare the page data used by the profile support screen.
+        $pageData = [];
+        $pageData['tickets'] = $tickets;
+        $pageData['selectedTicket'] = null;
+        $pageData['ticketAttachments'] = collect();
+        $pageData['canCreateTicket'] = $this->canCreateTicket($user);
+
+        // Step 3: return the final page data.
+        return $pageData;
     }
 
     // This returns the active support ticket category slugs used by forms and validation.
     public function availableCategorySlugs(): array
     {
         try {
-            // Step 1: read the active category master in business display order.
-            $categorySlugs = SupportTicketCategory::query()
-                ->where('is_active', true)
-                ->orderBy('sort_order')
-                ->orderBy('name')
-                ->pluck('slug')
-                ->filter(fn (mixed $slug): bool => is_string($slug) && trim($slug) !== '')
-                ->map(fn (string $slug): string => trim($slug))
-                ->values()
-                ->all();
+            // Step 1: start the category query.
+            $categoryQuery = SupportTicketCategory::query();
 
-            // Step 2: keep the live form usable even before the category master is migrated and seeded.
-            if ($categorySlugs === []) {
-                return self::CATEGORIES;
+            // Step 2: keep only active categories.
+            $categoryQuery->where('is_active', true);
+
+            // Step 3: keep the business display order stable.
+            $categoryQuery->orderBy('sort_order');
+            $categoryQuery->orderBy('name');
+
+            // Step 4: load the raw category slugs.
+            $rawCategorySlugs = $categoryQuery->pluck('slug')->all();
+
+            // Step 5: clean the category values one by one.
+            $categorySlugs = [];
+
+            foreach ($rawCategorySlugs as $rawCategorySlug) {
+                if (! is_string($rawCategorySlug)) {
+                    continue;
+                }
+
+                $categorySlug = trim($rawCategorySlug);
+
+                if ($categorySlug === '') {
+                    continue;
+                }
+
+                $categorySlugs[] = $categorySlug;
             }
 
-            return $categorySlugs;
+            // Step 6: keep the form usable even before master data is ready.
+            if ($categorySlugs === []) {
+                $categorySlugs = self::CATEGORIES;
+            }
         } catch (Throwable $exception) {
             Log::error('Failed to load support ticket categories.', ['error' => $exception->getMessage()]);
 
-            // Step 3: return the safe fallback list so ticket creation does not stop during setup gaps.
-            return self::CATEGORIES;
+            // Step 7: fall back to the safe default list when category loading fails.
+            $categorySlugs = self::CATEGORIES;
         }
+
+        // Step 8: return the final category list.
+        return $categorySlugs;
     }
 
-    // This prepares the support ticket detail page data for the selected ticket.
+    // This prepares the support ticket detail page for one selected ticket.
     public function showPageData(User $user, int $ticketId): array
     {
-        try {
-            $ticket = $this->findTicketForViewerOrFail($user, $ticketId);
-            $baseData = $this->indexPageData($user);
+        // Step 1: load the base list page data.
+        $pageData = $this->indexPageData($user);
 
-            $baseData['selectedTicket'] = $ticket;
-            $baseData['ticketComments'] = $this->commentsForTicket($ticketId);
-            $baseData['ticketHistory'] = $this->historyForTicket($ticketId);
-            $baseData['ticketAttachments'] = $this->attachmentsForTicket($ticketId);
-            $baseData['canAddComment'] = $this->canCommentOnTicket($user, $ticket);
-            $baseData['canUpdateStatus'] = $this->canUpdateTicketStatus($user);
+        // Step 2: load the selected ticket for the current user.
+        $selectedTicket = $this->findSupportTicketById($user, $ticketId);
 
-            return $baseData;
-        } catch (Throwable $exception) {
-            Log::error('Failed to build support ticket detail.', ['ticket_id' => $ticketId, 'user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
+        // Step 3: load the attachments uploaded during ticket creation.
+        $ticketAttachments = $this->ticketAttachments($ticketId);
+
+        // Step 4: add the detail data to the page payload.
+        $pageData['selectedTicket'] = $selectedTicket;
+        $pageData['ticketAttachments'] = $ticketAttachments;
+
+        // Step 5: return the final page payload.
+        return $pageData;
     }
 
-    // This creates a support ticket, its history row, and any uploaded attachments.
-    public function createTicket(User $user, array $validated, array $attachments = []): int
+    // This creates a support ticket and stores any uploaded files.
+    public function createTicket(User $user, array $ticketData, array $attachments = []): int
     {
+        // Step 1: stop the request when the current account is not allowed to create tickets.
+        if (! $this->canCreateTicket($user)) {
+            throw new AuthorizationException('You are not allowed to create support tickets.');
+        }
+
+        // Step 2: start a database transaction so the ticket and attachments stay in sync.
+        DB::beginTransaction();
+
+        // Step 3: prepare the return value before the ticket is created.
+        $ticketId = 0;
+
         try {
-            if (! $this->canCreateTicket($user)) {
-                throw new AuthorizationException('You are not allowed to create support tickets.');
-            }
+            // Step 4: create the main support ticket record.
+            $ticket = SupportTicket::query()->create([
+                'ticket_number' => $this->generateTicketNumber(),
+                'owner_user_id' => $user->id,
+                'owner_company_id' => $user->company_id,
+                'created_by_user_id' => $user->id,
+                'category' => $ticketData['category'],
+                'priority' => $ticketData['priority'],
+                'description' => $ticketData['description'],
+                'status' => 'open',
+                'last_activity_at' => now(),
+            ]);
 
-            return DB::transaction(function () use ($user, $validated, $attachments): int {
-                $ticket = SupportTicket::query()->create([
-                    'ticket_number' => $this->generateTicketNumber(),
-                    'owner_user_id' => $user->id,
-                    'owner_company_id' => $user->company_id,
-                    'created_by_user_id' => $user->id,
-                    'category' => $validated['category'],
-                    'priority' => $validated['priority'],
-                    'description' => $validated['description'],
-                    'status' => 'open',
-                    'last_activity_at' => now(),
-                ]);
+            // Step 5: store the new ticket id for the return value.
+            $ticketId = (int) $ticket->id;
 
-                $this->insertHistory((int) $ticket->id, 'created', $user->id, null, 'open', null, 'Ticket created.');
-                $this->persistAttachments((int) $ticket->id, null, $user->id, $attachments);
+            // Step 6: save any uploaded files linked to the ticket.
+            $this->saveTicketAttachments($ticketId, $user->id, $attachments);
 
-                return (int) $ticket->id;
-            });
+            // Step 7: finish the database transaction after all records are ready.
+            DB::commit();
         } catch (Throwable $exception) {
-            Log::error('Failed to create support ticket.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
+            // Step 8: undo database changes when ticket creation fails.
+            DB::rollBack();
+
+            Log::error('Failed to create support ticket.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
             throw $exception;
         }
-    }
 
-    // This adds a comment, updates ticket activity time, and stores any uploaded files.
-    public function addComment(User $user, int $ticketId, string $comment, array $attachments = []): void
-    {
-        try {
-            $ticket = $this->findTicketForViewerOrFail($user, $ticketId);
-
-            if (! $this->canCommentOnTicket($user, $ticket)) {
-                throw new AuthorizationException('You are not allowed to comment on this support ticket.');
-            }
-
-            DB::transaction(function () use ($user, $ticketId, $comment, $attachments): void {
-                $ticketComment = SupportTicketComment::query()->create([
-                    'support_ticket_id' => $ticketId,
-                    'commenter_user_id' => $user->id,
-                    'comment' => $comment,
-                ]);
-
-                SupportTicket::query()->whereKey($ticketId)->update(['last_activity_at' => now()]);
-
-                $this->insertHistory($ticketId, 'comment_added', $user->id, null, null, (int) $ticketComment->id, 'Comment added.');
-                $this->persistAttachments($ticketId, (int) $ticketComment->id, $user->id, $attachments);
-            });
-        } catch (Throwable $exception) {
-            Log::error('Failed to add support ticket comment.', ['ticket_id' => $ticketId, 'user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This updates ticket status and records the change in ticket history.
-    public function updateStatus(User $user, int $ticketId, string $newStatus): void
-    {
-        try {
-            if (! in_array($newStatus, self::STATUSES, true)) {
-                throw new AuthorizationException('Invalid support ticket status transition request.');
-            }
-
-            $ticket = $this->findTicketForViewerOrFail($user, $ticketId);
-
-            if (! $this->canUpdateTicketStatus($user)) {
-                throw new AuthorizationException('You are not allowed to update support ticket status.');
-            }
-
-            if ($ticket->status === $newStatus) {
-                return;
-            }
-
-            DB::transaction(function () use ($user, $ticket, $newStatus): void {
-                SupportTicket::query()->whereKey($ticket->id)->update([
-                    'status' => $newStatus,
-                    'last_activity_at' => now(),
-                ]);
-
-                $this->insertHistory((int) $ticket->id, 'status_changed', $user->id, (string) $ticket->status, $newStatus, null, 'Status updated.');
-            });
-        } catch (Throwable $exception) {
-            Log::error('Failed to update support ticket status.', ['ticket_id' => $ticketId, 'user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
+        // Step 9: return the created ticket id.
+        return $ticketId;
     }
 
     // This checks whether the user can create tickets.
     public function canCreateTicket(User $user): bool
     {
-        try {
-            if (! in_array($user->user_type, ['b2c', 'b2b', 'internal', 'admin', 'delegated_admin'], true)) {
-                return false;
-            }
+        // Step 1: define the user types allowed to raise tickets from the profile area.
+        $allowedUserTypes = ['b2c', 'b2b', 'internal', 'admin', 'delegated_admin'];
 
-            if ($this->rolePermissionService->hasPermission($user, 'tickets.create')) {
-                return true;
-            }
+        // Step 2: check whether the current user type is allowed.
+        $canCreateTicket = in_array((string) $user->user_type, $allowedUserTypes, true);
 
-            return $user->user_type === 'internal'
-                && $this->rolePermissionService->hasRole($user, 'internal_user_support');
-        } catch (Throwable $exception) {
-            Log::error('Failed to check ticket-create permission.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
+        // Step 3: return the final decision.
+        return $canCreateTicket;
     }
 
-    // This checks whether the user can handle tickets across the system.
-    public function canHandleTickets(User $user): bool
+    // This loads the current user's tickets for the profile support page.
+    protected function listTicketsForUser(User $user)
     {
-        try {
-            if ($this->rolePermissionService->hasPermission($user, 'tickets.handle')) {
-                return true;
-            }
+        // Step 1: start the ticket query.
+        $ticketQuery = SupportTicket::query();
 
-            if ($this->rolePermissionService->hasRole($user, 'admin')
-                || $this->rolePermissionService->hasRole($user, 'delegated_admin')) {
-                return true;
-            }
+        // Step 2: keep only the tickets created for the current user.
+        $ticketQuery->where('owner_user_id', $user->id);
 
-            return $user->user_type === 'internal'
-                && $this->rolePermissionService->hasRole($user, 'internal_user_support');
-        } catch (Throwable $exception) {
-            Log::error('Failed to check ticket-handle permission.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
+        // Step 3: show the newest tickets first.
+        $ticketQuery->orderByDesc('created_at');
+        $ticketQuery->orderByDesc('id');
+
+        // Step 4: return the paginated list for the profile page.
+        return $ticketQuery->paginate(15)->withQueryString();
     }
 
-    // This checks whether the user can view only their own tickets.
-    protected function canViewOwnTickets(User $user): bool
+    // This loads one ticket owned by the current user.
+    protected function findSupportTicketById(User $user, int $ticketId): SupportTicket
     {
-        try {
-            return $this->rolePermissionService->hasPermission($user, 'tickets.view.own')
-                || $this->rolePermissionService->hasPermission($user, 'tickets.create');
-        } catch (Throwable $exception) {
-            Log::error('Failed to check own-ticket visibility.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
+        // Step 1: start the ticket query.
+        $ticketQuery = SupportTicket::query();
+
+        // Step 2: load only the requested ticket id.
+        $ticketQuery->whereKey($ticketId);
+
+        // Step 3: limit the result to the current user's own tickets.
+        $ticketQuery->where('owner_user_id', $user->id);
+
+        // Step 4: fetch the ticket record.
+        $ticket = $ticketQuery->first();
+
+        // Step 5: stop the flow when the ticket does not belong to the current user.
+        if (! $ticket) {
+            throw new NotFoundHttpException('Support ticket not found.');
         }
+
+        // Step 6: return the selected ticket.
+        return $ticket;
     }
 
-    // This checks whether the user can comment on the selected ticket.
-    protected function canCommentOnTicket(User $user, object $ticket): bool
+    // This loads the files uploaded when the ticket was created.
+    protected function ticketAttachments(int $ticketId)
     {
-        try {
-            if ($this->canHandleTickets($user)) {
-                return $this->rolePermissionService->hasPermission($user, 'tickets.comment.handle')
-                    || $this->rolePermissionService->hasPermission($user, 'tickets.handle');
-            }
+        // Step 1: start the attachment query.
+        $attachmentQuery = SupportTicketAttachment::query();
 
-            if ((int) $ticket->owner_user_id !== $user->id) {
-                return false;
-            }
+        // Step 2: keep only attachments linked to the selected ticket.
+        $attachmentQuery->where('support_ticket_id', $ticketId);
 
-            return $this->rolePermissionService->hasPermission($user, 'tickets.comment.own')
-                || $this->rolePermissionService->hasPermission($user, 'tickets.view.own');
-        } catch (Throwable $exception) {
-            Log::error('Failed to check ticket comment permission.', ['user_id' => $user->id, 'ticket_id' => $ticket->id ?? null, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
+        // Step 3: keep only the files uploaded on the main ticket form.
+        $attachmentQuery->whereNull('support_ticket_comment_id');
+
+        // Step 4: keep the attachment order stable for the profile page.
+        $attachmentQuery->orderBy('created_at');
+        $attachmentQuery->orderBy('id');
+
+        // Step 5: return the final attachment collection.
+        return $attachmentQuery->get();
     }
 
-    // This checks whether the user can update ticket status.
-    protected function canUpdateTicketStatus(User $user): bool
+    // This stores files uploaded during ticket creation.
+    protected function saveTicketAttachments(int $ticketId, int $userId, array $attachments): void
     {
-        try {
-            if (! $this->canHandleTickets($user)) {
-                return false;
-            }
-
-            return $this->rolePermissionService->hasPermission($user, 'tickets.status.update')
-                || $this->rolePermissionService->hasPermission($user, 'tickets.handle');
-        } catch (Throwable $exception) {
-            Log::error('Failed to check ticket status permission.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
+        // Step 1: stop early when there are no files to save.
+        if ($attachments === []) {
+            return;
         }
-    }
 
-    // This returns visible tickets and flattens owner fields used by the current view.
-    protected function listVisibleTickets(User $user): LengthAwarePaginator
-    {
-        try {
-            if (! $this->canHandleTickets($user) && ! $this->canViewOwnTickets($user)) {
-                throw new AuthorizationException('You are not allowed to view support tickets.');
+        // Step 2: save each uploaded file as a ticket attachment.
+        foreach ($attachments as $attachment) {
+            if (! $attachment instanceof UploadedFile) {
+                continue;
             }
 
-            $query = SupportTicket::query()
-                ->with(['ownerUser:id,name', 'ownerCompany:id,name'])
-                ->withCount('comments');
+            // Step 3: read the file values before moving the upload.
+            $originalFileName = $attachment->getClientOriginalName();
+            $fileSize = (int) ($attachment->getSize() ?? 0);
+            $mimeType = $attachment->getClientMimeType();
 
-            if (! $this->canHandleTickets($user)) {
-                $query->where('owner_user_id', $user->id);
-            }
-
-            $tickets = $query
-                ->orderByRaw('COALESCE(last_activity_at, created_at) DESC')
-                ->orderByDesc('id')
-                ->paginate(15)
-                ->withQueryString();
-
-            $tickets->setCollection(
-                $tickets->getCollection()->map(function (SupportTicket $ticket) {
-                    $ticket->owner_name = $ticket->ownerUser?->name;
-                    $ticket->owner_company_name = $ticket->ownerCompany?->name;
-                    return $ticket;
-                }),
+            // Step 4: store the file in the shared support ticket folder.
+            $storedFilePath = $this->fileHandlingService->storeUploadedFile(
+                $attachment,
+                FileHandlingService::DOCUMENT_DIRECTORY.'/support-tickets/'.$ticketId,
             );
 
-            return $tickets;
-        } catch (Throwable $exception) {
-            Log::error('Failed to list visible support tickets.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This loads one ticket for the viewer and blocks access outside the allowed scope.
-    protected function findTicketForViewerOrFail(User $user, int $ticketId): object
-    {
-        try {
-            if (! $this->canHandleTickets($user) && ! $this->canViewOwnTickets($user)) {
-                throw new AuthorizationException('You are not allowed to access support tickets.');
-            }
-
-            $query = SupportTicket::query()
-                ->with(['ownerUser:id,name', 'ownerCompany:id,name'])
-                ->whereKey($ticketId);
-
-            if (! $this->canHandleTickets($user)) {
-                $query->where('owner_user_id', $user->id);
-            }
-
-            $ticket = $query->first();
-
-            if (! $ticket) {
-                throw new NotFoundHttpException('Support ticket not found.');
-            }
-
-            $ticket->owner_name = $ticket->ownerUser?->name;
-            $ticket->owner_company_name = $ticket->ownerCompany?->name;
-
-            return $ticket;
-        } catch (Throwable $exception) {
-            Log::error('Failed to load support ticket for viewer.', ['user_id' => $user->id, 'ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This loads ticket comments and flattens commenter names for the current view.
-    protected function commentsForTicket(int $ticketId): Collection
-    {
-        try {
-            return SupportTicketComment::query()
-                ->with('commenter:id,name')
-                ->where('support_ticket_id', $ticketId)
-                ->orderBy('created_at')
-                ->orderBy('id')
-                ->get()
-                ->map(function (SupportTicketComment $comment) {
-                    $comment->commenter_name = $comment->commenter?->name;
-                    return $comment;
-                });
-        } catch (Throwable $exception) {
-            Log::error('Failed to load support ticket comments.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This loads ticket history and flattens actor/comment data for the current view.
-    protected function historyForTicket(int $ticketId): Collection
-    {
-        try {
-            return SupportTicketHistory::query()
-                ->with(['actor:id,name', 'comment:id,comment'])
-                ->where('support_ticket_id', $ticketId)
-                ->orderBy('created_at')
-                ->orderBy('id')
-                ->get()
-                ->map(function (SupportTicketHistory $history) {
-                    $history->actor_name = $history->actor?->name;
-                    $history->comment_text = $history->comment?->comment;
-                    return $history;
-                });
-        } catch (Throwable $exception) {
-            Log::error('Failed to load support ticket history.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This loads ticket attachments and flattens uploader names for the current view.
-    protected function attachmentsForTicket(int $ticketId): Collection
-    {
-        try {
-            return SupportTicketAttachment::query()
-                ->with('uploader:id,name')
-                ->where('support_ticket_id', $ticketId)
-                ->orderBy('created_at')
-                ->orderBy('id')
-                ->get()
-                ->map(function (SupportTicketAttachment $attachment) {
-                    $attachment->uploader_name = $attachment->uploader?->name;
-                    return $attachment;
-                });
-        } catch (Throwable $exception) {
-            Log::error('Failed to load support ticket attachments.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This creates one support ticket history row.
-    protected function insertHistory(
-        int $ticketId,
-        string $eventType,
-        ?int $actorUserId,
-        ?string $fromStatus,
-        ?string $toStatus,
-        ?int $commentId,
-        ?string $message,
-    ): void {
-        try {
-            SupportTicketHistory::query()->create([
+            // Step 5: save the file record in the database.
+            SupportTicketAttachment::query()->create([
                 'support_ticket_id' => $ticketId,
-                'event_type' => $eventType,
-                'actor_user_id' => $actorUserId,
-                'from_status' => $fromStatus,
-                'to_status' => $toStatus,
-                'support_ticket_comment_id' => $commentId,
-                'message' => $message,
+                'support_ticket_comment_id' => null,
+                'original_file_name' => $originalFileName,
+                'stored_file_path' => $storedFilePath,
+                'file_size' => $fileSize,
+                'mime_type' => $mimeType,
+                'uploaded_by_user_id' => $userId,
                 'created_at' => now(),
             ]);
-        } catch (Throwable $exception) {
-            Log::error('Failed to insert support ticket history.', ['ticket_id' => $ticketId, 'event_type' => $eventType, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This stores ticket attachments and links them to the ticket and optional comment.
-    protected function persistAttachments(int $ticketId, ?int $commentId, int $actorUserId, array $attachments): void
-    {
-        try {
-            foreach ($attachments as $attachment) {
-                if (! $attachment instanceof UploadedFile) {
-                    continue;
-                }
-
-                // Step 1: capture the uploaded file metadata before the file is moved into its final public folder.
-                $originalFileName = $attachment->getClientOriginalName();
-                $fileSize = (int) ($attachment->getSize() ?? 0);
-                $mimeType = $attachment->getClientMimeType();
-
-                // Step 2: move the uploaded file through the shared helper so the saved path stays consistent for future storage changes.
-                $storedFilePath = $this->fileHandlingService->storeUploadedFile(
-                    $attachment,
-                    FileHandlingService::DOCUMENT_DIRECTORY.'/support-tickets/'.$ticketId,
-                );
-
-                // Step 3: save the attachment record with the metadata captured before the move.
-                SupportTicketAttachment::query()->create([
-                    'support_ticket_id' => $ticketId,
-                    'support_ticket_comment_id' => $commentId,
-                    'original_file_name' => $originalFileName,
-                    'stored_file_path' => $storedFilePath,
-                    'file_size' => $fileSize,
-                    'mime_type' => $mimeType,
-                    'uploaded_by_user_id' => $actorUserId,
-                    'created_at' => now(),
-                ]);
-            }
-        } catch (Throwable $exception) {
-            Log::error('Failed to persist support ticket attachments.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
-            throw $exception;
         }
     }
 

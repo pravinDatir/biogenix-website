@@ -4,162 +4,220 @@ namespace App\Http\Controllers\SupportTicket;
 
 use App\Http\Controllers\Controller;
 use App\Services\SupportTicket\SupportTicketService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
 
 class SupportTicketController extends Controller
 {
-    // This renders the support ticket list page.
+    // This renders the main support ticket page for the signed-in user.
     public function index(Request $request, SupportTicketService $supportTicketService): View
     {
-        try {
-            // Step 1: load the main support ticket page data.
-            return view('userProfile.support-tickets.index', $supportTicketService->indexPageData($request->user()));
-        } catch (Throwable $exception) {
-            Log::error('Failed to load support ticket index.', ['error' => $exception->getMessage()]);
+        // Step 1: load the page data from the support ticket service.
+        $pageData = $supportTicketService->indexPageData($request->user());
 
-            return $this->viewWithError('userProfile.support-tickets.index', [
-                'tickets' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15),
-                'categories' => SupportTicketService::CATEGORIES,
-                'priorities' => SupportTicketService::PRIORITIES,
-                'statuses' => SupportTicketService::STATUSES,
-                'selectedTicket' => null,
-                'ticketComments' => collect(),
-                'ticketHistory' => collect(),
-                'ticketAttachments' => collect(),
-                'canCreateTicket' => false,
-                'canHandleTickets' => false,
-                'canAddComment' => false,
-                'canUpdateStatus' => false,
-            ], $exception, 'Unable to load support tickets.');
-        }
+        // Step 2: send the prepared data to the support ticket screen.
+        return view('userProfile.support-tickets.index', $pageData);
     }
 
-    // This renders the support ticket detail state inside the same page.
+    // This renders the support ticket page with one selected ticket opened.
     public function show(int $ticketId, Request $request, SupportTicketService $supportTicketService): View
     {
-        try {
-            // Step 1: load the selected ticket with its detail data.
-            return view('userProfile.support-tickets.index', $supportTicketService->showPageData($request->user(), $ticketId));
-        } catch (Throwable $exception) {
-            Log::error('Failed to load support ticket detail.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
+        // Step 1: load the selected ticket data for the current user.
+        $pageData = $supportTicketService->showPageData($request->user(), $ticketId);
 
-            return $this->viewWithError('userProfile.support-tickets.index', [
-                'tickets' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15),
-                'categories' => SupportTicketService::CATEGORIES,
-                'priorities' => SupportTicketService::PRIORITIES,
-                'statuses' => SupportTicketService::STATUSES,
-                'selectedTicket' => null,
-                'ticketComments' => collect(),
-                'ticketHistory' => collect(),
-                'ticketAttachments' => collect(),
-                'canCreateTicket' => false,
-                'canHandleTickets' => false,
-                'canAddComment' => false,
-                'canUpdateStatus' => false,
-            ], $exception, 'Unable to load support ticket.');
-        }
+        // Step 2: return the same support ticket screen with detail data.
+        return view('userProfile.support-tickets.index', $pageData);
     }
 
-    // This creates a new support ticket.
+    // This creates a new support ticket from the shared layout widget.
     public function store(Request $request, SupportTicketService $supportTicketService): RedirectResponse
     {
+        // Step 1: read the signed-in user once so the next steps stay easy to follow.
+        $authenticatedUser = $request->user();
+
+        // Step 2: read the form source so logs can show which business entry point was used.
+        $requestSource = $this->readSupportTicketFormSource($request);
+
+        // Step 3: write a start log before validation and database work begin.
+        Log::info('Support ticket submission started.', [
+            'user_id' => $authenticatedUser?->id,
+            'request_source' => $requestSource,
+        ]);
+
         try {
-            // Step 1: load the active category master so the create form validates against real backend values.
-            $categorySlugs = $supportTicketService->availableCategorySlugs();
+            // Step 4: validate the submitted widget fields against backend rules.
+            $validated = $this->validateStoreRequest($request, $supportTicketService);
 
-            // Step 1: validate the submitted ticket form.
-            $validated = $request->validate([
-                'category' => ['required', Rule::in($categorySlugs)],
-                'priority' => ['required', Rule::in(SupportTicketService::PRIORITIES)],
-                'description' => ['required', 'string', 'max:4000'],
-                'attachments' => ['nullable', 'array', 'max:5'],
-                'attachments.*' => ['file', 'max:5120'],
-            ]);
+            // Step 5: prepare the clean ticket payload expected by the service layer.
+            $ticketData = $this->buildTicketCreateData($validated);
 
-            // Step 2: create the ticket and redirect to its detail state.
+            // Step 6: load uploaded files as a simple array for the service layer.
+            $attachments = $request->file('attachments', []);
+
+            // Step 7: create the support ticket and store any uploaded files.
             $ticketId = $supportTicketService->createTicket(
-                $request->user(),
-                [
-                    'category' => $validated['category'],
-                    'priority' => $validated['priority'],
-                    'description' => trim((string) $validated['description']),
-                ],
-                $request->file('attachments', []),
+                $authenticatedUser,
+                $ticketData,
+                $attachments,
             );
 
-            return redirect()
-                ->route('support-tickets.show', $ticketId)
-                ->with('status', 'Support ticket created successfully.');
-        } catch (Throwable $exception) {
-            Log::error('Failed to create support ticket.', ['error' => $exception->getMessage()]);
-
-            return $this->redirectBackWithError($exception, 'Unable to create support ticket.');
-        }
-    }
-
-    // This adds a comment to an existing support ticket.
-    public function addComment(
-        int $ticketId,
-        Request $request,
-        SupportTicketService $supportTicketService,
-    ): RedirectResponse {
-        try {
-            // Step 1: validate the submitted comment form.
-            $validated = $request->validate([
-                'comment' => ['required', 'string', 'max:4000'],
-                'comment_attachments' => ['nullable', 'array', 'max:5'],
-                'comment_attachments.*' => ['file', 'max:5120'],
+            // Step 8: write a completion log after the ticket is saved successfully.
+            Log::info('Support ticket submission completed.', [
+                'user_id' => $authenticatedUser?->id,
+                'ticket_id' => $ticketId,
+                'category' => $ticketData['category'],
+                'priority' => $ticketData['priority'],
+                'request_source' => $requestSource,
             ]);
 
-            // Step 2: store the comment and any uploaded comment files.
-            $supportTicketService->addComment(
-                $request->user(),
-                $ticketId,
-                trim((string) $validated['comment']),
-                $request->file('comment_attachments', []),
-            );
-
-            return redirect()
-                ->route('support-tickets.show', $ticketId)
-                ->with('status', 'Comment added successfully.');
+            // Step 9: prepare the success response for the same page.
+            $response = redirect()->back();
+            $response = $response->with('success', 'Support ticket submitted successfully. Our support team will review it shortly.');
         } catch (Throwable $exception) {
-            Log::error('Failed to add support ticket comment.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
-
-            return $this->redirectBackWithError($exception, 'Unable to add comment.');
+            // Step 10: prepare the widget-friendly failure response.
+            $response = $this->handleStoreException($exception, $authenticatedUser?->id, $requestSource);
         }
+
+        // Step 11: return the prepared response as the final controller step.
+        return $response;
     }
 
-    // This updates the status of a support ticket.
-    public function updateStatus(
-        int $ticketId,
-        Request $request,
-        SupportTicketService $supportTicketService,
-    ): RedirectResponse {
-        try {
-            // Step 1: validate the new ticket status.
-            $validated = $request->validate([
-                'status' => ['required', Rule::in(SupportTicketService::STATUSES)],
+    // This reads the widget source label used in logs and error recovery.
+    protected function readSupportTicketFormSource(Request $request): string
+    {
+        // Step 1: read the raw source from the submitted form.
+        $requestSource = trim((string) $request->input('support_ticket_form_source', 'unknown'));
+
+        // Step 2: return a safe fallback when the form does not send a source value.
+        if ($requestSource === '') {
+            $requestSource = 'unknown';
+        }
+
+        // Step 3: return the cleaned source value.
+        return $requestSource;
+    }
+
+    // This validates the support ticket widget request using backend-owned rules.
+    protected function validateStoreRequest(Request $request, SupportTicketService $supportTicketService): array
+    {
+        // Step 1: load allowed categories from the backend so the form and server stay aligned.
+        $categorySlugs = $supportTicketService->availableCategorySlugs();
+
+        // Step 2: validate each submitted field with clear business limits.
+        return $request->validate([
+            'subject' => ['required', 'string', 'max:150'],
+            'category' => ['required', Rule::in($categorySlugs)],
+            'priority' => ['nullable', Rule::in(SupportTicketService::PRIORITIES)],
+            'description' => ['required', 'string', 'max:4000'],
+            'attachments' => ['nullable', 'array', 'max:5'],
+            'attachments.*' => ['file', 'max:5120'],
+            'support_ticket_form_source' => ['nullable', 'string', 'max:50'],
+        ]);
+    }
+
+    // This prepares the create-ticket payload in a simple service-ready structure.
+    protected function buildTicketCreateData(array $validated): array
+    {
+        // Step 1: clean the short subject line so saved ticket text stays neat.
+        $subject = trim((string) $validated['subject']);
+
+        // Step 2: clean the detailed message so extra spaces do not reach the database.
+        $description = trim((string) $validated['description']);
+
+        // Step 3: start with the submitted priority value.
+        $priority = trim((string) ($validated['priority'] ?? ''));
+
+        // Step 4: use the normal business default when the form does not send a priority.
+        if ($priority === '') {
+            $priority = SupportTicketService::PRIORITIES[1] ?? 'medium';
+        }
+
+        // Step 5: combine the subject and message into one readable ticket body.
+        $storedDescription = $this->buildStoredDescription($subject, $description);
+
+        // Step 6: return the exact payload shape expected by the service layer.
+        return [
+            'category' => $validated['category'],
+            'priority' => $priority,
+            'description' => $storedDescription,
+        ];
+    }
+
+    // This combines the subject and message into one readable ticket body.
+    protected function buildStoredDescription(string $subject, string $description): string
+    {
+        // Step 1: start with the short issue summary for quick scanning.
+        $lines = [];
+        $lines[] = 'Subject: '.$subject;
+
+        // Step 2: add one blank line so the saved text is easier to read.
+        $lines[] = '';
+
+        // Step 3: add a clear label before the detailed message.
+        $lines[] = 'Details:';
+
+        // Step 4: append the full customer message after trimming.
+        $lines[] = $description;
+
+        // Step 5: join the lines into one database-ready text block.
+        return implode(PHP_EOL, $lines);
+    }
+
+    // This converts submit failures into a widget-friendly response for the same page.
+    protected function handleStoreException(Throwable $exception, ?int $userId, string $requestSource): RedirectResponse
+    {
+        // Step 1: start the redirect response that always returns to the same business page.
+        $response = redirect()->back();
+        $response = $response->withInput();
+        $response = $response->with('support_ticket_widget_open', true);
+
+        // Step 1: handle validation failures with field-level feedback for the same widget.
+        if ($exception instanceof ValidationException) {
+            Log::warning('Support ticket submission validation failed.', [
+                'user_id' => $userId,
+                'request_source' => $requestSource,
+                'errors' => $exception->errors(),
             ]);
 
-            // Step 2: save the new status on the ticket.
-            $supportTicketService->updateStatus(
-                $request->user(),
-                $ticketId,
-                $validated['status'],
-            );
-
-            return redirect()
-                ->route('support-tickets.show', $ticketId)
-                ->with('status', 'Support ticket status updated.');
-        } catch (Throwable $exception) {
-            Log::error('Failed to update support ticket status.', ['ticket_id' => $ticketId, 'error' => $exception->getMessage()]);
-
-            return $this->redirectBackWithError($exception, 'Unable to update support ticket status.');
+            $errorMessages = $exception->errors();
         }
+
+        // Step 2: handle blocked users with a clear business message.
+        elseif ($exception instanceof AuthorizationException) {
+            Log::warning('Support ticket submission blocked.', [
+                'user_id' => $userId,
+                'request_source' => $requestSource,
+                'error' => $exception->getMessage(),
+            ]);
+
+            $errorMessages = [
+                'form' => 'You are not allowed to create support tickets from this account.',
+            ];
+        }
+
+        // Step 3: log unexpected failures so support issues can be investigated.
+        else {
+            Log::error('Support ticket submission failed unexpectedly.', [
+                'user_id' => $userId,
+                'request_source' => $requestSource,
+                'error' => $exception->getMessage(),
+            ]);
+
+            $errorMessages = [
+                'form' => 'Unable to submit support ticket right now. Please try again.',
+            ];
+        }
+
+        // Step 4: send the user back with one simple retry message.
+        $response = $response->withErrors($errorMessages);
+
+        // Step 5: return the prepared response as the last step.
+        return $response;
     }
 }

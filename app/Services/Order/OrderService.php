@@ -3,8 +3,13 @@
 namespace App\Services\Order;
 
 use App\Models\Authorization\User;
+use App\Models\Authorization\UserAddress;
 use App\Models\Order\Order;
+use App\Models\Product\ProductVariant;
 use App\Services\Authorization\DataVisibilityService;
+use App\Services\Notification\EmailNotificationService;
+use App\Services\Pricing\PriceService;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +21,811 @@ class OrderService
 {
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
+        protected PriceService $priceService,
+        protected EmailNotificationService $emailNotificationService,
     ) {
+    }
+
+    // This prepares the customer profile orders page using the existing UI data shape.
+    public function customerOrdersPageData(User $user): array
+    {
+        try {
+            // Step 1: start the signed-in user's profile order query.
+            $orderQuery = Order::query();
+            $orderQuery->with([
+                'shippingAddress',
+                'billingAddress',
+                'items',
+                'items.product.primaryImage',
+            ]);
+            $orderQuery->where('placed_by_user_id', $user->id);
+            $orderQuery->orderByDesc('created_at');
+            $orderQuery->orderByDesc('id');
+
+            // Step 2: load the final orders with the related data used by the original UI.
+            $savedOrders = $orderQuery->get();
+
+            // Step 3: prepare the final preview card data one order at a time.
+            $orders = [];
+            $fallbackImages = [
+                asset('upload/categories/image1.jpg'),
+                asset('upload/categories/image2.jpg'),
+                asset('upload/categories/image5.jpg'),
+            ];
+
+            foreach ($savedOrders as $orderIndex => $savedOrder) {
+                // Step 4: prepare the order item rows for the modal and card.
+                $preparedItems = [];
+                $firstPreparedItem = null;
+                $orderCurrency = $savedOrder->currency ?: 'INR';
+
+                foreach ($savedOrder->items as $itemIndex => $savedItem) {
+                    $productImagePath = $savedItem->product?->primaryImage?->file_path;
+                    $imageUrl = $productImagePath ? asset($productImagePath) : $fallbackImages[$itemIndex % count($fallbackImages)];
+                    $itemBackground = $itemIndex % 2 === 0 ? 'bg-primary-50' : 'bg-slate-50';
+                    $itemSubtitle = $savedItem->variant_name ?: 'Order item';
+                    $preparedItem = [
+                        'name' => $savedItem->product_name,
+                        'subtitle' => $itemSubtitle,
+                        'sku' => $savedItem->sku ?: 'N/A',
+                        'qty' => (int) $savedItem->quantity,
+                        'price' => $orderCurrency.' '.number_format((float) $savedItem->unit_price, 2),
+                        'total' => $orderCurrency.' '.number_format((float) $savedItem->total_amount, 2),
+                        'image' => $imageUrl,
+                        'background' => $itemBackground,
+                    ];
+
+                    $preparedItems[] = $preparedItem;
+
+                    if (! $firstPreparedItem) {
+                        $firstPreparedItem = $preparedItem;
+                    }
+                }
+
+                // Step 5: prepare the address lines shown in the original modal.
+                $displayAddress = $savedOrder->shippingAddress ?: $savedOrder->billingAddress;
+                $addressLines = [];
+
+                if ($displayAddress) {
+                    if ($displayAddress->company_name) {
+                        $addressLines[] = $displayAddress->company_name;
+                    }
+
+                    if ($displayAddress->contact_name) {
+                        $addressLines[] = $displayAddress->contact_name;
+                    }
+
+                    $addressLines[] = $displayAddress->line1;
+
+                    if ($displayAddress->line2) {
+                        $addressLines[] = $displayAddress->line2;
+                    }
+
+                    $cityLine = trim($displayAddress->city.', '.$displayAddress->state.' '.$displayAddress->postal_code);
+                    $addressLines[] = $cityLine;
+                }
+
+                if ($addressLines === []) {
+                    $addressLines[] = 'Address details not available';
+                }
+
+                // Step 6: map the backend status into the existing UI color system.
+                $statusMeta = [
+                    'label' => ucfirst((string) $savedOrder->status),
+                    'key' => 'processing',
+                ];
+
+                if ($savedOrder->status === 'submitted') {
+                    $statusMeta['key'] = 'shipped';
+                }
+
+                if ($savedOrder->status === 'cancelled') {
+                    $statusMeta['key'] = 'archived';
+                }
+
+                // Step 7: prepare the main product title shown on the card.
+                $productTitle = 'Order #'.$savedOrder->id;
+
+                if ($firstPreparedItem) {
+                    $productTitle = $firstPreparedItem['name'];
+
+                    if (count($preparedItems) > 1) {
+                        $productTitle = $firstPreparedItem['name'].' + '.(count($preparedItems) - 1).' more items';
+                    }
+                }
+
+                // Step 8: prepare the summary note while keeping the old UI text slot filled.
+                $summaryNote = trim((string) ($savedOrder->notes ?? ''));
+
+                if ($summaryNote === '') {
+                    $itemCount = count($preparedItems);
+                    $summaryNote = $itemCount === 1 ? '1 item in this order' : $itemCount.' items in this order';
+                }
+
+                // Step 9: prepare the main order image and image background.
+                $cardImage = $firstPreparedItem['image'] ?? $fallbackImages[$orderIndex % count($fallbackImages)];
+                $cardBackground = $firstPreparedItem ? $firstPreparedItem['background'] : 'bg-slate-50';
+
+                // Step 10: add the final order row in the exact structure used by the original blade.
+                $orders[] = [
+                    'id' => 'ORD-'.str_pad((string) $savedOrder->id, 6, '0', STR_PAD_LEFT),
+                    'reference' => '#ORD-'.str_pad((string) $savedOrder->id, 6, '0', STR_PAD_LEFT),
+                    'order_id' => $savedOrder->id,
+                    'reorder_url' => route('orders.reorder', $savedOrder->id),
+                    'status' => $statusMeta['label'],
+                    'status_key' => $statusMeta['key'],
+                    'product' => $productTitle,
+                    'date' => optional($savedOrder->submitted_at ?: $savedOrder->created_at)->format('M d, Y') ?: 'N/A',
+                    'total' => $orderCurrency.' '.number_format((float) $savedOrder->total_amount, 2),
+                    'image' => $cardImage,
+                    'image_background' => $cardBackground,
+                    'summary_note' => $summaryNote,
+                    'tracking_id' => 'Order #'.$savedOrder->id,
+                    'carrier' => 'Live shipment tracking is not available yet.',
+                    'address_lines' => $addressLines,
+                    'subtotal' => $orderCurrency.' '.number_format((float) $savedOrder->subtotal_amount, 2),
+                    'tax' => $orderCurrency.' '.number_format((float) $savedOrder->tax_amount, 2),
+                    'shipping' => $orderCurrency.' '.number_format((float) $savedOrder->shipping_amount, 2),
+                    'grand_total' => $orderCurrency.' '.number_format((float) $savedOrder->total_amount, 2),
+                    'invoice_note' => null,
+                    'items' => $preparedItems,
+                ];
+            }
+
+            // Step 11: return the final page data for the original profile orders blade.
+            return [
+                'orders' => $orders,
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to build customer profile orders page data.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This prepares a reorder-only checkout seed without changing the saved cart.
+    public function ReOrder(int $orderId, User $user, Request $request): void
+    {
+        try {
+            // Step 1: load the selected order that belongs to the current user.
+            $order = $this->getOrderById($orderId, $user);
+            $fallbackImage = asset('upload/categories/image1.jpg');
+
+            // Step 2: stop the flow when the selected order has no items left to reorder.
+            if ($order->items->isEmpty()) {
+                throw ValidationException::withMessages([
+                    'order' => 'This order does not have any items to reorder.',
+                ]);
+            }
+
+            // Step 3: prepare fresh checkout items using the latest current pricing.
+            $checkoutItems = [];
+            $subtotalAmount = 0;
+            $taxAmount = 0;
+            $totalAmount = 0;
+            $currency = $order->currency ?: 'INR';
+
+            foreach ($order->items as $orderItem) {
+                $productId = (int) $orderItem->product_id;
+                $productVariantId = $orderItem->product_variant_id ? (int) $orderItem->product_variant_id : null;
+                $quantity = (int) $orderItem->quantity;
+                $resolvedPrice = null;
+
+                if ($productId === 0) {
+                    $productId = (int) ($orderItem->product?->id ?? 0);
+                }
+
+                // Step 4: resolve the latest live price for the saved product or variant.
+                if ($productVariantId) {
+                    $resolvedPrice = $this->dataVisibilityService->resolveVariantPrice($productVariantId, $user, $quantity);
+                }
+
+                if (! $productVariantId) {
+                    $resolvedPrice = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity);
+                }
+
+                if (! $resolvedPrice) {
+                    throw ValidationException::withMessages([
+                        'order' => 'One order item is no longer available for reorder.',
+                    ]);
+                }
+
+                // Step 5: calculate the current line values that checkout should show.
+                $unitPrice = round((float) ($resolvedPrice['amount'] ?? 0), 4);
+                $unitTaxAmount = round((float) ($resolvedPrice['tax_amount'] ?? 0), 4);
+                $unitPriceAfterGst = round((float) ($resolvedPrice['price_after_gst'] ?? ($unitPrice + $unitTaxAmount)), 4);
+                $lineSubtotal = round($unitPrice * $quantity, 4);
+                $lineTaxAmount = round($unitTaxAmount * $quantity, 4);
+                $lineTotal = round($unitPriceAfterGst * $quantity, 4);
+                $imagePath = $orderItem->product?->primaryImage?->file_path;
+                $imageUrl = $fallbackImage;
+                $currency = (string) ($resolvedPrice['currency'] ?? $currency);
+
+                if (filled($imagePath)) {
+                    $imageUrl = asset($imagePath);
+                }
+
+                // Step 6: add the prepared item in the same simple shape used by checkout JS.
+                $checkoutItems[] = [
+                    'productId' => $productId,
+                    'variantId' => $productVariantId,
+                    'quantity' => $quantity,
+                    'unitPrice' => $unitPrice,
+                    'unitTaxAmount' => $unitTaxAmount,
+                    'unitPriceAfterGst' => $unitPriceAfterGst,
+                    'taxAmount' => $lineTaxAmount,
+                    'lineSubtotal' => $lineSubtotal,
+                    'lineTotal' => $lineTotal,
+                    'discountAmount' => round((float) ($resolvedPrice['discount_amount'] ?? 0) * $quantity, 4),
+                    'currency' => $currency,
+                    'priceType' => $resolvedPrice['price_type'] ?? null,
+                    'name' => (string) ($orderItem->product_name ?: 'Product'),
+                    'model' => (string) ($orderItem->sku ?: 'N/A'),
+                    'image' => $imageUrl,
+                    'minOrderQuantity' => (int) ($resolvedPrice['min_order_quantity'] ?? 1),
+                    'maxOrderQuantity' => $resolvedPrice['max_order_quantity'] === null ? null : (int) $resolvedPrice['max_order_quantity'],
+                    'lotSize' => (int) ($resolvedPrice['lot_size'] ?? 1),
+                ];
+
+                $subtotalAmount += $lineSubtotal;
+                $taxAmount += $lineTaxAmount;
+                $totalAmount += $lineTotal;
+            }
+
+            // Step 7: store the reorder checkout seed in session for the checkout page.
+            $request->session()->put('reorder_checkout', [
+                'source' => 'reorder',
+                'orderId' => $order->id,
+                'currency' => $currency,
+                'items_count' => count($checkoutItems),
+                'subtotal_amount' => round($subtotalAmount, 4),
+                'tax_amount' => round($taxAmount, 4),
+                'total_amount' => round($totalAmount, 4),
+                'items' => $checkoutItems,
+            ]);
+        } catch (Throwable $exception) {
+            Log::error('Failed to prepare reorder checkout seed.', [
+                'order_id' => $orderId,
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This submits the separate reorder checkout using the latest live pricing.
+    public function submitReOrderCheckout(array $validatedCheckout, User $user): array
+    {
+        try {
+            // Step 1: validate the coupon code before preparing the final order items.
+            $validatedCoupon = $this->priceService->validateCouponCode($validatedCheckout['coupon_code'] ?? null);
+            $couponCode = $validatedCoupon?->code;
+
+            // Step 2: prepare the final order items from the posted reorder payload.
+            $preparedOrderItems = $this->prepareReOrderCheckoutItems($validatedCheckout, $user, $couponCode);
+
+            // Step 3: stop checkout when the coupon is valid but did not apply to any reorder item.
+            $couponDiscountAmount = 0;
+
+            foreach ($preparedOrderItems as $preparedOrderItem) {
+                $itemCouponDiscount = (float) ($preparedOrderItem['item_snapshot']['coupon_discount_amount'] ?? 0);
+                $itemQuantity = (int) ($preparedOrderItem['quantity'] ?? 0);
+                $couponDiscountAmount += $itemCouponDiscount * $itemQuantity;
+            }
+
+            if ($couponCode && $couponDiscountAmount <= 0) {
+                throw ValidationException::withMessages([
+                    'coupon_code' => 'The selected coupon does not apply to the current reorder items.',
+                ]);
+            }
+
+            // Step 4: calculate the final order totals from the prepared items.
+            $orderTotals = $this->calculateReOrderCheckoutTotals($validatedCheckout, $preparedOrderItems);
+
+            // Step 5: resolve the selected checkout address before saving the order.
+            $checkoutAddressData = $this->resolveReOrderCheckoutAddress($user, $validatedCheckout);
+
+            // Step 6: create the order, items, and addresses inside one transaction.
+            $order = DB::transaction(function () use ($user, $validatedCheckout, $preparedOrderItems, $orderTotals, $checkoutAddressData): Order {
+                $order = Order::query()->create([
+                    'placed_by_user_id' => $user->id,
+                    'company_id' => $user->company_id,
+                    'status' => 'submitted',
+                    'currency' => $orderTotals['currency'],
+                    'subtotal_amount' => $orderTotals['subtotal_amount'],
+                    'tax_amount' => $orderTotals['tax_amount'],
+                    'discount_amount' => $orderTotals['discount_amount'],
+                    'shipping_amount' => $orderTotals['shipping_amount'],
+                    'adjustment_amount' => $orderTotals['adjustment_amount'],
+                    'rounding_amount' => $orderTotals['rounding_amount'],
+                    'total_amount' => $orderTotals['total_amount'],
+                    'pricing_snapshot' => $orderTotals['pricing_snapshot'],
+                    'notes' => $validatedCheckout['notes'] ?? null,
+                    'submitted_at' => now(),
+                    'cancelled_at' => null,
+                ]);
+
+                foreach ($preparedOrderItems as $preparedOrderItem) {
+                    $order->items()->create($preparedOrderItem);
+                }
+
+                // Step 7: save the shipping and billing addresses on the order.
+                $shippingAddressPayload = $this->buildReOrderAddressPayload($order, 'shipping', $checkoutAddressData, $user, $validatedCheckout);
+                $billingAddressPayload = $this->buildReOrderAddressPayload($order, 'billing', $checkoutAddressData, $user, $validatedCheckout);
+                $order->addresses()->create($shippingAddressPayload);
+                $order->addresses()->create($billingAddressPayload);
+
+                return Order::query()
+                    ->with([
+                        'items' => fn ($builder) => $builder->orderBy('sort_order')->orderBy('id'),
+                    ])
+                    ->findOrFail($order->id);
+            });
+
+            // Step 8: send the customer confirmation email after the order is safely created.
+            $this->sendReOrderSubmittedEmail($user, $order);
+
+            // Step 9: build the simple order summary used by confirmation page.
+            $orderItems = [];
+
+            foreach ($order->items as $orderItem) {
+                $orderItems[] = [
+                    'id' => $orderItem->id,
+                    'product_name' => $orderItem->product_name,
+                    'variant_name' => $orderItem->variant_name,
+                    'sku' => $orderItem->sku,
+                    'quantity' => (int) $orderItem->quantity,
+                    'unit_price' => (float) $orderItem->unit_price,
+                    'tax_amount' => (float) $orderItem->tax_amount,
+                    'total_amount' => (float) $orderItem->total_amount,
+                ];
+            }
+
+            return [
+                'order' => [
+                    'id' => $order->id,
+                    'status' => $order->status,
+                    'currency' => $order->currency,
+                    'subtotal_amount' => (float) $order->subtotal_amount,
+                    'tax_amount' => (float) $order->tax_amount,
+                    'discount_amount' => (float) $order->discount_amount,
+                    'shipping_amount' => (float) $order->shipping_amount,
+                    'adjustment_amount' => (float) $order->adjustment_amount,
+                    'rounding_amount' => (float) $order->rounding_amount,
+                    'total_amount' => (float) $order->total_amount,
+                    'notes' => $order->notes,
+                    'items_count' => count($orderItems),
+                    'items' => $orderItems,
+                ],
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to submit reorder checkout.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This prepares the final reorder checkout items from the posted checkout payload.
+    protected function prepareReOrderCheckoutItems(array $validatedCheckout, User $user, ?string $couponCode = null): array
+    {
+        try {
+            // Step 1: decode the posted reorder item JSON.
+            $encodedReOrderItems = (string) ($validatedCheckout['reorder_items'] ?? '');
+            $decodedReOrderItems = json_decode($encodedReOrderItems, true);
+
+            if (! is_array($decodedReOrderItems)) {
+                throw ValidationException::withMessages([
+                    'reorder_items' => 'Reorder items are not available for checkout.',
+                ]);
+            }
+
+            // Step 2: prepare one order item at a time using the latest live price.
+            $preparedOrderItems = [];
+
+            foreach ($decodedReOrderItems as $index => $decodedReOrderItem) {
+                $productId = (int) ($decodedReOrderItem['productId'] ?? 0);
+                $productVariantId = $decodedReOrderItem['variantId'] ?? null;
+                $quantity = (int) ($decodedReOrderItem['quantity'] ?? 0);
+
+                if ($productVariantId !== null && $productVariantId !== '') {
+                    $productVariantId = (int) $productVariantId;
+                }
+
+                if ($productVariantId === '') {
+                    $productVariantId = null;
+                }
+
+                if ($quantity <= 0) {
+                    continue;
+                }
+
+                if ($productId === 0 && ! $productVariantId) {
+                    continue;
+                }
+
+                $resolvedPrice = null;
+                $productVariant = null;
+                $visibleProduct = null;
+
+                // Step 3: resolve the live price from variant when variant id is available.
+                if ($productVariantId) {
+                    $resolvedPrice = $this->dataVisibilityService->resolveVariantPrice($productVariantId, $user, $quantity, $couponCode);
+                    $productVariant = ProductVariant::query()
+                        ->with('product:id,name')
+                        ->find($productVariantId);
+                    $visibleProduct = $productVariant?->product;
+                }
+
+                // Step 4: resolve the live price from product when variant id is not available.
+                if (! $productVariantId) {
+                    $resolvedPrice = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity, $couponCode);
+
+                    if (($resolvedPrice['product_variant_id'] ?? null) !== null) {
+                        $productVariantId = (int) $resolvedPrice['product_variant_id'];
+                        $productVariant = ProductVariant::query()
+                            ->with('product:id,name')
+                            ->find($productVariantId);
+                        $visibleProduct = $productVariant?->product;
+                    }
+
+                    if (! $visibleProduct) {
+                        $visibleProduct = $this->dataVisibilityService->visibleProductQuery($user)
+                            ->where('products.id', $productId)
+                            ->first();
+                    }
+                }
+
+                if (! $resolvedPrice) {
+                    throw ValidationException::withMessages([
+                        'reorder_items' => 'One reorder item is no longer available for checkout.',
+                    ]);
+                }
+
+                // Step 5: validate the latest min, max, and lot-size rules.
+                $this->validateOrderQuantity($quantity, $resolvedPrice, $index);
+
+                // Step 6: calculate the final amounts for this order item.
+                $unitPrice = round((float) ($resolvedPrice['amount'] ?? 0), 4);
+                $unitBasePrice = round((float) ($resolvedPrice['base_amount'] ?? $unitPrice), 4);
+                $unitTaxAmount = round((float) ($resolvedPrice['tax_amount'] ?? 0), 4);
+                $unitPriceAfterGst = round((float) ($resolvedPrice['price_after_gst'] ?? ($unitPrice + $unitTaxAmount)), 4);
+                $subtotalAmount = round($unitPrice * $quantity, 4);
+                $taxAmount = round($unitTaxAmount * $quantity, 4);
+                $discountAmount = round((float) ($resolvedPrice['discount_amount'] ?? 0) * $quantity, 4);
+                $totalAmount = round($unitPriceAfterGst * $quantity, 4);
+                $productName = (string) ($visibleProduct?->name ?: ($decodedReOrderItem['name'] ?? 'Product'));
+                $variantName = $productVariant?->variant_name ?: ($resolvedPrice['variant_name'] ?? null);
+                $sku = $productVariant?->sku ?: ($resolvedPrice['variant_sku'] ?? ($decodedReOrderItem['model'] ?? 'N/A'));
+
+                // Step 7: add the final prepared order item.
+                $preparedOrderItems[] = [
+                    'product_id' => $visibleProduct?->id ?: $productId,
+                    'product_variant_id' => $productVariantId,
+                    'sku' => (string) $sku,
+                    'product_name' => $productName,
+                    'variant_name' => $variantName,
+                    'description' => 'Created from reorder checkout.',
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'subtotal_amount' => $subtotalAmount,
+                    'discount_amount' => $discountAmount,
+                    'tax_amount' => $taxAmount,
+                    'total_amount' => $totalAmount,
+                    'sort_order' => $index,
+                    'item_snapshot' => [
+                        'source' => 'reorder_checkout',
+                        'currency' => $resolvedPrice['currency'] ?? 'INR',
+                        'price_type' => $resolvedPrice['price_type'] ?? null,
+                        'base_unit_price' => $unitBasePrice,
+                        'pricing_stage' => $resolvedPrice['pricing_stage'] ?? 'base_price',
+                        'gst_rate' => round((float) ($resolvedPrice['gst_rate'] ?? 0), 4),
+                        'unit_tax_amount' => $unitTaxAmount,
+                        'unit_price_after_gst' => $unitPriceAfterGst,
+                        'unit_discount_amount' => round((float) ($resolvedPrice['discount_amount'] ?? 0), 4),
+                        'product_discount_amount' => round((float) ($resolvedPrice['product_discount_amount'] ?? 0), 4),
+                        'bulk_discount_amount' => round((float) ($resolvedPrice['bulk_discount_amount'] ?? 0), 4),
+                        'coupon_discount_amount' => round((float) ($resolvedPrice['coupon_discount_amount'] ?? 0), 4),
+                        'applied_coupon_code' => $resolvedPrice['applied_coupon_code'] ?? null,
+                        'min_order_quantity' => (int) ($resolvedPrice['min_order_quantity'] ?? 1),
+                        'max_order_quantity' => $resolvedPrice['max_order_quantity'] === null ? null : (int) $resolvedPrice['max_order_quantity'],
+                        'lot_size' => (int) ($resolvedPrice['lot_size'] ?? 1),
+                        'variant_sku' => (string) $sku,
+                        'variant_name' => $variantName,
+                    ],
+                ];
+            }
+
+            // Step 8: stop checkout when no valid reorder items remain.
+            if ($preparedOrderItems === []) {
+                throw ValidationException::withMessages([
+                    'reorder_items' => 'No reorder items are available for checkout.',
+                ]);
+            }
+
+            return $preparedOrderItems;
+        } catch (Throwable $exception) {
+            Log::error('Failed to prepare reorder checkout items.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This calculates the final reorder checkout totals from the prepared items.
+    protected function calculateReOrderCheckoutTotals(array $validatedCheckout, array $preparedOrderItems): array
+    {
+        try {
+            // Step 1: read the optional header amounts.
+            $shippingAmount = round((float) ($validatedCheckout['shipping_amount'] ?? 0), 4);
+            $adjustmentAmount = round((float) ($validatedCheckout['adjustment_amount'] ?? 0), 4);
+            $roundingAmount = round((float) ($validatedCheckout['rounding_amount'] ?? 0), 4);
+            $currency = (string) ($preparedOrderItems[0]['item_snapshot']['currency'] ?? 'INR');
+
+            // Step 2: sum all order item amounts.
+            $subtotalAmount = 0;
+            $taxAmount = 0;
+            $discountAmount = 0;
+            $itemsTotal = 0;
+
+            foreach ($preparedOrderItems as $preparedOrderItem) {
+                $subtotalAmount += (float) ($preparedOrderItem['subtotal_amount'] ?? 0);
+                $taxAmount += (float) ($preparedOrderItem['tax_amount'] ?? 0);
+                $discountAmount += (float) ($preparedOrderItem['discount_amount'] ?? 0);
+                $itemsTotal += (float) ($preparedOrderItem['total_amount'] ?? 0);
+            }
+
+            $subtotalAmount = round($subtotalAmount, 4);
+            $taxAmount = round($taxAmount, 4);
+            $discountAmount = round($discountAmount, 4);
+            $itemsTotal = round($itemsTotal, 4);
+            $totalAmount = round($itemsTotal + $shippingAmount + $adjustmentAmount + $roundingAmount, 4);
+
+            // Step 3: build the pricing snapshot stored on the order header.
+            $pricingSnapshot = [
+                'source' => 'reorder_checkout',
+                'currency' => $currency,
+                'items_count' => count($preparedOrderItems),
+                'coupon_code' => $validatedCheckout['coupon_code'] ?? null,
+                'subtotal_amount' => $subtotalAmount,
+                'tax_amount' => $taxAmount,
+                'discount_amount' => $discountAmount,
+                'items_total' => $itemsTotal,
+                'shipping_amount' => $shippingAmount,
+                'adjustment_amount' => $adjustmentAmount,
+                'rounding_amount' => $roundingAmount,
+                'total_amount' => $totalAmount,
+            ];
+
+            return [
+                'currency' => $currency,
+                'subtotal_amount' => $subtotalAmount,
+                'tax_amount' => $taxAmount,
+                'discount_amount' => $discountAmount,
+                'shipping_amount' => $shippingAmount,
+                'adjustment_amount' => $adjustmentAmount,
+                'rounding_amount' => $roundingAmount,
+                'total_amount' => $totalAmount,
+                'pricing_snapshot' => $pricingSnapshot,
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to calculate reorder checkout totals.', [
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This resolves the final checkout address from either saved address or new address form.
+    protected function resolveReOrderCheckoutAddress(User $user, array $validatedCheckout): array
+    {
+        try {
+            $selectedAddressSource = (string) ($validatedCheckout['selected_address_source'] ?? 'existing');
+
+            // Step 1: reuse one saved address when the customer selected an existing address.
+            if ($selectedAddressSource === 'existing') {
+                $selectedUserAddressId = (int) ($validatedCheckout['selected_user_address_id'] ?? 0);
+
+                if ($selectedUserAddressId === 0) {
+                    throw ValidationException::withMessages([
+                        'selected_user_address_id' => 'Please select one saved address for checkout.',
+                    ]);
+                }
+
+                $selectedUserAddress = UserAddress::query()
+                    ->where('user_id', $user->id)
+                    ->whereKey($selectedUserAddressId)
+                    ->first();
+
+                if (! $selectedUserAddress) {
+                    throw ValidationException::withMessages([
+                        'selected_user_address_id' => 'Please select one saved address for checkout.',
+                    ]);
+                }
+
+                return [
+                    'address_line1' => $selectedUserAddress->line1,
+                    'address_line2' => $selectedUserAddress->line2,
+                    'city' => $selectedUserAddress->city,
+                    'state' => $selectedUserAddress->state,
+                    'postal_code' => $selectedUserAddress->postal_code,
+                    'country' => $selectedUserAddress->country ?: 'India',
+                    'contact_phone' => $user->phone,
+                    'address_label' => $selectedUserAddress->line2,
+                ];
+            }
+
+            // Step 2: validate the new address fields before saving them.
+            if (! filled($validatedCheckout['new_address_label'] ?? null)) {
+                throw ValidationException::withMessages([
+                    'new_address_label' => 'Please enter an address label.',
+                ]);
+            }
+
+            if (! filled($validatedCheckout['new_address_line1'] ?? null)) {
+                throw ValidationException::withMessages([
+                    'new_address_line1' => 'Please enter a street address.',
+                ]);
+            }
+
+            if (! filled($validatedCheckout['new_address_city'] ?? null)) {
+                throw ValidationException::withMessages([
+                    'new_address_city' => 'Please enter a city.',
+                ]);
+            }
+
+            if (! filled($validatedCheckout['new_address_state'] ?? null)) {
+                throw ValidationException::withMessages([
+                    'new_address_state' => 'Please enter a state.',
+                ]);
+            }
+
+            if (! filled($validatedCheckout['new_address_postal_code'] ?? null)) {
+                throw ValidationException::withMessages([
+                    'new_address_postal_code' => 'Please enter a postal code.',
+                ]);
+            }
+
+            // Step 3: save the new address for reuse in future checkout flows.
+            $createdUserAddress = $this->saveReOrderCheckoutAddress($user, $validatedCheckout);
+
+            return [
+                'address_line1' => $createdUserAddress->line1,
+                'address_line2' => $createdUserAddress->line2,
+                'city' => $createdUserAddress->city,
+                'state' => $createdUserAddress->state,
+                'postal_code' => $createdUserAddress->postal_code,
+                'country' => $createdUserAddress->country ?: 'India',
+                'contact_phone' => $validatedCheckout['new_address_phone'] ?? $user->phone,
+                'address_label' => $validatedCheckout['new_address_label'] ?? null,
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to resolve reorder checkout address.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This saves a new checkout address for the reorder flow.
+    protected function saveReOrderCheckoutAddress(User $user, array $validatedCheckout): UserAddress
+    {
+        try {
+            $userHasSavedAddresses = $user->addresses()->exists();
+
+            // Step 1: save the new address in the user address book.
+            $createdUserAddress = $user->addresses()->create([
+                'line1' => trim((string) ($validatedCheckout['new_address_line1'] ?? '')),
+                'line2' => filled($validatedCheckout['new_address_label'] ?? null) ? trim((string) $validatedCheckout['new_address_label']) : null,
+                'city' => trim((string) ($validatedCheckout['new_address_city'] ?? '')),
+                'state' => trim((string) ($validatedCheckout['new_address_state'] ?? '')),
+                'postal_code' => trim((string) ($validatedCheckout['new_address_postal_code'] ?? '')),
+                'country' => filled($validatedCheckout['new_address_country'] ?? null) ? trim((string) $validatedCheckout['new_address_country']) : 'India',
+                'is_default_shipping' => ! $userHasSavedAddresses,
+                'is_default_billing' => ! $userHasSavedAddresses,
+            ]);
+
+            return $createdUserAddress;
+        } catch (Throwable $exception) {
+            Log::error('Failed to save reorder checkout address.', [
+                'user_id' => $user->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This builds one order address payload for shipping or billing.
+    protected function buildReOrderAddressPayload(Order $order, string $addressType, array $checkoutAddressData, User $user, array $validatedCheckout): array
+    {
+        try {
+            $companyName = null;
+
+            if ($user->isB2b()) {
+                $companyName = $validatedCheckout['registered_business_name'] ?? null;
+
+                if (! filled($companyName)) {
+                    $companyName = $user->company?->legal_name ?: $user->company?->name;
+                }
+            }
+
+            $gstin = null;
+
+            if ($addressType === 'billing' && $user->isB2b()) {
+                $gstin = $validatedCheckout['gstin'] ?? null;
+
+                if (! filled($gstin)) {
+                    $gstin = $user->company?->gst_number;
+                }
+            }
+
+            return [
+                'order_id' => $order->id,
+                'address_type' => $addressType,
+                'contact_name' => $user->name,
+                'company_name' => $companyName,
+                'email' => $user->email,
+                'phone' => filled($checkoutAddressData['contact_phone'] ?? null) ? trim((string) $checkoutAddressData['contact_phone']) : $user->phone,
+                'gstin' => filled($gstin) ? trim((string) $gstin) : null,
+                'line1' => trim((string) ($checkoutAddressData['address_line1'] ?? '')),
+                'line2' => filled($checkoutAddressData['address_line2'] ?? null) ? trim((string) $checkoutAddressData['address_line2']) : null,
+                'landmark' => filled($checkoutAddressData['address_label'] ?? null) ? trim((string) $checkoutAddressData['address_label']) : null,
+                'city' => trim((string) ($checkoutAddressData['city'] ?? '')),
+                'state' => trim((string) ($checkoutAddressData['state'] ?? '')),
+                'postal_code' => trim((string) ($checkoutAddressData['postal_code'] ?? '')),
+                'country_code' => $this->normalizeReOrderCountryCode($checkoutAddressData['country'] ?? 'India'),
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to build reorder order address payload.', [
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'address_type' => $addressType,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    // This converts the entered country into the code stored on order addresses.
+    protected function normalizeReOrderCountryCode(?string $country): string
+    {
+        $normalizedCountry = strtoupper(trim((string) $country));
+
+        return match ($normalizedCountry) {
+            '', 'INDIA', 'IN' => 'IN',
+            default => substr($normalizedCountry, 0, 2),
+        };
+    }
+
+    // This sends the reorder confirmation email after successful order placement.
+    protected function sendReOrderSubmittedEmail(User $user, Order $order): void
+    {
+        try {
+            if (! filled($user->email)) {
+                return;
+            }
+
+            $this->emailNotificationService->sendOrderSubmittedConfirmation($user, $order);
+        } catch (Throwable $exception) {
+            Log::error('Failed to send reorder confirmation email.', [
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'error' => $exception->getMessage(),
+            ]);
+        }
     }
 
     // This prepares the order CRUD page with products, current orders, and optional edit data.
@@ -174,7 +983,8 @@ class OrderService
                     'placedByUser:id,name,email,user_type',
                     'company:id,name,company_type',
                     'items' => fn ($builder) => $builder->orderBy('sort_order')->orderBy('id'),
-                    'items.product:id,name,sku',
+                    'items.product:id,name,sku,product_image_id',
+                    'items.product.primaryImage:id,file_path',
                     'items.variant:id,product_id,sku,variant_name',
                 ]);
 

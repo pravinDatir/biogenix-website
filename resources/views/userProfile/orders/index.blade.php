@@ -27,136 +27,6 @@
             'reorder' => 'bg-slate-300 text-white',
         ],
     ];
-    $orders = [
-        [
-            'id' => 'BGX-99203-TRK',
-            'reference' => '#ORD-99203-TRK',
-            'status' => 'Delivered',
-            'status_key' => 'delivered',
-            'product' => 'Premium Reagent Grade Kit V4',
-            'date' => 'Oct 12, 2023',
-            'total' => '$1,240.00',
-            'image' => asset('upload/categories/image1.jpg'),
-            'image_background' => 'bg-slate-50',
-            'summary_note' => 'Priority temperature-safe delivery',
-            'tracking_id' => 'BGX-7742019902',
-            'carrier' => 'Via Biogenix Logistics Pro',
-            'address_lines' => [
-                'Central Lab Division',
-                '1200 Innovation Way, Suite 400',
-                'Cambridge, MA 02142',
-            ],
-            'subtotal' => '$1,240.00',
-            'tax' => '$0.00',
-            'shipping' => '$0.00',
-            'grand_total' => '$1,240.00',
-            'invoice_note' => 'Scientific exemption applied',
-            'items' => [
-                [
-                    'name' => 'Precision Pipette Kit X10',
-                    'subtitle' => 'Calibrated G-Series',
-                    'sku' => 'BGX-PP-1022',
-                    'qty' => 2,
-                    'price' => '$420.00',
-                    'total' => '$840.00',
-                    'image' => asset('upload/categories/image1.jpg'),
-                    'background' => 'bg-primary-50',
-                ],
-                [
-                    'name' => 'Agarose Sterile Plates',
-                    'subtitle' => 'Pack of 50',
-                    'sku' => 'BGX-AG-5044',
-                    'qty' => 5,
-                    'price' => '$80.00',
-                    'total' => '$400.00',
-                    'image' => asset('upload/categories/image2.jpg'),
-                    'background' => 'bg-slate-50',
-                ],
-            ],
-        ],
-        [
-            'id' => 'BGX-88124-TRK',
-            'reference' => '#ORD-88124-TRK',
-            'status' => 'Shipped',
-            'status_key' => 'shipped',
-            'product' => 'Biogenix Microcentrifuge X-10',
-            'date' => 'Oct 28, 2023',
-            'total' => '$4,850.00',
-            'image' => asset('upload/categories/image2.jpg'),
-            'image_background' => 'bg-slate-100',
-            'summary_note' => 'In transit to your primary lab',
-            'tracking_id' => 'BGX-5501842307',
-            'carrier' => 'Via Biogenix Cold Chain Express',
-            'address_lines' => [
-                'North Research Wing',
-                '77 Discovery Park, Level 2',
-                'Palo Alto, CA 94304',
-            ],
-            'subtotal' => '$4,850.00',
-            'tax' => '$0.00',
-            'shipping' => '$0.00',
-            'grand_total' => '$4,850.00',
-            'invoice_note' => 'GST locked after dispatch',
-            'items' => [
-                [
-                    'name' => 'Biogenix Microcentrifuge X-10',
-                    'subtitle' => 'Benchtop centrifuge',
-                    'sku' => 'BGX-MC-88124',
-                    'qty' => 1,
-                    'price' => '$4,450.00',
-                    'total' => '$4,450.00',
-                    'image' => asset('upload/categories/image2.jpg'),
-                    'background' => 'bg-slate-100',
-                ],
-                [
-                    'name' => 'Rotor Adapter Bundle',
-                    'subtitle' => 'Accessory kit',
-                    'sku' => 'BGX-RA-2019',
-                    'qty' => 1,
-                    'price' => '$400.00',
-                    'total' => '$400.00',
-                    'image' => asset('upload/categories/image1.jpg'),
-                    'background' => 'bg-primary-50',
-                ],
-            ],
-        ],
-        [
-            'id' => 'BGX-12005-TRK',
-            'reference' => '#ORD-12005-TRK',
-            'status' => 'Archived',
-            'status_key' => 'archived',
-            'product' => 'Precision Pipette Series Z',
-            'date' => 'Aug 05, 2023',
-            'total' => '$890.00',
-            'image' => asset('upload/categories/image5.jpg'),
-            'image_background' => 'bg-slate-100',
-            'summary_note' => 'Archived for procurement records',
-            'tracking_id' => 'BGX-1028349921',
-            'carrier' => 'Delivered via Biogenix Standard',
-            'address_lines' => [
-                'Analytical Sciences Group',
-                '19 Genome Street',
-                'Boston, MA 02115',
-            ],
-            'subtotal' => '$890.00',
-            'tax' => '$0.00',
-            'shipping' => '$0.00',
-            'grand_total' => '$890.00',
-            'invoice_note' => 'Historical record only',
-            'items' => [
-                [
-                    'name' => 'Precision Pipette Series Z',
-                    'subtitle' => 'Single channel starter set',
-                    'sku' => 'BGX-PP-12005',
-                    'qty' => 1,
-                    'price' => '$890.00',
-                    'total' => '$890.00',
-                    'image' => asset('upload/categories/image5.jpg'),
-                    'background' => 'bg-slate-100',
-                ],
-            ],
-        ],
-    ];
 @endphp
 
 @section('title', 'My Orders')
@@ -254,13 +124,16 @@
                             >
                                 View Details
                             </button>
-                            <button
-                                type="button"
-                                class="{{ $buttonBaseClass }} {{ $statusStyle['reorder'] }} {{ $order['status_key'] === 'archived' ? 'cursor-not-allowed opacity-70' : '' }}"
-                                @disabled($order['status_key'] === 'archived')
-                            >
-                                Reorder
-                            </button>
+                            <form method="POST" action="{{ $order['reorder_url'] }}">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="{{ $buttonBaseClass }} {{ $statusStyle['reorder'] }} {{ $order['status_key'] === 'archived' ? 'cursor-not-allowed opacity-70' : '' }}"
+                                    @disabled($order['status_key'] === 'archived')
+                                >
+                                    Reorder
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </article>

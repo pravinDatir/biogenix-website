@@ -7,13 +7,8 @@
     $ticketItems = collect($tickets->items());
     $openCount = $ticketItems->where('status', 'open')->count();
     $inProgressCount = $ticketItems->where('status', 'in_progress')->count();
-    $awaitingResponseCount = $ticketItems->where('status', 'awaiting_response')->count();
     $closedCount = $ticketItems->where('status', 'closed')->count();
-    $metricCardClass = 'rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5';
     $panelClass = 'space-y-6 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
-    $compactPanelClass = 'space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm';
-    $inputClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500/40';
-    $textareaClass = 'w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500/40';
 @endphp
 
 @section('title', 'Support Tickets')
@@ -64,6 +59,13 @@
         </x-slot:metrics>
 
         <div class="space-y-6">
+            @if ($canCreateTicket)
+                <div class="rounded-2xl border border-primary-200 bg-primary-50 px-5 py-4 text-sm leading-6 text-primary-800">
+                    {{-- This keeps the new ticket path obvious now that the shared widget handles creation across the storefront. --}}
+                    Use the floating <span class="font-semibold">Raise a Ticket</span> button in the bottom-right corner to submit a new support request from any page.
+                </div>
+            @endif
+
             {{-- Ticket History Table --}}
             <div class="rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
                 <div class="flex flex-col gap-4 border-b border-slate-100 p-6 sm:flex-row sm:items-center sm:justify-between md:p-8">
@@ -105,9 +107,15 @@
                                         'awaiting_response' => ['dot' => 'bg-purple-500', 'text' => 'text-purple-700']
                                     ];
                                     $sColor = $statusColors[$ticket->status] ?? ['dot' => 'bg-slate-400', 'text' => 'text-slate-700'];
-                                    
-                                    // Mock subject since original DB might not have 'subject' column clearly
-                                    // fallback: ticket_number logic or just display
+                                    $ticketSummary = (string) $ticket->description;
+                                    $ticketLines = preg_split('/\r\n|\r|\n/', $ticketSummary);
+                                    $firstTicketLine = $ticketLines[0] ?? '';
+
+                                    if (str_starts_with($firstTicketLine, 'Subject: ')) {
+                                        $ticketSummary = trim(substr($firstTicketLine, 9));
+                                    }
+
+                                    $ticketSummary = \Illuminate\Support\Str::limit($ticketSummary, 60);
                                 @endphp
                                 <tr class="transition hover:bg-slate-50/50">
                                     <td class="whitespace-nowrap px-6 py-4 md:px-8">
@@ -117,7 +125,7 @@
                                         {{ $activityAt ? \Illuminate\Support\Carbon::parse($activityAt)->format('M d, Y') : 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 text-[14px] font-semibold text-slate-900 max-w-[200px] truncate">
-                                        {{ $ticket->subject ?? 'Support Tracking Inquiry' }}
+                                        {{ $ticketSummary !== '' ? $ticketSummary : 'Support Tracking Inquiry' }}
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 text-center">
                                         <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-600">
@@ -143,32 +151,28 @@
                     </table>
                 </div>
 
-                {{-- Pagination mock --}}
+                {{-- Pagination --}}
                 <div class="flex items-center justify-between border-t border-slate-100 px-6 py-4 md:px-8">
                     <p class="text-[13px] font-medium text-slate-500">Showing {{ $tickets->firstItem() ?? 0 }} to {{ $tickets->lastItem() ?? 0 }} of {{ $tickets->total() }} tickets</p>
-                    <div class="flex items-center gap-2">
-                        <button type="button" class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-700 transition hover:bg-slate-50">Previous</button>
-                        <button type="button" class="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-700 transition hover:bg-slate-50">Next</button>
-                    </div>
+                    @if ($tickets->hasPages())
+                        <div>
+                            {{ $tickets->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
 
         </div>
 
         @if ($selectedTicket)
-            @php
-                $attachmentsByComment = $ticketAttachments->groupBy(fn ($attachment) => $attachment->support_ticket_comment_id ?? 'ticket');
-                $ticketLevelAttachments = $attachmentsByComment->get('ticket', collect());
-            @endphp
-
             <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
                 <div class="{{ $panelClass }}">
                     <div>
                         <h2 class="text-lg font-semibold text-slate-900">Ticket Detail: {{ $selectedTicket->ticket_number }}</h2>
-                        <p class="mt-1 text-sm text-slate-500">Work through the current issue, collaborate with comments, and review all related history.</p>
+                        <p class="mt-1 text-sm text-slate-500">Review the submitted support request and the files shared with it.</p>
                     </div>
 
-                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         <div class="rounded-2xl bg-slate-50 px-4 py-4">
                             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</p>
                             <div class="mt-2">
@@ -190,96 +194,22 @@
                                 <x-ui.status-badge type="priority" :value="$selectedTicket->priority" :label="strtoupper($selectedTicket->priority)" uppercase />
                             </div>
                         </div>
+                        <div class="rounded-2xl bg-slate-50 px-4 py-4">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Submitted On</p>
+                            <p class="mt-2 text-base font-semibold text-slate-900">{{ \Illuminate\Support\Carbon::parse($selectedTicket->created_at)->format('d M Y, h:i A') }}</p>
+                        </div>
                     </div>
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-5">
                         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Description</p>
-                        <p class="mt-3 text-sm leading-7 text-slate-700">{{ $selectedTicket->description }}</p>
-                    </div>
-
-                    <div class="{{ $compactPanelClass }}">
-                        <h3 class="text-base font-semibold text-slate-900">Comments</h3>
-                        <div class="space-y-4">
-                            @forelse ($ticketComments as $comment)
-                                @php
-                                    $commentAttachments = $attachmentsByComment->get($comment->id, collect());
-                                @endphp
-                                <article class="rounded-2xl bg-slate-50 px-4 py-4">
-                                    <div class="flex flex-wrap items-center justify-between gap-3">
-                                        <p class="font-semibold text-slate-900">{{ $comment->commenter_name ?? 'System' }}</p>
-                                        <p class="text-xs text-slate-500">{{ \Illuminate\Support\Carbon::parse($comment->created_at)->format('d M Y, h:i A') }}</p>
-                                    </div>
-                                    <p class="mt-3 text-sm leading-7 text-slate-700">{{ $comment->comment }}</p>
-                                    @if ($commentAttachments->isNotEmpty())
-                                            <div class="mt-3 flex flex-wrap gap-2">
-                                                @foreach ($commentAttachments as $attachment)
-                                                    <span class="break-all rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">{{ $attachment->original_file_name }}</span>
-                                                @endforeach
-                                            </div>
-                                    @endif
-                                </article>
-                            @empty
-                                <x-ui.empty-state
-                                    icon="support"
-                                    title="No comments yet"
-                                    description="Comments from your team and the support desk will appear here."
-                                />
-                            @endforelse
-                        </div>
-
-                        @if ($canAddComment)
-                            <form method="POST" action="{{ route('support-tickets.comments.store', $selectedTicket->id) }}" enctype="multipart/form-data" class="space-y-4 border-t border-slate-200 pt-4">
-                                @csrf
-                                <div class="space-y-2">
-                                    <label for="comment" class="text-sm font-semibold text-slate-700">Add Comment</label>
-                                    <textarea id="comment" name="comment" rows="4" class="{{ $textareaClass }}" required></textarea>
-                                </div>
-                                <x-ui.file-upload
-                                    id="comment_attachments"
-                                    name="comment_attachments[]"
-                                    label="Comment Attachments"
-                                    hint="Optional supporting files for this reply."
-                                    multiple
-                                    error-key="comment_attachments"
-                                />
-                                <div class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-                                    <p class="text-sm text-slate-500">Add your response and any supporting files, then send the update to the ticket thread.</p>
-                                    <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:w-auto">Submit Comment</button>
-                                </div>
-                            </form>
-                        @else
-                            <p class="rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500">You are not allowed to comment on this ticket.</p>
-                        @endif
+                        <p class="mt-3 text-sm leading-7 text-slate-700">{!! nl2br(e($selectedTicket->description)) !!}</p>
                     </div>
                 </div>
 
                 <div class="space-y-6">
                     <div class="{{ $panelClass }} !space-y-4">
-                        <h3 class="text-base font-semibold text-slate-900">Status Control</h3>
-                        @if ($canUpdateStatus)
-                            <form method="POST" action="{{ route('support-tickets.status.update', $selectedTicket->id) }}" class="space-y-4">
-                                @csrf
-                                @method('PATCH')
-                                <div class="space-y-2">
-                                    <label for="status" class="text-sm font-semibold text-slate-700">Update Status</label>
-                                    <select id="status" name="status" class="{{ $inputClass }}" required>
-                                        @foreach ($statuses as $status)
-                                            <option value="{{ $status }}" @selected($selectedTicket->status === $status)>{{ strtoupper(str_replace('_', ' ', $status)) }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <button type="submit" class="inline-flex h-10 w-full items-center justify-center rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">Update Status</button>
-                            </form>
-                        @elseif ($canHandleTickets)
-                            <p class="rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500">Your current permissions do not allow status updates.</p>
-                        @else
-                            <p class="rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-500">This ticket is view-only for the current account.</p>
-                        @endif
-                    </div>
-
-                    <div class="{{ $panelClass }} !space-y-4">
                         <h3 class="text-base font-semibold text-slate-900">Attachments</h3>
-                        @if ($ticketLevelAttachments->isEmpty())
+                        @if ($ticketAttachments->isEmpty())
                             <x-ui.empty-state
                                 icon="support"
                                 title="No attachments uploaded"
@@ -287,42 +217,13 @@
                             />
                         @else
                             <div class="space-y-2">
-                                @foreach ($ticketLevelAttachments as $attachment)
+                                @foreach ($ticketAttachments as $attachment)
                                     <div class="break-all rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
                                         {{ $attachment->original_file_name }} ({{ $attachment->mime_type ?? 'unknown' }}, {{ $attachment->file_size }} bytes)
                                     </div>
                                 @endforeach
                             </div>
                         @endif
-                    </div>
-
-                    <div class="{{ $panelClass }} !space-y-4">
-                        <h3 class="text-base font-semibold text-slate-900">Ticket History</h3>
-                        <div class="space-y-3">
-                            @forelse ($ticketHistory as $history)
-                                <article class="rounded-2xl bg-slate-50 px-4 py-4">
-                                    <p class="text-sm font-semibold text-slate-900">
-                                        {{ strtoupper(str_replace('_', ' ', $history->event_type)) }}
-                                    </p>
-                                    <p class="mt-1 text-sm text-slate-600">by {{ $history->actor_name ?? 'System' }} at {{ \Illuminate\Support\Carbon::parse($history->created_at)->format('d M Y, h:i A') }}</p>
-                                    @if ($history->event_type === 'status_changed')
-                                        <p class="mt-2 text-sm text-slate-700">{{ strtoupper(str_replace('_', ' ', $history->from_status ?? '-')) }} to {{ strtoupper(str_replace('_', ' ', $history->to_status ?? '-')) }}</p>
-                                    @endif
-                                    @if ($history->comment_text)
-                                        <p class="mt-2 text-sm text-slate-500">{{ $history->comment_text }}</p>
-                                    @endif
-                                    @if ($history->message)
-                                        <p class="mt-2 text-sm text-slate-500">{{ $history->message }}</p>
-                                    @endif
-                                </article>
-                            @empty
-                                <x-ui.empty-state
-                                    icon="support"
-                                    title="No history available"
-                                    description="Status changes and system events will appear here."
-                                />
-                            @endforelse
-                        </div>
                     </div>
                 </div>
             </div>

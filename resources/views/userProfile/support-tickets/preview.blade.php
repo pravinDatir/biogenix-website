@@ -58,9 +58,9 @@
     >
         {{-- Header action --}}
         <div class="flex justify-end -mt-2">
-            <button type="button" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700 cursor-pointer" onclick="document.getElementById('newTicketModal').classList.remove('hidden')">
+            <button type="button" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700 cursor-pointer" onclick="if (typeof toggleSupportForm === 'function') { toggleSupportForm(); }">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                New Ticket
+                Raise Ticket
             </button>
         </div>
 
@@ -208,67 +208,6 @@
         </div>
 
     </x-account.workspace>
-
-{{-- New Ticket Modal --}}
-<div id="newTicketModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-    <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="document.getElementById('newTicketModal').classList.add('hidden')"></div>
-    <div class="relative flex min-h-full items-start justify-center p-4 sm:items-center sm:p-6">
-        <div class="relative w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto rounded-2xl border border-slate-100 bg-white p-6 shadow-xl sm:max-h-[calc(100vh-3rem)] md:p-8">
-            <button type="button" class="absolute right-4 top-4 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 cursor-pointer" onclick="document.getElementById('newTicketModal').classList.add('hidden')">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-
-            <h2 class="text-lg font-bold text-slate-900">Create New Ticket</h2>
-            <p class="mt-1 text-[13px] text-slate-500">Submit a support request and our team will respond promptly.</p>
-
-            <form method="POST" action="{{ route('support-tickets.store') }}" enctype="multipart/form-data" class="mt-6 space-y-5">
-                @csrf
-                <div class="grid gap-4 sm:grid-cols-2">
-                    <div class="space-y-2">
-                        <label for="modal_category" class="text-[13px] font-semibold text-slate-700">Category</label>
-                        <select id="modal_category" name="category" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600" required>
-                            <option value="">Select category</option>
-                            @if (isset($categories))
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category }}">{{ ucwords(str_replace('_', ' ', $category)) }}</option>
-                                @endforeach
-                            @else
-                                <option value="security">Security</option>
-                                <option value="logistics">Logistics</option>
-                                <option value="technical">Technical</option>
-                                <option value="returns">Returns</option>
-                                <option value="billing">Billing</option>
-                            @endif
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <label for="modal_priority" class="text-[13px] font-semibold text-slate-700">Priority</label>
-                        <select id="modal_priority" name="priority" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600" required>
-                            <option value="">Select priority</option>
-                            @if (isset($priorities))
-                                @foreach ($priorities as $priority)
-                                    <option value="{{ $priority }}">{{ strtoupper($priority) }}</option>
-                                @endforeach
-                            @else
-                                <option value="low">LOW</option>
-                                <option value="medium">MEDIUM</option>
-                                <option value="high">HIGH</option>
-                            @endif
-                        </select>
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <label for="modal_description" class="text-[13px] font-semibold text-slate-700">Description</label>
-                    <textarea id="modal_description" name="description" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Describe your issue in detail..." required></textarea>
-                </div>
-                <div class="flex justify-end gap-3">
-                    <button type="button" class="h-10 rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-bold text-slate-700 transition hover:bg-slate-50 cursor-pointer" onclick="document.getElementById('newTicketModal').classList.add('hidden')">Cancel</button>
-                    <button type="submit" class="h-10 rounded-xl bg-primary-600 px-5 text-[13px] font-bold text-white shadow-sm transition hover:bg-primary-700 cursor-pointer">Create Ticket</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 @push('scripts')
 <script>
