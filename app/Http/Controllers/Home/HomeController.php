@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Home;
 
-use App\Services\HomeService;
+use App\Http\Controllers\Controller;
 use App\Services\Product\ProductService;
+use App\Services\Home\HomeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;

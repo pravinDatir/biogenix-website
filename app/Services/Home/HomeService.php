@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Home;
 
 use App\Models\Authorization\User;
 use App\Services\Authorization\RolePermissionService;

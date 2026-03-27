@@ -9,7 +9,7 @@ use Illuminate\Support\ViewErrorBag;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
-
+// Base controller providing common methods for error handling and response formatting across the application.
 abstract class Controller
 {
     // This returns the user to the previous page with form-friendly errors.
