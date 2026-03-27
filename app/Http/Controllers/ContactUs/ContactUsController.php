@@ -18,11 +18,11 @@ class ContactUsController extends Controller
     {
         try {
             // Step 1: load the active enquiry types for the contact form dropdown.
-            return view('prelogin.contact', $contactUsService->contactPageData());
+            return view('information.contact', $contactUsService->contactPageData());
         } catch (Throwable $exception) {
             Log::error('Failed to load contact us page.', ['error' => $exception->getMessage()]);
 
-            return $this->viewWithError('prelogin.contact', [
+            return $this->viewWithError('information.contact', [
                 'enquiryTypes' => collect(),
             ], $exception, 'Unable to load the contact page.');
         }

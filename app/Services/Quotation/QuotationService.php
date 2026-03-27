@@ -181,7 +181,7 @@ class QuotationService
     public function downloadPdf(Quotation $quotation): Response
     {
         // Step 1: render the quotation PDF with the saved quotation record.
-        $pdf = Pdf::loadView('quotation.quotation-pdf', [
+        $pdf = Pdf::loadView('invoice.quotation-pdf', [
             'quotation' => $quotation,
         ])->setPaper(
             config('invoice.pdf.paper', 'a4'),

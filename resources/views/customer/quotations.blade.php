@@ -1,1 +1,0 @@
-@include('customer.quotations.index')

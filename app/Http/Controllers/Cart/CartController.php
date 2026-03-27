@@ -26,7 +26,7 @@ class CartController extends Controller
         $initialCart = $this->loadCurrentCartForPage($request, $cartService);
 
         // Step 2: return the cart page with the current cart seed for the storefront view.
-        return view('pages.guest.cart', [
+        return view('cart', [
             'initialCart' => $initialCart,
         ]);
     }
@@ -44,7 +44,7 @@ class CartController extends Controller
         $checkoutBusinessDetails = $this->loadBusinessInvoiceDetailsForCheckout($request);
 
         // Step 4: return the checkout page with cart data, saved addresses, and business invoice details.
-        return view('pages.guest.checkout', [
+        return view('checkout', [
             'initialCart' => $initialCart,
             'savedAddresses' => $savedAddresses,
             'checkoutBusinessDetails' => $checkoutBusinessDetails,
@@ -125,7 +125,7 @@ class CartController extends Controller
         $recentCheckoutOrder = $request->session()->get('recentCheckoutOrder');
 
         // Step 2: return the confirmation page with the recent order data for display.
-        return view('order.confirmation', [
+        return view('order-confirmation', [
             'recentCheckoutOrder' => $recentCheckoutOrder,
         ]);
     }

@@ -64,14 +64,14 @@ class ProductController extends Controller
 
             Log::info('productController.index Product search results Is:', [$catalogData['products']]);
 
-            return view('prelogin.products', [
+            return view('product.index', [
                 'products' => $catalogData['products'],
                 'catalogOptions' => $catalogData['catalogOptions'],
             ]);
         } catch (Throwable $exception) {
             Log::error('Failed to load product index.', ['error' => $exception->getMessage()]);
 
-            return $this->viewWithError('prelogin.products', [
+            return $this->viewWithError('product.index', [
                 'products' => new LengthAwarePaginator([], 0, 15),
                 'catalogOptions' => [
                     'categoryOptions' => collect(),
@@ -119,7 +119,7 @@ class ProductController extends Controller
 
             Log::info('productController.productDetails Product details:', [$product]);
 
-            return view('prelogin.product-details', [
+            return view('product.detail', [
                 'id' => $productId,
                 'product' => $product,
                 'related_products' => $relatedProducts,
@@ -130,7 +130,7 @@ class ProductController extends Controller
         } catch (Throwable $exception) {
             Log::error('Failed to load product details.', ['product_id' => $productId, 'error' => $exception->getMessage()]);
 
-            return $this->viewWithError('prelogin.product-details', ['id' => $productId], $exception, 'Unable to load product details.');
+            return $this->viewWithError('product.detail', ['id' => $productId], $exception, 'Unable to load product details.');
         }
     }
 

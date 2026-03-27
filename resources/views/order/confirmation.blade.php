@@ -1,1 +1,0 @@
-@include('customer.checkout.confirmation')

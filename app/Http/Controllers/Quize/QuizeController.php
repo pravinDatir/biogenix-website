@@ -18,12 +18,12 @@ class QuizeController extends Controller
     {
         try {
             // Step 1: load the quiz questions and supporting details used by the existing UI.
-            return view('pages.guest.diagnostic-quiz', $quizeService->quizePageData());
+            return view('information.diagnostic-quiz', $quizeService->quizePageData());
         } catch (Throwable $exception) {
             Log::error('Failed to load diagnostic quiz page.', ['error' => $exception->getMessage()]);
 
             // Step 2: return the page without the shared error bag so the quiz view can decide its own fallback message.
-            return view('pages.guest.diagnostic-quiz', [
+            return view('information.diagnostic-quiz', [
                 'quizQuestions' => collect(),
             ]);
         }

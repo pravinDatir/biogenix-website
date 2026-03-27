@@ -17,7 +17,7 @@
 
 <div class="min-h-screen bg-slate-50 py-4 lg:py-8">
     <div class="mx-auto flex w-full max-w-[96rem] flex-col gap-6 px-4 sm:px-6 lg:flex-row lg:gap-8 lg:px-8 xl:px-12 2xl:px-16">
-        @include('customer.partials.account-sidebar', ['portal' => $portal, 'active' => $active])
+        @include('partials.account-sidebar', ['portal' => $portal, 'active' => $active])
 
         <div id="customer-main-content" class="flex-1 min-w-0 space-y-6 pb-12">
             {{-- Page header — same pattern as admin dashboard --}}

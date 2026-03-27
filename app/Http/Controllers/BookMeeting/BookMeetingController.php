@@ -17,11 +17,11 @@ class BookMeetingController extends Controller
     {
         try {
             // Step 1: load the basic view data used by the meeting booking form.
-            return view('prelogin.book-meeting', $bookMeetingService->meetingPageData());
+            return view('information.book-meeting', $bookMeetingService->meetingPageData());
         } catch (Throwable $exception) {
             Log::error('Failed to load book meeting page.', ['error' => $exception->getMessage()]);
 
-            return $this->viewWithError('prelogin.book-meeting', [
+            return $this->viewWithError('information.book-meeting', [
                 'minimumMeetingDate' => now()->toDateString(),
             ], $exception, 'Unable to load the book meeting page.');
         }

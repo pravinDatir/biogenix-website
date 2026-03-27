@@ -28,43 +28,37 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->name('products.productDetails');
 Route::get('/products/{productId}/technical-resources/{resourceId}/download', [ProductController::class, 'downloadTechnicalResource'])->name('products.technical-resources.download');
 
-// flow incomplete 
- // Customer workspace routes that still use lightweight page wiring.
- Route::get('/customer/orders', [OrderController::class, 'showCustomerOrdersPage'])->middleware('auth')->name('customer.orders.preview');
- Route::view('/customer/support-tickets', 'userProfile.support-tickets.preview')->name('customer.support.preview');
-
- // for testing PI flow only, will be removed later.
-Route::get('/AdminhomeView', [HomeController::class, 'index2'])->name('home.page');
-Route::view('/test-animation', 'TestAnimation.index')->name('test-animation');
+// Admin workspace routes pointing to final directories
+Route::view('/adminPanel/dashboard', 'admin.dashboard')->name('admin.dashboard');
 
 
 Route::get('/generate-quote', [QuotationController::class, 'showCreatePage'])->name('quotation.create');
 Route::post('/generate-quote', [QuotationController::class, 'generate'])->name('quotation.store');
 Route::get('/pi-quotation', [ProformaInvoiceController::class, 'showRequestPage'])->name('pi-quotation.generate');
 Route::post('/pi-quotation', [ProformaInvoiceController::class, 'submitRequest'])->name('pi-quotation.store');
-Route::view('/adminPanel/dashboard', 'adminPanel.dashboard')->name('adminPanel.dashboard');
-Route::view('/adminPanel/products', 'adminPanel.products.index')->name('adminPanel.products');
-Route::view('/adminPanel/products/create', 'adminPanel.products.create')->name('adminPanel.products.create');
-Route::view('/adminPanel/pricing', 'adminPanel.pricing.index')->name('adminPanel.pricing');
-Route::view('/adminPanel/pi-quotation', 'adminPanel.pi-quotation')->name('adminPanel.pi-quotation.index');
-Route::view('/adminPanel/pi-quotation/create', 'adminPanel.pi-quotation-create')->name('adminPanel.pi-quotation.create');
-Route::view('/adminPanel/orders', 'adminPanel.orders.index')->name('adminPanel.orders');
-Route::view('/adminPanel/orders/view', 'adminPanel.orders.details')->name('adminPanel.orders.view');
-Route::view('/adminPanel/customers', 'adminPanel.customers.index')->name('adminPanel.customers');
-Route::view('/adminPanel/customer-directory', 'adminPanel.customers.directory')->name('adminPanel.customer-directory');
-Route::group(['prefix' => 'adminPanel', 'as' => 'adminPanel.'], function () {
-    Route::view('/role-permission', 'adminPanel.RolePermissions.index')->name('role-permission');
-    Route::view('/role-permission/add-role', 'adminPanel.RolePermissions.add-role')->name('role-permission.add-role');
-    Route::view('/role-permission/add-permission', 'adminPanel.RolePermissions.add-permission')->name('role-permission.add-permission');
-    Route::view('/role-permission/assign-dept-role', 'adminPanel.RolePermissions.assign-dept-role')->name('role-permission.assign-dept-role');
-    Route::view('/role-permission/add-override', 'adminPanel.RolePermissions.add-override')->name('role-permission.add-override');
-    Route::view('/role-permission/add-delegation', 'adminPanel.RolePermissions.add-delegation')->name('role-permission.add-delegation');
-    Route::view('/role-permission/grant-impersonation', 'adminPanel.RolePermissions.grant-impersonation')->name('role-permission.grant-impersonation');
+Route::view('/adminPanel/dashboard', 'admin.dashboard')->name('admin.dashboard');
+Route::view('/adminPanel/products', 'admin.products.index')->name('admin.products');
+Route::view('/adminPanel/products/create', 'admin.products.create')->name('admin.products.create');
+Route::view('/adminPanel/pricing', 'admin.pricing.index')->name('admin.pricing');
+Route::view('/adminPanel/pi-quotation', 'admin.pi-quotation')->name('admin.pi-quotation.index');
+Route::view('/adminPanel/pi-quotation/create', 'admin.pi-quotation-create')->name('admin.pi-quotation.create');
+Route::view('/adminPanel/orders', 'admin.orders.index')->name('admin.orders');
+Route::view('/adminPanel/orders/view', 'admin.orders.details')->name('admin.orders.view');
+Route::view('/adminPanel/customers', 'admin.customers.index')->name('admin.customers');
+Route::view('/adminPanel/customer-directory', 'admin.customers.directory')->name('admin.customer-directory');
+Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
+    Route::view('/role-permission', 'admin.RolePermissions.index')->name('role-permission');
+    Route::view('/role-permission/add-role', 'admin.RolePermissions.add-role')->name('role-permission.add-role');
+    Route::view('/role-permission/add-permission', 'admin.RolePermissions.add-permission')->name('role-permission.add-permission');
+    Route::view('/role-permission/assign-dept-role', 'admin.RolePermissions.assign-dept-role')->name('role-permission.assign-dept-role');
+    Route::view('/role-permission/add-override', 'admin.RolePermissions.add-override')->name('role-permission.add-override');
+    Route::view('/role-permission/add-delegation', 'admin.RolePermissions.add-delegation')->name('role-permission.add-delegation');
+    Route::view('/role-permission/grant-impersonation', 'admin.RolePermissions.grant-impersonation')->name('role-permission.grant-impersonation');
 });
-Route::view('/adminPanel/support-tickets', 'adminPanel.support-tickets.index')->name('adminPanel.support-tickets');
-Route::view('/adminPanel/ui-fields-modification', 'adminPanel.support-tickets.ui-fields-modification')->name('adminPanel.ui-fields-modification');
-Route::view('/adminPanel/sync-monitor', 'adminPanel.sync-monitor.index')->name('adminPanel.sync-monitor');
-Route::view('/adminPanel/global-settings', 'adminPanel.global-settings.index')->name('adminPanel.global-settings');
+Route::view('/adminPanel/support-tickets', 'admin.support-tickets.index')->name('admin.support-tickets');
+Route::view('/adminPanel/ui-fields-modification', 'admin.support-tickets.ui-fields-modification')->name('admin.ui-fields-modification');
+Route::view('/adminPanel/sync-monitor', 'admin.sync-monitor.index')->name('admin.sync-monitor');
+Route::view('/adminPanel/global-settings', 'admin.global-settings.index')->name('admin.global-settings');
 Route::get('/cart', [CartController::class, 'showCustomerCartPage'])->name('cart.page');
 Route::get('/checkout', [CartController::class, 'showCustomerCheckoutPage'])->name('checkout.page');
 Route::middleware('auth')->post('/checkout', [CartController::class, 'submitCustomerCheckoutOrder'])->name('checkout.submit');
@@ -89,10 +83,7 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
     Route::post('/checkout', [CartController::class, 'checkoutCart'])->name('checkout');
 });
 
-// Route::middleware(['auth', 'active'])->group(function (): void {
-
-   //Route::view('/homeAdmin', 'home')->name('home');
-   Route::view('/about', 'prelogin.about')->name('about');
+   Route::view('/about', 'information.about')->name('about');
    Route::get('/diagnostic-quiz', [QuizeController::class, 'index'])->name('diagnostic-quiz');
    Route::post('/diagnostic-quiz', [QuizeController::class, 'store'])->name('diagnostic-quiz.store');
    Route::get('/contact', [ContactUsController::class, 'index'])->name('contact');
@@ -117,11 +108,11 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
 //     return view('prelogin.product-details', compact('id'));
 // })->name('product.details');
 
-   Route::view('/privacy', 'legal.privacy')->name('privacy');
-   Route::view('/terms', 'legal.terms')->name('terms');
-   Route::view('/refund-policy', 'legal.refund')->name('refund-policy');
+   Route::view('/privacy', 'information.privacy')->name('privacy');
+   Route::view('/terms', 'information.terms')->name('terms');
+   Route::view('/refund-policy', 'information.refund')->name('refund-policy');
    Route::get('/faq', [FaqController::class, 'index'])->name('faq');
-   Route::view('/order-confirmation', 'order.confirmation')->name('order.confirmation');
+   Route::view('/order-confirmation', 'order-confirmation')->name('order.confirmation');
    Route::view('/maintenance', 'errors.503')->name('maintenance');
 
     Route::get('/proforma', [ProformaInvoiceController::class, 'index'])->middleware('auth')->name('proforma.index');

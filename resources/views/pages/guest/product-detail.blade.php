@@ -1,1 +1,0 @@
-@include('customer.product.detail')

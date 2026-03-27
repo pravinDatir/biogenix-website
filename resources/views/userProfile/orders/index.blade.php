@@ -1,4 +1,4 @@
-@extends('customer.layout')
+@extends('layouts.customer')
 
 @php
     $portal = auth()->user()?->user_type ?? request('user_type', request('portal', 'b2c'));

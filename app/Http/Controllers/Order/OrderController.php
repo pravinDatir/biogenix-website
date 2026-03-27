@@ -106,7 +106,13 @@ class OrderController extends Controller
             // Step 1: load the requested order with relations for the current user.
             $order = $orderService->getOrderById($orderId, $request->user());
 
-            // Step 2: return the order detail blade.
+            // Step 2: return partial view for AJAX requests, otherwise full detail page.
+            if ($request->ajax()) {
+                return view('order.partials.order-details', [
+                    'order' => $order,
+                ]);
+            }
+
             return view('order.show', [
                 'order' => $order,
             ]);
@@ -216,7 +222,7 @@ class OrderController extends Controller
             }
 
             // Step 5: return the same checkout UI with reorder-only data.
-            return view('pages.guest.checkout', [
+            return view('checkout', [
                 'initialCart' => null,
                 'isReOrderCheckout' => true,
                 'reOrderCheckout' => $reOrderCheckout,

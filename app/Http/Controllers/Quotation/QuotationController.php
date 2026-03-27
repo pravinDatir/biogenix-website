@@ -20,11 +20,11 @@ class QuotationController extends Controller
             $selectedProductId = $request->integer('product_id');
             $pageData = $quotationService->getCreatePageData($request->user(), $selectedProductId);
 
-            return view('quotation.create', $pageData);
+            return view('information.generate-quotation', $pageData);
         } catch (Throwable $exception) {
             Log::error('Failed to load quotation page.', ['error' => $exception->getMessage()]);
 
-            return $this->viewWithError('quotation.create', [
+            return $this->viewWithError('information.generate-quotation', [
                 'products' => collect(),
                 'clientCompanies' => collect(),
                 'prefilledProductId' => $request->integer('product_id'),

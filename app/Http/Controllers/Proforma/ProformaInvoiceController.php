@@ -21,11 +21,11 @@ class ProformaInvoiceController extends Controller
             $selectedProductId = $request->integer('product_id');
             $pageData = $proformaInvoiceService->getRequestPageData($request->user(), $selectedProductId);
 
-            return view('pi-quotation.generate', $pageData);
+            return view('information.pi-quotation', $pageData);
         } catch (Throwable $exception) {
             Log::error('Failed to load PI request page.', ['error' => $exception->getMessage()]);
 
-            return $this->viewWithError('pi-quotation.generate', [
+            return $this->viewWithError('information.pi-quotation', [
                 'products' => collect(),
                 'clientCompanies' => collect(),
                 'prefilledProductId' => $request->integer('product_id'),
