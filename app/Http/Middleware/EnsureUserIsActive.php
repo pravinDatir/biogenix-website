@@ -9,13 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsActive
 {
-    /**
-     * Handle an incoming request.
-     */
+
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
+        // if user is not guest and status is not active, log out the user and redirect to login page with appropriate message.
         if ($user && $user->status !== 'active') {
             $message = $user->status === 'pending_approval'
                 ? 'Your account is pending admin approval.'

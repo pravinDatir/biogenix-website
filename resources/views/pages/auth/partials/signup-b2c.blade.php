@@ -14,7 +14,7 @@
     $compactButtonClass = 'inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-[11px] font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50';
     $fieldErrorClass = 'border-rose-300 focus:border-rose-400 focus:ring-rose-200';
     $normalizedOldEmail = strtolower(trim((string) old('email', '')));
-    $isOldEmailVerified = $normalizedOldEmail !== '' && app(\App\Services\Authorization\SignupEmailOtpService::class)->isVerifiedForB2cSignup($normalizedOldEmail);
+    $isOldEmailVerified = $normalizedOldEmail !== '' && app(\App\Services\Authorization\SignupEmailOtpService::class)->hasVerifiedSignupEmail($normalizedOldEmail);
 @endphp
 
 <div class="relative overflow-hidden px-4 py-10 sm:px-6 lg:px-8">

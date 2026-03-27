@@ -4,49 +4,38 @@ namespace App\Actions\Fortify;
 
 use App\Models\Authorization\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\UpdatesUserPasswords;
-use Throwable;
 
 class UpdateUserPassword implements UpdatesUserPasswords
 {
     use PasswordValidationRules;
-
-    /**
-     * Validate and update the user's password.
-     *
-     * @param  array<string, string>  $input
-     *
-     * @throws ValidationException
-     */
+    // this method is used for updating the password from profile page.
     public function update(User $user, array $input): void
     {
-        try {
-            // Step 1: validate the current password and the new password fields.
-            Validator::make($input, [
-                'current_password' => ['required', 'string', 'current_password:web'],
-                'password' => $this->passwordRules(),
-            ], [
-                'current_password.current_password' => __('The provided password does not match your current password.'),
-            ])->validateWithBag('updatePassword');
+        // Step 1: validate the current password and the new password fields.
+        $validator = Validator::make($input, [
+            'current_password' => ['required', 'string', 'current_password:web'],
+            'password' => $this->passwordRules(),
+        ], [
+            // Custom error message for current password validation failure.
+            'current_password.current_password' => __('The provided password does not match your current password.'),
+        ]);
 
-            // Step 2: save the new hashed password on the user record.
-            $attributes = [
-                'password' => Hash::make($input['password']),
-            ];
+        //It runs validation ,If validation fails, it throws a ValidationException, Errors are stored in a named error bag: 'updatePassword'
+        $validator->validateWithBag('updatePassword');
 
-            // Step 3: update the dedicated password-change timestamp only when the column exists in the current database.
-            if (Schema::hasColumn('users', 'password_updated_at')) {
-                $attributes['password_updated_at'] = now();
-            }
+        // Step 2: prepare the new password data.
+        $passwordData = [  'password' => Hash::make($input['password']),];
 
-            $user->forceFill($attributes)->save();
-        } catch (Throwable $exception) {
-            Log::error('Failed to update user password.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
+        // Step 3: update the password timestamp when the column exists in this database.
+        if (Schema::hasColumn('users', 'password_updated_at')) {
+            $passwordData['password_updated_at'] = now();
         }
+
+        // Step 4: save the new password on the user record.
+        $user->forceFill($passwordData);
+        $user->save();
     }
 }

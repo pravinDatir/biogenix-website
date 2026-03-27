@@ -15,23 +15,23 @@ use Throwable;
 class SignupEmailOtpController extends Controller
 {
     // This sends the signup OTP to the entered B2C email address.
-    public function sendOtp(Request $request, SignupEmailOtpService $signupEmailOtpService): JsonResponse
+    public function sendOtp(Request $request, SignupEmailOtpService $signupOtpService): JsonResponse
     {
         try {
             // Step 1: validate the email before the OTP send flow starts.
-            $validatedInput = $request->validate([
+            $validatedData = $request->validate([
                 'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class, 'email')],
             ]);
 
             // Step 2: send the OTP through the shared signup OTP service.
-            $otpSendResult = $signupEmailOtpService->sendOtpForB2cSignup($validatedInput['email']);
+            $sendResult = $signupOtpService->sendSignupOtp($validatedData['email']);
 
             // Step 3: return one simple success response for the signup page AJAX flow.
             return response()->json([
                 'status' => 'success',
-                'message' => $otpSendResult['message'],
-                'expires_in_minutes' => $otpSendResult['expires_in_minutes'],
-                'resend_available_in_seconds' => $otpSendResult['resend_available_in_seconds'],
+                'message' => $sendResult['message'],
+                'expires_in_minutes' => $sendResult['expires_in_minutes'],
+                'resend_available_in_seconds' => $sendResult['resend_available_in_seconds'],
             ]);
         } catch (ValidationException $exception) {
             Log::warning('Signup email OTP send validation failed.', [
@@ -58,25 +58,25 @@ class SignupEmailOtpController extends Controller
     }
 
     // This verifies the submitted email OTP for the B2C signup flow.
-    public function verifyOtp(Request $request, SignupEmailOtpService $signupEmailOtpService): JsonResponse
+    public function verifyOtp(Request $request, SignupEmailOtpService $signupOtpService): JsonResponse
     {
         try {
             // Step 1: validate the email and OTP format before verification starts.
-            $validatedInput = $request->validate([
+            $validatedData = $request->validate([
                 'email' => ['required', 'string', 'email', 'max:255'],
                 'otp' => ['required', 'digits:6'],
             ]);
 
             // Step 2: verify the OTP through the shared signup OTP service.
-            $otpVerifyResult = $signupEmailOtpService->verifyOtpForB2cSignup(
-                $validatedInput['email'],
-                $validatedInput['otp'],
+            $verifyResult = $signupOtpService->verifySignupOtp(
+                $validatedData['email'],
+                $validatedData['otp'],
             );
 
             // Step 3: return one simple success response for the signup page AJAX flow.
             return response()->json([
                 'status' => 'success',
-                'message' => $otpVerifyResult['message'],
+                'message' => $verifyResult['message'],
             ]);
         } catch (ValidationException $exception) {
             Log::warning('Signup email OTP verification failed.', [

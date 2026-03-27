@@ -6,7 +6,6 @@ use App\Models\Authorization\Company;
 use App\Models\Authorization\User;
 use App\Services\Authorization\RolePermissionService;
 use App\Services\Authorization\SignupEmailOtpService;
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -21,59 +20,60 @@ class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
 
-    public function __construct(
-        protected RolePermissionService $rolePermissionService,
-        protected SignupEmailOtpService $signupEmailOtpService,
-    ) {
+    public function __construct( protected RolePermissionService $rolePermissionService,  protected SignupEmailOtpService $signupOtpService, ) {
     }
 
     // This validates registration input and creates a user through the Fortify signup flow.
     public function create(array $input): User
     {
-        $input = $this->normalizeInput($input);
-        $this->validator($input)->validate();
-        $this->ensureB2cSignupEmailIsVerified($input);
+        // Step 1: prepare one clean signup data array used across the full flow.
+        $signupData = $this->prepareSignupData($input);
+
+        // Step 2: validate the signup data before any database work starts.
+        $this->validateSignupData($signupData);
 
         try {
-            $user = DB::transaction(fn (): User => $this->createUserRecord($input));
+            // Step 3: create the correct account type based on the signup flow.
+            if ($this->isB2bSignup($signupData)) {
+                $createdUser = $this->createB2BUser($signupData);
+            } else {
+                $createdUser = $this->createB2CUser($signupData);
+            }
 
-            $this->rolePermissionService->assignDefaultRole($user);
-            $this->consumeSignupEmailVerification($input);
-
-            Log::info('New user account created successfully.', [
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'user_type' => $user->user_type,
-            ]);
-
-            return $user;
+            // Step 4: write one success log for the completed signup.
+            Log::info('New user account created successfully.', [ 'user_id' => $createdUser->id,  'email' => $createdUser->email,   'user_type' => $createdUser->user_type, ]);
         } catch (Throwable $exception) {
-            Log::error('Failed to create new user.', ['email' => $input['email'] ?? null, 'error' => $exception->getMessage()]);
-            throw ValidationException::withMessages([
-                'email' => 'Unable to create the account right now. Please try again.',
-            ]);
+            Log::error('Failed to create new user.', [ 'email' => $signupData['email'] ?? null,  'error' => $exception->getMessage(), ]);
+
+            throw ValidationException::withMessages([   'email' => 'Unable to create the account right now. Please try again.',  ]);
         }
+
+        return $createdUser;
     }
 
-    private function normalizeInput(array $input): array
+    private function prepareSignupData(array $input): array
     {
-        $input['user_type'] = $input['user_type']
-            ?? (($input['accountType'] ?? null) === 'business' ? 'b2b' : 'b2c');
+        // Step 1: resolve the final user type for the signup flow.
+        $input['user_type'] = $input['user_type'] ?? (($input['accountType'] ?? null) === 'business' ? 'b2b' : 'b2c');
+
+        // Step 2: build one full name for B2C signup when the form uses first and last name fields.
         $input['name'] = $input['name']
             ?? trim(((string) ($input['first_name'] ?? '')).' '.((string) ($input['last_name'] ?? '')));
 
         return $input;
     }
 
-    private function validator(array $input): ValidatorContract
+    private function validateSignupData(array $signupData): void
     {
-        $b2bTypeOptions = array_keys(config('common.b2b_designation_options', []));
+        // Step 1: load the allowed B2B designation values from config.
+        $b2bDesignationValues = array_keys(config('common.b2b_designation_options', []));
 
-        return Validator::make($input, [
+        // Step 2: validate the signup data for both B2B and B2C flows.
+        $validator = Validator::make($signupData, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
             'user_type' => ['required', Rule::in(['b2c', 'b2b'])],
-            'b2b_type' => ['nullable', 'required_if:user_type,b2b', Rule::in($b2bTypeOptions)],
+            'b2b_type' => ['nullable', 'required_if:user_type,b2b', Rule::in($b2bDesignationValues)],
             'company_name' => ['nullable', 'required_if:user_type,b2b', 'string', 'max:255'],
             'company_type' => ['nullable', 'string', 'max:255'],
             'legal_name' => ['nullable', 'string', 'max:255'],
@@ -92,20 +92,66 @@ class CreateNewUser implements CreatesNewUsers
             'country' => ['nullable', 'string', 'max:128'],
             'password' => $this->passwordRules(),
         ]);
+
+        $validator->validate();
     }
 
-    private function createUserRecord(array $input): User
+    private function createB2BUser(array $signupData): User
     {
-        // Business rule: B2B signup belongs to a company and must wait for approval.
-        $company = $this->isB2bSignup($input) ? $this->upsertCompany($input) : null;
-        [$status, $approvedAt] = $this->resolveApprovalState($input);
+        // Step 1: create the B2B account records inside one transaction.
+        $createdUser = DB::transaction(function () use ($signupData): User {
+            // Step 1.1: save the company linked to the B2B signup.
+            $company = $this->saveCompany($signupData);
 
-        $user = User::query()->create($this->buildUserAttributes($input, $company, $status, $approvedAt));
+            // Step 1.2: keep the B2B account in pending approval state.
+            $accountStatus = 'pending_approval';
+            $approvedAt = null;
 
-        // Business rule: when address is available, save it as the user's default shipping and billing address.
-        $this->storeDefaultAddress($user, $input);
+            // Step 1.3: create the B2B user account.
+            $userData = $this->getUserData($signupData, $company, $accountStatus, $approvedAt);
+            $createdUser = User::query()->create($userData);
 
-        return $user;
+            // Step 1.4: save the default address when address details are present.
+            $this->saveDefaultAddress($createdUser, $signupData);
+
+            return $createdUser;
+        });
+
+        // Step 2: assign the default B2B role after the account is created.
+        $this->rolePermissionService->assignDefaultRole($createdUser);
+
+        return $createdUser;
+    }
+
+    private function createB2CUser(array $signupData): User
+    {
+        // Step 1: make sure the B2C email is verified before account creation.
+        $signupEmail = (string) ($signupData['email'] ?? '');
+        $this->signupOtpService->ensureSignupEmailIsVerified($signupEmail);
+
+        // Step 2: create the B2C account records inside one transaction.
+        $createdUser = DB::transaction(function () use ($signupData): User {
+            // Step 2.1: keep the B2C account active after signup.
+            $accountStatus = 'active';
+            $approvedAt = now();
+
+            // Step 2.2: create the B2C user account.
+            $userData = $this->getUserData($signupData, null, $accountStatus, $approvedAt);
+            $createdUser = User::query()->create($userData);
+
+            // Step 2.3: save the default address when address details are present.
+            $this->saveDefaultAddress($createdUser, $signupData);
+
+            return $createdUser;
+        });
+
+        // Step 3: assign the default B2C role after the account is created.
+        $this->rolePermissionService->assignDefaultRole($createdUser);
+
+        // Step 4: clear the one-time email verification after successful signup.
+        $this->signupOtpService->clearVerifiedSignupEmail($signupEmail);
+
+        return $createdUser;
     }
 
     private function isB2bSignup(array $input): bool
@@ -113,81 +159,58 @@ class CreateNewUser implements CreatesNewUsers
         return ($input['user_type'] ?? null) === 'b2b';
     }
 
-    private function isB2cSignup(array $input): bool
+    private function saveCompany(array $signupData): Company
     {
-        return ($input['user_type'] ?? null) === 'b2c';
-    }
+        // Step 1: prepare the company data that should be saved for B2B signup.
+        $companyData = [
+            'name' => $signupData['company_name'],
+            'legal_name' => $signupData['legal_name'] ?? null,
+            'pan_number' => $signupData['pan_number'] ?? null,
+            'registration_number' => $signupData['reg_number'] ?? null,
+            'established_year' => isset($signupData['established_year']) ? (int) $signupData['established_year'] : null,
+            'website' => $signupData['website'] ?? null,
+            'company_type' => $signupData['company_type'] ?? null,
+            'is_active' => true,
+        ];
 
-    private function ensureB2cSignupEmailIsVerified(array $input): void
-    {
-        // Business rule: retail signup must verify email before the account can be created.
-        if (! $this->isB2cSignup($input)) {
-            return;
-        }
-
-        $this->signupEmailOtpService->ensureVerifiedEmailOrFail((string) ($input['email'] ?? ''));
-    }
-
-    private function consumeSignupEmailVerification(array $input): void
-    {
-        // Business rule: once signup is completed successfully, the temporary email verification token should not be reused.
-        if (! $this->isB2cSignup($input)) {
-            return;
-        }
-
-        $this->signupEmailOtpService->consumeVerifiedEmail((string) ($input['email'] ?? ''));
-    }
-
-    private function upsertCompany(array $input): Company
-    {
+        // Step 2: create or update the company by GST number.
         return Company::query()->updateOrCreate(
-            ['name' => $input['company_name']],
-            $this->persistableAttributes('companies', [
-                'legal_name' => $input['legal_name'] ?? null,
-                'gst_number' => $input['gst_number'] ?? null,
-                'pan_number' => $input['pan_number'] ?? null,
-                'registration_number' => $input['reg_number'] ?? null,
-                'established_year' => isset($input['established_year']) ? (int) $input['established_year'] : null,
-                'website' => $input['website'] ?? null,
-                'company_type' => $input['company_type'] ?? null,
-                'is_active' => true,
-            ]),
+            ['gst_number' => $signupData['gst_number']],
+            $companyData,
         );
     }
 
-    private function resolveApprovalState(array $input): array
+    private function getUserData(array $signupData, ?Company $company, string $accountStatus, $approvedAt): array
     {
-        return $this->isB2bSignup($input)
-            ? ['pending_approval', null]
-            : ['active', now()];
-    }
-
-    private function buildUserAttributes(array $input, ?Company $company, string $status, $approvedAt): array
-    {
-        return $this->persistableAttributes('users', [
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'user_type' => $input['user_type'],
-            'b2b_type' => $this->isB2bSignup($input) ? ($input['b2b_type'] ?? null) : null,
-            'phone' => $input['phone'] ?? null,
-            'alt_phone' => $input['alt_phone'] ?? null,
+        // Step 1: prepare the user account data.
+        $userData = [
+            'name' => $signupData['name'],
+            'email' => $signupData['email'],
+            'user_type' => $signupData['user_type'],
+            'b2b_type' => $this->isB2bSignup($signupData) ? ($signupData['b2b_type'] ?? null) : null,
+            'phone' => $signupData['phone'] ?? null,
+            'alt_phone' => $signupData['alt_phone'] ?? null,
             'company_id' => $company?->id,
-            'status' => $status,
+            'status' => $accountStatus,
             'approved_at' => $approvedAt,
             'approved_by_user_id' => null,
             'created_by_user_id' => null,
-            'password' => Hash::make($input['password']),
+            'password' => Hash::make($signupData['password']),
             'password_updated_at' => now(),
-        ]);
+        ];
+
+        return $userData;
     }
 
-    private function storeDefaultAddress(User $user, array $input): void
+    private function saveDefaultAddress(User $user, array $input): void
     {
-        if (! $this->hasAddressPayload($input)) {
+        // Step 1: stop when the signup data does not contain a full address.
+        if (! $this->hasAddressData($input)) {
             return;
         }
 
-        $addressAttributes = $this->persistableAttributes('user_address', [
+        // Step 2: prepare the default address data.
+        $addressData = [
             'line1' => $input['address_1'],
             'line2' => $input['address_2'] ?? null,
             'city' => $input['city'],
@@ -196,41 +219,18 @@ class CreateNewUser implements CreatesNewUsers
             'country' => $input['country'] ?? 'India',
             'is_default_shipping' => true,
             'is_default_billing' => true,
-        ]);
+        ];
 
-        if ($addressAttributes === []) {
-            return;
-        }
-
-        $user->addresses()->create($addressAttributes);
+        // Step 3: save the default address for the new user.
+        $user->addresses()->create($addressData);
     }
 
-    private function hasAddressPayload(array $input): bool
+    private function hasAddressData(array $input): bool
     {
         return Schema::hasTable('user_address')
             && filled($input['address_1'] ?? null)
             && filled($input['city'] ?? null)
             && filled($input['state'] ?? null)
             && filled($input['pincode'] ?? null);
-    }
-
-    private function persistableAttributes(string $table, array $attributes): array
-    {
-        // Business rule: local environments may be on an older schema, so only write columns that exist.
-        static $columnCache = [];
-
-        if (! Schema::hasTable($table)) {
-            return [];
-        }
-
-        if (! isset($columnCache[$table])) {
-            $columnCache[$table] = array_flip(Schema::getColumnListing($table));
-        }
-
-        return array_filter(
-            $attributes,
-            fn ($value, $column) => array_key_exists($column, $columnCache[$table]),
-            ARRAY_FILTER_USE_BOTH
-        );
     }
 }

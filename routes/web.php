@@ -7,7 +7,6 @@ use App\Http\Controllers\ContactUs\ContactUsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Faq\FaqController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Authorization\ImpersonationController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
 use App\Http\Controllers\Authorization\SignupEmailOtpController;
 use App\Http\Controllers\Invoice\ProformaInvoiceController;
@@ -142,8 +141,6 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
         Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
     });
 
-    Route::post('/impersonation/stop', [ImpersonationController::class, 'stop'])->name('impersonation.stop');
-
     Route::middleware(['permission:users.manage'])->prefix('admin/users')->name('admin.users.')->group(function (): void {
         Route::get('/', [AdminUserManagementController::class, 'index'])->name('index');
         Route::post('/internal', [AdminUserManagementController::class, 'createInternal'])->name('internal.store');
@@ -168,7 +165,4 @@ Route::middleware('auth')->prefix('cart')->name('cart.')->group(function (): voi
         Route::post('/{roleId}/permissions', [RoleAndPermissionController::class, 'upsertPermissionsForRole'])->name('permissions.upsert');
     });
 
-    Route::post('/admin/impersonate/{targetUserId}', [ImpersonationController::class, 'start'])
-        ->middleware('permission:users.impersonate')
-        ->name('admin.impersonation.start');
 //});

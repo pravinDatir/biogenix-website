@@ -87,21 +87,8 @@
 
         <main class="flex-1 transition-[padding] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]">
             @unless ($suppressShellAlerts)
-                @if (session()->has('impersonation.impersonator_id') || $errors->any())
+                @if ($errors->any())
                     <div class="mx-auto w-full max-w-7xl space-y-4 px-4 sm:px-6 lg:px-8 xl:px-10 py-6 mb-2">
-                        @if (session()->has('impersonation.impersonator_id'))
-                            <div class="rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-emerald-800">
-                                You are currently impersonating another user.
-                                <form method="POST" action="{{ route('impersonation.stop') }}" class="inline-block">
-                                    @csrf
-                                    <button type="submit"
-                                        class="ml-2 inline-flex h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
-                                        Stop Impersonation
-                                    </button>
-                                </form>
-                            </div>
-                        @endif
-
                         @if ($errors->any())
                             <x-alert type="error">
                                 <strong>Validation failed:</strong>

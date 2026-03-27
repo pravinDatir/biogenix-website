@@ -343,11 +343,7 @@
                                     <td class="{{ $tableCellClass }}">{{ strtoupper($user->user_type) }}</td>
                                     <td class="{{ $tableCellClass }}">{{ strtoupper($user->status) }}</td>
                                     <td class="{{ $tableCellClass }}">
-                                        <form method="POST" action="{{ route('admin.impersonation.start', $user->id) }}">
-                                            @csrf
-                                            <input type="hidden" name="reason" value="Support troubleshooting">
-                                            <button class="{{ $secondaryButtonClass }}" type="submit">Impersonate</button>
-                                        </form>
+                                        <button class="{{ $secondaryButtonClass }}" type="button" disabled>Impersonate</button>
                                     </td>
                                 </tr>
                             @endforeach

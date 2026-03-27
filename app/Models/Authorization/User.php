@@ -137,18 +137,6 @@ class User extends Authenticatable
         return in_array($this->user_type, ['admin', 'delegated_admin'], true);
     }
 
-    // This checks whether the account is active.
-    public function isActive(): bool
-    {
-        return $this->status === 'active';
-    }
-
-    // This checks whether the account is waiting for approval.
-    public function isPendingApproval(): bool
-    {
-        return $this->status === 'pending_approval';
-    }
-
     // This sends the password reset link through the shared notification service so provider changes stay centralized.
     public function sendPasswordResetNotification($token): void
     {
@@ -162,12 +150,7 @@ class User extends Authenticatable
             // Step 2: send the email through the shared provider-aware notification service.
             app(EmailNotificationService::class)->sendForgotPasswordResetLink($this, $resetUrl);
         } catch (Throwable $exception) {
-            Log::error('Failed to start password reset notification send.', [
-                'user_id' => $this->id,
-                'email' => $this->email,
-                'error' => $exception->getMessage(),
-            ]);
-
+            Log::error('Failed to start password reset notification send.', [  'user_id' => $this->id,  'email' => $this->email,  'error' => $exception->getMessage(),  ]);
             throw $exception;
         }
     }

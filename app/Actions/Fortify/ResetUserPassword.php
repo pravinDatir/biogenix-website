@@ -14,26 +14,14 @@ use Throwable;
 class ResetUserPassword implements ResetsUserPasswords
 {
     use PasswordValidationRules;
-
-    /**
-     * Validate and reset the user's forgotten password.
-     *
-     * @param  array<string, string>  $input
-     *
-     * @throws ValidationException
-     */
     public function reset(User $user, array $input): void
     {
         try {
             // Step 1: validate the new password fields from the reset flow.
-            Validator::make($input, [
-                'password' => $this->passwordRules(),
-            ])->validate();
+            Validator::make($input, [ 'password' => $this->passwordRules(), ])->validate();
 
             // Step 2: save the new hashed password on the user record.
-            $attributes = [
-                'password' => Hash::make($input['password']),
-            ];
+            $attributes = [ 'password' => Hash::make($input['password']), ];
 
             // Step 3: update the dedicated password-change timestamp only when the column exists in the current database.
             if (Schema::hasColumn('users', 'password_updated_at')) {

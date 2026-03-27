@@ -9,19 +9,33 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsurePermission
 {
+    protected RolePermissionService $rolePermissionService;
+
+    public function __construct(RolePermissionService $rolePermissionService)
+    {
+        $this->rolePermissionService = $rolePermissionService;
+    }
+
     // This checks if the authenticated user has the required permission to access a route.
     public function handle(Request $request, Closure $next, string $permission): Response
     {
-        $user = $request->user();
+        // Step 1: load the signed-in user.
+        $currentUser = $request->user();
 
-        if (! $user) {
+        if (! $currentUser) {
             abort(401);
         }
 
-        if (! app(RolePermissionService::class)->hasPermission($user, $permission)) {
+        // Step 2: stop when the user does not have the required permission.
+        $hasPermission = $this->rolePermissionService->hasPermission($currentUser, $permission);
+
+        if (! $hasPermission) {
             abort(403, 'You do not have permission for this action.');
         }
 
-        return $next($request);
+        // Step 3: continue the request when the permission check passes.
+        $response = $next($request);
+
+        return $response;
     }
 }

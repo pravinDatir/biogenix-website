@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
-use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Models\Authorization\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -14,34 +13,30 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
+        // Step 1: register the auth page views used by Fortify.
         Fortify::loginView(fn () => view('auth.login'));
         Fortify::registerView(fn () => view('auth.signup'));
         Fortify::requestPasswordResetLinkView(fn () => view('auth.forgot-password'));
         Fortify::resetPasswordView(fn (Request $request) => view('auth.reset-password', ['request' => $request]));
         Fortify::confirmPasswordView(fn () => view('auth.confirm-password'));
 
+        // Step 2: validate the login user and block inactive account states.
         Fortify::authenticateUsing(function (Request $request): ?User {
-            $user = User::where('email', $request->email)->first();
+            $loginEmail = (string) $request->input('email');
+            $loginPassword = (string) $request->input('password');
+            $user = User::query()->where('email', $loginEmail)->first();
 
-            if (! $user || ! Hash::check($request->password, $user->password)) {
+            if (! $user) {
+                return null;
+            }
+
+            if (! Hash::check($loginPassword, (string) $user->password)) {
                 return null;
             }
 
@@ -66,20 +61,18 @@ class FortifyServiceProvider extends ServiceProvider
             return $user;
         });
 
+        // Step 3: register the Fortify action classes used by signup and password flows.
         Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        //Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
+        // Step 4: throttle repeated login attempts.
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $loginFieldValue = (string) $request->input(Fortify::username());
+            $throttleKeyText = Str::lower($loginFieldValue).'|'.$request->ip();
+            $throttleKey = Str::transliterate($throttleKeyText);
 
             return Limit::perMinute(5)->by($throttleKey);
         });
-
-        // RateLimiter::for('two-factor', function (Request $request) {
-        //     return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        // });
     }
 }
