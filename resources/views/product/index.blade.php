@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Product Catalog')
 
@@ -209,68 +209,70 @@
         </div>
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
         <form id="catalogFiltersForm" method="GET" action="{{ route('products.index') }}" class="space-y-4 md:space-y-5">
-            <section class="relative z-50 w-full pt-4 md:pt-10">
+            <section class="relative z-10 w-full pt-2 md:pt-5">
                 <div class="rounded-[var(--ui-radius-card)] border border-white/70 bg-gradient-to-br from-white via-primary-50/65 to-white p-5 shadow-[var(--ui-shadow-card)] backdrop-blur md:p-6 glass-card">
-                    <div class="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(36rem,0.9fr)] xl:items-end">
-                        <div class="max-w-3xl">
-                            <h1 class="font-display text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Product Catalog</h1>
-                            <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">
-                                Explore our comprehensive range of high-performance biotech reagents, IVD kits, and life science research tools engineered for precision.
-                            </p>
-                        </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex flex-col items-start gap-3 xl:flex-row xl:justify-between">
+                            <div class="max-w-xl">
+                                <h1 class="shrink-0 font-display text-2xl font-bold tracking-tight text-slate-950 md:text-3xl">Product Catalog</h1>
+                                <p class="mt-2 text-sm leading-6 text-slate-600">
+                                    Explore our comprehensive range of high-performance biotech reagents, IVD kits, and life science research tools engineered for precision.
+                                </p>
+                            </div>
 
-                        <div class="grid gap-3.5 md:grid-cols-[minmax(0,1fr)_minmax(220px,260px)]">
-                            <label class="flex min-h-[3.875rem] flex-wrap items-stretch gap-3 rounded-[1.25rem] border border-slate-200/80 bg-white/95 px-4 py-3 shadow-[var(--ui-shadow-soft)] backdrop-blur md:flex-nowrap md:items-center md:gap-3.5 md:px-4 md:py-2.5">
-                                <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="7"></circle>
-                                    <path d="m20 20-3.5-3.5"></path>
-                                </svg>
-                                <input
-                                    type="search"
-                                    name="search"
-                                    value="{{ $search }}"
-                                    placeholder="Search by SKU, product name, application, or brand..."
-                                    class="min-w-0 flex-1 border-0 bg-transparent text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400"
-                                    aria-label="Search products"
-                                >
-                                <button type="submit" class="w-full rounded-[0.875rem] bg-primary-600 px-5 py-4 text-sm font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 md:w-auto">Search</button>
-                            </label>
-
-                            <div class="relative flex min-h-[3.5rem] items-center justify-between gap-3.5 rounded-[1.25rem] border border-slate-200/80 bg-white/95 px-4 py-3 shadow-[var(--ui-shadow-soft)] backdrop-blur md:min-h-[3.875rem]" id="customSortDropdown">
-                                <span class="text-sm font-medium text-slate-400">Sort by:</span>
-                                <select id="catalogSort" name="sort" class="hidden">
-                                    <option value="relevant" @selected($sort === 'relevant')>Most Relevant</option>
-                                    <option value="name_az" @selected($sort === 'name_az')>Name A-Z</option>
-                                    <option value="price_low" @selected($sort === 'price_low')>Price Low to High</option>
-                                    <option value="price_high" @selected($sort === 'price_high')>Price High to Low</option>
-                                </select>
-                                <button type="button" id="customSortButton" class="flex min-w-[9rem] items-center justify-between gap-2 border-0 bg-transparent text-sm font-semibold text-slate-800 outline-none">
-                                    <span id="customSortLabel">
-                                        @switch($sort)
-                                            @case('name_az') Name A-Z @break
-                                            @case('price_low') Price Low to High @break
-                                            @case('price_high') Price High to Low @break
-                                            @default Most Relevant
-                                        @endswitch
-                                    </span>
-                                    <svg class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            <div class="grid w-full flex-1 gap-3 md:grid-cols-[1fr_minmax(180px,210px)] xl:max-w-[54rem]">
+                                <label class="flex min-h-[2.5rem] flex-wrap items-stretch gap-2.5 rounded-xl border border-slate-200/80 bg-white/95 px-3 py-1 shadow-[var(--ui-shadow-soft)] backdrop-blur md:flex-nowrap md:items-center md:gap-3 md:px-3.5 md:py-1">
+                                    <svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="7"></circle>
+                                        <path d="m20 20-3.5-3.5"></path>
                                     </svg>
-                                </button>
-                                <div id="customSortMenu" class="absolute right-0 top-full mt-2 hidden w-48 origin-top-right rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg ring-1 ring-black ring-opacity-5 z-[80]">
-                                    @php
-                                        $options = [
-                                            'relevant' => 'Most Relevant',
-                                            'name_az' => 'Name A-Z',
-                                            'price_low' => 'Price Low to High',
-                                            'price_high' => 'Price High to Low',
-                                        ];
-                                    @endphp
-                                    @foreach($options as $val => $label)
-                                        <button type="button" data-sort-value="{{ $val }}" class="custom-sort-option flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors {{ $sort === $val ? 'bg-primary-50 text-primary-700' : 'text-slate-700 hover:bg-primary-50 hover:text-primary-700' }}">
-                                            {{ $label }}
-                                        </button>
-                                    @endforeach
+                                    <input
+                                        type="search"
+                                        name="search"
+                                        value="{{ $search }}"
+                                        placeholder="Search by SKU, product name, application, or brand..."
+                                        class="min-w-0 flex-1 border-0 bg-transparent text-[13px] font-medium text-slate-900 outline-none placeholder:text-slate-400"
+                                        aria-label="Search products"
+                                    >
+                                    <button type="submit" class="w-full rounded-lg bg-primary-600 px-4 py-1.5 text-[13px] font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-px hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 md:w-auto">Search</button>
+                                </label>
+
+                                <div class="relative flex min-h-[2.5rem] items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white/95 px-4 py-1 shadow-[var(--ui-shadow-soft)] backdrop-blur" id="customSortDropdown">
+                                    <span class="whitespace-nowrap text-[13px] font-medium text-slate-400">Sort by:</span>
+                                    <select id="catalogSort" name="sort" class="hidden">
+                                        <option value="relevant" @selected($sort === 'relevant')>Most Relevant</option>
+                                        <option value="name_az" @selected($sort === 'name_az')>Name A-Z</option>
+                                        <option value="price_low" @selected($sort === 'price_low')>Price Low to High</option>
+                                        <option value="price_high" @selected($sort === 'price_high')>Price High to Low</option>
+                                    </select>
+                                    <button type="button" id="customSortButton" class="flex min-w-[10rem] items-center justify-between gap-3 border-0 bg-transparent pl-1 pr-2 text-sm font-semibold text-slate-800 outline-none">
+                                        <span id="customSortLabel" class="truncate">
+                                            @switch($sort)
+                                                @case('name_az') Name A-Z @break
+                                                @case('price_low') Price Low to High @break
+                                                @case('price_high') Price High to Low @break
+                                                @default Most Relevant
+                                            @endswitch
+                                        </span>
+                                        <svg class="h-4 w-4 shrink-0 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div id="customSortMenu" class="absolute right-0 top-full mt-2 hidden w-48 origin-top-right rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg ring-1 ring-black ring-opacity-5 z-[50]">
+                                        @php
+                                            $options = [
+                                                'relevant' => 'Most Relevant',
+                                                'name_az' => 'Name A-Z',
+                                                'price_low' => 'Price Low to High',
+                                                'price_high' => 'Price High to Low',
+                                            ];
+                                        @endphp
+                                        @foreach($options as $val => $label)
+                                            <button type="button" data-sort-value="{{ $val }}" class="custom-sort-option flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors {{ $sort === $val ? 'bg-primary-50 text-primary-700' : 'text-slate-700 hover:bg-primary-50 hover:text-primary-700' }}">
+                                                {{ $label }}
+                                            </button>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -414,8 +416,8 @@
                 <div class="grid min-w-0 content-start gap-4">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div class="flex flex-wrap items-center gap-3">
-                            <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                                <p class="text-sm font-medium text-slate-500">{{ $productSummaryLabel }}</p>
+                            <div class="rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 shadow-sm">
+                                <p class="text-[12px] font-medium text-slate-500">{{ $productSummaryLabel }}</p>
                             </div>
                             @if ($search !== '')
                                 <div class="rounded-2xl border border-primary-100 bg-primary-50 px-4 py-3 shadow-sm">

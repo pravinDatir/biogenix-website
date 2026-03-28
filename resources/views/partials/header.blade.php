@@ -25,7 +25,7 @@
     ];
 @endphp
 
-<header class="glass-header sticky top-0 z-50">
+<header class="glass-header sticky top-0 z-[100]">
     <style>
         /* Fluid navbar sizing that scales with viewport */
         .header-nav-link {
