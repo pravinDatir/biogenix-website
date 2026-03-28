@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Cart')
 
@@ -555,7 +555,12 @@
                                 return Number(x.productId || 0) === pid && (x.variantId ?? null) === vid;
                             });
                             if (!item) return;
-                            window.CartStore.updateQuantity(pid, vid, Math.max(1, Number(item.quantity || 1) + dir));
+                            const nextQty = Number(item.quantity || 1) + dir;
+                            if (nextQty <= 0) {
+                                window.CartStore.removeItem(pid, vid);
+                            } else {
+                                window.CartStore.updateQuantity(pid, vid, nextQty);
+                            }
                         });
                     });
 

@@ -252,8 +252,12 @@
 
                     if (!target || !window.CartStore) return;
 
-                    const nextQty = Math.max(1, Number(target.quantity || 1) + direction);
-                    window.CartStore.updateQuantity(productId, variantId, nextQty);
+                    const nextQty = Number(target.quantity || 1) + direction;
+                    if (nextQty <= 0) {
+                        window.CartStore.removeItem(productId, variantId);
+                    } else {
+                        window.CartStore.updateQuantity(productId, variantId, nextQty);
+                    }
                 });
             });
 
