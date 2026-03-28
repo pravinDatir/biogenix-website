@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Checkout')
 
@@ -45,7 +45,7 @@
 
     <div class="{{ $pageWrapClass }}">
         <div>
-            <div class="mb-4 flex justify-end">
+            <div class="mb-4 flex justify-start">
                 <a href="{{ route('products.index') }}" class="{{ $backLinkClass }}">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="m15 18-6-6 6-6"></path>
