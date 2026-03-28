@@ -3,23 +3,55 @@
 @section('title', 'Under Maintenance')
 
 @section('content')
-    <div class="mx-auto flex min-h-[46vh] w-full max-w-[720px] items-center justify-center px-4 py-5 sm:px-6 lg:px-8">
-        <section class="w-full max-w-md text-center">
-            <div class="mx-auto flex max-w-[15rem] items-center justify-center gap-2.5 rounded-[22px] bg-primary-50 px-5 py-4">
-                <svg class="h-8 w-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
-                <svg class="h-8 w-8 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><circle cx="12" cy="12" r="3"/></svg>
-            </div>
+    {{-- Background Container: Restricted to content area --}}
+    <div class="relative min-h-[calc(100vh-120px)] w-full overflow-hidden bg-slate-900">
+        {{-- Background Image with Microscope Theme --}}
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('upload/backgrounds/order-success-bg.jpg') }}" 
+                 alt="Background" 
+                 class="h-full w-full object-cover opacity-40 mix-blend-overlay">
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-900/80 backdrop-blur-[2px]"></div>
+        </div>
 
-            <h1 class="mt-4 text-2xl font-bold tracking-tight text-slate-950 md:text-3xl">Under Maintenance</h1>
-            <p class="mx-auto mt-2.5 max-w-sm text-sm leading-6 text-slate-600">We&apos;re currently fine-tuning our systems to serve you better. We&apos;ll be back online shortly with an improved experience.</p>
+        {{-- Content Area --}}
+        <div class="relative z-10 flex min-h-[calc(100vh-120px)] items-center justify-center p-4">
+            <div class="w-full max-w-xl rounded-[40px] border border-white/10 bg-white/5 p-8 text-center shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] backdrop-blur-xl sm:p-12">
+                {{-- Maintenance Icon --}}
+                <div class="mx-auto mb-10 flex h-28 w-28 items-center justify-center rounded-full bg-primary-500/10 shadow-inner">
+                    <div class="flex h-20 w-20 items-center justify-center rounded-full bg-primary-600/20 border border-primary-500/30 text-primary-500 shadow-[0_0_40px_rgba(22,101,52,0.2)]">
+                        <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.829-5.83m0 0a2.652 2.652 0 113.75-3.75M15.17 11.42a2.652 2.652 0 11-3.75 3.75M11.42 15.17l-5.83 5.83A2.652 2.652 0 111.84 17.25l5.83-5.83m0 0a2.652 2.652 0 113.75-3.75m0 0l-5.83-5.83L1.84 5.67a2.652 2.652 0 113.75-3.75l5.83 5.83m0 0a2.652 2.652 0 113.75-3.75l5.83-5.83L17.25 1.84a2.652 2.652 0 113.75 3.75l-5.83 5.83" />
+                        </svg>
+                    </div>
+                </div>
 
-            <div class="mt-5 flex flex-col items-center justify-center gap-2.5 sm:flex-row">
-                <a href="{{ route('maintenance') }}" class="inline-flex h-9 items-center gap-2 rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white no-underline shadow-sm transition hover:bg-primary-700">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    Check Status
-                </a>
-                <a href="{{ route('home') }}" class="inline-flex h-9 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-50">Return Home</a>
+                {{-- Content --}}
+                <h1 class="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">Under Maintenance</h1>
+                <p class="mx-auto mt-6 max-w-sm text-base leading-7 text-slate-300">
+                    We're currently fine-tuning our systems to serve you better. We'll be back online shortly with an improved experience.
+                </p>
+
+                {{-- Actions --}}
+                <div class="mt-12 flex flex-col gap-4 sm:flex-row sm:justify-center">
+                    <a href="{{ route('maintenance') }}" class="group relative inline-flex h-14 items-center justify-center gap-3 overflow-hidden rounded-2xl bg-primary-600 px-8 text-base font-bold text-white shadow-lg transition-all hover:bg-primary-700 hover:shadow-primary-600/30">
+                        <svg class="relative z-10 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span class="relative z-10">Check Status</span>
+                        <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full"></div>
+                    </a>
+                    <a href="{{ route('home') }}" class="inline-flex h-14 items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-8 text-base font-bold text-white backdrop-blur-md transition hover:bg-white/10 hover:border-white/25">
+                        Return Home
+                    </a>
+                </div>
+
+                {{-- Optional Footer Info --}}
+                <div class="mt-14 pt-10 border-t border-white/5">
+                    <p class="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500">
+                        &copy; 2026 Biogenix Healthcare Solutions
+                    </p>
+                </div>
             </div>
-        </section>
+        </div>
     </div>
 @endsection
