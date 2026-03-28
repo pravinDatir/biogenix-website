@@ -27,7 +27,7 @@
     </section>
 
     <!-- Vision/Mission/Values -->
-    <section class="relative overflow-hidden py-14 md:py-20">
+    <section class="relative overflow-hidden pt-14 pb-6 md:pt-20 md:pb-8">
         <div class="absolute inset-0 -z-10 origin-top-left -skew-y-3 bg-primary-100/35"></div>
         <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Our Philosophy" subtitle="Vision, Mission, and Values driving our long-term healthcare impact." center title-class="text-[2rem] font-extrabold md:text-[2.35rem]" />
@@ -67,7 +67,7 @@
     </section>
 
     <!-- Modern Journey Timeline -->
-    <section class="bg-gradient-to-b from-white via-primary-50/10 to-white py-16 md:py-24">
+    <section class="bg-gradient-to-b from-white via-primary-50/10 to-white pt-6 pb-16 md:pt-8 md:pb-24">
         <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 xl:px-10">
             <x-ui.section-heading title="Our Journey" subtitle="A focused path from regional diagnostic support to scalable healthcare operations." center title-class="text-[2rem] font-extrabold md:text-[2.35rem]" />
             

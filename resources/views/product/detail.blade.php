@@ -162,14 +162,13 @@
         }
     @endphp
 
-    <div class="w-screen bg-gradient-to-b from-white via-primary-50/20 to-white py-4 md:mt-0 md:py-8 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
+    <div class="w-screen bg-gradient-to-b from-white via-primary-50/20 to-white py-0 md:mt-0 md:py-0 [margin-left:calc(50%-50vw)] [margin-right:calc(50%-50vw)]">
         <div id="uiToastHost" class="pointer-events-none fixed inset-x-0 bottom-6 z-[95] flex flex-col items-center gap-3 px-4" aria-live="polite" aria-atomic="true"></div>
-        <div class="mx-auto w-full px-4 py-8 md:px-6 md:py-10">
-            <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-fit items-center gap-2 rounded-full border border-slate-200/80 bg-white/95 px-4 text-sm font-semibold text-slate-700 no-underline shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-px hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="mx-auto w-full px-4 pt-1 pb-8 md:px-6 md:pt-2 md:pb-10">
+            <a href="{{ $backUrl }}" class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/80 bg-white/95 text-slate-700 no-underline shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-px hover:border-primary-100 hover:bg-primary-50 hover:text-primary-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m15 18-6-6 6-6"></path>
                 </svg>
-                <span>Back</span>
             </a>
 
             <!-- <div class="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-400">
@@ -193,13 +192,13 @@
                             {{-- Gallery Navigation Arrows --}}
                             @if ($galleryImages->count() > 1)
                                 <button id="productPrevImage" type="button" aria-label="Previous image"
-                                    class="absolute left-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-[calc(50%+2px)] hover:text-primary-700 opacity-0 group-hover:opacity-100">
+                                    class="absolute left-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md shadow-xl transition hover:-translate-y-[calc(50%+2px)] hover:bg-white/20">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
                                     </svg>
                                 </button>
                                 <button id="productNextImage" type="button" aria-label="Next image"
-                                    class="absolute right-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/92 text-slate-600 shadow-sm transition hover:-translate-y-[calc(50%+2px)] hover:text-primary-700 opacity-0 group-hover:opacity-100">
+                                    class="absolute right-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md shadow-xl transition hover:-translate-y-[calc(50%+2px)] hover:bg-white/20">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
                                     </svg>
