@@ -14,6 +14,7 @@ use Throwable;
 
 class ProformaInvoiceController extends Controller
 {
+     // this method will return the view with form to submit a new PI request, and the form will be pre-filled with the selected product if product_id is provided in the query string.
     public function showRequestPage(Request $request, ProformaInvoiceService $proformaInvoiceService): View
     {
         try {
@@ -40,15 +41,12 @@ class ProformaInvoiceController extends Controller
             $requestData = $this->validateProformaRequest($request);
             $signedInUser = $request->user();
 
-            // Step 2: confirm the selected recipient is allowed for this user.
-            $proformaInvoiceService->validateRecipientAccess($requestData, $signedInUser);
-
-            // Step 3: prepare item rows and calculate the final request totals.
+            // Step 2: prepare item rows and calculate the final request totals.
             $requestedItems = $proformaInvoiceService->prepareItems($requestData, $signedInUser);
             $requestTotals = $proformaInvoiceService->calculateTotals($requestedItems);
             $requestNumber = $this->createRequestNumber();
 
-            // Step 4: save the PI request for later internal review.
+            // Step 3: save the PI request for later internal review.
             $proformaInvoiceService->saveRequestedProforma(
                 $requestData,
                 $signedInUser,
@@ -58,7 +56,7 @@ class ProformaInvoiceController extends Controller
                 $request->session()->getId(),
             );
 
-            // Step 5: store a simple activity log for the submitted request.
+            // Step 4: store a simple activity log for the submitted request.
             $proformaInvoiceService->recordRequestSubmitted(
                 $signedInUser,
                 $request->session()->getId(),

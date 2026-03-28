@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 
 class ProductController extends Controller
@@ -33,16 +33,6 @@ class ProductController extends Controller
             // Step 2: normalize the current storefront catalog filters.
             $catalogFilters = $request->query();
             $catalogFilters['search'] = $search;
-
-            Log::info('Product filters', [
-                'category_name' => $request->input('category_name'),
-                'application_name' => $request->input('application_name', $request->input('subcategory_name')),
-                'brand_name' => $request->input('brand_name'),
-                'category' => $request->input('category', $request->input('category_id')),
-                'subcategory' => $request->input('subcategory', $request->input('subcategory_id')),
-                'max_price' => $request->input('max_price'),
-                'sort' => $request->input('sort'),
-            ]);
 
             // Step 3: load the catalog products and sidebar options for the current user.
             $user = $request->user();
@@ -129,13 +119,12 @@ class ProductController extends Controller
             ]);
         } catch (Throwable $exception) {
             Log::error('Failed to load product details.', ['product_id' => $productId, 'error' => $exception->getMessage()]);
-
             return $this->viewWithError('product.detail', ['id' => $productId], $exception, 'Unable to load product details.');
         }
     }
 
     // This downloads one product document after checking that the current viewer can access the product.
-    public function downloadTechnicalResource(int $productId, int $resourceId, Request $request, ProductService $productService): StreamedResponse|RedirectResponse
+    public function downloadTechnicalResource(int $productId, int $resourceId, Request $request, ProductService $productService): BinaryFileResponse|RedirectResponse
     {
         try {
             // Step 1: ask the product service to validate visibility and stream the requested document.

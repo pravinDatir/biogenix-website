@@ -39,15 +39,12 @@ class QuotationController extends Controller
             $quotationData = $this->validateQuotationRequest($request);
             $signedInUser = $request->user();
 
-            // Step 2: confirm the selected recipient is allowed for this user.
-            $quotationService->validateRecipientAccess($quotationData, $signedInUser);
-
-            // Step 3: prepare item rows and calculate the final totals.
+            // Step 2: prepare item rows and calculate the final totals.
             $quotationItems = $quotationService->prepareItems($quotationData, $signedInUser);
             $quotationTotals = $quotationService->calculateTotals($quotationItems);
             $quotationNumber = $this->createQuotationNumber();
 
-            // Step 4: save the quotation and load the final PDF record.
+            // Step 3: save the quotation and load the final PDF record.
             $quotation = $quotationService->saveQuotation(
                 $quotationData,
                 $signedInUser,
@@ -57,7 +54,7 @@ class QuotationController extends Controller
                 $request->session()->getId(),
             );
 
-            // Step 5: return the quotation PDF file.
+            // Step 4: return the quotation PDF file.
             return $quotationService->downloadPdf($quotation);
         } catch (Throwable $exception) {
             Log::error('Failed to create quotation.', ['error' => $exception->getMessage()]);

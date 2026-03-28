@@ -25,17 +25,17 @@ class DataVisibilityService
     {
         try {
             if (! $user) {
-                return ['public', 'all'];
+                return ['public'];
             }
 
             if ($this->isFullAdmin($user) || $this->isDelegatedAdmin($user)) {
-                return ['public', 'b2c', 'b2b', 'internal', 'all'];
+                return ['public', 'b2c', 'b2b', 'internal'];
             }
 
             return match ($user->user_type) {
-                'b2b' => ['public', 'b2b', 'all'],
-                'internal' => ['public', 'internal', 'all'],
-                default => ['public', 'b2c', 'all'],
+                'b2b' => ['public', 'b2b'],
+                'internal' => ['public', 'internal'],
+                default => ['public', 'b2c'],
             };
         } catch (Throwable $exception) {
             Log::error('Failed to resolve product scopes.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
@@ -63,14 +63,14 @@ class DataVisibilityService
                     'subcategories.slug as subcategory_slug',
                     'product_image.file_path as image_path',
                 ])
-                ->where('is_active', true)
-                ->whereIn('visibility_scope', $this->productScopes($user))
+                ->where('is_active', true) // product must be active
+                ->whereIn('visibility_scope', $this->productScopes($user)) // it must match the user's visibility scopes
                 ->whereHas('variants', function (Builder $variantQuery) use ($genericPriceTypes, $user): void {
-                    $variantQuery->where('is_active', true)
+                    $variantQuery->where('is_active', true)  // variant must be active
                         ->whereHas('prices', function (Builder $priceQuery) use ($genericPriceTypes, $user): void {
-                            $priceQuery->where('is_active', true)
+                            $priceQuery->where('is_active', true) // price must be active
                                 ->where(function (Builder $visiblePriceQuery) use ($genericPriceTypes, $user): void {
-                                    // Business step: generic price rows are shared price ladders for all qualifying shoppers.
+                                    // Business step: generic price rows 
                                     if ($genericPriceTypes !== []) {
                                         $visiblePriceQuery->where(function (Builder $genericPriceQuery) use ($genericPriceTypes): void {
                                             $genericPriceQuery
@@ -79,7 +79,7 @@ class DataVisibilityService
                                         });
                                     }
 
-                                    // Business step: company prices are only visible when the logged-in B2B shopper belongs to that company.
+                                    // Business step: company prices are visible to the logged-in B2B
                                     if ($user && $user->isB2b() && $user->company_id) {
                                         $visiblePriceQuery->orWhere(function (Builder $companyPriceQuery) use ($user): void {
                                             $companyPriceQuery
@@ -96,36 +96,12 @@ class DataVisibilityService
         }
     }
 
-    // This resolves the first visible price for a product after user type and company rules are applied.
-    public function resolvePrice(int $productId, ?User $user, int $quantity = 1, ?string $couponCode = null): ?array
-    {
-        try {
-            // Business step: delegate the final pricing decision to the shared pricing service so every flow uses one rule engine.
-            return $this->priceService->resolveProductPrice($productId, $user, $quantity, $couponCode);
-        } catch (Throwable $exception) {
-            Log::error('Failed to resolve product price.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This resolves the first visible price for one exact product variant.
-    public function resolveVariantPrice(int $productVariantId, ?User $user, int $quantity = 1, ?string $couponCode = null): ?array
-    {
-        try {
-            // Business step: delegate the final variant price to the shared pricing service so cart, PI, and order flows stay aligned.
-            return $this->priceService->resolveVariantPrice($productVariantId, $user, $quantity, $couponCode);
-        } catch (Throwable $exception) {
-            Log::error('Failed to resolve variant price.', ['product_variant_id' => $productVariantId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
     // This checks whether the user can generate PI for other customers.
     public function canGeneratePiForOther(?User $user): bool
     {
         try {
             if (! $user) {
-                return true;
+                return false;
             }
 
             if ($this->isFullAdmin($user)) {
@@ -241,18 +217,6 @@ class DataVisibilityService
             return $query->where('pi.owner_user_id', $user->id);
         } catch (Throwable $exception) {
             Log::error('Failed to build visible PI query.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This returns price priority from most-specific to least-specific for the current user.
-    protected function pricePriority(?User $user): array
-    {
-        try {
-            // Business step: reuse the shared pricing service so visibility and final pricing stay on the same ladder definition.
-            return $this->priceService->visiblePriceTypes($user);
-        } catch (Throwable $exception) {
-            Log::error('Failed to resolve price priority.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }

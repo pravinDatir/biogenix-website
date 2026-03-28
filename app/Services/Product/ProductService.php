@@ -22,17 +22,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class ProductService
 {
-    public function __construct(
-        protected DataVisibilityService $dataVisibilityService,
-        protected PriceService $priceService,
-        protected FileHandlingService $fileHandlingService,
-    ) {
+    public function __construct(  protected DataVisibilityService $dataVisibilityService,  protected PriceService $priceService,
+        protected FileHandlingService $fileHandlingService ) {
     }
 
      // This returns the catalog page data expected by the public catalog view.
@@ -42,7 +39,7 @@ class ProductService
             // Step 0: prepare the raw filter values and prebuilt lookup tables needed by the catalog flow.
             $catalogFilters = $this->prepareProductListFilters($filters); 
 
-            // Step 1: load all visible products with price data. The further filters and sorting will be applied in-memory so the full dataset is needed and the price data is required for multiple filter options and sorting features.
+            // Step 1: load all visible products with price data.
                $visibleProducts = $this->dataVisibilityService->visibleProductQuery($user)
                 ->orderBy('products.name')
                 ->get()
@@ -50,12 +47,12 @@ class ProductService
                 ->values(); 
 
             // Step 2: scope sidebar option counts to the current search term.
-            $searchScopedProducts = $this->getProductsToBeDisplayedBySearch($visibleProducts, $catalogFilters['search']); // Keep sidebar counts aligned with the active search term.
+            $searchScopedProducts = $this->getProductsToBeDisplayedBySearch($visibleProducts, $catalogFilters['search']); 
            
            // Build the catalog sidebar data from the search-scoped products.
             $catalogOptions = $this->getAvailableProductFilters($searchScopedProducts); 
 
-            // Step 3: apply all selected filters in a single pass so the flow is simpler and cheaper.
+            // Step 3: apply all selected filters in a single pass.
             $filteredProducts = $searchScopedProducts
                 ->filter(fn ($product): bool => $this->getProductsAfterApplyingFilters($product, $catalogFilters))
                 ->values(); // Check category, subcategory, brand, and max-price filters together for each product.
@@ -86,7 +83,7 @@ class ProductService
     // This attaches the resolved storefront price fields used by the catalog and detail pages.
     protected function attachResolvedPriceData(object $product, ?User $user): object
     {
-        $price = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
+        $price = $this->priceService->resolveProductPrice((int) $product->id, $user);
 
         // Step 1: keep the original saved base amount so the storefront can show the real MRP when needed.
         $product->visible_base_price = $price['base_amount'] ?? null;
@@ -286,33 +283,37 @@ class ProductService
     // This checks whether one product satisfies all selected sidebar filters.
     protected function getProductsAfterApplyingFilters(object $product, array $catalogFilters): bool
     {
+        // Reject the product as soon as its category does not match the selected categories.
         if (! $this->doesProductMatchFilter([
             $product->category_name ?? null,
             $product->category_slug ?? null,
             $product->category_id ?? null,
         ], $catalogFilters['categoryLookup'])) {
-            return false; // Reject the product as soon as its category does not match the selected categories.
+            return false; 
         }
 
+         // Reject the product as soon as its subcategory_name does not match the selected subcategory_name.
         if (! $this->doesProductMatchFilter([
             $product->subcategory_name ?? null,
             $product->subcategory_slug ?? null,
             $product->subcategory_id ?? null,
         ], $catalogFilters['applicationLookup'])) {
-            return false; // Reject the product as soon as its application does not match the selected applications.
+            return false;
         }
 
+        // Reject the product as soon as its brand does not match the selected brands.
         if (! $this->doesProductMatchFilter([
             $product->brand ?? null,
         ], $catalogFilters['brandLookup'])) {
-            return false; // Reject the product as soon as its brand does not match the selected brands.
+            return false; 
         }
 
+        // Read the visible price once before comparing it to the selected max price.
         if ($catalogFilters['maxPrice'] !== null) {
-            $price = $product->visible_price; // Read the visible price once before comparing it to the selected max price.
-
+            $price = $product->visible_price; 
+           // Reject products without a visible price or above the selected price ceiling.
             if ($price === null || (float) $price > $catalogFilters['maxPrice']) {
-                return false; // Reject products without a visible price or above the selected price ceiling.
+                return false; 
             }
         }
 
@@ -456,7 +457,7 @@ class ProductService
     }
 
     // This downloads one active technical resource after confirming the product is visible to the current viewer.
-    public function downloadTechnicalResourceForViewer(?User $user, int $productId, int $resourceId): StreamedResponse
+    public function downloadTechnicalResourceForViewer(?User $user, int $productId, int $resourceId): BinaryFileResponse
     {
         try {
             // Step 1: load the visible product using the same detail-page rules so hidden products cannot expose files.
@@ -585,7 +586,7 @@ class ProductService
     public function frequentlyBoughtTogetherProducts(int $productId, ?User $user): Collection
     {
         try {
-            // Step 1: read the configured top product limit and keep a safe minimum of one.
+            // Step 1: read the configured top product limit from the configuration.
             $limit = max(1, (int) config('common.frequently_bought_together_limit', 4));
 
             // Step 2: load the current product because category and subcategory are used for fallback.
@@ -694,7 +695,7 @@ class ProductService
                         return null;
                     }
 
-                    $price = $this->dataVisibilityService->resolvePrice($relatedProductId, $user);
+                    $price = $this->priceService->resolveProductPrice($relatedProductId, $user);
 
                     if (! $price) {
                         return null;

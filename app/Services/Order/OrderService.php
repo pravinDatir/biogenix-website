@@ -220,11 +220,11 @@ class OrderService
 
                 // Step 4: resolve the latest live price for the saved product or variant.
                 if ($productVariantId) {
-                    $resolvedPrice = $this->dataVisibilityService->resolveVariantPrice($productVariantId, $user, $quantity);
+                    $resolvedPrice = $this->priceService->resolveVariantPrice($productVariantId, $user, $quantity);
                 }
 
                 if (! $productVariantId) {
-                    $resolvedPrice = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity);
+                    $resolvedPrice = $this->priceService->resolveProductPrice($productId, $user, $quantity);
                 }
 
                 if (! $resolvedPrice) {
@@ -456,7 +456,7 @@ class OrderService
 
                 // Step 3: resolve the live price from variant when variant id is available.
                 if ($productVariantId) {
-                    $resolvedPrice = $this->dataVisibilityService->resolveVariantPrice($productVariantId, $user, $quantity, $couponCode);
+                    $resolvedPrice = $this->priceService->resolveVariantPrice($productVariantId, $user, $quantity, $couponCode);
                     $productVariant = ProductVariant::query()
                         ->with('product:id,name')
                         ->find($productVariantId);
@@ -465,7 +465,7 @@ class OrderService
 
                 // Step 4: resolve the live price from product when variant id is not available.
                 if (! $productVariantId) {
-                    $resolvedPrice = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity, $couponCode);
+                    $resolvedPrice = $this->priceService->resolveProductPrice($productId, $user, $quantity, $couponCode);
 
                     if (($resolvedPrice['product_variant_id'] ?? null) !== null) {
                         $productVariantId = (int) $resolvedPrice['product_variant_id'];
@@ -1029,7 +1029,7 @@ class OrderService
                 ->get()
                 ->map(function ($product) use ($user) {
                     // Step 2: resolve the current visible price for each product.
-                    $price = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
+                    $price = $this->priceService->resolveProductPrice((int) $product->id, $user);
 
                     $product->visible_price = $price['amount'] ?? null;
                     $product->visible_currency = $price['currency'] ?? 'INR';
@@ -1105,7 +1105,7 @@ class OrderService
                     ]);
                 }
 
-                $price = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity);
+                $price = $this->priceService->resolveProductPrice($productId, $user, $quantity);
 
                 if (! $price) {
                     throw ValidationException::withMessages([

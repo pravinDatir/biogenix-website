@@ -65,7 +65,7 @@ class CartService
                 : $requestedQuantity;
 
             // Step 6: resolve the final live price using the full requested cart quantity so bulk rules stay accurate.
-            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice($productVariantId, $user, $finalQuantity);
+            $resolvedVariantPrice = $this->priceService->resolveVariantPrice($productVariantId, $user, $finalQuantity);
 
             if (! $resolvedVariantPrice) {
                 throw ValidationException::withMessages([
@@ -118,7 +118,7 @@ class CartService
 
             // Step 2: resolve the live current price for the selected variant.
             $updatedQuantity = (int) $validatedCartItem['quantity'];
-            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, $updatedQuantity);
+            $resolvedVariantPrice = $this->priceService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, $updatedQuantity);
 
             if (! $resolvedVariantPrice) {
                 throw ValidationException::withMessages([
@@ -618,7 +618,7 @@ class CartService
             }
 
             // Step 2: fall back to the first visible priced variant for the selected product.
-            $resolvedProductPrice = $this->dataVisibilityService->resolvePrice((int) $validatedCartItem['product_id'], $user);
+            $resolvedProductPrice = $this->priceService->resolveProductPrice((int) $validatedCartItem['product_id'], $user);
 
             if (! $resolvedProductPrice) {
                 throw ValidationException::withMessages([
@@ -725,7 +725,7 @@ class CartService
             $imagePath = $product?->primaryImage?->file_path;
 
             // Step 2: resolve the live current price for the selected variant.
-            $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, (int) $cartItem->quantity);
+            $resolvedVariantPrice = $this->priceService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, (int) $cartItem->quantity);
 
             if (! $resolvedVariantPrice) {
                 throw ValidationException::withMessages([
@@ -822,7 +822,7 @@ class CartService
                     ]);
                 }
 
-                $resolvedVariantPrice = $this->dataVisibilityService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, (int) $cartItem->quantity, $couponCode);
+                $resolvedVariantPrice = $this->priceService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, (int) $cartItem->quantity, $couponCode);
 
                 if (! $resolvedVariantPrice) {
                     throw ValidationException::withMessages([

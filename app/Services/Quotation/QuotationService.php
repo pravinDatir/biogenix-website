@@ -7,6 +7,7 @@ use App\Models\Authorization\User;
 use App\Models\Product\Product;
 use App\Models\Quotation\Quotation;
 use App\Services\Authorization\DataVisibilityService;
+use App\Services\Pricing\PriceService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -16,6 +17,7 @@ class QuotationService
 {
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
+        protected PriceService $priceService,
     ) {
     }
 
@@ -32,34 +34,6 @@ class QuotationService
             'clientCompanies' => $clientCompanies,
             'prefilledProductId' => $prefilledProductId,
         ];
-    }
-
-    public function validateRecipientAccess(array $quotationData, ?User $user): void
-    {
-        // Step 1: stop restricted users from creating quotations for other customers.
-        if ($quotationData['purpose'] === 'other' && ! $this->dataVisibilityService->canGeneratePiForOther($user)) {
-            throw ValidationException::withMessages([
-                'purpose' => 'You are not allowed to generate a quotation for another customer.',
-            ]);
-        }
-
-        // Step 2: keep B2C users limited to self quotations only.
-        if ($user && $user->isB2c() && $quotationData['purpose'] !== 'self') {
-            throw ValidationException::withMessages([
-                'purpose' => 'B2C users can only generate quotation for self.',
-            ]);
-        }
-
-        // Step 3: confirm the selected target company is inside the allowed company scope.
-        if ($user && $user->isB2b() && $quotationData['purpose'] === 'other') {
-            $targetCompanyId = isset($quotationData['target_company_id']) ? (int) $quotationData['target_company_id'] : null;
-
-            if ($targetCompanyId && ! $this->dataVisibilityService->canAccessCompanyData($user, $targetCompanyId)) {
-                throw ValidationException::withMessages([
-                    'target_company_id' => 'You can only generate quotation for your own company or assigned clients.',
-                ]);
-            }
-        }
     }
 
     public function prepareItems(array $quotationData, ?User $user): array
@@ -87,7 +61,7 @@ class QuotationService
                 ]);
             }
 
-            $priceDetails = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity);
+            $priceDetails = $this->priceService->resolveProductPrice($productId, $user, $quantity);
 
             if (! $priceDetails) {
                 throw ValidationException::withMessages([
@@ -205,7 +179,7 @@ class QuotationService
 
         // Step 3: attach the resolved price details needed by the page.
         foreach ($products as $product) {
-            $priceDetails = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
+            $priceDetails = $this->priceService->resolveProductPrice((int) $product->id, $user);
 
             $product->visible_price = $priceDetails['amount'] ?? null;
             $product->visible_currency = $priceDetails['currency'] ?? 'INR';

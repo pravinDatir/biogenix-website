@@ -8,6 +8,7 @@ use App\Models\Product\Product;
 use App\Models\Product\UserActivityLog;
 use App\Models\Proforma\ProformaInvoice;
 use App\Services\Authorization\DataVisibilityService;
+use App\Services\Pricing\PriceService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,7 @@ class ProformaInvoiceService
 {
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
+        protected PriceService $priceService,
     ) {
     }
 
@@ -34,34 +36,6 @@ class ProformaInvoiceService
             'clientCompanies' => $clientCompanies,
             'prefilledProductId' => $prefilledProductId,
         ];
-    }
-
-    public function validateRecipientAccess(array $requestData, ?User $user): void
-    {
-        // Step 1: stop restricted users from creating PI requests for other customers.
-        if ($requestData['purpose'] === 'other' && ! $this->dataVisibilityService->canGeneratePiForOther($user)) {
-            throw ValidationException::withMessages([
-                'purpose' => 'You are not allowed to generate a PI for another customer.',
-            ]);
-        }
-
-        // Step 2: keep B2C users limited to self requests only.
-        if ($user && $user->isB2c() && $requestData['purpose'] !== 'self') {
-            throw ValidationException::withMessages([
-                'purpose' => 'B2C users can only generate PI for self.',
-            ]);
-        }
-
-        // Step 3: confirm the selected target company is inside the allowed company scope.
-        if ($user && $user->isB2b() && $requestData['purpose'] === 'other') {
-            $targetCompanyId = isset($requestData['target_company_id']) ? (int) $requestData['target_company_id'] : null;
-
-            if ($targetCompanyId && ! $this->dataVisibilityService->canAccessCompanyData($user, $targetCompanyId)) {
-                throw ValidationException::withMessages([
-                    'target_company_id' => 'You can only generate PI for your own company or assigned clients.',
-                ]);
-            }
-        }
     }
 
     public function prepareItems(array $requestData, ?User $user): array
@@ -89,7 +63,7 @@ class ProformaInvoiceService
                 ]);
             }
 
-            $priceDetails = $this->dataVisibilityService->resolvePrice($productId, $user, $quantity);
+            $priceDetails = $this->priceService->resolveProductPrice($productId, $user, $quantity);
 
             if (! $priceDetails) {
                 throw ValidationException::withMessages([
@@ -249,7 +223,7 @@ class ProformaInvoiceService
 
         // Step 3: attach the resolved price details needed by the page.
         foreach ($products as $product) {
-            $priceDetails = $this->dataVisibilityService->resolvePrice((int) $product->id, $user);
+            $priceDetails = $this->priceService->resolveProductPrice((int) $product->id, $user);
 
             $product->visible_price = $priceDetails['amount'] ?? null;
             $product->visible_currency = $priceDetails['currency'] ?? 'INR';
