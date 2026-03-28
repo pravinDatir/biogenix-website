@@ -16,15 +16,11 @@ class EnsurePermission
         $this->rolePermissionService = $rolePermissionService;
     }
 
-    // This checks if the authenticated user has the required permission to access a route.
+    // This checks if the current request can access the route through the permission matrix.
     public function handle(Request $request, Closure $next, string $permission): Response
     {
         // Step 1: load the signed-in user.
         $currentUser = $request->user();
-
-        if (! $currentUser) {
-            abort(401);
-        }
 
         // Step 2: stop when the user does not have the required permission.
         $hasPermission = $this->rolePermissionService->hasPermission($currentUser, $permission);

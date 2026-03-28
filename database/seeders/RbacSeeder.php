@@ -28,145 +28,198 @@ class RbacSeeder extends Seeder
         ];
 
         $permissions = [
-            ['name' => 'View public products', 'slug' => 'products.view.public', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View B2C products', 'slug' => 'products.view.b2c', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View B2B products', 'slug' => 'products.view.b2b', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View public prices', 'slug' => 'pricing.view.public', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View retail prices', 'slug' => 'pricing.view.retail', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View dealer prices', 'slug' => 'pricing.view.dealer', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View institutional prices', 'slug' => 'pricing.view.institutional', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View contract prices', 'slug' => 'pricing.view.contract', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Generate PI for self', 'slug' => 'pi.generate.self', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Generate PI for basic guest target', 'slug' => 'pi.generate.other.basic', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Generate PI for assigned client', 'slug' => 'pi.generate.other.client', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Place orders', 'slug' => 'orders.place', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Create support tickets', 'slug' => 'tickets.create', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View own tickets', 'slug' => 'tickets.view.own', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Comment on own tickets', 'slug' => 'tickets.comment.own', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Handle support tickets', 'slug' => 'tickets.handle', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Comment as ticket handler', 'slug' => 'tickets.comment.handle', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Update support ticket status', 'slug' => 'tickets.status.update', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View inventory', 'slug' => 'inventory.view', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'View global reports', 'slug' => 'reports.view.global', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Manage users', 'slug' => 'users.manage', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Manage permissions', 'slug' => 'permissions.manage', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Approve B2B users', 'slug' => 'users.approve_b2b', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Create internal users', 'slug' => 'users.create_internal', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Set user permission overrides', 'slug' => 'users.permissions.override', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Set delegated admin scopes', 'slug' => 'users.delegated.scope', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Impersonate users', 'slug' => 'users.impersonate', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'home', 'slug' => 'home', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'home.page', 'slug' => 'home.page', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'products.index', 'slug' => 'products.index', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'products.productDetails', 'slug' => 'products.productDetails', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'products.technical-resources.download', 'slug' => 'products.technical-resources.download', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'cart.data', 'slug' => 'cart.data', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'cart.items.store', 'slug' => 'cart.items.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'cart.items.update', 'slug' => 'cart.items.update', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'cart.items.destroy', 'slug' => 'cart.items.destroy', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'cart.checkout.submit', 'slug' => 'cart.checkout.submit', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'guest-cart.data', 'slug' => 'guest-cart.data', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'guest-cart.items.store', 'slug' => 'guest-cart.items.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'guest-cart.items.update', 'slug' => 'guest-cart.items.update', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'guest-cart.items.destroy', 'slug' => 'guest-cart.items.destroy', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'checkout.page', 'slug' => 'checkout.page', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'checkout.submit', 'slug' => 'checkout.submit', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'checkout.coupon.validate', 'slug' => 'checkout.coupon.validate', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'checkout.reorder.pricing', 'slug' => 'checkout.reorder.pricing', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'checkout.buy-now', 'slug' => 'checkout.buy-now', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'guest.checkout.buy-now', 'slug' => 'guest.checkout.buy-now', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.index', 'slug' => 'orders.index', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.store', 'slug' => 'orders.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.reorder.checkout', 'slug' => 'orders.reorder.checkout', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.reorder.checkout.submit', 'slug' => 'orders.reorder.checkout.submit', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.reorder', 'slug' => 'orders.reorder', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.show', 'slug' => 'orders.show', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.update', 'slug' => 'orders.update', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'orders.destroy', 'slug' => 'orders.destroy', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'pi-quotation.generate', 'slug' => 'pi-quotation.generate', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'pi-quotation.store', 'slug' => 'pi-quotation.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'quotation.create', 'slug' => 'quotation.create', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'quotation.store', 'slug' => 'quotation.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'diagnostic-quiz', 'slug' => 'diagnostic-quiz', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'diagnostic-quiz.store', 'slug' => 'diagnostic-quiz.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'book-meeting', 'slug' => 'book-meeting', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'book-meeting.store', 'slug' => 'book-meeting.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'about', 'slug' => 'about', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'contact', 'slug' => 'contact', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'contact.store', 'slug' => 'contact.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'privacy', 'slug' => 'privacy', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'terms', 'slug' => 'terms', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'refund-policy', 'slug' => 'refund-policy', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'faq', 'slug' => 'faq', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'maintenance', 'slug' => 'maintenance', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'customer.profile.preview', 'slug' => 'customer.profile.preview', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'customer.profile.update', 'slug' => 'customer.profile.update', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'customer.profile.password.update', 'slug' => 'customer.profile.password.update', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'customer.addresses.preview', 'slug' => 'customer.addresses.preview', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'customer.orders.preview', 'slug' => 'customer.orders.preview', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'customer.addresses.store', 'slug' => 'customer.addresses.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'customer.addresses.update', 'slug' => 'customer.addresses.update', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'support-tickets.index', 'slug' => 'support-tickets.index', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'support-tickets.store', 'slug' => 'support-tickets.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'support-tickets.show', 'slug' => 'support-tickets.show', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'order.confirmation', 'slug' => 'order.confirmation', 'created_at' => $now, 'updated_at' => $now],
         ];
 
+        $guestRolePermissions = [
+            'home',
+            'home.page',
+            'products.index',
+            'products.productDetails',
+            'products.technical-resources.download',
+            'cart.data',
+            'cart.items.store',
+            'cart.items.update',
+            'cart.items.destroy',
+            'guest-cart.data',
+            'guest-cart.items.store',
+            'guest-cart.items.update',
+            'guest-cart.items.destroy',
+            'checkout.page',
+            'checkout.buy-now',
+            'guest.checkout.buy-now',
+            'quotation.create',
+            'quotation.store',
+            'diagnostic-quiz',
+            'diagnostic-quiz.store',
+            'about',
+            'contact',
+            'contact.store',
+            'privacy',
+            'terms',
+            'refund-policy',
+            'faq',
+            'maintenance',
+        ];
+
+        $signedInRolePermissions = [
+            'home',
+            'home.page',
+            'products.index',
+            'products.productDetails',
+            'products.technical-resources.download',
+            'cart.data',
+            'cart.items.store',
+            'cart.items.update',
+            'cart.items.destroy',
+            'cart.checkout.submit',
+            'guest-cart.data',
+            'guest-cart.items.store',
+            'guest-cart.items.update',
+            'guest-cart.items.destroy',
+            'checkout.page',
+            'checkout.submit',
+            'checkout.coupon.validate',
+            'checkout.reorder.pricing',
+            'checkout.buy-now',
+            'guest.checkout.buy-now',
+            'orders.index',
+            'orders.store',
+            'orders.reorder.checkout',
+            'orders.reorder.checkout.submit',
+            'orders.reorder',
+            'orders.show',
+            'orders.update',
+            'orders.destroy',
+            'pi-quotation.generate',
+            'pi-quotation.store',
+            'quotation.create',
+            'quotation.store',
+            'diagnostic-quiz',
+            'diagnostic-quiz.store',
+            'book-meeting',
+            'book-meeting.store',
+            'about',
+            'contact',
+            'contact.store',
+            'privacy',
+            'terms',
+            'refund-policy',
+            'faq',
+            'maintenance',
+            'customer.profile.preview',
+            'customer.profile.update',
+            'customer.profile.password.update',
+            'customer.addresses.preview',
+            'customer.orders.preview',
+            'customer.addresses.store',
+            'customer.addresses.update',
+            'support-tickets.index',
+            'support-tickets.store',
+            'support-tickets.show',
+            'order.confirmation',
+        ];
+
+        $rolePermissions = [
+            'guest' => $guestRolePermissions,
+            'b2c_customer' => $signedInRolePermissions,
+            'b2b_user' => $signedInRolePermissions,
+            'internal_user' => $signedInRolePermissions,
+            'internal_user_sales' => $signedInRolePermissions,
+            'internal_user_finance' => $signedInRolePermissions,
+            'internal_user_support' => $signedInRolePermissions,
+            'internal_user_logistics' => $signedInRolePermissions,
+            'admin' => $signedInRolePermissions,
+            'delegated_admin' => $signedInRolePermissions,
+        ];
+
+        $permissionSlugs = [];
+
+        foreach ($permissions as $permission) {
+            $permissionSlugs[] = $permission['slug'];
+        }
+
         DB::table('roles')->upsert($roles, ['slug'], ['name', 'updated_at']);
+
+        $permissionIdsToRemove = DB::table('permissions')
+            ->whereNotIn('slug', $permissionSlugs)
+            ->pluck('id');
+
+        if ($permissionIdsToRemove->isNotEmpty()) {
+            DB::table('permission_role')->whereIn('permission_id', $permissionIdsToRemove)->delete();
+            DB::table('user_permissions')->whereIn('permission_id', $permissionIdsToRemove)->delete();
+            DB::table('permissions')->whereIn('id', $permissionIdsToRemove)->delete();
+        }
+
         DB::table('permissions')->upsert($permissions, ['slug'], ['name', 'updated_at']);
 
         $roleIds = DB::table('roles')->pluck('id', 'slug');
         $permissionIds = DB::table('permissions')->pluck('id', 'slug');
 
-        $matrix = [
-            'guest' => [
-                'products.view.public',
-                'pricing.view.public',
-                'pi.generate.self',
-                'pi.generate.other.basic',
-            ],
-            'b2c_customer' => [
-                'products.view.public',
-                'products.view.b2c',
-                'pricing.view.public',
-                'pricing.view.retail',
-                'pi.generate.self',
-                'orders.place',
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-            ],
-            'b2b_user' => [
-                'products.view.public',
-                'products.view.b2b',
-                'pricing.view.public',
-                'pricing.view.dealer',
-                'pricing.view.institutional',
-                'pricing.view.contract',
-                'pi.generate.self',
-                'pi.generate.other.client',
-                'orders.place',
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-            ],
-            'internal_user' => [
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-            ],
-            'internal_user_sales' => [
-                'products.view.order',
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-                'inventory.view',
-            ],
-            'internal_user_finance' => [
-                'products.view.revenue',
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-                'inventory.view',
-            ],
-            'internal_user_support' => [
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-                'tickets.handle',
-                'tickets.comment.handle',
-                'tickets.status.update',
-                'inventory.view',
-            ],
-            'internal_user_logistics' => [
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-                'inventory.view',
-            ],
-            'delegated_admin' => [
-                'products.view.public',
-                'products.view.b2c',
-                'products.view.b2b',
-                'pricing.view.public',
-                'pricing.view.retail',
-                'pricing.view.dealer',
-                'pricing.view.institutional',
-                'pricing.view.contract',
-                'pi.generate.self',
-                'pi.generate.other.client',
-                'orders.place',
-                'tickets.create',
-                'tickets.view.own',
-                'tickets.comment.own',
-                'tickets.handle',
-                'tickets.comment.handle',
-                'tickets.status.update',
-                'inventory.view',
-                'reports.view.global',
-                'users.manage',
-                'users.approve_b2b',
-                'users.create_internal',
-                'users.permissions.override',
-                'users.delegated.scope',
-                'users.impersonate',
-            ],
-            'admin' => array_keys($permissionIds->toArray()),
-        ];
-
-        foreach ($matrix as $roleSlug => $permissionSlugs) {
+        foreach ($rolePermissions as $roleSlug => $allowedPermissionSlugs) {
             $roleId = $roleIds[$roleSlug] ?? null;
 
             if (! $roleId) {
                 continue;
             }
 
-            foreach ($permissionSlugs as $permissionSlug) {
+            DB::table('permission_role')->where('role_id', $roleId)->delete();
+
+            foreach ($allowedPermissionSlugs as $permissionSlug) {
                 $permissionId = $permissionIds[$permissionSlug] ?? null;
 
                 if (! $permissionId) {

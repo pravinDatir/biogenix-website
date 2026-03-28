@@ -49,10 +49,18 @@ class RolePermissionService
     public function hasPermission(?User $user, string $permissionSlug): bool
     {
         try {
+            // Step 1: load the active role slugs for this request.
+            $roleSlugs = $this->roleSlugsForUser($user);
+
+            // Step 2: allow guest permissions through the guest role matrix.
             if (! $user) {
-                return false;
+                return Permission::query()
+                    ->where('slug', $permissionSlug)
+                    ->whereHas('roles', fn ($query) => $query->whereIn('roles.slug', $roleSlugs))
+                    ->exists();
             }
 
+            // Step 3: stop early when the user has a direct deny override.
             $userOverride = $user->permissionOverrides()
                 ->whereHas('permission', fn ($query) => $query->where('slug', $permissionSlug))
                 ->first();
@@ -64,8 +72,6 @@ class RolePermissionService
             if ($userOverride?->grant_type === 'allow') {
                 return true;
             }
-
-            $roleSlugs = $this->roleSlugsForUser($user);
 
             if (in_array('admin', $roleSlugs, true)) {
                 return true;
@@ -85,12 +91,10 @@ class RolePermissionService
     public function permissionSlugsForUser(?User $user): array
     {
         try {
-            if (! $user) {
-                return [];
-            }
-
+            // Step 1: load the active role slugs for this request.
             $roleSlugs = $this->roleSlugsForUser($user);
 
+            // Step 2: start with permissions coming from the current role matrix.
             $permissions = Permission::query()
                 ->whereHas('roles', fn ($query) => $query->whereIn('roles.slug', $roleSlugs))
                 ->pluck('slug')
@@ -98,6 +102,15 @@ class RolePermissionService
                 ->map(fn () => true)
                 ->all();
 
+            // Step 3: guests do not have user-level overrides.
+            if (! $user) {
+                $result = array_keys($permissions);
+                sort($result);
+
+                return $result;
+            }
+
+            // Step 4: admins always receive the full permission list.
             if (in_array('admin', $roleSlugs, true)) {
                 $permissions = Permission::query()
                     ->pluck('slug')
@@ -106,6 +119,7 @@ class RolePermissionService
                     ->all();
             }
 
+            // Step 5: apply user-level allow and deny overrides after the role matrix.
             foreach ($user->permissionOverrides()->with('permission:id,slug')->get() as $override) {
                 $permissionSlug = $override->permission?->slug;
 
@@ -121,6 +135,7 @@ class RolePermissionService
                 $permissions[$permissionSlug] = true;
             }
 
+            // Step 6: return one clean sorted list for the caller.
             $result = array_keys($permissions);
             sort($result);
 
