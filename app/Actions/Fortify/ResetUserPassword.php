@@ -14,6 +14,7 @@ use Throwable;
 class ResetUserPassword implements ResetsUserPasswords
 {
     use PasswordValidationRules;
+    // this method is used for forgot password flow.
     public function reset(User $user, array $input): void
     {
         try {

@@ -80,7 +80,7 @@
                     @endforeach
                 </nav>
 
-                <a href="{{ route('cart.page') }}" class="relative hidden h-10 w-10 items-center justify-center rounded-full text-slate-700 no-underline lg:inline-flex">
+                <a href="{{ route('checkout.page') }}" class="relative hidden h-10 w-10 items-center justify-center rounded-full text-slate-700 no-underline lg:inline-flex">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="20" r="1"></circle>
                         <circle cx="18" cy="20" r="1"></circle>

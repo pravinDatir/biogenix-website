@@ -40,20 +40,10 @@ class BookMeetingService
                 'submitted_at' => now(),
             ]);
 
-            Log::info('Meeting request saved successfully.', [
-                'meeting_request_id' => $meetingRequest->id,
-                'email' => $meetingRequest->email,
-                'preferred_date' => $meetingRequest->preferred_date?->format('Y-m-d'),
-            ]);
-
+            Log::info('Meeting request saved successfully.', [   'meeting_request_id' => $meetingRequest->id, 'email' => $meetingRequest->email,  'preferred_date' => $meetingRequest->preferred_date?->format('Y-m-d'),  ]);
             return (int) $meetingRequest->id;
         } catch (Throwable $exception) {
-            Log::error('Failed to save meeting request.', [
-                'email' => $validated['email'] ?? null,
-                'preferred_date' => $validated['preferred_date'] ?? null,
-                'error' => $exception->getMessage(),
-            ]);
-
+            Log::error('Failed to save meeting request.', [  'email' => $validated['email'] ?? null, 'preferred_date' => $validated['preferred_date'] ?? null,  'error' => $exception->getMessage(), ]);
             throw $exception;
         }
     }

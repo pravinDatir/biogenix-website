@@ -8,15 +8,16 @@ use App\Models\Pricing\ProductBulkPrice;
 use App\Models\Product\ProductPrice;
 use App\Models\Product\ProductVariant;
 use App\Services\Authorization\RolePermissionService;
+use App\Services\Coupon\CouponService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class PriceService
 {
     public function __construct(
         protected RolePermissionService $rolePermissionService,
+        protected CouponService $couponService,
     ) {
     }
 
@@ -119,7 +120,7 @@ class PriceService
             $matchingBulkPrice = $this->findMatchingBulkPriceRow($variant, $user, $purchaseQuantity);
 
             // Business step: load the coupon only when the caller provided one.
-            $selectedCoupon = $this->findActiveCouponByCode($couponCode);
+            $selectedCoupon = $this->couponService->findActiveCouponByCode($couponCode);
 
             // Business step: calculate the final unit price and all pricing breakdown fields in one place.
             return $this->buildResolvedPricePayload(
@@ -131,31 +132,6 @@ class PriceService
             );
         } catch (Throwable $exception) {
             Log::error('Failed to resolve variant price.', ['product_variant_id' => $productVariantId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This validates a coupon code before checkout or quotation save continues.
-    public function validateCouponCode(?string $couponCode): ?Coupon
-    {
-        try {
-            $normalizedCouponCode = strtoupper(trim((string) $couponCode));
-
-            if ($normalizedCouponCode === '') {
-                return null;
-            }
-
-            $coupon = $this->findActiveCouponByCode($normalizedCouponCode);
-
-            if (! $coupon) {
-                throw ValidationException::withMessages([
-                    'coupon_code' => 'The selected coupon is invalid or expired.',
-                ]);
-            }
-
-            return $coupon;
-        } catch (Throwable $exception) {
-            Log::error('Failed to validate coupon code.', ['coupon_code' => $couponCode, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }
@@ -375,41 +351,29 @@ class PriceService
     ): array {
         // Business step: start from the saved price row amount before any runtime pricing rule changes it.
         $baseAmount = round((float) $selectedPriceRow->amount, 2);
-        $workingAmount = $baseAmount;
-        $pricingStage = $selectedPriceRow->price_type === 'company_price' ? 'company_price' : 'base_price';
 
         // Business step: company prices are already negotiated final commercial prices, so product discounts should not change them.
         $productDiscountDetails = $selectedPriceRow->price_type === 'company_price'
             ? $this->emptyDiscountDetails($baseAmount)
             : $this->calculateConfiguredDiscount($baseAmount, $selectedPriceRow->DiscountType, $selectedPriceRow->Discount);
 
-        $productDiscountAmount = 0.0;
-        $bulkDiscountAmount = 0.0;
-        $couponDiscountAmount = 0.0;
-        $appliedCouponCode = null;
+        // Business step: let the shared coupon service decide how coupon rules behave with bulk, product discount, and company price.
+        $couponPricingDetails = $this->couponService->resolveCouponPricingDetails(
+            $selectedCoupon,
+            (string) $selectedPriceRow->price_type,
+            $baseAmount,
+            $matchingBulkPrice,
+            $productDiscountDetails,
+        );
 
-        // Business step: when a valid coupon is present, it has higher priority than bulk and product discount unless stacking is explicitly allowed.
-        if ($selectedCoupon) {
-            $couponCanApplyToCompanyPrice = $selectedPriceRow->price_type !== 'company_price' || $selectedCoupon->allow_on_company_price;
-
-            if ($couponCanApplyToCompanyPrice) {
-                if ($selectedPriceRow->price_type !== 'company_price' && $matchingBulkPrice && $selectedCoupon->allow_with_bulk) {
-                    $workingAmount = round((float) $matchingBulkPrice->amount, 2);
-                    $bulkDiscountAmount = round(max(0, $baseAmount - $workingAmount), 2);
-                    $pricingStage = 'bulk_price';
-                } elseif ($selectedPriceRow->price_type !== 'company_price' && $productDiscountDetails['discount_amount'] > 0 && $selectedCoupon->allow_with_product_discount) {
-                    $workingAmount = $productDiscountDetails['final_amount'];
-                    $productDiscountAmount = $productDiscountDetails['discount_amount'];
-                    $pricingStage = 'product_discount';
-                }
-
-                $couponDiscountDetails = $this->calculateCouponDiscount($workingAmount, $selectedCoupon);
-                $couponDiscountAmount = $couponDiscountDetails['discount_amount'];
-                $workingAmount = $couponDiscountDetails['final_amount'];
-                $appliedCouponCode = (string) $selectedCoupon->code;
-                $pricingStage = 'coupon';
-            }
-        }
+        $workingAmount = round((float) ($couponPricingDetails['working_amount'] ?? $baseAmount), 2);
+        $productDiscountAmount = round((float) ($couponPricingDetails['product_discount_amount'] ?? 0), 2);
+        $bulkDiscountAmount = round((float) ($couponPricingDetails['bulk_discount_amount'] ?? 0), 2);
+        $couponDiscountAmount = round((float) ($couponPricingDetails['coupon_discount_amount'] ?? 0), 2);
+        $appliedCouponCode = $couponPricingDetails['applied_coupon_code'] ?? null;
+        $pricingStage = $couponPricingDetails['pricing_stage'] ?? ($selectedPriceRow->price_type === 'company_price' ? 'company_price' : 'base_price');
+        $couponStatus = $couponPricingDetails['coupon_status'] ?? 'not_provided';
+        $couponMessage = $couponPricingDetails['coupon_message'] ?? null;
 
         // Business step: when no coupon changed the price, bulk price replaces the base price for the matching quantity slab.
         if ($selectedPriceRow->price_type !== 'company_price' && $appliedCouponCode === null && $matchingBulkPrice) {
@@ -446,6 +410,8 @@ class PriceService
             'coupon_discount_amount' => round($couponDiscountAmount, 2),
             'applied_coupon_code' => $appliedCouponCode,
             'pricing_stage' => $pricingStage,
+            'coupon_status' => $couponStatus,
+            'coupon_message' => $couponMessage,
             'min_order_quantity' => $quantityRules['min_order_quantity'],
             'max_order_quantity' => $quantityRules['max_order_quantity'],
             'lot_size' => $quantityRules['lot_size'],
@@ -484,29 +450,6 @@ class PriceService
         ];
     }
 
-    // This calculates the coupon discount from the current working amount.
-    protected function calculateCouponDiscount(float $baseAmount, Coupon $coupon): array
-    {
-        $discountType = strtolower(trim((string) $coupon->discount_type));
-        $discountValue = round(max(0, (float) $coupon->discount_value), 2);
-
-        if ($discountType === 'percent') {
-            $discountValue = min($discountValue, 100);
-            $discountAmount = round(($baseAmount * $discountValue) / 100, 2);
-        } else {
-            $discountAmount = $discountValue;
-        }
-
-        $discountAmount = min($discountAmount, $baseAmount);
-
-        return [
-            'discount_type' => $discountType,
-            'discount_value' => $discountValue,
-            'discount_amount' => $discountAmount,
-            'final_amount' => round($baseAmount - $discountAmount, 2),
-        ];
-    }
-
     // This returns a no-discount structure when a lower-priority discount should not run.
     protected function emptyDiscountDetails(float $baseAmount): array
     {
@@ -516,29 +459,6 @@ class PriceService
             'discount_amount' => 0.0,
             'final_amount' => round($baseAmount, 2),
         ];
-    }
-
-    // This loads an active coupon only when the code exists and is currently valid.
-    protected function findActiveCouponByCode(?string $couponCode): ?Coupon
-    {
-        $normalizedCouponCode = strtoupper(trim((string) $couponCode));
-
-        if ($normalizedCouponCode === '') {
-            return null;
-        }
-
-        return Coupon::query()
-            ->where('code', $normalizedCouponCode)
-            ->where('is_active', true)
-            ->where(function ($builder): void {
-                $builder->whereNull('valid_from')
-                    ->orWhere('valid_from', '<=', now());
-            })
-            ->where(function ($builder): void {
-                $builder->whereNull('valid_to')
-                    ->orWhere('valid_to', '>=', now());
-            })
-            ->first();
     }
 
     // This builds one clean tier row used by the product detail pricing ladder.

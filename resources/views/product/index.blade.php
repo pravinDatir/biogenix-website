@@ -649,15 +649,9 @@
                                         <div data-catalog-action-group class="mt-auto flex w-full items-center gap-2">
                                             {{-- Buy Now --}}
                                              <div class="w-[70%]">
-                                                @guest
-                                                    <a href="{{ route('login') }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-orange-500 px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-orange-500/25 transition hover:bg-orange-600 hover-lift glow-orange cursor-pointer">
-                                                        <span>Buy Now</span>
-                                                    </a>
-                                                @else
-                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-orange-500 px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-orange-500/25 transition hover:bg-orange-600 hover-lift glow-orange cursor-pointer">
-                                                        <span>Buy Now</span>
-                                                    </button>
-                                                @endguest
+                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-orange-500 px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-orange-500/25 transition hover:bg-orange-600 hover-lift glow-orange cursor-pointer">
+                                                    <span>Buy Now</span>
+                                                </button>
                                             </div>
 
                                             {{-- Add to Cart --}}
@@ -696,18 +690,16 @@
     </div>
 </div>
 
-@auth
-    @foreach ($productCollection as $product)
-        {{-- Step 4: keep one dedicated MVC form per catalog product for the buy-now submit action. --}}
-        <form id="catalogBuyNowForm{{ $product->id }}" method="POST" action="{{ route('checkout.buy-now') }}" class="hidden">
-            @csrf
-            <input type="hidden" name="product_id" value="{{ $product->id }}">
-            <input type="hidden" name="product_variant_id" value="{{ $product->visible_variant_id ?? '' }}">
-            {{-- Step 5: submit the catalog buy-now action with the real backend minimum order quantity so the buyer can move to checkout without quantity validation failure. --}}
-            <input type="hidden" name="quantity" value="{{ max(1, (int) ($product->visible_min_order_quantity ?? 1)) }}" data-catalog-buy-now-quantity="{{ $product->id }}">
-        </form>
-    @endforeach
-@endauth
+@foreach ($productCollection as $product)
+    {{-- Step 4: keep one dedicated MVC form per catalog product for the buy-now submit action. --}}
+    <form id="catalogBuyNowForm{{ $product->id }}" method="POST" action="{{ auth()->check() ? route('checkout.buy-now') : route('guest.checkout.buy-now') }}" class="hidden">
+        @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <input type="hidden" name="product_variant_id" value="{{ $product->visible_variant_id ?? '' }}">
+        {{-- Step 5: submit the catalog buy-now action with the real backend minimum order quantity so the buyer can move to checkout without quantity validation failure. --}}
+        <input type="hidden" name="quantity" value="{{ max(1, (int) ($product->visible_min_order_quantity ?? 1)) }}" data-catalog-buy-now-quantity="{{ $product->id }}">
+    </form>
+@endforeach
 
 @push('scripts')
     <script>
@@ -964,8 +956,6 @@
 
             const toastHost = document.getElementById('uiToastHost');
             const loginUrl = @json(route('login'));
-            const isAuthenticated = @json(auth()->check());
-
             const showToast = function (options) {
                 if (!toastHost) {
                     return;
@@ -1108,27 +1098,6 @@
                 });
             });
 
-            const syncLocalCart = function (target, quantity) {
-                if (!window.CartStore) {
-                    return;
-                }
-
-                const productId = Number(target.dataset.productId || 0);
-                const variantIdRaw = String(target.dataset.variantId || '').trim();
-                const variantId = variantIdRaw ? Number(variantIdRaw) : null;
-                const productName = String(target.dataset.productName || 'Product');
-
-                window.CartStore.addItem({
-                    productId: productId,
-                    variantId: variantId || null,
-                    quantity: quantity,
-                    unitPrice: Number(target.dataset.unitPrice || 0),
-                    name: productName,
-                    model: target.dataset.model || '',
-                    image: target.dataset.image || '',
-                });
-            };
-
             document.querySelectorAll('[data-catalog-quantity-control]').forEach(function (quantityControl) {
                 const productId = String(quantityControl.dataset.productId || '');
                 const minQuantity = Math.max(1, Number(quantityControl.dataset.minQuantity || 1));
@@ -1211,19 +1180,6 @@
                     const productName = String(target.dataset.productName || 'Product');
 
                     event.preventDefault();
-
-                    if (!isAuthenticated) {
-                        syncLocalCart(target, quantity);
-                        showToast({
-                            title: 'Added to cart',
-                            message: productName + ' was added to your cart.',
-                            variant: 'info',
-                        });
-                        if (typeof window.openCartSidebar === 'function') {
-                            window.openCartSidebar();
-                        }
-                        return;
-                    }
 
                     if (target.dataset.loading === '1') {
                         return;

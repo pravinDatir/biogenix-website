@@ -347,33 +347,23 @@
                                 @endguest
 
                                 {{-- Step 2: let the buyer move straight into checkout while keeping the existing cart items together. --}}
-                                @guest
-                                     <a href="{{ $loginUrl }}" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-4 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition hover:-translate-y-px hover:bg-orange-600 hover-lift glow-orange">
+                                <form method="POST" action="{{ auth()->check() ? route('checkout.buy-now') : route('guest.checkout.buy-now') }}">
+                                    @csrf
+
+                                    {{-- Step 3: submit the selected product and current quantity so checkout includes this choice immediately. --}}
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="product_variant_id" value="{{ $cartVariantId }}">
+                                    <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="{{ $requestedQuantity }}">
+
+                                    {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
+                                    <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-secondary-600 px-4 text-sm font-bold uppercase tracking-wide text-primary-950 shadow-lg shadow-secondary-600/20 transition hover:-translate-y-px hover:bg-secondary-500 hover-lift">
                                         <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M5 12h14"></path>
                                             <path d="m12 5 7 7-7 7"></path>
                                         </svg>
                                         <span>Buy Now</span>
-                                    </a>
-                                @else
-                                    <form method="POST" action="{{ route('checkout.buy-now') }}">
-                                        @csrf
-
-                                        {{-- Step 3: submit the selected product and current quantity so checkout includes this choice immediately. --}}
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="product_variant_id" value="{{ $cartVariantId }}">
-                                        <input type="hidden" name="quantity" id="productDetailBuyNowQuantity" value="{{ $requestedQuantity }}">
-
-                                        {{-- Step 4: keep the immediate checkout action as one standard controller-backed submit. --}}
-                                        <button type="submit" class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-secondary-600 px-4 text-sm font-bold uppercase tracking-wide text-primary-950 shadow-lg shadow-secondary-600/20 transition hover:-translate-y-px hover:bg-secondary-500 hover-lift">
-                                            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M5 12h14"></path>
-                                                <path d="m12 5 7 7-7 7"></path>
-                                            </svg>
-                                            <span>Buy Now</span>
-                                        </button>
-                                    </form>
-                                @endguest
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
@@ -612,7 +602,6 @@
                 let quantity = Number(@json($requestedQuantity));
 
                 const loginUrl = @json(route('login'));
-                const isAuthenticated = @json(auth()->check());
                 let gallerySources = [];
                 let selectedGalleryIndex = 0;
                 let previewGalleryIndex = 0;
@@ -702,27 +691,6 @@
                             toast.remove();
                         }, 220);
                     }, Number(options && options.duration ? options.duration : 4200));
-                };
-
-                const syncLocalCart = function (target, selectedQuantity) {
-                    if (!window.CartStore) {
-                        return;
-                    }
-
-                    const productId = Number(target.dataset.productId || 0);
-                    const variantIdRaw = String(target.dataset.variantId || '').trim();
-                    const variantId = variantIdRaw ? Number(variantIdRaw) : null;
-                    const productName = String(target.dataset.productName || 'Product');
-
-                    window.CartStore.addItem({
-                        productId: productId,
-                        variantId: variantId || null,
-                        quantity: selectedQuantity,
-                        unitPrice: Number(target.dataset.unitPrice || 0) || (Number('{{ $currentPrice ?? 0 }}') || 0),
-                        name: productName,
-                        model: target.dataset.model || '{{ $modelLabel }}',
-                        image: lightboxImage ? lightboxImage.src || mainImage.src : (mainImage ? mainImage.src : ''),
-                    });
                 };
 
                 const formatInr = function (amount) {
@@ -993,19 +961,6 @@
                         const productName = String(target.dataset.productName || 'Product');
 
                         event.preventDefault();
-
-                        if (!isAuthenticated) {
-                            syncLocalCart(target, quantity);
-                            showToast({
-                                title: 'Added to cart',
-                                message: productName + ' was added to your cart.',
-                                variant: 'info',
-                            });
-                            if (typeof window.openCartSidebar === 'function') {
-                                window.openCartSidebar();
-                            }
-                            return;
-                        }
 
                         if (target.dataset.loading === '1') {
                             return;

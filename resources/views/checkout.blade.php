@@ -46,11 +46,11 @@
     <div class="{{ $pageWrapClass }}">
         <div>
             <div class="mb-4 flex justify-end">
-                <a href="{{ route('cart.page') }}" class="{{ $backLinkClass }}">
+                <a href="{{ route('products.index') }}" class="{{ $backLinkClass }}">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="m15 18-6-6 6-6"></path>
                     </svg>
-                    <span>Back to Cart</span>
+                    <span>Back to Products</span>
                 </a>
             </div>
 
@@ -457,7 +457,7 @@
                                 @error('coupon_code')
                                     {{ $message }}
                                 @else
-                                    Coupon validation happens during final order placement.
+                                    Click Apply to validate the coupon.
                                 @enderror
                             </p>
                         </div>
@@ -590,6 +590,8 @@
                 const subtotalEl       = document.getElementById('checkoutSubtotal');
                 const taxEl            = document.getElementById('checkoutTax');
                 const totalEl          = document.getElementById('checkoutTotal');
+                const couponDiscountRow = document.getElementById('couponDiscountRow');
+                const couponDiscountAmountEl = document.getElementById('couponDiscountAmount');
                 const emptyState       = document.getElementById('checkoutEmptyState');
                 const paymentCards     = Array.from(document.querySelectorAll('[data-payment-card]'));
                 const paymentInputs    = Array.from(document.querySelectorAll('input[name="payment_method"]'));
@@ -677,26 +679,94 @@
                 const couponApplyBtn    = document.getElementById('couponApplyBtn');
                 const couponMsg         = document.getElementById('couponMsg');
                 const couponCodeField   = document.getElementById('checkoutCouponCodeField');
+                const couponValidationUrl = @json(auth()->check() ? route('checkout.coupon.validate') : null);
+                const reOrderPricingUrl = @json(auth()->check() && $isReOrderCheckout ? route('checkout.reorder.pricing') : null);
+                const defaultCouponMessage = 'Click Apply to validate the coupon.';
+                let activeCouponPreview = null;
+                let liveCouponCode = '';
+                let latestCouponRequestNumber = 0;
+                let latestReOrderPricingRequestNumber = 0;
 
-                if (couponApplyBtn && couponInput) {
-                    couponApplyBtn.addEventListener('click', function () {
-                        const code = (couponInput.value || '').trim().toUpperCase();
-                        couponInput.value = code;
-                        if (couponCodeField) couponCodeField.value = code;
-                        if (!code) {
-                            couponMsg.textContent = 'Please enter a coupon code.';
-                            couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500';
-                            return;
-                        }
-                        couponMsg.textContent = 'Coupon saved. It will be validated during final order placement.';
+                const showCouponMessage = function (message, isSuccess) {
+                    if (!couponMsg) {
+                        return;
+                    }
+
+                    couponMsg.textContent = message;
+
+                    if (isSuccess) {
                         couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-semibold text-primary-600';
-                    });
-                }
+                    } else {
+                        couponMsg.className = 'mt-2 min-h-[1.1rem] text-xs font-medium text-slate-500';
+                    }
+                };
+
+                const hideCouponDiscountRow = function () {
+                    if (!couponDiscountRow) {
+                        return;
+                    }
+
+                    couponDiscountRow.classList.add('hidden');
+                    couponDiscountRow.classList.remove('flex');
+                };
+
+                const showCouponDiscountRow = function (couponDiscountAmount) {
+                    if (couponDiscountRow) {
+                        couponDiscountRow.classList.remove('hidden');
+                        couponDiscountRow.classList.add('flex');
+                    }
+
+                    if (couponDiscountAmountEl) {
+                        couponDiscountAmountEl.textContent = '– ' + formatInr(couponDiscountAmount);
+                    }
+                };
+
+                const currentCouponCode = function () {
+                    const couponCode = (couponInput ? couponInput.value : '').trim().toUpperCase();
+
+                    return couponCode;
+                };
+
+                const syncCouponCodeField = function () {
+                    const couponCode = currentCouponCode();
+
+                    if (couponInput) {
+                        couponInput.value = couponCode;
+                    }
+
+                    if (couponCodeField) {
+                        couponCodeField.value = couponCode;
+                    }
+                };
+
+                const clearCouponPreview = function () {
+                    activeCouponPreview = null;
+                    hideCouponDiscountRow();
+                };
+
+                const currentLiveCouponCode = function () {
+                    const couponCode = currentCouponCode();
+
+                    if (!couponCode) {
+                        return '';
+                    }
+
+                    if (!liveCouponCode) {
+                        return '';
+                    }
+
+                    if (liveCouponCode !== couponCode) {
+                        return '';
+                    }
+
+                    return couponCode;
+                };
 
                 /* ── formatInr ── */
                 const isReOrderCheckout = @json($isReOrderCheckout);
                 const initialReOrderItems = @json($reOrderCheckout['items'] ?? []);
                 let reOrderItems = [];
+                let optimisticCartItems = null;
 
                 const normalizeReOrderItem = function (item) {
                     const currentItem = item || {};
@@ -709,6 +779,12 @@
                     let taxAmount = 0;
                     let lineSubtotal = 0;
                     let lineTotal = 0;
+                    let discountAmount = 0;
+                    let currency = 'INR';
+                    let priceType = null;
+                    let minOrderQuantity = 1;
+                    let maxOrderQuantity = null;
+                    let lotSize = 1;
                     let name = 'Product';
                     let model = 'N/A';
                     let image = 'https://via.placeholder.com/96x96?text=Bio';
@@ -765,6 +841,40 @@
                         lineTotal = currentItem.line_total;
                     }
 
+                    if (currentItem.discountAmount !== undefined) {
+                        discountAmount = currentItem.discountAmount;
+                    } else if (currentItem.discount_amount !== undefined) {
+                        discountAmount = currentItem.discount_amount;
+                    }
+
+                    if (currentItem.currency !== undefined) {
+                        currency = currentItem.currency;
+                    }
+
+                    if (currentItem.priceType !== undefined) {
+                        priceType = currentItem.priceType;
+                    } else if (currentItem.price_type !== undefined) {
+                        priceType = currentItem.price_type;
+                    }
+
+                    if (currentItem.minOrderQuantity !== undefined) {
+                        minOrderQuantity = currentItem.minOrderQuantity;
+                    } else if (currentItem.min_order_quantity !== undefined) {
+                        minOrderQuantity = currentItem.min_order_quantity;
+                    }
+
+                    if (currentItem.maxOrderQuantity !== undefined) {
+                        maxOrderQuantity = currentItem.maxOrderQuantity;
+                    } else if (currentItem.max_order_quantity !== undefined) {
+                        maxOrderQuantity = currentItem.max_order_quantity;
+                    }
+
+                    if (currentItem.lotSize !== undefined) {
+                        lotSize = currentItem.lotSize;
+                    } else if (currentItem.lot_size !== undefined) {
+                        lotSize = currentItem.lot_size;
+                    }
+
                     if (currentItem.name) {
                         name = currentItem.name;
                     } else if (currentItem.product_name) {
@@ -793,6 +903,12 @@
                         taxAmount: Number(taxAmount || 0),
                         lineSubtotal: Number(lineSubtotal || 0),
                         lineTotal: Number(lineTotal || 0),
+                        discountAmount: Number(discountAmount || 0),
+                        currency: String(currency || 'INR'),
+                        priceType: priceType === null ? null : String(priceType),
+                        minOrderQuantity: Math.max(1, Number(minOrderQuantity || 1)),
+                        maxOrderQuantity: maxOrderQuantity === null || maxOrderQuantity === '' ? null : Number(maxOrderQuantity),
+                        lotSize: Math.max(1, Number(lotSize || 1)),
                         name: String(name || 'Product'),
                         model: String(model || 'N/A'),
                         image: String(image || 'https://via.placeholder.com/96x96?text=Bio'),
@@ -841,11 +957,307 @@
                         return reOrderItems;
                     }
 
+                    if (optimisticCartItems !== null) {
+                        return optimisticCartItems;
+                    }
+
                     return window.CartStore ? window.CartStore.getItems() : [];
+                };
+
+                const buildUpdatedCheckoutItems = function (checkoutItems, productId, variantId, quantity) {
+                    const normalizedProductId = Number(productId || 0);
+                    const normalizedVariantId = variantId === null || variantId === '' ? null : Number(variantId);
+                    const normalizedQuantity = Math.max(1, Number(quantity || 1));
+
+                    return checkoutItems.map(function (item) {
+                        const normalizedItem = normalizeReOrderItem(item);
+                        const currentProductId = Number(normalizedItem.productId || 0);
+                        const currentVariantId = normalizedItem.variantId === null ? null : Number(normalizedItem.variantId);
+
+                        if (currentProductId === normalizedProductId && currentVariantId === normalizedVariantId) {
+                            normalizedItem.quantity = normalizedQuantity;
+                        }
+
+                        return recalculateReOrderItem(normalizedItem);
+                    });
                 };
 
                 window.syncCheckoutReOrderItems = function () {
                     syncReOrderItemsField();
+                };
+
+                const readCouponValidationMessage = function (responseData) {
+                    let couponMessage = 'Unable to validate coupon right now.';
+
+                    if (responseData && responseData.message) {
+                        couponMessage = responseData.message;
+                    }
+
+                    if (
+                        responseData
+                        && responseData.errors
+                        && responseData.errors.coupon_code
+                        && responseData.errors.coupon_code.length
+                    ) {
+                        couponMessage = responseData.errors.coupon_code[0];
+                    }
+
+                    return couponMessage;
+                };
+
+                const readReOrderPricingMessage = function (responseData) {
+                    let pricingMessage = 'Unable to refresh checkout pricing right now.';
+
+                    if (responseData && responseData.message) {
+                        pricingMessage = responseData.message;
+                    }
+
+                    if (responseData && responseData.errors) {
+                        for (const errorKey in responseData.errors) {
+                            const errorMessages = responseData.errors[errorKey];
+
+                            if (Array.isArray(errorMessages) && errorMessages.length) {
+                                pricingMessage = errorMessages[0];
+                                break;
+                            }
+                        }
+                    }
+
+                    return pricingMessage;
+                };
+
+                const applyReOrderPreviewItems = function (previewItems) {
+                    reOrderItems = previewItems.map(function (item) {
+                        const normalizedItem = normalizeReOrderItem(item);
+
+                        return recalculateReOrderItem(normalizedItem);
+                    });
+
+                    syncReOrderItemsField();
+                };
+
+                const refreshReOrderPricing = async function (updatedReOrderItems) {
+                    // Step 1: stop early when reorder live pricing is not available.
+                    if (!reOrderPricingUrl) {
+                        applyReOrderPreviewItems(updatedReOrderItems);
+
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        return;
+                    }
+
+                    // Step 2: keep one request number so old responses do not replace a newer price result.
+                    latestReOrderPricingRequestNumber += 1;
+                    const reOrderPricingRequestNumber = latestReOrderPricingRequestNumber;
+
+                    // Step 3: prepare the reorder pricing request body from the latest items.
+                    const requestBody = {
+                        reorder_items: JSON.stringify(updatedReOrderItems),
+                        coupon_code: currentLiveCouponCode(),
+                    };
+
+                    try {
+                        // Step 4: request the latest live pricing from the backend.
+                        const response = await fetch(reOrderPricingUrl, {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                            },
+                            body: JSON.stringify(requestBody),
+                        });
+
+                        // Step 5: read the JSON result once for both success and error paths.
+                        const responseData = await response.json().catch(function () {
+                            return null;
+                        });
+
+                        // Step 6: stop when a newer reorder pricing request has already started.
+                        if (reOrderPricingRequestNumber !== latestReOrderPricingRequestNumber) {
+                            return;
+                        }
+
+                        // Step 7: stop and keep the old values when the backend rejects the change.
+                        if (!response.ok || !responseData || responseData.status !== 'success') {
+                            showCouponMessage(readReOrderPricingMessage(responseData), false);
+                            return;
+                        }
+
+                        // Step 8: apply the refreshed item prices returned by the backend.
+                        const reOrderPreview = responseData.reorder_preview || {};
+                        const previewItems = Array.isArray(reOrderPreview.items) ? reOrderPreview.items : updatedReOrderItems;
+                        applyReOrderPreviewItems(previewItems);
+
+                        // Step 9: keep the live coupon summary aligned with the refreshed item prices.
+                        const couponPreview = reOrderPreview.coupon_preview || null;
+
+                        if (couponPreview && couponPreview.is_coupon_applied) {
+                            activeCouponPreview = couponPreview;
+                            showCouponMessage(couponPreview.coupon_message || 'Coupon applied successfully.', true);
+                        } else {
+                            activeCouponPreview = null;
+
+                            if (couponPreview && couponPreview.coupon_message) {
+                                showCouponMessage(couponPreview.coupon_message, false);
+                            }
+                        }
+
+                        // Step 10: refresh the checkout summary using the latest live values.
+                        if (typeof render === 'function') {
+                            render();
+                        }
+                    } catch (error) {
+                        // Step 11: stop when a newer reorder pricing request has already started.
+                        if (reOrderPricingRequestNumber !== latestReOrderPricingRequestNumber) {
+                            return;
+                        }
+
+                        // Step 12: keep the page stable when live repricing fails.
+                        showCouponMessage('Unable to refresh checkout pricing right now.', false);
+                    }
+                };
+
+                const validateCouponForCheckout = async function (showCheckingMessage) {
+                    // Step 1: keep the visible and hidden coupon values aligned.
+                    syncCouponCodeField();
+
+                    // Step 2: stop early when the coupon field is empty.
+                    const couponCode = currentCouponCode();
+
+                    if (!couponCode) {
+                        clearCouponPreview();
+                        showCouponMessage('Please enter a coupon code.', false);
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        return;
+                    }
+
+                    // Step 3: stop early when there are no checkout items yet.
+                    if (!getCheckoutItems().length) {
+                        clearCouponPreview();
+                        showCouponMessage('Add at least one item before applying a coupon.', false);
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        return;
+                    }
+
+                    // Step 4: ask the user to login first when the live coupon endpoint is not available.
+                    if (!couponValidationUrl) {
+                        clearCouponPreview();
+                        showCouponMessage('Please login before applying a coupon.', false);
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        return;
+                    }
+
+                    // Step 5: show a short checking message before the request starts.
+                    if (showCheckingMessage) {
+                        showCouponMessage('Checking coupon...', false);
+                    }
+
+                    // Step 6: prepare one request id so older responses do not replace a newer coupon result.
+                    latestCouponRequestNumber += 1;
+                    const couponRequestNumber = latestCouponRequestNumber;
+
+                    // Step 7: build the request payload from the current checkout state.
+                    const requestBody = {
+                        coupon_code: couponCode,
+                        is_reorder_checkout: isReOrderCheckout,
+                        reorder_items: isReOrderCheckout ? JSON.stringify(reOrderItems) : '',
+                    };
+
+                    try {
+                        // Step 8: call the live coupon validation endpoint.
+                        const response = await fetch(couponValidationUrl, {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                            },
+                            body: JSON.stringify(requestBody),
+                        });
+
+                        // Step 9: read the JSON payload once for both success and error paths.
+                        const responseData = await response.json().catch(function () {
+                            return null;
+                        });
+
+                        // Step 10: stop when a newer coupon request has already started.
+                        if (couponRequestNumber !== latestCouponRequestNumber) {
+                            return;
+                        }
+
+                        // Step 11: clear the coupon preview when the backend rejects the coupon.
+                        if (!response.ok || !responseData || responseData.status !== 'success') {
+                            clearCouponPreview();
+                            showCouponMessage(readCouponValidationMessage(responseData), false);
+
+                            if (typeof render === 'function') {
+                                render();
+                            }
+
+                            return;
+                        }
+
+                        // Step 12: keep the latest coupon preview ready for the summary section.
+                        activeCouponPreview = responseData.coupon_preview || null;
+                        liveCouponCode = couponCode;
+
+                        // Step 13: refresh the summary totals and message from the live preview.
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        showCouponMessage(
+                            activeCouponPreview && activeCouponPreview.coupon_message
+                                ? activeCouponPreview.coupon_message
+                                : 'Coupon applied successfully.',
+                            true
+                        );
+                    } catch (error) {
+                        // Step 14: stop when the request result is no longer the latest one.
+                        if (couponRequestNumber !== latestCouponRequestNumber) {
+                            return;
+                        }
+
+                        // Step 15: keep the UI stable when the live request fails.
+                        clearCouponPreview();
+                        showCouponMessage('Unable to validate coupon right now.', false);
+
+                        if (typeof render === 'function') {
+                            render();
+                        }
+                    }
+                };
+
+                const refreshAppliedCouponPreview = function (showCheckingMessage) {
+                    // Step 1: clear the preview when the current code is no longer the applied one.
+                    if (!currentLiveCouponCode()) {
+                        clearCouponPreview();
+
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        return;
+                    }
+
+                    // Step 2: revalidate the current coupon against the latest items.
+                    return validateCouponForCheckout(showCheckingMessage);
                 };
 
                 window.checkoutUpdateItem = function (productId, variantId, quantity) {
@@ -854,7 +1266,7 @@
                         const normalizedVariantId = variantId === null || variantId === '' ? null : Number(variantId);
                         const normalizedQuantity = Math.max(1, Number(quantity || 1));
 
-                        reOrderItems = reOrderItems.map(function (item) {
+                        const updatedReOrderItems = reOrderItems.map(function (item) {
                             const currentProductId = Number(item.productId || 0);
                             const currentVariantId = item.variantId === null ? null : Number(item.variantId);
 
@@ -866,26 +1278,69 @@
                                 return item;
                             }
 
-                            item.quantity = normalizedQuantity;
+                            const updatedItem = Object.assign({}, item);
+                            updatedItem.quantity = normalizedQuantity;
 
-                            return recalculateReOrderItem(item);
+                            return recalculateReOrderItem(updatedItem);
                         });
 
-                        syncReOrderItemsField();
-
-                        if (typeof render === 'function') {
-                            render();
-                        }
+                        refreshReOrderPricing(updatedReOrderItems);
 
                         return;
                     }
 
                     if (window.CartStore && typeof window.CartStore.updateQuantity === 'function') {
-                        window.CartStore.updateQuantity(
+                        const previousCouponPreview = activeCouponPreview;
+                        const previousLiveCouponCode = liveCouponCode;
+                        const updatedCartItems = buildUpdatedCheckoutItems(getCheckoutItems(), productId, variantId, quantity);
+
+                        optimisticCartItems = updatedCartItems;
+                        clearCouponPreview();
+
+                        if (typeof render === 'function') {
+                            render();
+                        }
+
+                        const updateRequest = window.CartStore.updateQuantity(
                             Number(productId || 0),
                             variantId === null || variantId === '' ? null : Number(variantId),
                             Math.max(1, Number(quantity || 1))
                         );
+
+                        if (updateRequest && typeof updateRequest.then === 'function') {
+                            updateRequest.then(function (updateResult) {
+                                optimisticCartItems = null;
+
+                                if (!updateResult || updateResult.ok !== false) {
+                                    if (typeof render === 'function') {
+                                        render();
+                                    }
+
+                                    refreshAppliedCouponPreview(false);
+                                    return;
+                                }
+
+                                activeCouponPreview = previousCouponPreview;
+                                liveCouponCode = previousLiveCouponCode;
+
+                                if (typeof render === 'function') {
+                                    render();
+                                }
+
+                                if (
+                                    updateResult.errors
+                                    && updateResult.errors.quantity
+                                    && updateResult.errors.quantity.length
+                                ) {
+                                    showCouponMessage(updateResult.errors.quantity[0], false);
+                                    return;
+                                }
+
+                                if (updateResult.message) {
+                                    showCouponMessage(updateResult.message, false);
+                                }
+                            });
+                        }
                     }
                 };
 
@@ -911,14 +1366,24 @@
                             render();
                         }
 
+                        refreshAppliedCouponPreview(false);
+
                         return;
                     }
 
                     if (window.CartStore && typeof window.CartStore.removeItem === 'function') {
-                        window.CartStore.removeItem(
+                        const removeRequest = window.CartStore.removeItem(
                             Number(productId || 0),
                             variantId === null || variantId === '' ? null : Number(variantId)
                         );
+
+                        if (removeRequest && typeof removeRequest.then === 'function') {
+                            removeRequest.then(function (removeResult) {
+                                if (!removeResult || removeResult.ok !== false) {
+                                    refreshAppliedCouponPreview(false);
+                                }
+                            });
+                        }
                     }
                 };
 
@@ -983,8 +1448,32 @@
                     return getLineSubtotal(item) + getLineTax(item);
                 };
 
+                const getItemMinimumQuantity = function (item) {
+                    let minimumQuantity = item.minOrderQuantity;
+
+                    if (minimumQuantity === undefined) {
+                        minimumQuantity = item.min_order_quantity;
+                    }
+
+                    return Math.max(1, Number(minimumQuantity || 1));
+                };
+
+                const getItemQuantityStep = function (item) {
+                    let quantityStep = item.lotSize;
+
+                    if (quantityStep === undefined) {
+                        quantityStep = item.lot_size;
+                    }
+
+                    return Math.max(1, Number(quantityStep || 1));
+                };
+
                 const renderSummaryRow = function (item) {
                     const quantity = Math.max(1, Number(item.quantity || 1));
+                    const minimumQuantity = getItemMinimumQuantity(item);
+                    const quantityStep = getItemQuantityStep(item);
+                    const decreaseQuantity = Math.max(minimumQuantity, quantity - quantityStep);
+                    const increaseQuantity = quantity + quantityStep;
                     // Step 1: show the product line price before GST so it stays aligned with the subtotal.
                     const subtotal = getLineSubtotal(item);
                     const image = String(item.image || item.image_url || 'https://via.placeholder.com/96x96?text=Bio');
@@ -1013,11 +1502,11 @@
                                 <p class="mt-0.5 text-xs text-slate-500">${model}</p>
                                 <div class="mt-2 flex items-center gap-3">
                                     <div class="flex items-center rounded-lg border border-slate-200 bg-white">
-                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.checkoutUpdateItem(${productId}, ${variantValue}, Math.max(1, ${quantity} - 1));">
+                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.checkoutUpdateItem(${productId}, ${variantValue}, ${decreaseQuantity});">
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" /></svg>
                                         </button>
                                         <input type="number" readonly class="w-8 border-x border-slate-200 bg-transparent text-center text-xs font-semibold text-slate-900 outline-none" value="${quantity}">
-                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.checkoutUpdateItem(${productId}, ${variantValue}, ${quantity} + 1);">
+                                        <button type="button" class="flex h-7 w-7 items-center justify-center text-slate-500 transition hover:bg-slate-100 hover:text-slate-900" onclick="window.checkoutUpdateItem(${productId}, ${variantValue}, ${increaseQuantity});">
                                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                                         </button>
                                     </div>
@@ -1041,6 +1530,7 @@
                     if (!items.length) {
                         if (emptyState) emptyState.classList.remove('hidden');
                         if (summaryItems) summaryItems.classList.add('hidden');
+                        hideCouponDiscountRow();
                         if (subtotalEl) subtotalEl.innerHTML = 'Rs. 0.00';
                         if (taxEl)      taxEl.innerHTML      = 'Rs. 0.00';
                         if (totalEl)    totalEl.innerHTML    = 'Rs. 0.00';
@@ -1061,9 +1551,34 @@
                         if (summaryItems) summaryItems.insertAdjacentHTML('beforeend', renderSummaryRow(item));
                     });
 
-                    if (subtotalEl) subtotalEl.innerHTML = formatInr(subtotal);
-                    if (taxEl) taxEl.innerHTML = formatInr(tax);
-                    if (totalEl) totalEl.innerHTML = formatInr(total);
+                    // Step 1: start by showing the normal live totals from the current items.
+                    var displaySubtotal = subtotal;
+                    var displayTax = tax;
+                    var displayTotal = total;
+
+                    // Step 2: switch to the coupon preview totals only when the current code is still the applied one.
+                    if (
+                        activeCouponPreview
+                        && activeCouponPreview.is_coupon_applied
+                        && String(activeCouponPreview.coupon_code || '') === currentCouponCode()
+                    ) {
+                        var couponDiscountAmount = Number(activeCouponPreview.coupon_discount_amount || 0);
+                        var couponSubtotalAmount = Number(activeCouponPreview.order_subtotal_amount || 0);
+                        var couponTaxAmount = Number(activeCouponPreview.order_tax_amount || 0);
+                        var couponTotalAmount = Number(activeCouponPreview.order_total_amount || 0);
+
+                        displaySubtotal = couponSubtotalAmount + couponDiscountAmount;
+                        displayTax = couponTaxAmount;
+                        displayTotal = couponTotalAmount;
+
+                        showCouponDiscountRow(couponDiscountAmount);
+                    } else {
+                        hideCouponDiscountRow();
+                    }
+
+                    if (subtotalEl) subtotalEl.innerHTML = formatInr(displaySubtotal);
+                    if (taxEl) taxEl.innerHTML = formatInr(displayTax);
+                    if (totalEl) totalEl.innerHTML = formatInr(displayTotal);
                     syncReOrderItemsField();
                 };
 
@@ -1109,6 +1624,31 @@
                 paymentInputs.forEach(function (input) {
                     input.addEventListener('change', syncPaymentCards);
                 });
+
+                if (couponInput) {
+                    couponInput.addEventListener('input', function () {
+                        // Step 1: keep the entered coupon uppercase in both fields.
+                        couponInput.value = (couponInput.value || '').toUpperCase();
+                        syncCouponCodeField();
+
+                        // Step 2: clear the current coupon result when the user edits the code.
+                        liveCouponCode = '';
+                        latestCouponRequestNumber += 1;
+                        clearCouponPreview();
+                        showCouponMessage(defaultCouponMessage, false);
+
+                        if (typeof render === 'function') {
+                            render();
+                        }
+                    });
+                }
+
+                if (couponApplyBtn) {
+                    couponApplyBtn.addEventListener('click', function () {
+                        // Step 1: validate the current coupon with the latest checkout items.
+                        validateCouponForCheckout(true);
+                    });
+                }
 
                 /* ── GSTIN auto-uppercase ── */
                 var gstinInput = document.getElementById('gstinInput');

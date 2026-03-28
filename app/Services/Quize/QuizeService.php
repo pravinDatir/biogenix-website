@@ -2,10 +2,10 @@
 
 namespace App\Services\Quize;
 
-use App\Models\Pricing\Coupon;
 use App\Models\Quize\QuizeQuestion;
 use App\Models\Quize\QuizeResponse;
 use App\Models\Quize\QuizeResponseAnswer;
+use App\Services\Coupon\CouponService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +15,11 @@ use Throwable;
 class QuizeService
 {
     protected const REWARD_COUPON_CODE = 'BIOGENIX15';
+
+    public function __construct(
+        protected CouponService $couponService,
+    ) {
+    }
 
     // This prepares the diagnostic quiz page data used by the guest quiz page.
     public function quizePageData(): array
@@ -213,12 +218,11 @@ class QuizeService
     // This loads the active reward coupon code used by the quiz result page.
     protected function resolveRewardCouponCode(): string
     {
-        $rewardCoupon = Coupon::query()
-            ->where('code', self::REWARD_COUPON_CODE)
-            ->where('is_active', true)
-            ->first();
+        // Step 1: load the active reward coupon code from the shared coupon service.
+        $rewardCouponCode = $this->couponService->readActiveCouponCode(self::REWARD_COUPON_CODE);
 
-        if (! $rewardCoupon) {
+        // Step 2: stop the flow when the reward coupon is not active.
+        if (! $rewardCouponCode) {
             Log::warning('Diagnostic quiz reward coupon is not configured as active.', [
                 'coupon_code' => self::REWARD_COUPON_CODE,
             ]);
@@ -228,7 +232,7 @@ class QuizeService
             ]);
         }
 
-        return (string) $rewardCoupon->code;
+        return $rewardCouponCode;
     }
 
     // This returns the result title and description shown on the final score screen.

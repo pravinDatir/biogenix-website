@@ -311,17 +311,20 @@
 
 <script>
     window.CartStore = (function () {
-        const key = 'biogenix_cart_items';
-        const useServerCart = @json(auth()->check());
-        const cartShowUrl = @json(route('cart.show'));
-        const cartItemsStoreUrl = @json(route('cart.items.store'));
-        const cartItemsUpdateUrl = @json(route('cart.items.update', ['cartItemId' => '__CART_ITEM__']));
-        const cartItemsDeleteUrl = @json(route('cart.items.delete', ['cartItemId' => '__CART_ITEM__']));
+        const shopperIsLoggedIn = @json(auth()->check());
+        const accountCartShowUrl = @json(url('/cart/data'));
+        const accountCartStoreUrl = @json(url('/cart/items'));
+        const accountCartUpdateUrl = @json(url('/cart/items/__CART_ITEM__'));
+        const accountCartDeleteUrl = @json(url('/cart/items/__CART_ITEM__'));
+        const guestCartShowUrl = @json(url('/guest-cart/data'));
+        const guestCartStoreUrl = @json(url('/guest-cart/items'));
+        const guestCartUpdateUrl = @json(url('/guest-cart/items/__CART_ITEM__'));
+        const guestCartDeleteUrl = @json(url('/guest-cart/items/__CART_ITEM__'));
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
         const listeners = [];
-        let serverItems = [];
-        let serverCartLoaded = false;
-        let serverCartRequest = null;
+        let currentCartItems = [];
+        let cartIsLoaded = false;
+        let activeCartRequest = null;
 
         const normalizeQuantity = function (item) {
             const raw = item && (item.quantity ?? item.qty ?? item.count ?? 1);
@@ -329,23 +332,8 @@
             return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
         };
 
-        const load = function () {
-            try {
-                return JSON.parse(localStorage.getItem(key) || '[]') || [];
-            } catch (error) {
-                console.error('CartStore parse failed', error);
-                return [];
-            }
-        };
-
-        const save = function (items) {
-            localStorage.setItem(key, JSON.stringify(items));
-            notify(items);
-            return items;
-        };
-
         const getItems = function () {
-            return useServerCart ? serverItems.slice() : load();
+            return currentCartItems.slice();
         };
 
         const notify = function (items = getItems()) {
@@ -354,35 +342,43 @@
             });
         };
 
-        const buildServerItem = function (item) {
+        const buildCurrentCartItem = function (item) {
             return {
                 cartItemId: Number(item.id || 0),
                 productId: Number(item.product_id || 0),
                 variantId: item.product_variant_id == null ? null : Number(item.product_variant_id),
                 quantity: normalizeQuantity(item),
                 unitPrice: Number(item.unit_price || 0),
+                unitTaxAmount: Number(item.unit_tax_amount || 0),
+                unitPriceAfterGst: Number(item.unit_price_after_gst || 0),
                 taxAmount: Number(item.tax_amount || 0),
                 lineSubtotal: Number(item.line_subtotal || 0),
                 lineTotal: Number(item.line_total || 0),
+                discountAmount: Number(item.discount_amount || 0),
+                currency: String(item.currency || 'INR'),
+                priceType: item.price_type == null ? null : String(item.price_type),
+                minOrderQuantity: Number(item.min_order_quantity || 1),
+                maxOrderQuantity: item.max_order_quantity == null ? null : Number(item.max_order_quantity),
+                lotSize: Number(item.lot_size || 1),
                 name: String(item.product_name || 'Product'),
                 model: String(item.sku || ''),
                 image: String(item.image_url || ''),
             };
         };
 
-        const applyServerCart = function (cart) {
+        const applyCurrentCart = function (cart) {
             // Step 1: keep one shared in-memory cart so every storefront screen reads the same backend state.
-            serverItems = Array.isArray(cart && cart.items) ? cart.items.map(buildServerItem) : [];
-            serverCartLoaded = true;
+            currentCartItems = Array.isArray(cart && cart.items) ? cart.items.map(buildCurrentCartItem) : [];
+            cartIsLoaded = true;
 
             // Step 2: notify the active screens so the badge, sidebar, cart, and checkout stay in sync.
-            notify(serverItems);
+            notify(currentCartItems);
 
-            return serverItems;
+            return currentCartItems;
         };
 
         const buildRequestOptions = function (method, body) {
-            // Step 1: send every authenticated cart request as JSON to the shared backend cart API.
+            // Step 1: send every cart request as JSON to the shared backend cart API.
             const options = {
                 method: method,
                 credentials: 'same-origin',
@@ -402,7 +398,7 @@
             return options;
         };
 
-        const requestServerCart = async function (url, method, body) {
+        const requestCartEndpoint = async function (url, method, body) {
             // Step 1: call the backend cart endpoint and expect the standard cart controller JSON response.
             const response = await fetch(url, buildRequestOptions(method, body));
             const contentType = String(response.headers.get('content-type') || '');
@@ -431,44 +427,44 @@
             return { ok: true, data: data };
         };
 
-        const ensureServerCartLoaded = function () {
-            // Step 1: skip the backend fetch when the current shopper is still browsing as a guest.
-            if (!useServerCart) {
+        const currentCartShowUrl = shopperIsLoggedIn ? accountCartShowUrl : guestCartShowUrl;
+        const currentCartStoreUrl = shopperIsLoggedIn ? accountCartStoreUrl : guestCartStoreUrl;
+        const currentCartUpdateUrl = shopperIsLoggedIn ? accountCartUpdateUrl : guestCartUpdateUrl;
+        const currentCartDeleteUrl = shopperIsLoggedIn ? accountCartDeleteUrl : guestCartDeleteUrl;
+
+        const ensureCartLoaded = function () {
+            // Step 1: reuse the cart seed prepared by the controller when the current page already has it.
+            if (!cartIsLoaded && Object.prototype.hasOwnProperty.call(window, '__BIOGENIX_PAGE_CART__')) {
+                applyCurrentCart(window.__BIOGENIX_PAGE_CART__);
                 return Promise.resolve({ ok: true, items: getItems() });
             }
 
-            // Step 2: reuse the cart seed prepared by the controller when the current page already has it.
-            if (!serverCartLoaded && Object.prototype.hasOwnProperty.call(window, '__BIOGENIX_PAGE_CART__')) {
-                applyServerCart(window.__BIOGENIX_PAGE_CART__);
+            // Step 2: reuse the loaded cart so we do not make duplicate requests on every render.
+            if (cartIsLoaded) {
                 return Promise.resolve({ ok: true, items: getItems() });
             }
 
-            // Step 3: reuse the loaded server cart so we do not make duplicate requests on every render.
-            if (serverCartLoaded) {
-                return Promise.resolve({ ok: true, items: getItems() });
+            // Step 3: reuse the in-flight request so multiple screens can wait for the same backend response.
+            if (activeCartRequest) {
+                return activeCartRequest;
             }
 
-            // Step 4: reuse the in-flight request so multiple screens can wait for the same backend response.
-            if (serverCartRequest) {
-                return serverCartRequest;
-            }
-
-            // Step 5: load the current authenticated cart and cache it in memory for pages without a controller seed.
-            serverCartRequest = requestServerCart(cartShowUrl, 'GET').then(function (result) {
+            // Step 4: load the current cart and cache it in memory for pages without a controller seed.
+            activeCartRequest = requestCartEndpoint(currentCartShowUrl, 'GET').then(function (result) {
                 if (result.ok) {
-                    applyServerCart(result.data && result.data.cart ? result.data.cart : null);
+                    applyCurrentCart(result.data && result.data.cart ? result.data.cart : null);
                 }
 
                 return Object.assign({}, result, { items: getItems() });
             }).finally(function () {
-                serverCartRequest = null;
+                activeCartRequest = null;
             });
 
-            return serverCartRequest;
+            return activeCartRequest;
         };
 
-        const findServerItem = function (productId, variantId) {
-            return serverItems.find(function (item) {
+        const findCurrentCartItem = function (productId, variantId) {
+            return currentCartItems.find(function (item) {
                 return item.productId === productId && item.variantId === variantId;
             }) || null;
         };
@@ -479,146 +475,98 @@
             }, 0);
         };
 
-        const mergeItem = function (newItem) {
-            if (useServerCart) {
-                // Step 1: for logged-in users, save the requested line into the database cart.
-                return requestServerCart(cartItemsStoreUrl, 'POST', {
-                    product_id: Number(newItem.productId || 0),
-                    product_variant_id: newItem.variantId == null ? null : Number(newItem.variantId),
-                    quantity: normalizeQuantity(newItem),
-                }).then(function (result) {
-                    // Step 2: refresh the shared in-memory cart from the backend response after a successful add.
+        const addItem = function (newItem) {
+            // Step 1: save the requested line into the active cart endpoint for the current shopper type.
+            return requestCartEndpoint(currentCartStoreUrl, 'POST', {
+                product_id: Number(newItem.productId || 0),
+                product_variant_id: newItem.variantId == null ? null : Number(newItem.variantId),
+                quantity: normalizeQuantity(newItem),
+            }).then(function (result) {
+                // Step 2: refresh the shared in-memory cart from the backend response after a successful add.
+                if (result.ok) {
+                    applyCurrentCart(result.data && result.data.cart ? result.data.cart : null);
+                }
+
+                return Object.assign({}, result, { items: getItems() });
+            });
+        };
+
+        const updateQuantity = function (productId, variantId, quantity) {
+            // Step 1: make sure the current cart is available before updating one line.
+            return ensureCartLoaded().then(function (loadResult) {
+                if (!loadResult.ok) {
+                    return loadResult;
+                }
+
+                // Step 2: find the saved cart row that belongs to the selected product and variant.
+                const target = findCurrentCartItem(productId, variantId);
+                if (!target) {
+                    return { ok: true, items: getItems() };
+                }
+
+                // Step 3: send the replacement quantity to the backend so validation stays server-driven.
+                return requestCartEndpoint(
+                    currentCartUpdateUrl.replace('__CART_ITEM__', String(target.cartItemId)),
+                    'PATCH',
+                    { quantity: Math.max(1, Number(quantity || 1)) }
+                ).then(function (result) {
+                    // Step 4: apply the refreshed backend cart so every open cart view stays accurate.
                     if (result.ok) {
-                        applyServerCart(result.data && result.data.cart ? result.data.cart : null);
+                        applyCurrentCart(result.data && result.data.cart ? result.data.cart : null);
                     }
 
                     return Object.assign({}, result, { items: getItems() });
                 });
-            }
-
-            // Step 1: for guests, keep the current local cart flow unchanged.
-            const items = load();
-            const existing = items.find(function (item) {
-                return item.productId === newItem.productId && item.variantId === newItem.variantId;
             });
-
-            // Step 2: merge the new quantity into the current guest cart so the storefront stays responsive.
-            if (existing) {
-                existing.quantity = normalizeQuantity(existing) + normalizeQuantity(newItem);
-            } else {
-                newItem.quantity = normalizeQuantity(newItem);
-                items.push(newItem);
-            }
-
-            return save(items);
-        };
-
-        const updateQuantity = function (productId, variantId, quantity) {
-            if (useServerCart) {
-                // Step 1: make sure the current authenticated cart is available before updating one line.
-                return ensureServerCartLoaded().then(function (loadResult) {
-                    if (!loadResult.ok) {
-                        return loadResult;
-                    }
-
-                    // Step 2: find the saved cart row that belongs to the selected product and variant.
-                    const target = findServerItem(productId, variantId);
-                    if (!target) {
-                        return { ok: true, items: getItems() };
-                    }
-
-                    // Step 3: send the replacement quantity to the backend so validation stays server-driven.
-                    return requestServerCart(
-                        cartItemsUpdateUrl.replace('__CART_ITEM__', String(target.cartItemId)),
-                        'PATCH',
-                        { quantity: Math.max(1, Number(quantity || 1)) }
-                    ).then(function (result) {
-                        // Step 4: apply the refreshed backend cart so every open cart view stays accurate.
-                        if (result.ok) {
-                            applyServerCart(result.data && result.data.cart ? result.data.cart : null);
-                        }
-
-                        return Object.assign({}, result, { items: getItems() });
-                    });
-                });
-            }
-
-            // Step 1: keep the guest cart quantity update local until the shopper logs in.
-            const items = load();
-            const target = items.find(function (item) {
-                return item.productId === productId && item.variantId === variantId;
-            });
-
-            // Step 2: return the cart unchanged when the selected guest line is already gone.
-            if (!target) {
-                return save(items);
-            }
-
-            // Step 3: save the replacement guest quantity and refresh subscribers.
-            target.quantity = Math.max(1, Number(quantity || 1));
-            return save(items);
         };
 
         const removeItem = function (productId, variantId) {
-            if (useServerCart) {
-                // Step 1: make sure the current authenticated cart is available before removing one line.
-                return ensureServerCartLoaded().then(function (loadResult) {
-                    if (!loadResult.ok) {
-                        return loadResult;
+            // Step 1: make sure the current cart is available before removing one line.
+            return ensureCartLoaded().then(function (loadResult) {
+                if (!loadResult.ok) {
+                    return loadResult;
+                }
+
+                // Step 2: find the saved backend cart row that belongs to the selected product and variant.
+                const target = findCurrentCartItem(productId, variantId);
+                if (!target) {
+                    return { ok: true, items: getItems() };
+                }
+
+                // Step 3: remove the selected line from the backend cart.
+                return requestCartEndpoint(
+                    currentCartDeleteUrl.replace('__CART_ITEM__', String(target.cartItemId)),
+                    'DELETE'
+                ).then(function (result) {
+                    // Step 4: apply the refreshed backend cart so every open cart view stays in sync.
+                    if (result.ok) {
+                        applyCurrentCart(result.data && result.data.cart ? result.data.cart : null);
                     }
 
-                    // Step 2: find the saved backend cart row that belongs to the selected product and variant.
-                    const target = findServerItem(productId, variantId);
-                    if (!target) {
-                        return { ok: true, items: getItems() };
-                    }
-
-                    // Step 3: remove the selected line from the backend cart.
-                    return requestServerCart(
-                        cartItemsDeleteUrl.replace('__CART_ITEM__', String(target.cartItemId)),
-                        'DELETE'
-                    ).then(function (result) {
-                        // Step 4: apply the refreshed backend cart so every open cart view stays in sync.
-                        if (result.ok) {
-                            applyServerCart(result.data && result.data.cart ? result.data.cart : null);
-                        }
-
-                        return Object.assign({}, result, { items: getItems() });
-                    });
+                    return Object.assign({}, result, { items: getItems() });
                 });
-            }
-
-            // Step 1: keep the guest remove action local until the shopper logs in.
-            const items = load().filter(function (item) {
-                return !(item.productId === productId && item.variantId === variantId);
             });
-
-            return save(items);
         };
 
         const clear = function () {
-            if (useServerCart) {
-                return { ok: true, items: getItems() };
-            }
-
-            return save([]);
+            return { ok: true, items: getItems() };
         };
 
         return {
             getItems: getItems,
             getCount: getCount,
-            addItem: mergeItem,
+            addItem: addItem,
             updateQuantity: updateQuantity,
             removeItem: removeItem,
             clear: clear,
-            refresh: ensureServerCartLoaded,
+            refresh: ensureCartLoaded,
             subscribe: function (listener) {
                 // Step 1: register the listener so shared cart UI blocks can react to future cart updates.
                 listeners.push(listener);
                 listener(getItems());
 
-                // Step 2: load the authenticated cart after subscribe so the page gets the latest backend state.
-                ensureServerCartLoaded();
+                // Step 2: load the current cart after subscribe so the page gets the latest backend state.
+                ensureCartLoaded();
             },
         };
     }());
@@ -648,11 +596,6 @@
                 }
 
                 syncCartBadge(window.CartStore.getItems());
-            });
-            window.addEventListener('storage', function (event) {
-                if (event.key === 'biogenix_cart_items' && !@json(auth()->check())) {
-                    syncCartBadge(window.CartStore.getItems());
-                }
             });
         }
 

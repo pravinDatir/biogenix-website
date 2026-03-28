@@ -9,11 +9,8 @@ use App\Models\Product\UserActivityLog;
 use App\Models\Proforma\ProformaInvoice;
 use App\Services\Authorization\DataVisibilityService;
 use App\Services\Pricing\PriceService;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
 
 class ProformaInvoiceService
 {
@@ -165,48 +162,6 @@ class ProformaInvoiceService
             'payload' => ['request_reference' => $requestNumber],
             'created_at' => now(),
         ]);
-    }
-
-    public function getVisibleProformas(User $user): LengthAwarePaginator
-    {
-        // Step 1: load visible PI rows in latest-first order.
-        return $this->dataVisibilityService->visibleProformaQuery($user)
-            ->orderByDesc('pi.created_at')
-            ->paginate(15);
-    }
-
-    public function findVisibleProforma(User $user, int $proformaId): ?ProformaInvoice
-    {
-        // Step 1: find the requested PI id inside the visible PI scope.
-        $visibleProformaId = $this->dataVisibilityService->visibleProformaQuery($user)
-            ->where('pi.id', $proformaId)
-            ->value('pi.id');
-
-        if (! $visibleProformaId) {
-            return null;
-        }
-
-        // Step 2: load the PI with the relations needed by the PDF.
-        return $this->loadProformaForPdf((int) $visibleProformaId);
-    }
-
-    public function downloadPdf(ProformaInvoice $proforma): Response
-    {
-        // Step 1: render the PI PDF with the saved PI record.
-        $pdf = Pdf::loadView('invoice.invoice-pdf', [
-            'proforma' => $proforma,
-        ])->setPaper(
-            config('invoice.pdf.paper', 'a4'),
-            config('invoice.pdf.orientation', 'portrait'),
-        );
-
-        return $pdf->download($proforma->pi_number.'.pdf');
-    }
-
-    public function canDownloadPdf(ProformaInvoice $proforma): bool
-    {
-        // Step 1: allow PDF download only after the PI is no longer waiting for review.
-        return ! in_array(strtolower((string) $proforma->status), ['pending_review', 'requested', 'submitted'], true);
     }
 
     protected function loadVisibleProducts(?User $user)
@@ -366,18 +321,4 @@ class ProformaInvoiceService
         }
     }
 
-    protected function loadProformaForPdf(int $proformaId): ProformaInvoice
-    {
-        return ProformaInvoice::query()
-            ->with([
-                'creator:id,name,email',
-                'ownerUser:id,name,email',
-                'ownerCompany:id,name,company_type',
-                'targetCompany:id,name,company_type',
-                'items' => function ($query): void {
-                    $query->orderBy('id');
-                },
-            ])
-            ->findOrFail($proformaId);
-    }
 }

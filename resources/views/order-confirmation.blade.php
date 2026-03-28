@@ -24,7 +24,7 @@
 
             {{-- Actions --}}
             <div class="mt-10 flex flex-col gap-4">
-                <a href="{{ route('orders.index') }}" class="inline-flex h-14 items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700">
+                <a href="{{ route('customer.orders.preview') }}" class="inline-flex h-14 items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700">
                     View Order Details
                 </a>
                 <a href="{{ route('products.index') }}" class="inline-flex h-14 items-center justify-center rounded-2xl bg-white border border-slate-200 text-base font-semibold text-slate-600 transition hover:bg-slate-50 hover:border-slate-300">

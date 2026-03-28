@@ -67,7 +67,7 @@ class OrderController extends Controller
             // Step 2: create the order using the order service.
             $order = $orderService->createOrder($validatedOrder, $request->user());
 
-            // Step 3: return to the CRUD page with a success message.
+            // Step 3: return to the profile orders page with a success message.
             return redirect()->route('orders.index')
                 ->with('success', 'Order #'.$order->id.' created successfully.');
         } catch (Throwable $exception) {

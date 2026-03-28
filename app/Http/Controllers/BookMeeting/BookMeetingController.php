@@ -43,11 +43,15 @@ class BookMeetingController extends Controller
             ]);
 
             // Step 2: keep the requested meeting time inside the normal business schedule window.
-            if ($validated['start_time'] < '09:00' || $validated['end_time'] > '18:00') {
+            $meetingStartTime = (string) config('common.meeting_hours.start_time', '09:00');
+            $meetingEndTime = (string) config('common.meeting_hours.end_time', '18:00');
+            $meetingTimezoneLabel = (string) config('common.meeting_hours.timezone_label', 'IST');
+
+            if ($validated['start_time'] < $meetingStartTime || $validated['end_time'] > $meetingEndTime) {
                 return redirect()->back()
                     ->withInput()
                     ->withErrors([
-                        'time_range' => 'Meeting time must stay between 09:00 and 18:00 IST.',
+                        'time_range' => "Meeting time must stay between {$meetingStartTime} and {$meetingEndTime} {$meetingTimezoneLabel}.",
                     ]);
             }
 
@@ -63,10 +67,7 @@ class BookMeetingController extends Controller
             // Step 4: store the meeting request through the service so the controller stays easy to follow.
             $meetingRequestId = $bookMeetingService->createMeetingRequest($validated);
 
-            Log::info('Meeting request submitted from book meeting page.', [
-                'meeting_request_id' => $meetingRequestId,
-                'preferred_date' => $validated['preferred_date'],
-            ]);
+            Log::info('Meeting request submitted from book meeting page.', [ 'meeting_request_id' => $meetingRequestId,  'preferred_date' => $validated['preferred_date'],  ]);
 
             return redirect()
                 ->route('book-meeting')

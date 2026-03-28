@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\Proforma\ProformaInvoiceService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class ProformaInvoiceController extends Controller
@@ -70,47 +68,6 @@ class ProformaInvoiceController extends Controller
             Log::error('Failed to submit PI request.', ['error' => $exception->getMessage()]);
 
             return $this->redirectBackWithError($exception, 'Unable to submit PI request.');
-        }
-    }
-
-    public function download(int $proformaId, Request $request, ProformaInvoiceService $proformaInvoiceService): Response|RedirectResponse
-    {
-        try {
-            // Step 1: load the PI only when it is visible to the signed-in user.
-            $proforma = $proformaInvoiceService->findVisibleProforma($request->user(), $proformaId);
-
-            abort_if(! $proforma, 404);
-
-            // Step 2: stop downloads while the request is still under review.
-            if (! $proformaInvoiceService->canDownloadPdf($proforma)) {
-                return redirect()->route('proforma.index')
-                    ->with('status', 'This PI request is still under internal review. PDF download will be available after the final PI is issued.');
-            }
-
-            // Step 3: return the PI PDF file.
-            return $proformaInvoiceService->downloadPdf($proforma);
-        } catch (Throwable $exception) {
-            Log::error('Failed to download PI.', ['proforma_id' => $proformaId, 'error' => $exception->getMessage()]);
-
-            return $this->redirectBackWithError($exception, 'Unable to download invoice PDF.');
-        }
-    }
-
-    public function index(Request $request, ProformaInvoiceService $proformaInvoiceService): View
-    {
-        try {
-            // Step 1: load the visible PI list for the signed-in user.
-            $proformas = $proformaInvoiceService->getVisibleProformas($request->user());
-
-            return view('invoice.index', [
-                'proformas' => $proformas,
-            ]);
-        } catch (Throwable $exception) {
-            Log::error('Failed to load PI index.', ['error' => $exception->getMessage()]);
-
-            return $this->viewWithError('invoice.index', [
-                'proformas' => new LengthAwarePaginator([], 0, 15),
-            ], $exception, 'Unable to load proformas.');
         }
     }
 

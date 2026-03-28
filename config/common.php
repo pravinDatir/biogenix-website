@@ -52,5 +52,10 @@ return [
         'verified_window_minutes' => 30,
         'max_attempts' => 5,
     ],
+    'meeting_hours' => [
+        'start_time' => '09:00',
+        'end_time' => '18:00',
+        'timezone_label' => 'IST',
+    ],
     'frequently_bought_together_limit' => 4,
 ];

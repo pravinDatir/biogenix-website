@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class FaqService
 {
-    // This keeps the backend job small: fetch active FAQs and return them to the controller.
+    // fetch active FAQs and return them to the controller.
     public function getFaqs(): Collection
     {
         return Faq::query()

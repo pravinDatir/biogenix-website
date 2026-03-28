@@ -5,7 +5,7 @@
     $displayName = $user?->name ?? 'Prakhar Kapoor';
     $displayEmail = $user?->email ?? ($portal === 'b2b' ? 'prakhar@biogenix.com' : 'prakhar@example.com');
     $accountLabel = $portal === 'b2b' ? 'B2B Account' : 'B2C Customer';
-    $ordersHref = route('orders.index', ['user_type' => $portal]);
+    $ordersHref = route('customer.orders.preview', ['user_type' => $portal]);
     $supportHref = route('support-tickets.index');
     $navLinks = [
         ['key' => 'profile', 'label' => 'My Profile', 'href' => route('customer.profile.preview', ['user_type' => $portal]), 'icon' => 'M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z'],

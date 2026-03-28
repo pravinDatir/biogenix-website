@@ -7,6 +7,7 @@ use App\Models\Authorization\UserAddress;
 use App\Models\Order\Order;
 use App\Models\Product\ProductVariant;
 use App\Services\Authorization\DataVisibilityService;
+use App\Services\Coupon\CouponService;
 use App\Services\Notification\EmailNotificationService;
 use App\Services\Pricing\PriceService;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class OrderService
     public function __construct(
         protected DataVisibilityService $dataVisibilityService,
         protected PriceService $priceService,
+        protected CouponService $couponService,
         protected EmailNotificationService $emailNotificationService,
     ) {
     }
@@ -302,26 +304,17 @@ class OrderService
     {
         try {
             // Step 1: validate the coupon code before preparing the final order items.
-            $validatedCoupon = $this->priceService->validateCouponCode($validatedCheckout['coupon_code'] ?? null);
-            $couponCode = $validatedCoupon?->code;
+            $couponCode = $this->couponService->readValidatedCouponCode($validatedCheckout['coupon_code'] ?? null);
 
             // Step 2: prepare the final order items from the posted reorder payload.
             $preparedOrderItems = $this->prepareReOrderCheckoutItems($validatedCheckout, $user, $couponCode);
 
             // Step 3: stop checkout when the coupon is valid but did not apply to any reorder item.
-            $couponDiscountAmount = 0;
-
-            foreach ($preparedOrderItems as $preparedOrderItem) {
-                $itemCouponDiscount = (float) ($preparedOrderItem['item_snapshot']['coupon_discount_amount'] ?? 0);
-                $itemQuantity = (int) ($preparedOrderItem['quantity'] ?? 0);
-                $couponDiscountAmount += $itemCouponDiscount * $itemQuantity;
-            }
-
-            if ($couponCode && $couponDiscountAmount <= 0) {
-                throw ValidationException::withMessages([
-                    'coupon_code' => 'The selected coupon does not apply to the current reorder items.',
-                ]);
-            }
+            $this->couponService->ensureCouponAppliesToPreparedItems(
+                $couponCode,
+                $preparedOrderItems,
+                'The selected coupon does not apply to the current reorder items.',
+            );
 
             // Step 4: calculate the final order totals from the prepared items.
             $orderTotals = $this->calculateReOrderCheckoutTotals($validatedCheckout, $preparedOrderItems);
@@ -410,6 +403,149 @@ class OrderService
 
             throw $exception;
         }
+    }
+
+    // This prepares the live coupon preview used by reorder checkout AJAX.
+    public function previewReOrderCoupon(array $validatedCouponInput, User $user): array
+    {
+        $couponPreview = [];
+
+        try {
+            // Step 1: validate the entered coupon code.
+            $couponCode = $this->couponService->readValidatedCouponCode($validatedCouponInput['coupon_code'] ?? null);
+
+            // Step 2: prepare the reorder items using live coupon-aware pricing.
+            $preparedOrderItems = $this->prepareReOrderCheckoutItems($validatedCouponInput, $user, $couponCode);
+
+            // Step 3: stop the flow when the coupon does not affect any reorder item.
+            $this->couponService->ensureCouponAppliesToPreparedItems(
+                $couponCode,
+                $preparedOrderItems,
+                'The selected coupon does not apply to the current reorder items.',
+            );
+
+            // Step 4: prepare the final preview summary for the checkout UI.
+            $couponPreview = $this->couponService->buildCouponPreview(
+                $couponCode,
+                $preparedOrderItems,
+                'Coupon applied successfully.',
+                'The selected coupon does not apply to the current reorder items.',
+            );
+        } catch (Throwable $exception) {
+            Log::error('Failed to preview reorder coupon.', [
+                'user_id' => $user->id,
+                'coupon_code' => $validatedCouponInput['coupon_code'] ?? null,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+
+        return $couponPreview;
+    }
+
+    // This prepares live reorder item pricing used when quantity changes on checkout.
+    public function previewReOrderPricing(array $validatedPreviewInput, User $user): array
+    {
+        $reOrderPreview = [];
+
+        try {
+            // Step 1: read the current applied coupon only when one code was already applied.
+            $couponCode = null;
+            $enteredCouponCode = trim((string) ($validatedPreviewInput['coupon_code'] ?? ''));
+
+            if ($enteredCouponCode !== '') {
+                $couponCode = $this->couponService->readValidatedCouponCode($enteredCouponCode);
+            }
+
+            // Step 2: prepare the reorder items again using the latest live pricing.
+            $preparedOrderItems = $this->prepareReOrderCheckoutItems($validatedPreviewInput, $user, $couponCode);
+
+            // Step 3: decode the posted reorder items so image and display labels stay unchanged.
+            $decodedReOrderItems = json_decode((string) ($validatedPreviewInput['reorder_items'] ?? ''), true);
+
+            if (! is_array($decodedReOrderItems)) {
+                throw ValidationException::withMessages([
+                    'reorder_items' => 'Reorder items are not available for checkout.',
+                ]);
+            }
+
+            // Step 4: build the refreshed checkout items in the same shape already used by the UI.
+            $previewItems = [];
+
+            foreach ($preparedOrderItems as $index => $preparedOrderItem) {
+                $sourceItem = is_array($decodedReOrderItems[$index] ?? null) ? $decodedReOrderItems[$index] : [];
+                $itemSnapshot = is_array($preparedOrderItem['item_snapshot'] ?? null) ? $preparedOrderItem['item_snapshot'] : [];
+                $quantity = (int) ($preparedOrderItem['quantity'] ?? 0);
+                $unitPrice = round((float) ($preparedOrderItem['unit_price'] ?? 0), 4);
+                $unitTaxAmount = round((float) ($itemSnapshot['unit_tax_amount'] ?? 0), 4);
+                $unitPriceAfterGst = round((float) ($itemSnapshot['unit_price_after_gst'] ?? ($unitPrice + $unitTaxAmount)), 4);
+                $lineSubtotal = round((float) ($preparedOrderItem['subtotal_amount'] ?? 0), 4);
+                $lineTaxAmount = round((float) ($preparedOrderItem['tax_amount'] ?? 0), 4);
+                $lineTotal = round((float) ($preparedOrderItem['total_amount'] ?? 0), 4);
+                $lineDiscountAmount = round((float) ($preparedOrderItem['discount_amount'] ?? 0), 4);
+                $productId = (int) ($preparedOrderItem['product_id'] ?? ($sourceItem['productId'] ?? 0));
+                $productVariantId = $preparedOrderItem['product_variant_id'] ?? ($sourceItem['variantId'] ?? null);
+                $imageUrl = (string) ($sourceItem['image'] ?? $sourceItem['image_url'] ?? 'https://via.placeholder.com/96x96?text=Bio');
+                $productName = (string) ($preparedOrderItem['product_name'] ?? ($sourceItem['name'] ?? 'Product'));
+                $productModel = (string) ($preparedOrderItem['sku'] ?? ($sourceItem['model'] ?? 'N/A'));
+
+                if ($productVariantId !== null && $productVariantId !== '') {
+                    $productVariantId = (int) $productVariantId;
+                } else {
+                    $productVariantId = null;
+                }
+
+                $previewItems[] = [
+                    'productId' => $productId,
+                    'variantId' => $productVariantId,
+                    'quantity' => $quantity,
+                    'unitPrice' => $unitPrice,
+                    'unitTaxAmount' => $unitTaxAmount,
+                    'unitPriceAfterGst' => $unitPriceAfterGst,
+                    'taxAmount' => $lineTaxAmount,
+                    'lineSubtotal' => $lineSubtotal,
+                    'lineTotal' => $lineTotal,
+                    'discountAmount' => $lineDiscountAmount,
+                    'currency' => (string) ($itemSnapshot['currency'] ?? 'INR'),
+                    'priceType' => $itemSnapshot['price_type'] ?? null,
+                    'name' => $productName,
+                    'model' => $productModel,
+                    'image' => $imageUrl,
+                    'minOrderQuantity' => (int) ($itemSnapshot['min_order_quantity'] ?? 1),
+                    'maxOrderQuantity' => $itemSnapshot['max_order_quantity'] === null ? null : (int) $itemSnapshot['max_order_quantity'],
+                    'lotSize' => (int) ($itemSnapshot['lot_size'] ?? 1),
+                ];
+            }
+
+            // Step 5: prepare the refreshed coupon preview when one coupon is active.
+            $couponPreview = null;
+
+            if ($couponCode !== null) {
+                $couponPreview = $this->couponService->buildCouponPreview(
+                    $couponCode,
+                    $preparedOrderItems,
+                    'Coupon applied successfully.',
+                    'The selected coupon does not apply to the current reorder items.',
+                );
+            }
+
+            // Step 6: return the refreshed items and coupon details for the checkout UI.
+            $reOrderPreview = [
+                'items' => $previewItems,
+                'coupon_preview' => $couponPreview,
+            ];
+        } catch (Throwable $exception) {
+            Log::error('Failed to preview reorder pricing.', [
+                'user_id' => $user->id,
+                'coupon_code' => $validatedPreviewInput['coupon_code'] ?? null,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
+
+        return $reOrderPreview;
     }
 
     // This prepares the final reorder checkout items from the posted checkout payload.
@@ -533,6 +669,8 @@ class OrderService
                         'bulk_discount_amount' => round((float) ($resolvedPrice['bulk_discount_amount'] ?? 0), 4),
                         'coupon_discount_amount' => round((float) ($resolvedPrice['coupon_discount_amount'] ?? 0), 4),
                         'applied_coupon_code' => $resolvedPrice['applied_coupon_code'] ?? null,
+                        'coupon_status' => $resolvedPrice['coupon_status'] ?? null,
+                        'coupon_message' => $resolvedPrice['coupon_message'] ?? null,
                         'min_order_quantity' => (int) ($resolvedPrice['min_order_quantity'] ?? 1),
                         'max_order_quantity' => $resolvedPrice['max_order_quantity'] === null ? null : (int) $resolvedPrice['max_order_quantity'],
                         'lot_size' => (int) ($resolvedPrice['lot_size'] ?? 1),
@@ -1215,6 +1353,8 @@ class OrderService
                 'bulk_discount_amount' => round((float) ($price['bulk_discount_amount'] ?? 0), 4),
                 'coupon_discount_amount' => round((float) ($price['coupon_discount_amount'] ?? 0), 4),
                 'applied_coupon_code' => $price['applied_coupon_code'] ?? null,
+                'coupon_status' => $price['coupon_status'] ?? null,
+                'coupon_message' => $price['coupon_message'] ?? null,
                 'min_order_quantity' => (int) ($price['min_order_quantity'] ?? 1),
                 'max_order_quantity' => $price['max_order_quantity'] === null ? null : (int) $price['max_order_quantity'],
                 'lot_size' => (int) ($price['lot_size'] ?? 1),

@@ -15,7 +15,9 @@ return new class extends Migration
         if (! Schema::hasTable('diagnostic_quiz_questions')) {
             Schema::create('diagnostic_quiz_questions', function (Blueprint $table): void {
                 $table->id();
+                $table->string('phase_title', 150);
                 $table->text('question_text');
+                $table->json('question_support_details')->nullable();
                 $table->unsignedTinyInteger('display_order')->default(1);
                 $table->timestamps();
             });

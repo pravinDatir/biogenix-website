@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Step 1: create one cart row per logged-in user.
+        // Step 1: create one cart row per logged-in shopper or guest session.
         Schema::create('carts', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('session_id')->nullable();
             $table->char('currency', 3)->default('INR');
             $table->timestamps();
 
-            // Step 2: keep exactly one active cart per user.
+            // Step 2: keep one active cart per account and one active cart per guest session.
             $table->unique('user_id', 'carts_user_id_unique');
+            $table->unique('session_id', 'carts_session_id_unique');
+            $table->index('session_id', 'carts_session_id_index');
         });
 
         // Step 3: create minimal cart item rows using only the selected variant and quantity.

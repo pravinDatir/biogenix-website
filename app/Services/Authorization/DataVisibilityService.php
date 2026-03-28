@@ -5,7 +5,6 @@ namespace App\Services\Authorization;
 use App\Models\Authorization\B2bClientAssignment;
 use App\Models\Authorization\DelegatedAdminScope;
 use App\Models\Authorization\User;
-use App\Models\Proforma\ProformaInvoice;
 use App\Models\Product\Product;
 use App\Services\Pricing\PriceService;
 use Illuminate\Database\Eloquent\Builder;
@@ -157,66 +156,6 @@ class DataVisibilityService
                 ->all();
         } catch (Throwable $exception) {
             Log::error('Failed to load assigned client companies.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
-    }
-
-    // This builds the base visible PI query for the current user.
-    public function visibleProformaQuery(User $user): Builder
-    {
-        try {
-            $query = ProformaInvoice::query()
-                ->from('proforma_invoices as pi')
-                ->leftJoin('users as owners', 'owners.id', '=', 'pi.owner_user_id')
-                ->leftJoin('companies as owner_companies', 'owner_companies.id', '=', 'pi.owner_company_id')
-                ->leftJoin('companies as target_companies', 'target_companies.id', '=', 'pi.target_company_id')
-                ->select([
-                    'pi.*',
-                    'owners.name as owner_name',
-                    'owner_companies.name as owner_company_name',
-                    'target_companies.name as target_company_name',
-                ]);
-
-            if ($this->isFullAdmin($user)) {
-                return $query;
-            }
-
-            if ($this->isDelegatedAdmin($user)) {
-                $allowedCompanyIds = $this->delegatedAdminCompanyScopeIds($user);
-
-                return $query->where(function (Builder $builder) use ($user, $allowedCompanyIds): void {
-                    $builder->where('pi.owner_user_id', $user->id);
-
-                    if ($allowedCompanyIds !== []) {
-                        $builder->orWhereIn('pi.owner_company_id', $allowedCompanyIds)
-                            ->orWhereIn('pi.target_company_id', $allowedCompanyIds);
-                    }
-                });
-            }
-
-            if ($user->isB2c()) {
-                return $query->where('pi.owner_user_id', $user->id);
-            }
-
-            if ($user->isB2b()) {
-                $assignedClientIds = $this->assignedClientCompanyIds($user);
-
-                return $query->where(function (Builder $builder) use ($user, $assignedClientIds): void {
-                    $builder->where('pi.owner_user_id', $user->id);
-
-                    if ($user->company_id) {
-                        $builder->orWhere('pi.owner_company_id', $user->company_id);
-                    }
-
-                    if ($assignedClientIds !== []) {
-                        $builder->orWhereIn('pi.target_company_id', $assignedClientIds);
-                    }
-                });
-            }
-
-            return $query->where('pi.owner_user_id', $user->id);
-        } catch (Throwable $exception) {
-            Log::error('Failed to build visible PI query.', ['user_id' => $user->id, 'error' => $exception->getMessage()]);
             throw $exception;
         }
     }

@@ -11,6 +11,7 @@ class Cart extends Model
 {
     protected $fillable = [
         'user_id',
+        'session_id',
         'currency',
     ];
 
@@ -21,7 +22,7 @@ class Cart extends Model
         ];
     }
 
-    // This links the cart to the logged-in user who owns it.
+    // This links the cart to the logged-in user when the cart belongs to an account.
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
