@@ -128,12 +128,7 @@ class CouponService
     }
 
     // This resolves how the coupon should behave with the current price setup.
-    public function resolveCouponPricingDetails(
-        ?Coupon $activeCoupon,
-        string $priceType,
-        float $baseAmount,
-        ?ProductBulkPrice $matchingBulkPrice,
-        array $productDiscountDetails,
+    public function resolveCouponPricingDetails(   ?Coupon $activeCoupon,   string $priceType,   float $baseAmount,  ?ProductBulkPrice $matchingBulkPrice, array $productDiscountDetails,
     ): array {
         $couponPricingDetails = [];
 
@@ -229,11 +224,7 @@ class CouponService
                 ];
             }
         } catch (Throwable $exception) {
-            Log::error('Failed to resolve coupon pricing details.', [
-                'coupon_code' => $activeCoupon?->code,
-                'price_type' => $priceType,
-                'error' => $exception->getMessage(),
-            ]);
+            Log::error('Failed to resolve coupon pricing details.', [  'coupon_code' => $activeCoupon?->code,  'price_type' => $priceType,    'error' => $exception->getMessage(),  ]);
 
             throw $exception;
         }
