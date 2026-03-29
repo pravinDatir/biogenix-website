@@ -34,10 +34,7 @@ class SignupEmailOtpController extends Controller
                 'resend_available_in_seconds' => $sendResult['resend_available_in_seconds'],
             ]);
         } catch (ValidationException $exception) {
-            Log::warning('Signup email OTP send validation failed.', [
-                'email' => $request->input('email'),
-                'errors' => $exception->errors(),
-            ]);
+            Log::warning('Signup email OTP send validation failed.', [ 'email' => $request->input('email'),  'errors' => $exception->errors(),  ]);
 
             return response()->json([
                 'status' => 'error',
@@ -45,10 +42,7 @@ class SignupEmailOtpController extends Controller
                 'errors' => $exception->errors(),
             ], 422);
         } catch (Throwable $exception) {
-            Log::error('Signup email OTP send request failed.', [
-                'email' => $request->input('email'),
-                'error' => $exception->getMessage(),
-            ]);
+            Log::error('Signup email OTP send request failed.', [ 'email' => $request->input('email'),  'error' => $exception->getMessage(),  ]);
 
             return response()->json([
                 'status' => 'error',
