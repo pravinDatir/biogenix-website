@@ -16,13 +16,13 @@ class FaqController extends Controller
         try {
             $faqs = $faqService->getFaqs();
 
-            return view('legal.faq', [
+            return view('information.faq', [
                 'faqs' => $faqs,
             ]);
         } catch (Throwable $exception) {
             Log::error('Failed to load FAQ public page.', ['error' => $exception->getMessage()]);
 
-            return $this->viewWithError('legal.faq', [
+            return $this->viewWithError('information.faq', [
                 'faqs' => collect(),
             ], $exception, 'Unable to load the FAQ page right now.');
         }
