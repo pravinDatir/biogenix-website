@@ -245,7 +245,7 @@
                                         <option value="price_low" @selected($sort === 'price_low')>Price Low to High</option>
                                         <option value="price_high" @selected($sort === 'price_high')>Price High to Low</option>
                                     </select>
-                                    <button type="button" id="customSortButton" class="flex min-w-[10rem] items-center justify-between gap-3 border-0 bg-transparent pl-1 pr-2 text-sm font-semibold text-slate-800 outline-none">
+                                    <button type="button" id="customSortButton" class="flex min-w-0 flex-1 items-center justify-between gap-3 border-0 bg-transparent pl-1 pr-2 text-sm font-semibold text-slate-800 outline-none">
                                         <span id="customSortLabel" class="truncate">
                                             @switch($sort)
                                                 @case('name_az') Name A-Z @break
