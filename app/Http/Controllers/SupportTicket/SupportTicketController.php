@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SupportTicket;
 use App\Http\Controllers\Controller;
 use App\Services\SupportTicket\SupportTicketService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -33,6 +34,26 @@ class SupportTicketController extends Controller
 
         // Step 2: return the same support ticket screen with detail data.
         return view('userProfile.support-tickets.index', $pageData);
+    }
+
+    // This downloads one attachment from a support ticket owned by the current user.
+    public function downloadAttachment(int $ticketId, int $attachmentId, Request $request, SupportTicketService $supportTicketService): BinaryFileResponse|RedirectResponse
+    {
+        try {
+            // Step 1: ask the service to validate ownership and return the file.
+            return $supportTicketService->downloadTicketAttachment($request->user(), $ticketId, $attachmentId);
+        } catch (Throwable $exception) {
+            // Step 2: log the attachment download failure for later review.
+            Log::error('Failed to download support ticket attachment.', [
+                'user_id' => $request->user()?->id,
+                'ticket_id' => $ticketId,
+                'attachment_id' => $attachmentId,
+                'error' => $exception->getMessage(),
+            ]);
+
+            // Step 3: return the user back with a simple download error.
+            return $this->redirectBackWithError($exception, 'Unable to download the support ticket attachment right now.');
+        }
     }
 
     // This creates a new support ticket from the shared layout widget.
