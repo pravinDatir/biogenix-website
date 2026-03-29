@@ -11,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -109,6 +110,37 @@ class SupportTicketService
 
         // Step 5: return the final page payload.
         return $pageData;
+    }
+
+    // This downloads one attachment for a ticket owned by the current user.
+    public function downloadTicketAttachment(User $user, int $ticketId, int $attachmentId): BinaryFileResponse
+    {
+        // Step 1: confirm the ticket belongs to the current user.
+        $this->findSupportTicketById($user, $ticketId);
+
+        // Step 2: load the requested attachment for the selected ticket.
+        $attachment = SupportTicketAttachment::query()
+            ->where('support_ticket_id', $ticketId)
+            ->whereKey($attachmentId)
+            ->first();
+
+        // Step 3: stop the flow when the attachment does not belong to the selected ticket.
+        if (! $attachment) {
+            throw new NotFoundHttpException('Support ticket attachment not found.');
+        }
+
+        // Step 4: stop the download when the saved file path is empty.
+        $storedFilePath = trim((string) ($attachment->stored_file_path ?? ''));
+
+        if ($storedFilePath === '') {
+            throw new NotFoundHttpException('Support ticket attachment file is not available.');
+        }
+
+        // Step 5: return the saved file as a browser download.
+        return $this->fileHandlingService->downloadPublicFile(
+            $storedFilePath,
+            (string) ($attachment->original_file_name ?? basename($storedFilePath)),
+        );
     }
 
     // This creates a support ticket and stores any uploaded files.

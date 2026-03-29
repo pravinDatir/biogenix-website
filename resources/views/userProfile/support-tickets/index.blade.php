@@ -218,8 +218,11 @@
                         @else
                             <div class="space-y-2">
                                 @foreach ($ticketAttachments as $attachment)
-                                    <div class="break-all rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                                        {{ $attachment->original_file_name }} ({{ $attachment->mime_type ?? 'unknown' }}, {{ $attachment->file_size }} bytes)
+                                    <div class="flex items-start justify-between gap-3 break-all rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                                        <span>{{ $attachment->original_file_name }} ({{ $attachment->mime_type ?? 'unknown' }}, {{ $attachment->file_size }} bytes)</span>
+                                        <a href="{{ route('support-tickets.attachments.download', ['ticketId' => $selectedTicket->id, 'attachmentId' => $attachment->id]) }}" class="shrink-0 font-semibold text-primary-600 transition hover:text-primary-700">
+                                            Download
+                                        </a>
                                     </div>
                                 @endforeach
                             </div>

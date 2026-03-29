@@ -188,7 +188,7 @@
 
                             <div class="space-y-2">
                                 <label for="customer_phone" class="text-sm font-semibold text-slate-700">Recipient Phone</label>
-                                <input id="customer_phone" name="customer_phone" class="{{ $inputClass }} @error('customer_phone') border-red-500 ring-1 ring-red-100 @enderror" value="{{ old('customer_phone') }}" placeholder="+1 234 567 890">
+                                <input id="customer_phone" name="customer_phone" class="{{ $inputClass }} @error('customer_phone') border-red-500 ring-1 ring-red-100 @enderror" value="{{ old('customer_phone') }}" placeholder="">
                                 @error('customer_phone')
                                     <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -227,7 +227,7 @@
                             @if ($showDownloadActions)
                                 <button type="submit" id="downloadQuoteSubmitBtn" name="download_pdf" value="1" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-neutral-800 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-700 sm:w-auto">Download PDF</button>
                             @endif
-                            <p class="text-xs text-slate-500">{{ $actionHelpText }}</p>
+                            <!-- <p class="text-xs text-slate-500">{{ $actionHelpText }}</p> -->
                             <p id="quoteDraftStatus" class="w-full text-xs text-slate-500"></p>
                         </div>
                     </form>

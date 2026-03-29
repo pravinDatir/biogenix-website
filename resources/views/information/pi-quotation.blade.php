@@ -179,13 +179,13 @@
             <button id="sendEmailBtn" type="button"
                 class="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary-600 px-6 py-2.5 text-sm font-bold text-primary-800 shadow-sm transition-colors hover:bg-secondary-500 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                Send Email
+                Request PI
             </button>
-            <button id="generatePdfBtn" type="button"
+            <!-- <button id="generatePdfBtn" type="button"
                 class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-800 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-primary-700 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                Generate PDF
-            </button>
+                Request PI
+            </button> -->
         </div>
     </div>
 
@@ -373,9 +373,11 @@
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Rate (Unit Price)</label>
                     <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-slate-100">
-                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-                        </span>
+                       <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
+                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 3h18v2H3V3zm0 4h10a5 5 0 010 10H9l6 6h-4l-6-6v-2h8a3 3 0 000-6H3V7z"/>
+                            </svg>
+                         </span>
                         <input id="modalRate" type="number" readonly min="0" step="0.01" value="0" placeholder="&#8377; 0.00"
                             class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none placeholder:text-slate-400">
                     </div>

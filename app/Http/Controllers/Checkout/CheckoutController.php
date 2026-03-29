@@ -134,8 +134,6 @@ class CheckoutController extends Controller
     // This validates the entered coupon and returns the live checkout summary as JSON.
     public function validateCheckoutCoupon(Request $request, CheckoutService $checkoutService, OrderService $orderService): JsonResponse
     {
-        $response = null;
-
         try {
             // Step 1: validate the coupon preview request fields.
             $validatedCouponInput = $request->validate([
@@ -149,30 +147,30 @@ class CheckoutController extends Controller
 
             // Step 3: stop early when no coupon code was entered.
             if ($couponCode === '') {
-                $response = response()->json([
+                return response()->json([
                     'status' => 'error',
                     'message' => 'Please enter a coupon code.',
                     'errors' => [
                         'coupon_code' => ['Please enter a coupon code.'],
                     ],
                 ], 422);
-            } else {
-                // Step 4: decide which checkout flow should prepare the live coupon preview.
-                $isReOrderCheckout = (bool) ($validatedCouponInput['is_reorder_checkout'] ?? false);
-
-                if ($isReOrderCheckout) {
-                    $couponPreview = $orderService->previewReOrderCoupon($validatedCouponInput, $request->user());
-                } else {
-                    $couponPreview = $checkoutService->previewCheckoutCoupon($validatedCouponInput, $request->user());
-                }
-
-                // Step 5: return the final coupon preview payload.
-                $response = response()->json([
-                    'status' => 'success',
-                    'message' => $couponPreview['coupon_message'] ?? 'Coupon applied successfully.',
-                    'coupon_preview' => $couponPreview,
-                ]);
             }
+
+            // Step 4: decide which checkout flow should prepare the live coupon preview.
+            $isReOrderCheckout = (bool) ($validatedCouponInput['is_reorder_checkout'] ?? false);
+
+            if ($isReOrderCheckout) {
+                $couponPreview = $orderService->previewReOrderCoupon($validatedCouponInput, $request->user());
+            } else {
+                $couponPreview = $checkoutService->previewCheckoutCoupon($validatedCouponInput, $request->user());
+            }
+
+            // Step 5: return the final coupon preview payload.
+            return response()->json([
+                'status' => 'success',
+                'message' => $couponPreview['coupon_message'] ?? 'Coupon applied successfully.',
+                'coupon_preview' => $couponPreview,
+            ]);
         } catch (Throwable $exception) {
             // Step 6: log the coupon preview failure for later review.
             Log::error('Failed to validate checkout coupon.', [
@@ -181,29 +179,14 @@ class CheckoutController extends Controller
                 'error' => $exception->getMessage(),
             ]);
 
-            // Step 7: choose the correct response status for the current failure.
-            $statusCode = 500;
-
-            if ($exception instanceof ValidationException) {
-                $statusCode = 422;
-            }
-
-            // Step 8: return a clean JSON error response.
-            $response = response()->json([
-                'status' => 'error',
-                'message' => $this->resolveErrorMessage($exception, 'Unable to validate coupon right now.'),
-                'errors' => $exception instanceof ValidationException ? $exception->errors() : [],
-            ], $statusCode);
+            // Step 7: return a clean JSON error response.
+            return $this->buildJsonErrorResponse($exception, 'Unable to validate coupon right now.');
         }
-
-        return $response;
     }
 
     // This refreshes reorder checkout item pricing when quantity changes on the page.
     public function previewReOrderPricing(Request $request, OrderService $orderService): JsonResponse
     {
-        $response = null;
-
         try {
             // Step 1: validate the posted reorder pricing fields.
             $validatedPreviewInput = $request->validate([
@@ -215,7 +198,7 @@ class CheckoutController extends Controller
             $reOrderPreview = $orderService->previewReOrderPricing($validatedPreviewInput, $request->user());
 
             // Step 3: return the refreshed reorder items and coupon preview.
-            $response = response()->json([
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Checkout pricing refreshed successfully.',
                 'reorder_preview' => $reOrderPreview,
@@ -228,22 +211,9 @@ class CheckoutController extends Controller
                 'error' => $exception->getMessage(),
             ]);
 
-            // Step 5: choose the correct response status code.
-            $statusCode = 500;
-
-            if ($exception instanceof ValidationException) {
-                $statusCode = 422;
-            }
-
-            // Step 6: return a clean JSON error response.
-            $response = response()->json([
-                'status' => 'error',
-                'message' => $this->resolveErrorMessage($exception, 'Unable to refresh checkout pricing right now.'),
-                'errors' => $exception instanceof ValidationException ? $exception->errors() : [],
-            ], $statusCode);
+            // Step 5: return a clean JSON error response.
+            return $this->buildJsonErrorResponse($exception, 'Unable to refresh checkout pricing right now.');
         }
-
-        return $response;
     }
 
     // This checks out the current cart from the existing JSON route.

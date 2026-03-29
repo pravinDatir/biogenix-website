@@ -81,6 +81,7 @@ class RbacSeeder extends Seeder
             ['name' => 'customer.addresses.update', 'slug' => 'customer.addresses.update', 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'support-tickets.index', 'slug' => 'support-tickets.index', 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'support-tickets.store', 'slug' => 'support-tickets.store', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'support-tickets.attachments.download', 'slug' => 'support-tickets.attachments.download', 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'support-tickets.show', 'slug' => 'support-tickets.show', 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'order.confirmation', 'slug' => 'order.confirmation', 'created_at' => $now, 'updated_at' => $now],
         ];
@@ -170,6 +171,7 @@ class RbacSeeder extends Seeder
             'customer.addresses.update',
             'support-tickets.index',
             'support-tickets.store',
+            'support-tickets.attachments.download',
             'support-tickets.show',
             'order.confirmation',
         ];

@@ -328,8 +328,10 @@
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Rate (Unit Price)</label>
                     <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-slate-100">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-                        </span>
+                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 3h18v2H3V3zm0 4h10a5 5 0 010 10H9l6 6h-4l-6-6v-2h8a3 3 0 000-6H3V7z"/>
+                            </svg>
+                         </span>
                         <input id="modalRate" type="number" min="0" step="0.01" value="0" placeholder="&#8377; 0.00"
                             class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none placeholder:text-slate-400">
                     </div>

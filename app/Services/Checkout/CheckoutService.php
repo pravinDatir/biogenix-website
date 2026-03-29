@@ -124,16 +124,10 @@ class CheckoutService
 
             DB::commit();
 
-            // Step 10: log the successful checkout.
-            Log::info('Cart checked out successfully.', [
-                'user_id' => $user->id,
-                'order_id' => $order->id,
-            ]);
-
-            // Step 11: send the order confirmation email after commit.
+            // Step 10: send the order confirmation email after commit.
             $this->sendOrderSubmittedEmail($user, $order);
 
-            // Step 12: build a simple order response for the existing UI flow.
+            // Step 11: build a simple order response for the existing UI flow.
             $orderItems = [];
 
             foreach ($createdOrderItems as $createdOrderItem) {
@@ -273,178 +267,164 @@ class CheckoutService
     // This prepares final order item rows from the current cart during checkout.
     protected function prepareCheckoutOrderItems(Cart $cart, User $user, ?string $couponCode = null): array
     {
-        try {
-            // Step 1: prepare an array that will hold all final order item rows.
-            $preparedOrderItems = [];
+        // Step 1: prepare an array that will hold all final order item rows.
+        $preparedOrderItems = [];
 
-            // Step 2: convert each cart item into one final order item payload.
-            foreach ($cart->items as $index => $cartItem) {
-                $productVariant = $cartItem->variant;
-                $product = $productVariant?->product;
+        // Step 2: convert each cart item into one final order item payload.
+        foreach ($cart->items as $index => $cartItem) {
+            $productVariant = $cartItem->variant;
+            $product = $productVariant?->product;
 
-                if (! $productVariant || ! $product) {
-                    throw ValidationException::withMessages([
-                        'cart' => 'One cart item is no longer available.',
-                    ]);
-                }
-
-                $resolvedVariantPrice = $this->priceService->resolveVariantPrice(
-                    (int) $cartItem->product_variant_id,
-                    $user,
-                    (int) $cartItem->quantity,
-                    $couponCode
-                );
-
-                if (! $resolvedVariantPrice) {
-                    throw ValidationException::withMessages([
-                        'cart' => 'One cart item is no longer available for checkout.',
-                    ]);
-                }
-
-                $this->cartService->validateUserCartQuantity((int) $cartItem->quantity, $resolvedVariantPrice);
-
-                $unitPrice = round((float) ($resolvedVariantPrice['amount'] ?? 0), 4);
-                $unitBasePrice = round((float) ($resolvedVariantPrice['base_amount'] ?? $unitPrice), 4);
-                $unitTaxAmount = round((float) ($resolvedVariantPrice['tax_amount'] ?? 0), 4);
-                $unitPriceAfterGst = round((float) ($resolvedVariantPrice['price_after_gst'] ?? 0), 4);
-                $subtotalAmount = round($unitPrice * (int) $cartItem->quantity, 4);
-                $taxAmount = round($unitTaxAmount * (int) $cartItem->quantity, 4);
-                $totalAmount = round($unitPriceAfterGst * (int) $cartItem->quantity, 4);
-                $lineDiscountAmount = round((float) ($resolvedVariantPrice['discount_amount'] ?? 0) * (int) $cartItem->quantity, 4);
-
-                $preparedOrderItems[] = [
-                    'product_id' => $product->id,
-                    'product_variant_id' => $productVariant->id,
-                    'sku' => $productVariant->sku,
-                    'product_name' => $product->name,
-                    'variant_name' => $productVariant->variant_name,
-                    'description' => 'Created from cart checkout.',
-                    'quantity' => (int) $cartItem->quantity,
-                    'unit_price' => $unitPrice,
-                    'subtotal_amount' => $subtotalAmount,
-                    'discount_amount' => $lineDiscountAmount,
-                    'tax_amount' => $taxAmount,
-                    'total_amount' => $totalAmount,
-                    'sort_order' => $index,
-                    'item_snapshot' => [
-                        'source' => 'cart_checkout',
-                        'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-                        'price_type' => $resolvedVariantPrice['price_type'] ?? null,
-                        'base_unit_price' => $unitBasePrice,
-                        'pricing_stage' => $resolvedVariantPrice['pricing_stage'] ?? 'base_price',
-                        'gst_rate' => round((float) ($resolvedVariantPrice['gst_rate'] ?? 0), 4),
-                        'unit_tax_amount' => $unitTaxAmount,
-                        'unit_price_after_gst' => $unitPriceAfterGst,
-                        'unit_discount_amount' => round((float) ($resolvedVariantPrice['discount_amount'] ?? 0), 4),
-                        'product_discount_amount' => round((float) ($resolvedVariantPrice['product_discount_amount'] ?? 0), 4),
-                        'bulk_discount_amount' => round((float) ($resolvedVariantPrice['bulk_discount_amount'] ?? 0), 4),
-                        'coupon_discount_amount' => round((float) ($resolvedVariantPrice['coupon_discount_amount'] ?? 0), 4),
-                        'applied_coupon_code' => $resolvedVariantPrice['applied_coupon_code'] ?? null,
-                        'coupon_status' => $resolvedVariantPrice['coupon_status'] ?? null,
-                        'coupon_message' => $resolvedVariantPrice['coupon_message'] ?? null,
-                        'min_order_quantity' => (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1),
-                        'max_order_quantity' => $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'],
-                        'lot_size' => (int) ($resolvedVariantPrice['lot_size'] ?? 1),
-                        'variant_sku' => $productVariant->sku,
-                        'variant_name' => $productVariant->variant_name,
-                    ],
-                ];
+            if (! $productVariant || ! $product) {
+                throw ValidationException::withMessages([
+                    'cart' => 'One cart item is no longer available.',
+                ]);
             }
 
-            // Step 3: return all final prepared order item rows.
-            return $preparedOrderItems;
-        } catch (Throwable $exception) {
-            Log::error('Failed to prepare checkout order items.', [
-                'user_id' => $user->id,
-                'cart_id' => $cart->id,
-                'error' => $exception->getMessage(),
-            ]);
+            $quantity = (int) $cartItem->quantity;
+            $resolvedVariantPrice = $this->priceService->resolveVariantPrice(
+                (int) $cartItem->product_variant_id,
+                $user,
+                $quantity,
+                $couponCode
+            );
 
-            throw $exception;
+            if (! $resolvedVariantPrice) {
+                throw ValidationException::withMessages([
+                    'cart' => 'One cart item is no longer available for checkout.',
+                ]);
+            }
+
+            // Step 3: confirm the latest quantity rules before creating the order item.
+            $this->cartService->validateUserCartQuantity($quantity, $resolvedVariantPrice);
+
+            // Step 4: calculate the final amount values for this order item.
+            $unitPrice = round((float) ($resolvedVariantPrice['amount'] ?? 0), 4);
+            $unitBasePrice = round((float) ($resolvedVariantPrice['base_amount'] ?? $unitPrice), 4);
+            $unitTaxAmount = round((float) ($resolvedVariantPrice['tax_amount'] ?? 0), 4);
+            $unitPriceAfterGst = round((float) ($resolvedVariantPrice['price_after_gst'] ?? 0), 4);
+            $subtotalAmount = round($unitPrice * $quantity, 4);
+            $taxAmount = round($unitTaxAmount * $quantity, 4);
+            $totalAmount = round($unitPriceAfterGst * $quantity, 4);
+            $lineDiscountAmount = round((float) ($resolvedVariantPrice['discount_amount'] ?? 0) * $quantity, 4);
+
+            // Step 5: add the prepared order item row.
+            $preparedOrderItems[] = [
+                'product_id' => $product->id,
+                'product_variant_id' => $productVariant->id,
+                'sku' => $productVariant->sku,
+                'product_name' => $product->name,
+                'variant_name' => $productVariant->variant_name,
+                'description' => 'Created from cart checkout.',
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'subtotal_amount' => $subtotalAmount,
+                'discount_amount' => $lineDiscountAmount,
+                'tax_amount' => $taxAmount,
+                'total_amount' => $totalAmount,
+                'sort_order' => $index,
+                'item_snapshot' => [
+                    'source' => 'cart_checkout',
+                    'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
+                    'price_type' => $resolvedVariantPrice['price_type'] ?? null,
+                    'base_unit_price' => $unitBasePrice,
+                    'pricing_stage' => $resolvedVariantPrice['pricing_stage'] ?? 'base_price',
+                    'gst_rate' => round((float) ($resolvedVariantPrice['gst_rate'] ?? 0), 4),
+                    'unit_tax_amount' => $unitTaxAmount,
+                    'unit_price_after_gst' => $unitPriceAfterGst,
+                    'unit_discount_amount' => round((float) ($resolvedVariantPrice['discount_amount'] ?? 0), 4),
+                    'product_discount_amount' => round((float) ($resolvedVariantPrice['product_discount_amount'] ?? 0), 4),
+                    'bulk_discount_amount' => round((float) ($resolvedVariantPrice['bulk_discount_amount'] ?? 0), 4),
+                    'coupon_discount_amount' => round((float) ($resolvedVariantPrice['coupon_discount_amount'] ?? 0), 4),
+                    'applied_coupon_code' => $resolvedVariantPrice['applied_coupon_code'] ?? null,
+                    'coupon_status' => $resolvedVariantPrice['coupon_status'] ?? null,
+                    'coupon_message' => $resolvedVariantPrice['coupon_message'] ?? null,
+                    'min_order_quantity' => (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1),
+                    'max_order_quantity' => $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'],
+                    'lot_size' => (int) ($resolvedVariantPrice['lot_size'] ?? 1),
+                    'variant_sku' => $productVariant->sku,
+                    'variant_name' => $productVariant->variant_name,
+                ],
+            ];
         }
+
+        // Step 6: return all final prepared order item rows.
+        return $preparedOrderItems;
     }
 
     // This calculates final order totals during cart checkout.
     protected function calculateCheckoutTotals(array $validatedCheckout, array $preparedOrderItems): array
     {
-        try {
-            // Step 1: read the optional extra amounts passed during checkout.
-            $shippingAmount = round((float) ($validatedCheckout['shipping_amount'] ?? 0), 4);
-            $adjustmentAmount = round((float) ($validatedCheckout['adjustment_amount'] ?? 0), 4);
-            $roundingAmount = round((float) ($validatedCheckout['rounding_amount'] ?? 0), 4);
-            $currency = (string) ($preparedOrderItems[0]['item_snapshot']['currency'] ?? 'INR');
+        // Step 1: read the optional extra amounts passed during checkout.
+        $shippingAmount = round((float) ($validatedCheckout['shipping_amount'] ?? 0), 4);
+        $adjustmentAmount = round((float) ($validatedCheckout['adjustment_amount'] ?? 0), 4);
+        $roundingAmount = round((float) ($validatedCheckout['rounding_amount'] ?? 0), 4);
+        $currency = (string) ($preparedOrderItems[0]['item_snapshot']['currency'] ?? 'INR');
 
-            // Step 2: sum all order item amounts into final order totals.
-            $subtotalAmount = 0;
-            $taxAmount = 0;
-            $discountAmount = 0;
-            $itemsTotal = 0;
-            $priceTypes = [];
-            $pricingStages = [];
+        // Step 2: sum all order item amounts into final order totals.
+        $subtotalAmount = 0;
+        $taxAmount = 0;
+        $discountAmount = 0;
+        $itemsTotal = 0;
+        $priceTypes = [];
+        $pricingStages = [];
 
-            foreach ($preparedOrderItems as $preparedOrderItem) {
-                $itemSnapshot = $preparedOrderItem['item_snapshot'] ?? [];
+        foreach ($preparedOrderItems as $preparedOrderItem) {
+            $itemSnapshot = $preparedOrderItem['item_snapshot'] ?? [];
 
-                $subtotalAmount += (float) ($preparedOrderItem['subtotal_amount'] ?? 0);
-                $taxAmount += (float) ($preparedOrderItem['tax_amount'] ?? 0);
-                $discountAmount += (float) ($preparedOrderItem['discount_amount'] ?? 0);
-                $itemsTotal += (float) ($preparedOrderItem['total_amount'] ?? 0);
+            $subtotalAmount += (float) ($preparedOrderItem['subtotal_amount'] ?? 0);
+            $taxAmount += (float) ($preparedOrderItem['tax_amount'] ?? 0);
+            $discountAmount += (float) ($preparedOrderItem['discount_amount'] ?? 0);
+            $itemsTotal += (float) ($preparedOrderItem['total_amount'] ?? 0);
 
-                $priceType = $itemSnapshot['price_type'] ?? null;
-                $pricingStage = $itemSnapshot['pricing_stage'] ?? null;
+            $priceType = $itemSnapshot['price_type'] ?? null;
+            $pricingStage = $itemSnapshot['pricing_stage'] ?? null;
 
-                if ($priceType && ! in_array($priceType, $priceTypes, true)) {
-                    $priceTypes[] = $priceType;
-                }
-
-                if ($pricingStage && ! in_array($pricingStage, $pricingStages, true)) {
-                    $pricingStages[] = $pricingStage;
-                }
+            if ($priceType && ! in_array($priceType, $priceTypes, true)) {
+                $priceTypes[] = $priceType;
             }
 
-            $subtotalAmount = round($subtotalAmount, 4);
-            $taxAmount = round($taxAmount, 4);
-            $discountAmount = round($discountAmount, 4);
-            $itemsTotal = round($itemsTotal, 4);
-            $totalAmount = round($itemsTotal + $shippingAmount + $adjustmentAmount + $roundingAmount, 4);
-
-            // Step 3: keep a readable pricing snapshot on the order header.
-            $pricingSnapshot = [
-                'source' => 'cart_checkout',
-                'currency' => $currency,
-                'items_count' => count($preparedOrderItems),
-                'coupon_code' => $validatedCheckout['coupon_code'] ?? null,
-                'subtotal_amount' => $subtotalAmount,
-                'tax_amount' => $taxAmount,
-                'discount_amount' => $discountAmount,
-                'items_total' => $itemsTotal,
-                'shipping_amount' => $shippingAmount,
-                'adjustment_amount' => $adjustmentAmount,
-                'rounding_amount' => $roundingAmount,
-                'total_amount' => $totalAmount,
-                'price_types' => $priceTypes,
-                'pricing_stages' => $pricingStages,
-            ];
-
-            // Step 4: return the final order totals array.
-            return [
-                'currency' => $currency,
-                'subtotal_amount' => $subtotalAmount,
-                'tax_amount' => $taxAmount,
-                'discount_amount' => $discountAmount,
-                'shipping_amount' => $shippingAmount,
-                'adjustment_amount' => $adjustmentAmount,
-                'rounding_amount' => $roundingAmount,
-                'total_amount' => $totalAmount,
-                'pricing_snapshot' => $pricingSnapshot,
-            ];
-        } catch (Throwable $exception) {
-            Log::error('Failed to calculate checkout totals.', [
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
+            if ($pricingStage && ! in_array($pricingStage, $pricingStages, true)) {
+                $pricingStages[] = $pricingStage;
+            }
         }
+
+        $subtotalAmount = round($subtotalAmount, 4);
+        $taxAmount = round($taxAmount, 4);
+        $discountAmount = round($discountAmount, 4);
+        $itemsTotal = round($itemsTotal, 4);
+        $totalAmount = round($itemsTotal + $shippingAmount + $adjustmentAmount + $roundingAmount, 4);
+
+        // Step 3: keep a readable pricing snapshot on the order header.
+        $pricingSnapshot = [
+            'source' => 'cart_checkout',
+            'currency' => $currency,
+            'items_count' => count($preparedOrderItems),
+            'coupon_code' => $validatedCheckout['coupon_code'] ?? null,
+            'subtotal_amount' => $subtotalAmount,
+            'tax_amount' => $taxAmount,
+            'discount_amount' => $discountAmount,
+            'items_total' => $itemsTotal,
+            'shipping_amount' => $shippingAmount,
+            'adjustment_amount' => $adjustmentAmount,
+            'rounding_amount' => $roundingAmount,
+            'total_amount' => $totalAmount,
+            'price_types' => $priceTypes,
+            'pricing_stages' => $pricingStages,
+        ];
+
+        // Step 4: return the final order totals array.
+        return [
+            'currency' => $currency,
+            'subtotal_amount' => $subtotalAmount,
+            'tax_amount' => $taxAmount,
+            'discount_amount' => $discountAmount,
+            'shipping_amount' => $shippingAmount,
+            'adjustment_amount' => $adjustmentAmount,
+            'rounding_amount' => $roundingAmount,
+            'total_amount' => $totalAmount,
+            'pricing_snapshot' => $pricingSnapshot,
+        ];
     }
 
     // This stores the item-level discount reasons created during checkout.
@@ -513,187 +493,122 @@ class CheckoutService
     // This stores the selected shipping and billing addresses for a submitted order.
     protected function storeCheckoutOrderAddresses(Order $order, User $user, array $validatedCheckout): void
     {
-        try {
-            // Step 1: resolve the checkout address that the customer selected or entered.
-            $checkoutAddressData = $this->resolveCheckoutAddressData($user, $validatedCheckout);
-            $selectedAddressSource = (string) ($validatedCheckout['selected_address_source'] ?? 'existing');
+        // Step 1: resolve the checkout address that the customer selected or entered.
+        $checkoutAddressData = $this->resolveCheckoutAddressData($user, $validatedCheckout);
 
-            // Step 2: create the shipping address row.
-            $shippingAddressPayload = $this->buildOrderAddressPayload($order, 'shipping', $checkoutAddressData, $user, $validatedCheckout);
-            $order->addresses()->create($shippingAddressPayload);
+        // Step 2: create the shipping address row.
+        $shippingAddressPayload = $this->buildOrderAddressPayload('shipping', $checkoutAddressData, $user, $validatedCheckout);
+        $order->addresses()->create($shippingAddressPayload);
 
-            // Step 3: create the billing address row.
-            $billingAddressPayload = $this->buildOrderAddressPayload($order, 'billing', $checkoutAddressData, $user, $validatedCheckout);
-            $order->addresses()->create($billingAddressPayload);
-
-            // Step 4: write one log for the stored checkout addresses.
-            Log::info('Checkout order addresses stored successfully.', [
-                'user_id' => $user->id,
-                'order_id' => $order->id,
-                'selected_address_source' => $selectedAddressSource,
-                'user_address_id' => $checkoutAddressData['user_address']->id ?? null,
-            ]);
-        } catch (Throwable $exception) {
-            Log::error('Failed to store checkout order addresses.', [
-                'user_id' => $user->id,
-                'order_id' => $order->id,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
+        // Step 3: create the billing address row.
+        $billingAddressPayload = $this->buildOrderAddressPayload('billing', $checkoutAddressData, $user, $validatedCheckout);
+        $order->addresses()->create($billingAddressPayload);
     }
 
     // This resolves the final checkout address from either a saved address or a new address form.
     protected function resolveCheckoutAddressData(User $user, array $validatedCheckout): array
     {
-        try {
-            $selectedAddressSource = (string) ($validatedCheckout['selected_address_source'] ?? 'existing');
+        // Step 1: decide whether checkout should use an existing or new address.
+        $selectedAddressSource = (string) ($validatedCheckout['selected_address_source'] ?? 'existing');
+        $checkoutAddress = null;
+        $contactPhone = $user->phone;
+        $addressLabel = null;
 
-            // Step 1: reuse the selected saved address when the customer picked an existing address.
-            if ($selectedAddressSource === 'existing') {
-                $selectedUserAddress = UserAddress::query()
-                    ->where('user_id', $user->id)
-                    ->whereKey((int) ($validatedCheckout['selected_user_address_id'] ?? 0))
-                    ->first();
+        // Step 2: load the selected saved address when the customer picked one.
+        if ($selectedAddressSource === 'existing') {
+            $checkoutAddress = UserAddress::query()
+                ->where('user_id', $user->id)
+                ->whereKey((int) ($validatedCheckout['selected_user_address_id'] ?? 0))
+                ->first();
 
-                if (! $selectedUserAddress) {
-                    throw ValidationException::withMessages([
-                        'selected_user_address_id' => 'Please select one saved address for checkout.',
-                    ]);
-                }
-
-                // Step 2: log that checkout reused an existing saved address.
-                Log::info('Checkout is using an existing saved user address.', [
-                    'user_id' => $user->id,
-                    'user_address_id' => $selectedUserAddress->id,
+            if (! $checkoutAddress) {
+                throw ValidationException::withMessages([
+                    'selected_user_address_id' => 'Please select one saved address for checkout.',
                 ]);
-
-                return [
-                    'user_address' => $selectedUserAddress,
-                    'address_line1' => $selectedUserAddress->line1,
-                    'address_line2' => $selectedUserAddress->line2,
-                    'city' => $selectedUserAddress->city,
-                    'state' => $selectedUserAddress->state,
-                    'postal_code' => $selectedUserAddress->postal_code,
-                    'country' => $selectedUserAddress->country ?: 'India',
-                    'contact_phone' => $user->phone,
-                    'address_label' => $selectedUserAddress->line2,
-                ];
             }
 
-            // Step 3: save a new address first when the customer entered a new one on checkout.
-            $createdUserAddress = $this->saveNewCheckoutAddressForUser($user, $validatedCheckout);
-
-            return [
-                'user_address' => $createdUserAddress,
-                'address_line1' => $createdUserAddress->line1,
-                'address_line2' => $createdUserAddress->line2,
-                'city' => $createdUserAddress->city,
-                'state' => $createdUserAddress->state,
-                'postal_code' => $createdUserAddress->postal_code,
-                'country' => $createdUserAddress->country ?: 'India',
-                'contact_phone' => $validatedCheckout['new_address_phone'] ?? $user->phone,
-                'address_label' => $validatedCheckout['new_address_label'] ?? null,
-            ];
-        } catch (Throwable $exception) {
-            Log::error('Failed to resolve checkout address data.', [
-                'user_id' => $user->id,
-                'selected_address_source' => $validatedCheckout['selected_address_source'] ?? null,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
+            $addressLabel = $checkoutAddress->line2;
         }
+
+        // Step 3: save and use the new checkout address when needed.
+        if ($selectedAddressSource === 'new') {
+            $checkoutAddress = $this->saveNewCheckoutAddressForUser($user, $validatedCheckout);
+            $contactPhone = $validatedCheckout['new_address_phone'] ?? $user->phone;
+            $addressLabel = $validatedCheckout['new_address_label'] ?? null;
+        }
+
+        // Step 4: return the final address details used for the order.
+        return [
+            'user_address' => $checkoutAddress,
+            'address_line1' => $checkoutAddress->line1,
+            'address_line2' => $checkoutAddress->line2,
+            'city' => $checkoutAddress->city,
+            'state' => $checkoutAddress->state,
+            'postal_code' => $checkoutAddress->postal_code,
+            'country' => $checkoutAddress->country ?: 'India',
+            'contact_phone' => $contactPhone,
+            'address_label' => $addressLabel,
+        ];
     }
 
     // This saves a new checkout address into the user address book before it is used on the order.
     protected function saveNewCheckoutAddressForUser(User $user, array $validatedCheckout): UserAddress
     {
-        try {
-            // Step 1: check whether the user already has saved addresses.
-            $userHasSavedAddresses = $user->addresses()->exists();
+        // Step 1: check whether the user already has saved addresses.
+        $userHasSavedAddresses = $user->addresses()->exists();
 
-            // Step 2: save the new address in the user address book.
-            $createdUserAddress = $user->addresses()->create([
-                'line1' => trim((string) ($validatedCheckout['new_address_line1'] ?? '')),
-                'line2' => filled($validatedCheckout['new_address_label'] ?? null) ? trim((string) $validatedCheckout['new_address_label']) : null,
-                'city' => trim((string) ($validatedCheckout['new_address_city'] ?? '')),
-                'state' => trim((string) ($validatedCheckout['new_address_state'] ?? '')),
-                'postal_code' => trim((string) ($validatedCheckout['new_address_postal_code'] ?? '')),
-                'country' => filled($validatedCheckout['new_address_country'] ?? null) ? trim((string) $validatedCheckout['new_address_country']) : 'India',
-                'is_default_shipping' => ! $userHasSavedAddresses,
-                'is_default_billing' => ! $userHasSavedAddresses,
-            ]);
-
-            // Step 3: log the new saved address.
-            Log::info('New checkout address saved to user address book.', [
-                'user_id' => $user->id,
-                'user_address_id' => $createdUserAddress->id,
-            ]);
-
-            return $createdUserAddress;
-        } catch (Throwable $exception) {
-            Log::error('Failed to save new checkout address for user.', [
-                'user_id' => $user->id,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
+        // Step 2: save the new address in the user address book.
+        return $user->addresses()->create([
+            'line1' => trim((string) ($validatedCheckout['new_address_line1'] ?? '')),
+            'line2' => filled($validatedCheckout['new_address_label'] ?? null) ? trim((string) $validatedCheckout['new_address_label']) : null,
+            'city' => trim((string) ($validatedCheckout['new_address_city'] ?? '')),
+            'state' => trim((string) ($validatedCheckout['new_address_state'] ?? '')),
+            'postal_code' => trim((string) ($validatedCheckout['new_address_postal_code'] ?? '')),
+            'country' => filled($validatedCheckout['new_address_country'] ?? null) ? trim((string) $validatedCheckout['new_address_country']) : 'India',
+            'is_default_shipping' => ! $userHasSavedAddresses,
+            'is_default_billing' => ! $userHasSavedAddresses,
+        ]);
     }
 
     // This builds one order address payload from the chosen checkout address.
-    protected function buildOrderAddressPayload(Order $order, string $addressType, array $checkoutAddressData, User $user, array $validatedCheckout): array
+    protected function buildOrderAddressPayload(string $addressType, array $checkoutAddressData, User $user, array $validatedCheckout): array
     {
-        try {
-            // Step 1: resolve the company name for B2B billing details.
-            $companyName = null;
+        // Step 1: resolve the company name for B2B billing details.
+        $companyName = null;
 
-            if (filled($validatedCheckout['registered_business_name'] ?? null)) {
-                $companyName = trim((string) $validatedCheckout['registered_business_name']);
-            } else {
-                $companyName = $user->company?->legal_name ?: $user->company?->name;
-            }
-
-            // Step 2: keep the GST value only on billing flows for B2B users.
-            $gstin = null;
-
-            if ($addressType === 'billing' && $user->isB2b()) {
-                if (filled($validatedCheckout['gstin'] ?? null)) {
-                    $gstin = trim((string) $validatedCheckout['gstin']);
-                } else {
-                    $gstin = $user->company?->gst_number;
-                }
-            }
-
-            // Step 3: return one order address payload for the given address type.
-            return [
-                'order_id' => $order->id,
-                'address_type' => $addressType,
-                'contact_name' => $user->name,
-                'company_name' => $user->isB2b() ? $companyName : null,
-                'email' => $user->email,
-                'phone' => filled($checkoutAddressData['contact_phone'] ?? null) ? trim((string) $checkoutAddressData['contact_phone']) : $user->phone,
-                'gstin' => $gstin,
-                'line1' => trim((string) ($checkoutAddressData['address_line1'] ?? '')),
-                'line2' => filled($checkoutAddressData['address_line2'] ?? null) ? trim((string) $checkoutAddressData['address_line2']) : null,
-                'landmark' => filled($checkoutAddressData['address_label'] ?? null) ? trim((string) $checkoutAddressData['address_label']) : null,
-                'city' => trim((string) ($checkoutAddressData['city'] ?? '')),
-                'state' => trim((string) ($checkoutAddressData['state'] ?? '')),
-                'postal_code' => trim((string) ($checkoutAddressData['postal_code'] ?? '')),
-                'country_code' => $this->normalizeCountryCode($checkoutAddressData['country'] ?? 'India'),
-            ];
-        } catch (Throwable $exception) {
-            Log::error('Failed to build order address payload.', [
-                'user_id' => $user->id,
-                'order_id' => $order->id,
-                'address_type' => $addressType,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
+        if (filled($validatedCheckout['registered_business_name'] ?? null)) {
+            $companyName = trim((string) $validatedCheckout['registered_business_name']);
+        } else {
+            $companyName = $user->company?->legal_name ?: $user->company?->name;
         }
+
+        // Step 2: keep the GST value only on billing flows for B2B users.
+        $gstin = null;
+
+        if ($addressType === 'billing' && $user->isB2b()) {
+            if (filled($validatedCheckout['gstin'] ?? null)) {
+                $gstin = trim((string) $validatedCheckout['gstin']);
+            } else {
+                $gstin = $user->company?->gst_number;
+            }
+        }
+
+        // Step 3: return one order address payload for the given address type.
+        return [
+            'address_type' => $addressType,
+            'contact_name' => $user->name,
+            'company_name' => $user->isB2b() ? $companyName : null,
+            'email' => $user->email,
+            'phone' => filled($checkoutAddressData['contact_phone'] ?? null) ? trim((string) $checkoutAddressData['contact_phone']) : $user->phone,
+            'gstin' => $gstin,
+            'line1' => trim((string) ($checkoutAddressData['address_line1'] ?? '')),
+            'line2' => filled($checkoutAddressData['address_line2'] ?? null) ? trim((string) $checkoutAddressData['address_line2']) : null,
+            'landmark' => filled($checkoutAddressData['address_label'] ?? null) ? trim((string) $checkoutAddressData['address_label']) : null,
+            'city' => trim((string) ($checkoutAddressData['city'] ?? '')),
+            'state' => trim((string) ($checkoutAddressData['state'] ?? '')),
+            'postal_code' => trim((string) ($checkoutAddressData['postal_code'] ?? '')),
+            'country_code' => $this->normalizeCountryCode($checkoutAddressData['country'] ?? 'India'),
+        ];
     }
 
     // This converts the entered country into the two-character code expected by order addresses.

@@ -27,16 +27,20 @@ class CartService
         try {
             // Step 1: read the current shopper details from the request.
             $user = $request->user();
-            $guestCartSessionId = null;
+            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            if (! $user) {
-                $guestCartSessionId = $this->resolveGuestCartSessionId($request);
-            }
+            // Step 2: load the current cart for the active shopper.
+            $cart = $this->findCart($user, $guestCartSessionId);
 
-            // Step 2: load the current cart using the shared cart flow.
-            return $this->showCartForShopper($user, $guestCartSessionId);
+            // Step 3: return the prepared cart payload.
+            return $this->buildCartResponse($cart, $user, $guestCartSessionId);
         } catch (Throwable $exception) {
-            Log::error('Failed to show current cart.', [ 'user_id' => $request->user()?->id, 'session_id' => $request->session()->get('guest_cart_session_id'),  'error' => $exception->getMessage(), ]);
+            Log::error('Failed to show current cart.', [
+                'user_id' => $request->user()?->id,
+                'session_id' => $request->session()->get('guest_cart_session_id'),
+                'error' => $exception->getMessage(),
+            ]);
+
             throw $exception;
         }
     }
@@ -47,14 +51,62 @@ class CartService
         try {
             // Step 1: read the current shopper details from the request.
             $user = $request->user();
-            $guestCartSessionId = null;
+            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            if (! $user) {
-                $guestCartSessionId = $this->resolveGuestCartSessionId($request);
+            // Step 2: find or create the current cart row.
+            $cart = $this->findOrCreateCart($user, $guestCartSessionId);
+
+            // Step 3: resolve the exact variant that should be stored in the cart.
+            $productVariantId = $this->resolveCartVariantId($validatedCartItem, $user);
+
+            // Step 4: load the existing cart item for the same variant.
+            $cartItem = $cart->items()
+                ->where('product_variant_id', $productVariantId)
+                ->first();
+
+            // Step 5: calculate the final quantity after the add action.
+            $requestedQuantity = (int) $validatedCartItem['quantity'];
+            $existingQuantity = $cartItem ? (int) $cartItem->quantity : 0;
+            $finalQuantity = $existingQuantity + $requestedQuantity;
+
+            // Step 6: load the live price for the final quantity.
+            $resolvedVariantPrice = $this->priceService->resolveVariantPrice($productVariantId, $user, $finalQuantity);
+
+            if (! $resolvedVariantPrice) {
+                $productVariantMessage = $user
+                    ? 'The selected product variant is not available for this user.'
+                    : 'The selected product variant is not available right now.';
+
+                throw ValidationException::withMessages([
+                    'product_variant_id' => $productVariantMessage,
+                ]);
             }
 
-            // Step 2: add the item using the shared cart flow.
-            return $this->addItemToCartForShopper($validatedCartItem, $user, $guestCartSessionId);
+            // Step 7: validate the final quantity.
+            $this->validateCartQuantity($finalQuantity, $resolvedVariantPrice);
+
+            // Step 8: save the cart item.
+            if ($cartItem) {
+                $cartItem->update([
+                    'quantity' => $finalQuantity,
+                ]);
+            } else {
+                $cart->items()->create([
+                    'product_variant_id' => $productVariantId,
+                    'quantity' => $finalQuantity,
+                ]);
+            }
+
+            // Step 9: keep the cart currency aligned with the current price.
+            $cart->update([
+                'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
+            ]);
+
+            // Step 10: load the refreshed cart after save.
+            $refreshedCart = $this->findCart($user, $guestCartSessionId);
+
+            // Step 11: return the refreshed cart payload.
+            return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
         } catch (Throwable $exception) {
             Log::error('Failed to add item to current cart.', [
                 'user_id' => $request->user()?->id,
@@ -72,14 +124,43 @@ class CartService
         try {
             // Step 1: read the current shopper details from the request.
             $user = $request->user();
-            $guestCartSessionId = null;
+            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            if (! $user) {
-                $guestCartSessionId = $this->resolveGuestCartSessionId($request);
+            // Step 2: load the selected cart item and confirm ownership.
+            $cartItem = $this->findCartItem($cartItemId, $user, $guestCartSessionId);
+
+            // Step 3: load the live price for the requested quantity.
+            $updatedQuantity = (int) $validatedCartItem['quantity'];
+            $resolvedVariantPrice = $this->priceService->resolveVariantPrice(
+                (int) $cartItem->product_variant_id,
+                $user,
+                $updatedQuantity
+            );
+
+            if (! $resolvedVariantPrice) {
+                throw ValidationException::withMessages([
+                    'cart_item_id' => 'The selected cart item is no longer available for checkout.',
+                ]);
             }
 
-            // Step 2: update the cart item using the shared cart flow.
-            return $this->updateCartItemForShopper($cartItemId, $validatedCartItem, $user, $guestCartSessionId);
+            // Step 4: validate the requested quantity.
+            $this->validateCartQuantity($updatedQuantity, $resolvedVariantPrice);
+
+            // Step 5: save the new quantity.
+            $cartItem->update([
+                'quantity' => $updatedQuantity,
+            ]);
+
+            // Step 6: keep the cart currency aligned with the current price.
+            $cartItem->cart->update([
+                'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
+            ]);
+
+            // Step 7: load the refreshed cart after update.
+            $refreshedCart = $this->findCart($user, $guestCartSessionId);
+
+            // Step 8: return the refreshed cart payload.
+            return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
         } catch (Throwable $exception) {
             Log::error('Failed to update current cart item.', [
                 'user_id' => $request->user()?->id,
@@ -98,230 +179,33 @@ class CartService
         try {
             // Step 1: read the current shopper details from the request.
             $user = $request->user();
-            $guestCartSessionId = null;
+            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            if (! $user) {
-                $guestCartSessionId = $this->resolveGuestCartSessionId($request);
-            }
-
-            // Step 2: remove the cart item using the shared cart flow.
-            return $this->removeCartItemForShopper($cartItemId, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to remove item from current cart.', [
-                'user_id' => $request->user()?->id,
-                'session_id' => $request->session()->get('guest_cart_session_id'),
-                'cart_item_id' => $cartItemId,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
-    }
-
-    // This loads the current cart for either a signed-in shopper or a guest shopper.
-    protected function showCartForShopper(?User $user, ?string $guestCartSessionId): array
-    {
-        try {
-            // Step 1: load the current cart for the active shopper.
-            $cart = $this->findCart($user, $guestCartSessionId);
-
-            // Step 2: build the cart response from the loaded cart.
-            return $this->buildCartResponse($cart, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to show cart.', [
-                'user_id' => $user?->id,
-                'session_id' => $guestCartSessionId,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
-    }
-
-    // This adds one item into the current cart for either shopper type.
-    protected function addItemToCartForShopper(array $validatedCartItem, ?User $user, ?string $guestCartSessionId): array
-    {
-        try {
-            // Step 1: find or create the current cart row.
-            $cart = $this->findOrCreateCart($user, $guestCartSessionId);
-
-            // Step 2: resolve the exact variant that should be stored in the cart.
-            $productVariantId = $this->resolveCartVariantId($validatedCartItem, $user);
-
-            // Step 3: load an existing cart item for the same variant when it exists.
-            $cartItem = $cart->items()
-                ->where('product_variant_id', $productVariantId)
-                ->first();
-
-            // Step 4: calculate the final quantity after the add action.
-            $requestedQuantity = (int) $validatedCartItem['quantity'];
-            $existingQuantity = 0;
-
-            if ($cartItem) {
-                $existingQuantity = (int) $cartItem->quantity;
-            }
-
-            $finalQuantity = $existingQuantity + $requestedQuantity;
-
-            // Step 5: load the live price for the final quantity.
-            $resolvedVariantPrice = $this->priceService->resolveVariantPrice($productVariantId, $user, $finalQuantity);
-
-            if (! $resolvedVariantPrice) {
-                $productVariantMessage = 'The selected product variant is not available right now.';
-
-                if ($user) {
-                    $productVariantMessage = 'The selected product variant is not available for this user.';
-                }
-
-                throw ValidationException::withMessages([
-                    'product_variant_id' => $productVariantMessage,
-                ]);
-            }
-
-            // Step 6: validate the final quantity.
-            $this->validateCartQuantity($finalQuantity, $resolvedVariantPrice);
-
-            // Step 7: save the cart item.
-            if ($cartItem) {
-                $cartItem->update([
-                    'quantity' => $finalQuantity,
-                ]);
-            } else {
-                $cart->items()->create([
-                    'product_variant_id' => $productVariantId,
-                    'quantity' => $finalQuantity,
-                ]);
-            }
-
-            // Step 8: keep the cart currency aligned with the current price.
-            $cart->update([
-                'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-            ]);
-
-            // Step 9: log the successful add-to-cart action.
-            Log::info('Product added to cart successfully.', [
-                'user_id' => $user?->id,
-                'session_id' => $guestCartSessionId,
-                'cart_id' => $cart->id,
-                'product_variant_id' => $productVariantId,
-                'quantity' => $finalQuantity,
-            ]);
-
-            // Step 10: load the refreshed cart.
-            $refreshedCart = $this->findCart($user, $guestCartSessionId);
-
-            // Step 11: return the refreshed cart payload.
-            return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to add product to cart.', [
-                'user_id' => $user?->id,
-                'session_id' => $guestCartSessionId,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
-    }
-
-    // This updates one existing cart item quantity for either shopper type.
-    protected function updateCartItemForShopper(int $cartItemId, array $validatedCartItem, ?User $user, ?string $guestCartSessionId): array
-    {
-        try {
-            // Step 1: load the selected cart item and confirm ownership.
+            // Step 2: load the selected cart item and confirm ownership.
             $cartItem = $this->findCartItem($cartItemId, $user, $guestCartSessionId);
 
-            // Step 2: load the live price for the requested quantity.
-            $updatedQuantity = (int) $validatedCartItem['quantity'];
-            $resolvedVariantPrice = $this->priceService->resolveVariantPrice((int) $cartItem->product_variant_id, $user, $updatedQuantity);
-
-            if (! $resolvedVariantPrice) {
-                throw ValidationException::withMessages([
-                    'cart_item_id' => 'The selected cart item is no longer available for checkout.',
-                ]);
-            }
-
-            // Step 3: validate the requested quantity.
-            $this->validateCartQuantity($updatedQuantity, $resolvedVariantPrice);
-
-            // Step 4: save the new quantity and cart currency.
-            $cartItem->update([
-                'quantity' => $updatedQuantity,
-            ]);
-
-            $cartItem->cart->update([
-                'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-            ]);
-
-            // Step 5: log the successful cart update.
-            Log::info('Cart item updated successfully.', [
-                'user_id' => $user?->id,
-                'session_id' => $guestCartSessionId,
-                'cart_id' => $cartItem->cart_id,
-                'cart_item_id' => $cartItemId,
-                'quantity' => $updatedQuantity,
-            ]);
-
-            // Step 6: load the refreshed cart.
-            $refreshedCart = $this->findCart($user, $guestCartSessionId);
-
-            // Step 7: return the refreshed cart payload.
-            return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to update cart item.', [
-                'user_id' => $user?->id,
-                'session_id' => $guestCartSessionId,
-                'cart_item_id' => $cartItemId,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
-    }
-
-    // This removes one existing cart item for either shopper type.
-    protected function removeCartItemForShopper(int $cartItemId, ?User $user, ?string $guestCartSessionId): array
-    {
-        try {
-            // Step 1: load the selected cart item and confirm ownership.
-            $cartItem = $this->findCartItem($cartItemId, $user, $guestCartSessionId);
-
-            // Step 2: keep the cart before deleting the item.
+            // Step 3: keep the cart row before deleting the item.
             $cart = $cartItem->cart;
 
-            // Step 3: remove the cart item row.
+            // Step 4: remove the cart item row.
             $cartItem->delete();
 
-            // Step 4: remove the cart row too when no items remain.
+            // Step 5: return an empty cart when no items remain.
             if (! $cart->items()->exists()) {
                 $cart->delete();
-
-                Log::info('Last cart item removed and cart deleted.', [
-                    'user_id' => $user?->id,
-                    'session_id' => $guestCartSessionId,
-                    'cart_id' => $cart->id,
-                    'cart_item_id' => $cartItemId,
-                ]);
 
                 return $this->buildCartResponse(null, $user, $guestCartSessionId);
             }
 
-            // Step 5: log the successful remove action.
-            Log::info('Cart item removed successfully.', [
-                'user_id' => $user?->id,
-                'session_id' => $guestCartSessionId,
-                'cart_id' => $cart->id,
-                'cart_item_id' => $cartItemId,
-            ]);
-
-            // Step 6: load the refreshed cart.
+            // Step 6: load the refreshed cart after remove.
             $refreshedCart = $this->findCart($user, $guestCartSessionId);
 
             // Step 7: return the refreshed cart payload.
             return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
         } catch (Throwable $exception) {
-            Log::error('Failed to remove cart item.', [
-                'user_id' => $user?->id,
-                'session_id' => $guestCartSessionId,
+            Log::error('Failed to remove item from current cart.', [
+                'user_id' => $request->user()?->id,
+                'session_id' => $request->session()->get('guest_cart_session_id'),
                 'cart_item_id' => $cartItemId,
                 'error' => $exception->getMessage(),
             ]);

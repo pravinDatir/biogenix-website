@@ -108,6 +108,7 @@ Route::post('/customer/addresses', [CustomerAddressController::class, 'store'])-
 Route::put('/customer/addresses/{addressId}', [CustomerAddressController::class, 'update'])->middleware(['auth', 'permission:customer.addresses.update'])->name('customer.addresses.update');
 Route::get('/support-tickets', [SupportTicketController::class, 'index'])->middleware(['auth', 'permission:support-tickets.index'])->name('support-tickets.index');
 Route::post('/support-tickets', [SupportTicketController::class, 'store'])->middleware(['auth', 'permission:support-tickets.store'])->name('support-tickets.store');
+Route::get('/support-tickets/{ticketId}/attachments/{attachmentId}/download', [SupportTicketController::class, 'downloadAttachment'])->middleware(['auth', 'permission:support-tickets.attachments.download'])->name('support-tickets.attachments.download');
 Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->middleware(['auth', 'permission:support-tickets.show'])->name('support-tickets.show');
 
 
