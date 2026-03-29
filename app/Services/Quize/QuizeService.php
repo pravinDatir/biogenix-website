@@ -253,7 +253,7 @@ class QuizeService
         }
 
         return [
-            'result_title_html' => 'Growth<br>Opportunity<br>Identified.',
+            'result_title_html' => 'Growth Opportunity Identified.',
             'result_description' => 'Your responses highlight useful improvement areas across kit selection, compliance, and preparation workflows.',
         ];
     }

@@ -45,7 +45,7 @@
     $quizFieldClass = 'quiz-field h-12 w-full rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 text-sm text-[var(--ui-text)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-[var(--color-neutral-500)] focus:border-primary-600 focus:ring-2 focus:ring-primary-600/10';
     $quizPrimaryButtonClass = 'quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
     $quizSubmitButtonClass = 'mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-3.5 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
-    $quizScoreRingClass = 'relative h-[200px] w-[200px]';
+    $quizScoreRingClass = 'relative h-[220px] w-[220px] md:h-[240px] md:w-[240px]';
     $quizPerfTrackClass = 'h-2 overflow-hidden rounded-full bg-[var(--ui-border)]';
     $quizPerfFillClass = 'h-full rounded-full bg-[var(--ui-text)] transition-[width] delay-300 duration-1000 ease-in-out';
     $quizVoucherCodeClass = "mt-2 font-display text-2xl font-bold tracking-[0.3em] text-[var(--ui-surface)]";
@@ -447,10 +447,10 @@
                 <span class="inline-flex rounded-full bg-primary-500 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white">Assessment Complete</span>
                 <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <div>
-                        <h2 class="font-display text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
+                        <h2 class="font-display text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl xl:whitespace-nowrap" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
                         <p class="mt-4 max-w-lg text-sm leading-6 text-[var(--ui-text-muted)] md:text-base" id="quizResultDescription">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
                     </div>
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center lg:items-start lg:justify-end lg:-mt-4">
                         <div class="{{ $quizScoreRingClass }}">
                             <svg viewBox="0 0 200 200" class="h-full w-full">
                                 <circle class="stroke-[var(--ui-border)]" cx="100" cy="100" r="85" fill="none" stroke-width="10"/>
