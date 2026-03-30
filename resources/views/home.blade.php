@@ -15,8 +15,27 @@
                 --home-cyan: #38bdf8;
                 --home-navy: var(--color-primary-800);
                 --home-panel: rgba(255, 255, 255, 0.74);
-                background: transparent;
+                /* background: url('{{ asset('upload/backgrounds/homebg1.jpg') }}') top center / contain no-repeat; */
+                 
+                 background-image:
+                                url('{{ asset('upload/backgrounds/homebg2.png') }}'),
+                                url('{{ asset('upload/backgrounds/homebg4.jpg') }}'),
+                                url('{{ asset('upload/backgrounds/homebg3.jpg') }}');
+
+                            background-repeat: no-repeat, no-repeat, no-repeat;
+
+                            background-position:
+                                top center,
+                                center center,
+                                bottom center;
+
+                              background-size:
+                                100% auto,
+                                100% auto,
+                                100% auto;
             }
+
+            
 
             .home-page .home-card,
             .home-page .home-panel {
@@ -125,6 +144,12 @@
 
             .home-page .home-primary-button:hover {
                 background: linear-gradient(135deg, #ed6200, #ff7b21);
+            }
+
+            .home-categories-heading h2,
+            .home-categories-heading p {
+                color: #fff;
+                font-weight: 700;
             }
 
             .home-hero::before,
@@ -634,7 +659,7 @@
 
         <section class="home-categories bg-transparent py-12 md:py-16">
             <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-                <div class="home-reveal">
+                <div class="home-reveal home-categories-heading">
                     <x-ui.section-heading title="Core Product Categories"
                         subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
                 </div>
