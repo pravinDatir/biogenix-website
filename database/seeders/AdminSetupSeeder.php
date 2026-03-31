@@ -24,9 +24,9 @@ class AdminSetupSeeder extends Seeder
             ['name' => 'Finance', 'slug' => 'finance', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
         ], ['slug'], ['name', 'is_active', 'updated_at']);
 
-        $adminEmail = env('BIOGENIX_ADMIN_EMAIL', 'admin@biogenix.local');
-        $adminName = env('BIOGENIX_ADMIN_NAME', 'System Admin');
-        $adminPassword = env('BIOGENIX_ADMIN_PASSWORD', 'Admin@12345');
+        $adminEmail = env('BIOGENIX_ADMIN_EMAIL');
+        $adminName = env('BIOGENIX_ADMIN_NAME');
+        $adminPassword = env('BIOGENIX_ADMIN_PASSWORD');
 
         $existingAdminId = DB::table('users')->where('email', $adminEmail)->value('id');
 
