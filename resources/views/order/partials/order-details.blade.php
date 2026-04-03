@@ -145,7 +145,7 @@
                 class="modal-close h-11 px-7 rounded-xl border border-slate-200 bg-white text-[14px] font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer shadow-sm">
                 Close
             </button>
-            <form method="POST" action="{{ route('orders.reorder', $order->id) }}" class="inline">
+            <form method="POST" action="{{ route('orders.reorder', ['orderId' => encrypt_url_value($order->id)]) }}" class="inline">
                 @csrf
                 <button type="submit"
                     class="h-11 px-8 rounded-xl bg-primary-600 text-[14px] font-bold text-white shadow-md shadow-primary-600/25 hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-600/30 transition cursor-pointer whitespace-nowrap">

@@ -34,22 +34,22 @@ Route::view('/forgot-password', 'auth.forgot-password')->name('forgot.password')
 Route::get('/', [HomeController::class, 'index'])->middleware('permission:home')->name('home');  // home page route
 Route::get('/home', [HomeController::class, 'index'])->middleware('permission:home.page')->name('home.page');  // home page route
 Route::get('/products', [ProductController::class, 'index'])->middleware('permission:products.index')->name('products.index'); // products page route
-Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->middleware('permission:products.productDetails')->name('products.productDetails'); // product details page route
+Route::get('/products/{productId}', [ProductController::class, 'productDetails'])->middleware(['decrypt.route', 'permission:products.productDetails'])->name('products.productDetails'); // product details page route
 // route to download technical resources file in product details page.
-Route::get('/products/{productId}/technical-resources/{resourceId}/download', [ProductController::class, 'downloadTechnicalResource'])->middleware('permission:products.technical-resources.download')->name('products.technical-resources.download');
+Route::get('/products/{productId}/technical-resources/{resourceId}/download', [ProductController::class, 'downloadTechnicalResource'])->middleware(['decrypt.route', 'permission:products.technical-resources.download'])->name('products.technical-resources.download');
 
 // Cart flow routes
 Route::get('/cart/data', [CartController::class, 'showUserOrGuestCart'])->middleware('permission:cart.data')->name('cart.data');
 Route::post('/cart/items', [CartController::class, 'addItemToUserOrGuestCart'])->middleware('permission:cart.items.store')->name('cart.items.store');
-Route::patch('/cart/items/{cartItemId}', [CartController::class, 'updateUserOrGuestCartItem'])->middleware('permission:cart.items.update')->name('cart.items.update');
-Route::delete('/cart/items/{cartItemId}', [CartController::class, 'removeItemFromUserOrGuestCart'])->middleware('permission:cart.items.destroy')->name('cart.items.destroy');
+Route::patch('/cart/items/{cartItemId}', [CartController::class, 'updateUserOrGuestCartItem'])->middleware(['decrypt.route', 'permission:cart.items.update'])->name('cart.items.update');
+Route::delete('/cart/items/{cartItemId}', [CartController::class, 'removeItemFromUserOrGuestCart'])->middleware(['decrypt.route', 'permission:cart.items.destroy'])->name('cart.items.destroy');
 Route::post('/cart/checkout', [CheckoutController::class, 'submitUserCartCheckout'])->middleware(['auth', 'permission:cart.checkout.submit'])->name('cart.checkout.submit');
 
 // Guest Cart routes.
 Route::get('/guest-cart/data', [CartController::class, 'showUserOrGuestCart'])->middleware('permission:guest-cart.data')->name('guest-cart.data');
 Route::post('/guest-cart/items', [CartController::class, 'addItemToUserOrGuestCart'])->middleware('permission:guest-cart.items.store')->name('guest-cart.items.store');
-Route::patch('/guest-cart/items/{cartItemId}', [CartController::class, 'updateUserOrGuestCartItem'])->middleware('permission:guest-cart.items.update')->name('guest-cart.items.update');
-Route::delete('/guest-cart/items/{cartItemId}', [CartController::class, 'removeItemFromUserOrGuestCart'])->middleware('permission:guest-cart.items.destroy')->name('guest-cart.items.destroy');
+Route::patch('/guest-cart/items/{cartItemId}', [CartController::class, 'updateUserOrGuestCartItem'])->middleware(['decrypt.route', 'permission:guest-cart.items.update'])->name('guest-cart.items.update');
+Route::delete('/guest-cart/items/{cartItemId}', [CartController::class, 'removeItemFromUserOrGuestCart'])->middleware(['decrypt.route', 'permission:guest-cart.items.destroy'])->name('guest-cart.items.destroy');
 
 
 // checkout routes
@@ -66,10 +66,10 @@ Route::get('/orders', [OrderController::class, 'showOrderCrud'])->middleware(['a
 Route::post('/orders', [OrderController::class, 'createOrder'])->middleware(['auth', 'permission:orders.store'])->name('orders.store');
 Route::get('/orders/reorder/checkout', [OrderController::class, 'showReOrderCheckoutPage'])->middleware(['auth', 'permission:orders.reorder.checkout'])->name('orders.reorder.checkout');
 Route::post('/orders/reorder/checkout', [OrderController::class, 'submitReOrderCheckout'])->middleware(['auth', 'permission:orders.reorder.checkout.submit'])->name('orders.reorder.checkout.submit');
-Route::post('/orders/{orderId}/reorder', [OrderController::class, 'ReOrder'])->middleware(['auth', 'permission:orders.reorder'])->name('orders.reorder');
-Route::get('/orders/{orderId}', [OrderController::class, 'getOrderById'])->middleware(['auth', 'permission:orders.show'])->name('orders.show');
-Route::put('/orders/{orderId}', [OrderController::class, 'editOrderById'])->middleware(['auth', 'permission:orders.update'])->name('orders.update');
-Route::delete('/orders/{orderId}', [OrderController::class, 'softDeleteOrderById'])->middleware(['auth', 'permission:orders.destroy'])->name('orders.destroy');
+Route::post('/orders/{orderId}/reorder', [OrderController::class, 'ReOrder'])->middleware(['auth', 'decrypt.route', 'permission:orders.reorder'])->name('orders.reorder');
+Route::get('/orders/{orderId}', [OrderController::class, 'getOrderById'])->middleware(['auth', 'decrypt.route', 'permission:orders.show'])->name('orders.show');
+Route::put('/orders/{orderId}', [OrderController::class, 'editOrderById'])->middleware(['auth', 'decrypt.route', 'permission:orders.update'])->name('orders.update');
+Route::delete('/orders/{orderId}', [OrderController::class, 'softDeleteOrderById'])->middleware(['auth', 'decrypt.route', 'permission:orders.destroy'])->name('orders.destroy');
 
 // profroma invoice routes
 Route::get('/pi-quotation', [ProformaInvoiceController::class, 'showRequestPage'])->middleware(['auth', 'permission:pi-quotation.generate'])->name('pi-quotation.generate');
@@ -105,11 +105,11 @@ Route::post('/customer/profile/password', [ProfileController::class, 'updateMyPa
 Route::get('/customer/addresses', [CustomerAddressController::class, 'index'])->middleware(['auth', 'permission:customer.addresses.preview'])->name('customer.addresses.preview');
 Route::get('/customer/orders', [OrderController::class, 'showCustomerOrdersPage'])->middleware(['auth', 'permission:customer.orders.preview'])->name('customer.orders.preview');
 Route::post('/customer/addresses', [CustomerAddressController::class, 'store'])->middleware(['auth', 'permission:customer.addresses.store'])->name('customer.addresses.store');
-Route::put('/customer/addresses/{addressId}', [CustomerAddressController::class, 'update'])->middleware(['auth', 'permission:customer.addresses.update'])->name('customer.addresses.update');
+Route::put('/customer/addresses/{addressId}', [CustomerAddressController::class, 'update'])->middleware(['auth', 'decrypt.route', 'permission:customer.addresses.update'])->name('customer.addresses.update');
 Route::get('/support-tickets', [SupportTicketController::class, 'index'])->middleware(['auth', 'permission:support-tickets.index'])->name('support-tickets.index');
 Route::post('/support-tickets', [SupportTicketController::class, 'store'])->middleware(['auth', 'permission:support-tickets.store'])->name('support-tickets.store');
-Route::get('/support-tickets/{ticketId}/attachments/{attachmentId}/download', [SupportTicketController::class, 'downloadAttachment'])->middleware(['auth', 'permission:support-tickets.attachments.download'])->name('support-tickets.attachments.download');
-Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->middleware(['auth', 'permission:support-tickets.show'])->name('support-tickets.show');
+Route::get('/support-tickets/{ticketId}/attachments/{attachmentId}/download', [SupportTicketController::class, 'downloadAttachment'])->middleware(['auth', 'decrypt.route', 'permission:support-tickets.attachments.download'])->name('support-tickets.attachments.download');
+Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show'])->middleware(['auth', 'decrypt.route', 'permission:support-tickets.show'])->name('support-tickets.show');
 
 
 

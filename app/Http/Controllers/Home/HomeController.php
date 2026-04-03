@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
-use App\Services\Product\ProductService;
-use App\Services\Home\HomeService;
+use App\Services\Product\ProductUtilityService;
+use App\Services\Authorization\RolePermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -12,16 +12,18 @@ use Throwable;
 
 class HomeController extends Controller
 {
-    public function index(Request $request, HomeService $homeService, ProductService $productService): View
+    public function index(Request $request, RolePermissionService $rolePermissionService, ProductUtilityService $utilityService): View
     {
         try {
             // Step 1: load the product categories used on the home page.
-            $productCategories = $productService->GetConfiguredCategories();
+            $productCategories = $utilityService->GetConfiguredCategories();
             $heroSlides = $this->getHomeHeroSlides();
 
             // Step 2: merge home page data with the category list.
             return view('home', array_merge(
-                $homeService->viewData($request->user()),
+                [
+                    'roleSlugs' => $rolePermissionService->roleSlugsForUser($request->user()),
+                ],
                 [
                     'productCategories' => $productCategories,
                     'heroSlides' => $heroSlides,

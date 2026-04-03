@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Middleware\DecryptRouteParameters;
 use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Exceptions\PostTooLargeException;
+
+require_once __DIR__.'/../app/Support/url.php';
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'decrypt.route' => DecryptRouteParameters::class,
             'active' => EnsureUserIsActive::class,
             'permission' => EnsurePermission::class,
         ]);

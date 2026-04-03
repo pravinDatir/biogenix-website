@@ -10,6 +10,8 @@ use App\Services\Cart\CartService;
 use App\Services\Coupon\CouponService;
 use App\Services\Notification\EmailNotificationService;
 use App\Services\Pricing\PriceService;
+use App\Services\Utility\OrderItemCalculator;
+use App\Services\Utility\QuantityValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,204 +25,162 @@ class CheckoutService
         protected PriceService $priceService,
         protected CouponService $couponService,
         protected EmailNotificationService $emailNotificationService,
+        protected OrderItemCalculator $itemCalculator,
+        protected QuantityValidator $quantityValidator,
     ) {
     }
 
     // This loads all data needed by the existing checkout page.
     public function loadCheckoutPageData(Request $request): array
     {
-        try {
-            // Step 1: load the current cart for the active shopper.
-            $initialCart = $this->cartService->showCurrentCart($request);
+        $cart = $this->cartService->showCurrentCart($request);
+        $addresses = $this->loadSavedUserAddressesForCheckout($request->user());
+        $businessDetails = $this->loadUserBusinessInvoiceDetailsForCheckout($request->user());
 
-            // Step 2: load the saved addresses for signed-in users only.
-            $savedAddresses = $this->loadSavedUserAddressesForCheckout($request->user());
-
-            // Step 3: load the saved invoice details for B2B users only.
-            $checkoutBusinessDetails = $this->loadUserBusinessInvoiceDetailsForCheckout($request->user());
-
-            // Step 4: return the full checkout page data.
-            return [
-                'initialCart' => $initialCart,
-                'savedAddresses' => $savedAddresses,
-                'checkoutBusinessDetails' => $checkoutBusinessDetails,
-            ];
-        } catch (Throwable $exception) {
-            Log::error('Failed to load checkout page data.', [
-                'user_id' => $request->user()?->id,
-                'session_id' => $request->session()->get('guest_cart_session_id'),
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
+        return [
+            'initialCart' => $cart,
+            'savedAddresses' => $addresses,
+            'checkoutBusinessDetails' => $businessDetails,
+        ];
     }
 
     // This creates one submitted order from the current signed-in cart.
     public function placeOrderFromCart(array $validatedCheckout, User $user): array
     {
-        try {
-            // Step 1: load the current user cart with all cart items.
-            $cart = $this->cartService->findUserCart($user);
+        $cart = $this->cartService->findUserCart($user);
 
-            if (! $cart || $cart->items->isEmpty()) {
-                throw ValidationException::withMessages([
-                    'cart' => 'Your cart is empty.',
-                ]);
-            }
-
-            // Step 2: validate the coupon before order creation starts.
-            $couponCode = $this->couponService->readValidatedCouponCode($validatedCheckout['coupon_code'] ?? null);
-
-            // Step 3: prepare the final order items using live prices.
-            $preparedOrderItems = $this->prepareCheckoutOrderItems($cart, $user, $couponCode);
-
-            // Step 4: stop checkout when the coupon does not apply to the current cart.
-            $this->couponService->ensureCouponAppliesToPreparedItems(
-                $couponCode,
-                $preparedOrderItems,
-                'The selected coupon does not apply to the current cart.',
-            );
-
-            // Step 5: calculate the final order totals.
-            $orderTotals = $this->calculateCheckoutTotals($validatedCheckout, $preparedOrderItems);
-
-            // Step 6: create the order and clear the cart inside one transaction.
-            DB::beginTransaction();
-
-            $order = Order::query()->create([
-                'placed_by_user_id' => $user->id,
-                'company_id' => $user->company_id,
-                'status' => 'submitted',
-                'currency' => $orderTotals['currency'],
-                'subtotal_amount' => $orderTotals['subtotal_amount'],
-                'tax_amount' => $orderTotals['tax_amount'],
-                'discount_amount' => $orderTotals['discount_amount'],
-                'shipping_amount' => $orderTotals['shipping_amount'],
-                'adjustment_amount' => $orderTotals['adjustment_amount'],
-                'rounding_amount' => $orderTotals['rounding_amount'],
-                'total_amount' => $orderTotals['total_amount'],
-                'pricing_snapshot' => $orderTotals['pricing_snapshot'],
-                'notes' => $validatedCheckout['notes'] ?? null,
-                'submitted_at' => now(),
-                'cancelled_at' => null,
+        if (! $cart || $cart->items->isEmpty()) {
+            throw ValidationException::withMessages([
+                'cart' => 'Your cart is empty.',
             ]);
-
-            $createdOrderItems = [];
-
-            foreach ($preparedOrderItems as $preparedOrderItem) {
-                $createdOrderItems[] = $order->items()->create($preparedOrderItem);
-            }
-
-            // Step 7: store the final discount details on the order items.
-            $this->storeCheckoutDiscountLines($order, $createdOrderItems, $preparedOrderItems);
-
-            // Step 8: store the shipping and billing addresses on the order.
-            $this->storeCheckoutOrderAddresses($order, $user, $validatedCheckout);
-
-            // Step 9: clear the cart after the order is safely created.
-            $cart->items()->delete();
-            $cart->delete();
-
-            DB::commit();
-
-            // Step 10: send the order confirmation email after commit.
-            $this->sendOrderSubmittedEmail($user, $order);
-
-            // Step 11: build a simple order response for the existing UI flow.
-            $orderItems = [];
-
-            foreach ($createdOrderItems as $createdOrderItem) {
-                $orderItems[] = [
-                    'id' => $createdOrderItem->id,
-                    'product_name' => $createdOrderItem->product_name,
-                    'variant_name' => $createdOrderItem->variant_name,
-                    'sku' => $createdOrderItem->sku,
-                    'quantity' => (int) $createdOrderItem->quantity,
-                    'unit_price' => (float) $createdOrderItem->unit_price,
-                    'tax_amount' => (float) $createdOrderItem->tax_amount,
-                    'total_amount' => (float) $createdOrderItem->total_amount,
-                ];
-            }
-
-            return [
-                'order' => [
-                    'id' => $order->id,
-                    'status' => $order->status,
-                    'currency' => $order->currency,
-                    'subtotal_amount' => (float) $order->subtotal_amount,
-                    'tax_amount' => (float) $order->tax_amount,
-                    'discount_amount' => (float) $order->discount_amount,
-                    'shipping_amount' => (float) $order->shipping_amount,
-                    'adjustment_amount' => (float) $order->adjustment_amount,
-                    'rounding_amount' => (float) $order->rounding_amount,
-                    'total_amount' => (float) $order->total_amount,
-                    'notes' => $order->notes,
-                    'items_count' => count($orderItems),
-                    'items' => $orderItems,
-                ],
-            ];
-        } catch (Throwable $exception) {
-            if (DB::transactionLevel() > 0) {
-                DB::rollBack();
-            }
-
-            Log::error('Failed to checkout cart.', [
-                'user_id' => $user->id,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
         }
+
+        $couponCode = $this->couponService->readValidatedCouponCode($validatedCheckout['coupon_code'] ?? null);
+        $orderItems = $this->prepareCheckoutOrderItems($cart, $user, $couponCode);
+
+        $this->couponService->ensureCouponAppliesToPreparedItems(
+            $couponCode,
+            $orderItems,
+            'The selected coupon does not apply to the current cart.',
+        );
+
+        $orderTotals = $this->calculateCheckoutTotals($validatedCheckout, $orderItems);
+
+        DB::beginTransaction();
+
+        $order = $this->createOrderFromItems($user, $validatedCheckout, $orderItems, $orderTotals);
+        $createdItems = $this->createOrderItemRows($order, $orderItems);
+
+        $this->storeCheckoutDiscountLines($order, $createdItems, $orderItems);
+        $this->storeCheckoutOrderAddresses($order, $user, $validatedCheckout);
+
+        $cart->items()->delete();
+        $cart->delete();
+
+        DB::commit();
+
+        $this->sendOrderSubmittedEmail($user, $order);
+
+        return $this->buildOrderResponse($order, $createdItems);
+    }
+
+    // Create order record from checkout data.
+    private function createOrderFromItems(User $user, array $checkoutData, array $orderItems, array $totals): Order
+    {
+        return Order::query()->create([
+            'placed_by_user_id' => $user->id,
+            'company_id' => $user->company_id,
+            'status' => 'submitted',
+            'currency' => $totals['currency'],
+            'subtotal_amount' => $totals['subtotal_amount'],
+            'tax_amount' => $totals['tax_amount'],
+            'discount_amount' => $totals['discount_amount'],
+            'shipping_amount' => $totals['shipping_amount'],
+            'adjustment_amount' => $totals['adjustment_amount'],
+            'rounding_amount' => $totals['rounding_amount'],
+            'total_amount' => $totals['total_amount'],
+            'pricing_snapshot' => $totals['pricing_snapshot'],
+            'notes' => $checkoutData['notes'] ?? null,
+            'submitted_at' => now(),
+            'cancelled_at' => null,
+        ]);
+    }
+
+    // Create all order item rows from prepared items.
+    private function createOrderItemRows(Order $order, array $preparedItems): array
+    {
+        $createdItems = [];
+
+        foreach ($preparedItems as $item) {
+            $createdItems[] = $order->items()->create($item);
+        }
+
+        return $createdItems;
+    }
+
+    // Build order response for checkout completion.
+    private function buildOrderResponse(Order $order, array $orderItems): array
+    {
+        $itemData = [];
+
+        foreach ($orderItems as $item) {
+            $itemData[] = [
+                'id' => $item->id,
+                'product_name' => $item->product_name,
+                'variant_name' => $item->variant_name,
+                'sku' => $item->sku,
+                'quantity' => (int) $item->quantity,
+                'unit_price' => (float) $item->unit_price,
+                'tax_amount' => (float) $item->tax_amount,
+                'total_amount' => (float) $item->total_amount,
+            ];
+        }
+
+        return [
+            'order' => [
+                'id' => $order->id,
+                'status' => $order->status,
+                'currency' => $order->currency,
+                'subtotal_amount' => (float) $order->subtotal_amount,
+                'tax_amount' => (float) $order->tax_amount,
+                'discount_amount' => (float) $order->discount_amount,
+                'shipping_amount' => (float) $order->shipping_amount,
+                'adjustment_amount' => (float) $order->adjustment_amount,
+                'rounding_amount' => (float) $order->rounding_amount,
+                'total_amount' => (float) $order->total_amount,
+                'notes' => $order->notes,
+                'items_count' => count($itemData),
+                'items' => $itemData,
+            ],
+        ];
     }
 
     // This prepares the live coupon preview used by the checkout AJAX call.
     public function previewCheckoutCoupon(array $validatedCouponInput, User $user): array
     {
-        $couponPreview = [];
+        $cart = $this->cartService->findUserCart($user);
 
-        try {
-            // Step 1: load the current user cart with its latest items.
-            $cart = $this->cartService->findUserCart($user);
-
-            // Step 2: stop the flow when no cart items are available.
-            if (! $cart || $cart->items->isEmpty()) {
-                throw ValidationException::withMessages([
-                    'coupon_code' => 'Add at least one cart item before applying a coupon.',
-                ]);
-            }
-
-            // Step 3: validate the entered coupon code.
-            $couponCode = $this->couponService->readValidatedCouponCode($validatedCouponInput['coupon_code'] ?? null);
-
-            // Step 4: prepare the current cart items using live coupon-aware pricing.
-            $preparedOrderItems = $this->prepareCheckoutOrderItems($cart, $user, $couponCode);
-
-            // Step 5: stop the flow when the coupon does not affect any prepared item.
-            $this->couponService->ensureCouponAppliesToPreparedItems(
-                $couponCode,
-                $preparedOrderItems,
-                'The selected coupon does not apply to the current cart.',
-            );
-
-            // Step 6: prepare the final preview summary for the checkout UI.
-            $couponPreview = $this->couponService->buildCouponPreview(
-                $couponCode,
-                $preparedOrderItems,
-                'Coupon applied successfully.',
-                'The selected coupon does not apply to the current cart.',
-            );
-        } catch (Throwable $exception) {
-            Log::error('Failed to preview checkout coupon.', [
-                'user_id' => $user->id,
-                'coupon_code' => $validatedCouponInput['coupon_code'] ?? null,
-                'error' => $exception->getMessage(),
+        if (! $cart || $cart->items->isEmpty()) {
+            throw ValidationException::withMessages([
+                'coupon_code' => 'Add at least one cart item before applying a coupon.',
             ]);
-
-            throw $exception;
         }
 
-        return $couponPreview;
+        $couponCode = $this->couponService->readValidatedCouponCode($validatedCouponInput['coupon_code'] ?? null);
+        $orderItems = $this->prepareCheckoutOrderItems($cart, $user, $couponCode);
+
+        $this->couponService->ensureCouponAppliesToPreparedItems(
+            $couponCode,
+            $orderItems,
+            'The selected coupon does not apply to the current cart.',
+        );
+
+        return $this->couponService->buildCouponPreview(
+            $couponCode,
+            $orderItems,
+            'Coupon applied successfully.',
+            'The selected coupon does not apply to the current cart.',
+        );
     }
 
     // This loads saved user addresses for the checkout address selector.
@@ -295,18 +255,15 @@ class CheckoutService
                 ]);
             }
 
-            // Step 3: confirm the latest quantity rules before creating the order item.
-            $this->cartService->validateUserCartQuantity($quantity, $resolvedVariantPrice);
+            // Step 3: validate quantity constraints before creating the order item.
+            if (!$this->quantityValidator->isValid($quantity, $resolvedVariantPrice)) {
+                throw ValidationException::withMessages([
+                    'quantity' => $this->quantityValidator->getErrorMessage($quantity, $resolvedVariantPrice),
+                ]);
+            }
 
-            // Step 4: calculate the final amount values for this order item.
-            $unitPrice = round((float) ($resolvedVariantPrice['amount'] ?? 0), 4);
-            $unitBasePrice = round((float) ($resolvedVariantPrice['base_amount'] ?? $unitPrice), 4);
-            $unitTaxAmount = round((float) ($resolvedVariantPrice['tax_amount'] ?? 0), 4);
-            $unitPriceAfterGst = round((float) ($resolvedVariantPrice['price_after_gst'] ?? 0), 4);
-            $subtotalAmount = round($unitPrice * $quantity, 4);
-            $taxAmount = round($unitTaxAmount * $quantity, 4);
-            $totalAmount = round($unitPriceAfterGst * $quantity, 4);
-            $lineDiscountAmount = round((float) ($resolvedVariantPrice['discount_amount'] ?? 0) * $quantity, 4);
+            // Step 4: calculate all pricing fields using centralized calculator.
+            $pricing = $this->itemCalculator->calculateItemPricing($resolvedVariantPrice, $quantity);
 
             // Step 5: add the prepared order item row.
             $preparedOrderItems[] = [
@@ -317,34 +274,13 @@ class CheckoutService
                 'variant_name' => $productVariant->variant_name,
                 'description' => 'Created from cart checkout.',
                 'quantity' => $quantity,
-                'unit_price' => $unitPrice,
-                'subtotal_amount' => $subtotalAmount,
-                'discount_amount' => $lineDiscountAmount,
-                'tax_amount' => $taxAmount,
-                'total_amount' => $totalAmount,
+                'unit_price' => $pricing['unit_price'],
+                'subtotal_amount' => $pricing['subtotal_amount'],
+                'discount_amount' => $pricing['discount_amount'],
+                'tax_amount' => $pricing['tax_amount'],
+                'total_amount' => $pricing['total_amount'],
                 'sort_order' => $index,
-                'item_snapshot' => [
-                    'source' => 'cart_checkout',
-                    'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-                    'price_type' => $resolvedVariantPrice['price_type'] ?? null,
-                    'base_unit_price' => $unitBasePrice,
-                    'pricing_stage' => $resolvedVariantPrice['pricing_stage'] ?? 'base_price',
-                    'gst_rate' => round((float) ($resolvedVariantPrice['gst_rate'] ?? 0), 4),
-                    'unit_tax_amount' => $unitTaxAmount,
-                    'unit_price_after_gst' => $unitPriceAfterGst,
-                    'unit_discount_amount' => round((float) ($resolvedVariantPrice['discount_amount'] ?? 0), 4),
-                    'product_discount_amount' => round((float) ($resolvedVariantPrice['product_discount_amount'] ?? 0), 4),
-                    'bulk_discount_amount' => round((float) ($resolvedVariantPrice['bulk_discount_amount'] ?? 0), 4),
-                    'coupon_discount_amount' => round((float) ($resolvedVariantPrice['coupon_discount_amount'] ?? 0), 4),
-                    'applied_coupon_code' => $resolvedVariantPrice['applied_coupon_code'] ?? null,
-                    'coupon_status' => $resolvedVariantPrice['coupon_status'] ?? null,
-                    'coupon_message' => $resolvedVariantPrice['coupon_message'] ?? null,
-                    'min_order_quantity' => (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1),
-                    'max_order_quantity' => $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'],
-                    'lot_size' => (int) ($resolvedVariantPrice['lot_size'] ?? 1),
-                    'variant_sku' => $productVariant->sku,
-                    'variant_name' => $productVariant->variant_name,
-                ],
+                'item_snapshot' => $this->itemCalculator->buildMinimalSnapshot($resolvedVariantPrice),
             ];
         }
 
@@ -625,25 +561,17 @@ class CheckoutService
     // This sends the order-submitted customer email without interrupting a successful checkout.
     protected function sendOrderSubmittedEmail(User $user, Order $order): void
     {
-        try {
-            // Step 1: skip the send cleanly when the account does not have an email address yet.
-            if (! filled($user->email)) {
-                Log::warning('Order submitted email skipped because the user email is empty.', [
-                    'user_id' => $user->id,
-                    'order_id' => $order->id,
-                ]);
-
-                return;
-            }
-
-            // Step 2: send the confirmation email using the shared notification service.
-            $this->emailNotificationService->sendOrderSubmittedConfirmation($user, $order);
-        } catch (Throwable $exception) {
-            Log::error('Order submitted email could not be delivered after checkout.', [
+        // Step 1: skip the send cleanly when the account does not have an email address yet.
+        if (! filled($user->email)) {
+            Log::warning('Order submitted email skipped because the user email is empty.', [
                 'user_id' => $user->id,
                 'order_id' => $order->id,
-                'error' => $exception->getMessage(),
             ]);
+
+            return;
         }
+
+        // Step 2: send the confirmation email using the shared notification service.
+        $this->emailNotificationService->sendOrderSubmittedConfirmation($user, $order);
     }
 }

@@ -24,185 +24,165 @@ class PriceService
     // This returns the visible price order from most-specific to least-specific for the current shopper.
     public function visiblePriceTypes(?User $user): array
     {
-        try {
-            // Business rule: guests can only see public-style pricing.
-            if (! $user) {
-                return ['retail', 'public'];
-            }
-
-            // Business rule: admin-capable users can inspect every standard price ladder.
-            if ($this->isAdminCapable($user)) {
-                return ['company_price', 'logged_in', 'dealer', 'institutional', 'retail', 'public'];
-            }
-
-            // Business rule: B2C users first see logged-in consumer pricing.
-            if ($user->isB2c()) {
-                return ['logged_in', 'retail', 'public'];
-            }
-
-            // Business rule: B2B subtype decides the default commercial price ladder.
-            if ($user->isB2b()) {
-                if (in_array($user->b2b_type, ['dealer', 'distributor'], true)) {
-                    return ['company_price', 'dealer', 'logged_in', 'public', 'retail'];
-                }
-
-                if (in_array($user->b2b_type, ['lab', 'hospital'], true)) {
-                    return ['company_price', 'institutional', 'logged_in', 'public', 'retail'];
-                }
-
-                return ['company_price', 'dealer', 'institutional', 'logged_in', 'public', 'retail'];
-            }
-
+        // Business rule: guests can only see public-style pricing.
+        if (! $user) {
             return ['retail', 'public'];
-        } catch (Throwable $exception) {
-            Log::error('Failed to resolve visible price types.', ['user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
         }
+
+        // Business rule: admin-capable users can inspect every standard price ladder.
+        if ($this->isAdminCapable($user)) {
+            return ['company_price', 'logged_in', 'dealer', 'institutional', 'retail', 'public'];
+        }
+
+        // Business rule: B2C users first see logged-in consumer pricing.
+        if ($user->isB2c()) {
+            return ['logged_in', 'retail', 'public'];
+        }
+
+        // Business rule: B2B subtype decides the default commercial price ladder.
+        if ($user->isB2b()) {
+            if (in_array($user->b2b_type, ['dealer', 'distributor'], true)) {
+                return ['company_price', 'dealer', 'logged_in', 'public', 'retail'];
+            }
+
+            if (in_array($user->b2b_type, ['lab', 'hospital'], true)) {
+                return ['company_price', 'institutional', 'logged_in', 'public', 'retail'];
+            }
+
+            return ['company_price', 'dealer', 'institutional', 'logged_in', 'public', 'retail'];
+        }
+
+        return ['retail', 'public'];
     }
 
     // This resolves the first purchasable visible price for a full product.
     public function resolveProductPrice(int $productId, ?User $user, int $quantity = 1, ?string $couponCode = null): ?array
     {
-        try {
-            // Business rule: walk variants in their natural order so the same default variant is chosen consistently.
-            $variantIds = ProductVariant::query()
-                ->where('product_id', $productId)
-                ->where('is_active', true)
-                ->orderBy('id')
-                ->pluck('id');
+        // Business rule: walk variants in their natural order so the same default variant is chosen consistently.
+        $variantIds = ProductVariant::query()
+            ->where('product_id', $productId)
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->pluck('id');
 
-            foreach ($variantIds as $variantId) {
-                $resolvedPrice = $this->resolveVariantPrice((int) $variantId, $user, $quantity, $couponCode);
+        foreach ($variantIds as $variantId) {
+            $resolvedPrice = $this->resolveVariantPrice((int) $variantId, $user, $quantity, $couponCode);
 
-                if ($resolvedPrice) {
-                    return $resolvedPrice;
-                }
+            if ($resolvedPrice) {
+                return $resolvedPrice;
             }
-
-            return null;
-        } catch (Throwable $exception) {
-            Log::error('Failed to resolve product price.', ['product_id' => $productId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
         }
+
+        return null;
     }
 
     // This resolves the final purchase price for one exact sellable variant.
     public function resolveVariantPrice(int $productVariantId, ?User $user, int $quantity = 1, ?string $couponCode = null): ?array
     {
-        try {
-            // Business step: load the selected variant with all active price rows because the final purchase price depends on both variant rules and price ladders.
-            $variant = ProductVariant::query()
-                ->with([
-                    'prices' => fn ($builder) => $builder->where('is_active', true)->orderBy('id'),
-                ])
-                ->whereKey($productVariantId)
-                ->where('is_active', true)
-                ->first();
+        // Business step: load the selected variant with all active price rows because the final purchase price depends on both variant rules and price ladders.
+        $variant = ProductVariant::query()
+            ->with([
+                'prices' => fn ($builder) => $builder->where('is_active', true)->orderBy('id'),
+            ])
+            ->whereKey($productVariantId)
+            ->where('is_active', true)
+            ->first();
 
-            if (! $variant) {
-                return null;
-            }
-
-            // Business step: select the base commercial price row that this shopper is allowed to use.
-            $selectedPriceRow = $this->selectBasePriceRow($variant, $user);
-
-            if (! $selectedPriceRow) {
-                return null;
-            }
-
-            // Business step: keep quantity safe and predictable before pricing rules are applied.
-            $purchaseQuantity = max(1, $quantity);
-
-            // Business step: read the correct order limits for the shopper type from the variant itself.
-            $quantityRules = $this->resolveQuantityRules($variant, $user);
-
-            // Business step: look for a matching bulk price only when the current quantity qualifies for one.
-            $matchingBulkPrice = $this->findMatchingBulkPriceRow($variant, $user, $purchaseQuantity);
-
-            // Business step: load the coupon only when the caller provided one.
-            $selectedCoupon = $this->couponService->findActiveCouponByCode($couponCode);
-
-            // Business step: calculate the final unit price and all pricing breakdown fields in one place.
-            return $this->buildResolvedPricePayload(
-                $variant,
-                $selectedPriceRow,
-                $quantityRules,
-                $matchingBulkPrice,
-                $selectedCoupon,
-            );
-        } catch (Throwable $exception) {
-            Log::error('Failed to resolve variant price.', ['product_variant_id' => $productVariantId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
+        if (! $variant) {
+            return null;
         }
+
+        // Business step: select the base commercial price row that this shopper is allowed to use.
+        $selectedPriceRow = $this->selectBasePriceRow($variant, $user);
+
+        if (! $selectedPriceRow) {
+            return null;
+        }
+
+        // Business step: keep quantity safe and predictable before pricing rules are applied.
+        $purchaseQuantity = max(1, $quantity);
+
+        // Business step: read the correct order limits for the shopper type from the variant itself.
+        $quantityRules = $this->resolveQuantityRules($variant, $user);
+
+        // Business step: look for a matching bulk price only when the current quantity qualifies for one.
+        $matchingBulkPrice = $this->findMatchingBulkPriceRow($variant, $user, $purchaseQuantity);
+
+        // Business step: load the coupon only when the caller provided one.
+        $selectedCoupon = $this->couponService->findActiveCouponByCode($couponCode);
+
+        // Business step: calculate the final unit price and all pricing breakdown fields in one place.
+        return $this->buildResolvedPricePayload(
+            $variant,
+            $selectedPriceRow,
+            $quantityRules,
+            $matchingBulkPrice,
+            $selectedCoupon,
+        );
     }
 
     // This returns the visible bulk tiers that the current shopper can use for one variant.
     public function listBulkPriceTiers(int $productVariantId, ?User $user): Collection
     {
-        try {
-            // Business step: load the current visible base price first because every tier is compared against that standard price.
-            $baseResolvedPrice = $this->resolveVariantPrice($productVariantId, $user);
+        // Business step: load the current visible base price first because every tier is compared against that standard price.
+        $baseResolvedPrice = $this->resolveVariantPrice($productVariantId, $user);
 
-            if (! $baseResolvedPrice) {
-                return collect();
-            }
+        if (! $baseResolvedPrice) {
+            return collect();
+        }
 
-            // Business step: read the raw bulk slabs visible to this shopper and keep only the best slab for each quantity range.
-            $bulkPriceRows = $this->visibleBulkPriceRows($productVariantId, $user)
-                ->sortBy([
-                    ['min_quantity', 'asc'],
-                    ['max_quantity', 'asc'],
-                ])
-                ->groupBy(fn (ProductBulkPrice $bulkPrice) => $bulkPrice->min_quantity.'-'.($bulkPrice->max_quantity ?? 'open'))
-                ->map(fn (Collection $groupedRows) => $groupedRows->sortByDesc(fn (ProductBulkPrice $bulkPrice) => $this->scopePriorityScore($bulkPrice, $user))->first())
-                ->filter()
-                ->values();
+        // Business step: read the raw bulk slabs visible to this shopper and keep only the best slab for each quantity range.
+        $bulkPriceRows = $this->visibleBulkPriceRows($productVariantId, $user)
+            ->sortBy([
+                ['min_quantity', 'asc'],
+                ['max_quantity', 'asc'],
+            ])
+            ->groupBy(fn (ProductBulkPrice $bulkPrice) => $bulkPrice->min_quantity.'-'.($bulkPrice->max_quantity ?? 'open'))
+            ->map(fn (Collection $groupedRows) => $groupedRows->sortByDesc(fn (ProductBulkPrice $bulkPrice) => $this->scopePriorityScore($bulkPrice, $user))->first())
+            ->filter()
+            ->values();
 
-            if ($bulkPriceRows->isEmpty()) {
-                return collect([
-                    $this->buildDisplayTierRow(
-                        minQuantity: $baseResolvedPrice['min_order_quantity'] ?? 1,
-                        maxQuantity: $baseResolvedPrice['max_order_quantity'] ?? null,
-                        unitAmount: (float) ($baseResolvedPrice['amount'] ?? 0),
-                        baseAmount: (float) ($baseResolvedPrice['base_amount'] ?? 0),
-                        label: 'Standard Price',
-                    ),
-                ]);
-            }
-
-            // Business step: build a first row for the standard quantity band before bulk slabs start.
-            $firstBulkRow = $bulkPriceRows->first();
-            $standardMinQuantity = max(1, (int) ($baseResolvedPrice['min_order_quantity'] ?? 1));
-            $standardMaxQuantity = max($standardMinQuantity, ((int) $firstBulkRow->min_quantity) - 1);
-
-            $tierRows = collect([
+        if ($bulkPriceRows->isEmpty()) {
+            return collect([
                 $this->buildDisplayTierRow(
-                    minQuantity: $standardMinQuantity,
-                    maxQuantity: $standardMaxQuantity,
+                    minQuantity: $baseResolvedPrice['min_order_quantity'] ?? 1,
+                    maxQuantity: $baseResolvedPrice['max_order_quantity'] ?? null,
                     unitAmount: (float) ($baseResolvedPrice['amount'] ?? 0),
                     baseAmount: (float) ($baseResolvedPrice['base_amount'] ?? 0),
-                    label: $this->buildTierLabel($standardMinQuantity, $standardMaxQuantity),
+                    label: 'Standard Price',
                 ),
             ]);
-
-            // Business step: add the visible bulk slabs after the standard row so the product page can render a full pricing ladder.
-            foreach ($bulkPriceRows as $bulkPriceRow) {
-                $tierRows->push(
-                    $this->buildDisplayTierRow(
-                        minQuantity: (int) $bulkPriceRow->min_quantity,
-                        maxQuantity: $bulkPriceRow->max_quantity === null ? null : (int) $bulkPriceRow->max_quantity,
-                        unitAmount: (float) $bulkPriceRow->amount,
-                        baseAmount: (float) ($baseResolvedPrice['base_amount'] ?? 0),
-                        label: $this->buildTierLabel((int) $bulkPriceRow->min_quantity, $bulkPriceRow->max_quantity === null ? null : (int) $bulkPriceRow->max_quantity),
-                    ),
-                );
-            }
-
-            return $tierRows->values();
-        } catch (Throwable $exception) {
-            Log::error('Failed to list bulk price tiers.', ['product_variant_id' => $productVariantId, 'user_id' => $user?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
         }
+
+        // Business step: build a first row for the standard quantity band before bulk slabs start.
+        $firstBulkRow = $bulkPriceRows->first();
+        $standardMinQuantity = max(1, (int) ($baseResolvedPrice['min_order_quantity'] ?? 1));
+        $standardMaxQuantity = max($standardMinQuantity, ((int) $firstBulkRow->min_quantity) - 1);
+
+        $tierRows = collect([
+            $this->buildDisplayTierRow(
+                minQuantity: $standardMinQuantity,
+                maxQuantity: $standardMaxQuantity,
+                unitAmount: (float) ($baseResolvedPrice['amount'] ?? 0),
+                baseAmount: (float) ($baseResolvedPrice['base_amount'] ?? 0),
+                label: $this->buildTierLabel($standardMinQuantity, $standardMaxQuantity),
+            ),
+        ]);
+
+        // Business step: add the visible bulk slabs after the standard row so the product page can render a full pricing ladder.
+        foreach ($bulkPriceRows as $bulkPriceRow) {
+            $tierRows->push(
+                $this->buildDisplayTierRow(
+                    minQuantity: (int) $bulkPriceRow->min_quantity,
+                    maxQuantity: $bulkPriceRow->max_quantity === null ? null : (int) $bulkPriceRow->max_quantity,
+                    unitAmount: (float) $bulkPriceRow->amount,
+                    baseAmount: (float) ($baseResolvedPrice['base_amount'] ?? 0),
+                    label: $this->buildTierLabel((int) $bulkPriceRow->min_quantity, $bulkPriceRow->max_quantity === null ? null : (int) $bulkPriceRow->max_quantity),
+                ),
+            );
+        }
+
+        return $tierRows->values();
     }
 
     // This selects the one base price row that the current shopper is allowed to buy on.
@@ -469,11 +449,10 @@ class PriceService
 
         return [
             'label' => $label,
-            'discount' => $discountPercent > 0 ? rtrim(rtrim(number_format($discountPercent, 2, '.', ''), '0'), '.').'% Off' : 'Current Price',
+            'discount_value' => $discountPercent,
             'price' => round($unitAmount, 2),
             'min' => $minQuantity,
             'max' => $maxQuantity,
-            'discount_value' => $discountPercent,
         ];
     }
 

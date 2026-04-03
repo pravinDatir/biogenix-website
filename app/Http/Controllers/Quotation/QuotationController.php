@@ -15,9 +15,11 @@ class QuotationController extends Controller
 {
     public function showCreatePage(Request $request, QuotationService $quotationService): View
     {
+        $selectedProductId = decrypt_url_value($request->query('product_id'));
+        $selectedProductId = $selectedProductId === null ? null : (int) $selectedProductId;
+
         try {
             // Step 1: load the quotation form with visible products and allowed companies.
-            $selectedProductId = $request->integer('product_id');
             $pageData = $quotationService->getCreatePageData($request->user(), $selectedProductId);
 
             return view('information.generate-quotation', $pageData);
@@ -27,7 +29,7 @@ class QuotationController extends Controller
             return $this->viewWithError('information.generate-quotation', [
                 'products' => collect(),
                 'clientCompanies' => collect(),
-                'prefilledProductId' => $request->integer('product_id'),
+                'prefilledProductId' => $selectedProductId,
             ], $exception, 'Unable to load quotation form.');
         }
     }

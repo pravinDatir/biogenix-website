@@ -12,12 +12,14 @@ use Throwable;
 
 class ProformaInvoiceController extends Controller
 {
-     // this method will return the view with form to submit a new PI request, and the form will be pre-filled with the selected product if product_id is provided in the query string.
+    // this method will return the view with form to submit a new PI request, and the form will be pre-filled with the selected product if product_id is provided in the query string.
     public function showRequestPage(Request $request, ProformaInvoiceService $proformaInvoiceService): View
     {
+        $selectedProductId = decrypt_url_value($request->query('product_id'));
+        $selectedProductId = $selectedProductId === null ? null : (int) $selectedProductId;
+
         try {
             // Step 1: load the PI request page with visible products and allowed companies.
-            $selectedProductId = $request->integer('product_id');
             $pageData = $proformaInvoiceService->getRequestPageData($request->user(), $selectedProductId);
 
             return view('information.pi-quotation', $pageData);
@@ -27,7 +29,7 @@ class ProformaInvoiceController extends Controller
             return $this->viewWithError('information.pi-quotation', [
                 'products' => collect(),
                 'clientCompanies' => collect(),
-                'prefilledProductId' => $request->integer('product_id'),
+                'prefilledProductId' => $selectedProductId,
             ], $exception, 'Unable to load PI request form.');
         }
     }

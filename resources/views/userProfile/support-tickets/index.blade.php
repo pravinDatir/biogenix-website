@@ -139,7 +139,7 @@
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4 md:px-8 text-right">
-                                        <a href="{{ route('support-tickets.show', $ticket->id) }}" class="text-[13px] font-bold text-primary-600 transition hover:text-primary-700">View Details</a>
+                                        <a href="{{ route('support-tickets.show', ['ticketId' => encrypt_url_value($ticket->id)]) }}" class="text-[13px] font-bold text-primary-600 transition hover:text-primary-700">View Details</a>
                                     </td>
                                 </tr>
                             @empty
@@ -220,7 +220,7 @@
                                 @foreach ($ticketAttachments as $attachment)
                                     <div class="flex items-start justify-between gap-3 break-all rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
                                         <span>{{ $attachment->original_file_name }} ({{ $attachment->mime_type ?? 'unknown' }}, {{ $attachment->file_size }} bytes)</span>
-                                        <a href="{{ route('support-tickets.attachments.download', ['ticketId' => $selectedTicket->id, 'attachmentId' => $attachment->id]) }}" class="shrink-0 font-semibold text-primary-600 transition hover:text-primary-700">
+                                        <a href="{{ route('support-tickets.attachments.download', ['ticketId' => encrypt_url_value($selectedTicket->id), 'attachmentId' => encrypt_url_value($attachment->id)]) }}" class="shrink-0 font-semibold text-primary-600 transition hover:text-primary-700">
                                             Download
                                         </a>
                                     </div>

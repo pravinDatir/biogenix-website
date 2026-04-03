@@ -135,6 +135,17 @@
         });
     }
 
+    function formatCurrency(currency, amount) {
+        return currency + ' ' + Number(amount || 0).toFixed(2);
+    }
+
+    function formatDate(date) {
+        if (!date) return 'N/A';
+        const d = new Date(date);
+        const options = { year: 'numeric', month: 'short', day: '2-digit' };
+        return d.toLocaleDateString('en-US', options);
+    }
+
     function setOrderModalVisibility(show) {
         if (typeof window.toggleModal === 'function') {
             window.toggleModal('orderModal', show);
@@ -166,15 +177,23 @@
             return;
         }
 
+        // Format values for display
+        const orderDate = formatDate(order.submitted_at || order.created_at);
+        const orderId = 'ORD-' + String(order.id).padStart(6, '0');
+        const currency = order.currency || 'INR';
+
         statusElement.className = 'inline-flex rounded-lg px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider ' + (previewOrderToneClasses[order.status_key] || '');
-        statusElement.textContent = order.status;
-        metaElement.innerHTML = 'ID: ' + escapeOrderHtml(order.reference) + ' &bull; Placed on ' + escapeOrderHtml(order.date);
+        statusElement.textContent = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+        metaElement.innerHTML = 'ID: ' + escapeOrderHtml(orderId) + ' &bull; Placed on ' + escapeOrderHtml(orderDate);
         trackingElement.textContent = order.tracking_id;
         carrierElement.textContent = order.carrier;
         addressElement.innerHTML = order.address_lines.map(function (line) {
             return '<p>' + escapeOrderHtml(line) + '</p>';
         }).join('');
+
         itemsElement.innerHTML = order.items.map(function (item) {
+            const itemPrice = formatCurrency(currency, item.unit_price);
+            const itemTotal = formatCurrency(currency, item.total_amount);
             return `
                 <tr>
                     <td class="py-2">
@@ -189,17 +208,18 @@
                         </div>
                     </td>
                     <td class="py-1.5 text-center font-mono text-[12px] font-medium text-slate-500">${escapeOrderHtml(item.sku)}</td>
-                    <td class="py-1.5 text-center text-[13px] font-bold text-slate-700">${escapeOrderHtml(item.qty)}</td>
-                    <td class="py-1.5 text-right text-[13px] font-medium text-slate-600">${escapeOrderHtml(item.price)}</td>
-                    <td class="py-1.5 text-right text-[13px] font-bold text-slate-900">${escapeOrderHtml(item.total)}</td>
+                    <td class="py-1.5 text-center text-[13px] font-bold text-slate-700">${escapeOrderHtml(item.quantity)}</td>
+                    <td class="py-1.5 text-right text-[13px] font-medium text-slate-600">${escapeOrderHtml(itemPrice)}</td>
+                    <td class="py-1.5 text-right text-[13px] font-bold text-slate-900">${escapeOrderHtml(itemTotal)}</td>
                 </tr>
             `;
         }).join('');
-        subtotalElement.textContent = order.subtotal;
+
+        subtotalElement.textContent = formatCurrency(currency, order.subtotal_amount);
         taxLabelElement.textContent = order.invoice_note ? 'Tax (' + order.invoice_note + ')' : 'Tax';
-        taxElement.textContent = order.tax;
-        shippingElement.textContent = order.shipping;
-        grandTotalElement.textContent = order.grand_total;
+        taxElement.textContent = formatCurrency(currency, order.tax_amount);
+        shippingElement.textContent = formatCurrency(currency, order.shipping_amount);
+        grandTotalElement.textContent = formatCurrency(currency, order.total_amount);
         reorderButton.setAttribute('data-reorder-url', order.reorder_url || '');
         reorderButton.disabled = order.status_key === 'archived';
         reorderButton.classList.toggle('cursor-not-allowed', order.status_key === 'archived');

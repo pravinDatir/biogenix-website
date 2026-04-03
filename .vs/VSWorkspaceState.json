@@ -2,10 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\Http",
     "\\app\\Http\\Controllers",
-    "\\app\\Http\\Controllers\\Authorization"
+    "\\app\\Http\\Controllers\\Authorization",
+    "\\database",
+    "\\database\\migrations",
+    "\\database\\seeders"
   ],
-  "SelectedNode": "\\app\\Http\\Controllers\\Authorization\\AdminUserManagementController.php",
+  "SelectedNode": "\\database\\seeders\\CompaniesSeeder.php",
   "PreviewInSolutionExplorer": false
 }

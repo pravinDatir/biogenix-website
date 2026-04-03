@@ -13,14 +13,9 @@ use Throwable;
 
 class RegisterResponse implements RegisterResponseContract
 {
-    public function __construct(
-        protected CartService $cartService,
-    ) {
+    public function __construct(  protected CartService $cartService, ) {
     }
 
-    /**
-     * Create an HTTP response that represents the object.
-     */
     public function toResponse($request)
     {
         $cartMoveSummary = [

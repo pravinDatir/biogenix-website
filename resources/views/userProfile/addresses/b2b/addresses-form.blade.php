@@ -21,7 +21,7 @@
         $defaultBillingValue = $isEditingCurrentAddress ? old('is_default_billing', $address->is_default_billing) : $address->is_default_billing;
     @endphp
 
-    <form method="POST" action="{{ route('customer.addresses.update', $address->id) }}" class="{{ $panelClass }}">
+    <form method="POST" action="{{ route('customer.addresses.update', ['addressId' => encrypt_url_value($address->id)]) }}" class="{{ $panelClass }}">
         @csrf
         @method('PUT')
 

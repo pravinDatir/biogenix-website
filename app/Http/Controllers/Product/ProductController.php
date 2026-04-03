@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product\ProductVariant;
-use App\Services\Product\ProductService;
+use App\Services\Product\ProductCatalogService;
+use App\Services\Product\ProductDetailService;
+use App\Services\Product\ProductUtilityService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,7 +18,7 @@ use Throwable;
 class ProductController extends Controller
 {
     // This renders the public product listing page.
-    public function index(Request $request, ProductService $productService): View
+    public function index(Request $request, ProductCatalogService $catalogService, ProductUtilityService $utilityService): View
     {
         try {
             // Step 1: read the first available search input key.
@@ -36,10 +38,10 @@ class ProductController extends Controller
 
             // Step 3: load the catalog products and sidebar options for the current user.
             $user = $request->user();
-            $catalogData = $productService->getProductListToBeDisplayed($user, $catalogFilters);
+            $catalogData = $catalogService->getProductListToBeDisplayed($user, $catalogFilters);
 
             // Step 4: track user browsing activity.
-            $productService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_browse', [
+            $utilityService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_browse', [
                 'search' => $search,
                 'filters' => [
                     'category_name' => $request->input('category_name', []),
@@ -75,12 +77,12 @@ class ProductController extends Controller
     }
 
     // This renders the public product details page.
-    public function productDetails(int $productId, Request $request, ProductService $productService): View
+    public function productDetails(int $productId, Request $request, ProductDetailService $detailService, ProductUtilityService $utilityService): View
     {
         try {
             // Step 1: load the visible product details for the user.
             $user = $request->user();
-            $product = $productService->getAccessibleProductByProductId($user, $productId);
+            $product = $detailService->getAccessibleProductByProductId($user, $productId);
 
             abort_if(! $product, 404);
 
@@ -100,10 +102,10 @@ class ProductController extends Controller
             }
 
             $product->stock_status = $stockStatus;
-            $relatedProducts = $productService->frequentlyBoughtTogetherProducts($productId, $user);
+            $relatedProducts = $utilityService->frequentlyBoughtTogetherProducts($productId, $user);
 
             // Step 2: track user product view activity.
-            $productService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_view', [
+            $utilityService->logUserActivity($user, $request->session()->getId(), $request->path(), 'product_view', [
                 'product_id' => $productId,
             ]);
 
@@ -124,11 +126,11 @@ class ProductController extends Controller
     }
 
     // This downloads one product document after checking that the current viewer can access the product.
-    public function downloadTechnicalResource(int $productId, int $resourceId, Request $request, ProductService $productService): BinaryFileResponse|RedirectResponse
+    public function downloadTechnicalResource(int $productId, int $resourceId, Request $request, ProductDetailService $detailService): BinaryFileResponse|RedirectResponse
     {
         try {
             // Step 1: ask the product service to validate visibility and stream the requested document.
-            return $productService->downloadTechnicalResourceForViewer($request->user(), $productId, $resourceId);
+            return $detailService->downloadTechnicalResourceForViewer($request->user(), $productId, $resourceId);
         } catch (Throwable $exception) {
             Log::error('Failed to download product technical resource.', [
                 'product_id' => $productId,

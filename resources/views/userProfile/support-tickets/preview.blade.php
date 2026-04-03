@@ -34,7 +34,7 @@
                 'status' => ucfirst(str_replace('_', ' ', $ticket->status)),
                 'statusColor' => $statusColors[$ticket->status] ?? 'text-slate-600',
                 'dotColor' => $statusDots[$ticket->status] ?? 'bg-slate-400',
-                'href' => route('support-tickets.show', $ticket->id),
+                'href' => route('support-tickets.show', ['ticketId' => encrypt_url_value($ticket->id)]),
             ];
         })->values()
         : collect([

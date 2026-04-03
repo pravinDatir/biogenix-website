@@ -7,335 +7,265 @@ use App\Models\Cart\Cart;
 use App\Models\Cart\CartItem;
 use App\Models\Product\ProductVariant;
 use App\Services\Pricing\PriceService;
+use App\Services\Utility\OrderItemCalculator;
+use App\Services\Utility\QuantityValidator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Throwable;
 
 class CartService
 {
     public function __construct(
         protected PriceService $priceService,
+        protected OrderItemCalculator $itemCalculator,
+        protected QuantityValidator $quantityValidator,
     ) {
     }
 
     // This returns the current shopper cart as a JSON-ready array.
     public function showCurrentCart(Request $request): array
     {
-        try {
-            // Step 1: read the current shopper details from the request.
-            $user = $request->user();
-            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
+        $user = $request->user();
+        $guestSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            // Step 2: load the current cart for the active shopper.
-            $cart = $this->findCart($user, $guestCartSessionId);
+        $cart = $this->findCart($user, $guestSessionId);
 
-            // Step 3: return the prepared cart payload.
-            return $this->buildCartResponse($cart, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to show current cart.', [
-                'user_id' => $request->user()?->id,
-                'session_id' => $request->session()->get('guest_cart_session_id'),
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
+        return $this->buildCartResponse($cart, $user, $guestSessionId);
     }
 
     // This adds one item into the current shopper cart.
-    public function addItemToCurrentCart(array $validatedCartItem, Request $request): array
+    public function addItemToCurrentCart(array $validatedItem, Request $request): array
     {
-        try {
-            // Step 1: read the current shopper details from the request.
-            $user = $request->user();
-            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
+        $user = $request->user();
+        $guestSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            // Step 2: find or create the current cart row.
-            $cart = $this->findOrCreateCart($user, $guestCartSessionId);
+        $cart = $this->findOrCreateCart($user, $guestSessionId);
+        $variantId = $this->resolveCartVariantId($validatedItem, $user);
 
-            // Step 3: resolve the exact variant that should be stored in the cart.
-            $productVariantId = $this->resolveCartVariantId($validatedCartItem, $user);
+        $cartItem = $cart->items()
+            ->where('product_variant_id', $variantId)
+            ->first();
 
-            // Step 4: load the existing cart item for the same variant.
-            $cartItem = $cart->items()
-                ->where('product_variant_id', $productVariantId)
-                ->first();
+        $requestedQuantity = (int) $validatedItem['quantity'];
+        $finalQuantity = $requestedQuantity;
 
-            // Step 5: calculate the final quantity after the add action.
-            $requestedQuantity = (int) $validatedCartItem['quantity'];
-            $existingQuantity = $cartItem ? (int) $cartItem->quantity : 0;
-            $finalQuantity = $existingQuantity + $requestedQuantity;
+        $priceData = $this->priceService->resolveVariantPrice($variantId, $user, $finalQuantity);
 
-            // Step 6: load the live price for the final quantity.
-            $resolvedVariantPrice = $this->priceService->resolveVariantPrice($productVariantId, $user, $finalQuantity);
+        if (! $priceData) {
+            $message = $user
+                ? 'The selected product variant is not available for this user.'
+                : 'The selected product variant is not available right now.';
 
-            if (! $resolvedVariantPrice) {
-                $productVariantMessage = $user
-                    ? 'The selected product variant is not available for this user.'
-                    : 'The selected product variant is not available right now.';
-
-                throw ValidationException::withMessages([
-                    'product_variant_id' => $productVariantMessage,
-                ]);
-            }
-
-            // Step 7: validate the final quantity.
-            $this->validateCartQuantity($finalQuantity, $resolvedVariantPrice);
-
-            // Step 8: save the cart item.
-            if ($cartItem) {
-                $cartItem->update([
-                    'quantity' => $finalQuantity,
-                ]);
-            } else {
-                $cart->items()->create([
-                    'product_variant_id' => $productVariantId,
-                    'quantity' => $finalQuantity,
-                ]);
-            }
-
-            // Step 9: keep the cart currency aligned with the current price.
-            $cart->update([
-                'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
+            throw ValidationException::withMessages([
+                'product_variant_id' => $message,
             ]);
-
-            // Step 10: load the refreshed cart after save.
-            $refreshedCart = $this->findCart($user, $guestCartSessionId);
-
-            // Step 11: return the refreshed cart payload.
-            return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to add item to current cart.', [
-                'user_id' => $request->user()?->id,
-                'session_id' => $request->session()->get('guest_cart_session_id'),
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
         }
+
+        if (!$this->quantityValidator->isValid($finalQuantity, $priceData)) {
+            throw ValidationException::withMessages([
+                'quantity' => $this->quantityValidator->getErrorMessage($finalQuantity, $priceData),
+            ]);
+        }
+
+        if ($cartItem) {
+            $cartItem->update(['quantity' => $finalQuantity]);
+        } else {
+            $cart->items()->create([
+                'product_variant_id' => $variantId,
+                'quantity' => $finalQuantity,
+            ]);
+        }
+
+        $cart->update([
+            'currency' => $priceData['currency'] ?? 'INR',
+        ]);
+
+        $refreshedCart = $this->findCart($user, $guestSessionId);
+
+        return $this->buildCartResponse($refreshedCart, $user, $guestSessionId);
     }
 
     // This updates one item quantity in the current shopper cart.
-    public function updateCurrentCartItemQuantity(int $cartItemId, array $validatedCartItem, Request $request): array
+    public function updateCurrentCartItemQuantity(int $cartItemId, array $validatedItem, Request $request): array
     {
-        try {
-            // Step 1: read the current shopper details from the request.
-            $user = $request->user();
-            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
+        $user = $request->user();
+        $guestSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            // Step 2: load the selected cart item and confirm ownership.
-            $cartItem = $this->findCartItem($cartItemId, $user, $guestCartSessionId);
+        $cartItem = $this->findCartItem($cartItemId, $user, $guestSessionId);
+        $updatedQuantity = (int) $validatedItem['quantity'];
 
-            // Step 3: load the live price for the requested quantity.
-            $updatedQuantity = (int) $validatedCartItem['quantity'];
-            $resolvedVariantPrice = $this->priceService->resolveVariantPrice(
-                (int) $cartItem->product_variant_id,
-                $user,
-                $updatedQuantity
-            );
+        $priceData = $this->priceService->resolveVariantPrice(
+            (int) $cartItem->product_variant_id,
+            $user,
+            $updatedQuantity
+        );
 
-            if (! $resolvedVariantPrice) {
-                throw ValidationException::withMessages([
-                    'cart_item_id' => 'The selected cart item is no longer available for checkout.',
-                ]);
-            }
-
-            // Step 4: validate the requested quantity.
-            $this->validateCartQuantity($updatedQuantity, $resolvedVariantPrice);
-
-            // Step 5: save the new quantity.
-            $cartItem->update([
-                'quantity' => $updatedQuantity,
+        if (! $priceData) {
+            throw ValidationException::withMessages([
+                'cart_item_id' => 'The selected cart item is no longer available for checkout.',
             ]);
-
-            // Step 6: keep the cart currency aligned with the current price.
-            $cartItem->cart->update([
-                'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-            ]);
-
-            // Step 7: load the refreshed cart after update.
-            $refreshedCart = $this->findCart($user, $guestCartSessionId);
-
-            // Step 8: return the refreshed cart payload.
-            return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to update current cart item.', [
-                'user_id' => $request->user()?->id,
-                'session_id' => $request->session()->get('guest_cart_session_id'),
-                'cart_item_id' => $cartItemId,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
         }
+
+        if (!$this->quantityValidator->isValid($updatedQuantity, $priceData)) {
+            throw ValidationException::withMessages([
+                'quantity' => $this->quantityValidator->getErrorMessage($updatedQuantity, $priceData),
+            ]);
+        }
+
+        $cartItem->update(['quantity' => $updatedQuantity]);
+
+        $cartItem->cart->update([
+            'currency' => $priceData['currency'] ?? 'INR',
+        ]);
+
+        $refreshedCart = $this->findCart($user, $guestSessionId);
+
+        return $this->buildCartResponse($refreshedCart, $user, $guestSessionId);
     }
 
     // This removes one item from the current shopper cart.
     public function removeItemFromCurrentCart(int $cartItemId, Request $request): array
     {
-        try {
-            // Step 1: read the current shopper details from the request.
-            $user = $request->user();
-            $guestCartSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
+        $user = $request->user();
+        $guestSessionId = $user ? null : $this->resolveGuestCartSessionId($request);
 
-            // Step 2: load the selected cart item and confirm ownership.
-            $cartItem = $this->findCartItem($cartItemId, $user, $guestCartSessionId);
+        $cartItem = $this->findCartItem($cartItemId, $user, $guestSessionId);
+        $cart = $cartItem->cart;
 
-            // Step 3: keep the cart row before deleting the item.
-            $cart = $cartItem->cart;
+        $cartItem->delete();
 
-            // Step 4: remove the cart item row.
-            $cartItem->delete();
+        if (! $cart->items()->exists()) {
+            $cart->delete();
 
-            // Step 5: return an empty cart when no items remain.
-            if (! $cart->items()->exists()) {
-                $cart->delete();
-
-                return $this->buildCartResponse(null, $user, $guestCartSessionId);
-            }
-
-            // Step 6: load the refreshed cart after remove.
-            $refreshedCart = $this->findCart($user, $guestCartSessionId);
-
-            // Step 7: return the refreshed cart payload.
-            return $this->buildCartResponse($refreshedCart, $user, $guestCartSessionId);
-        } catch (Throwable $exception) {
-            Log::error('Failed to remove item from current cart.', [
-                'user_id' => $request->user()?->id,
-                'session_id' => $request->session()->get('guest_cart_session_id'),
-                'cart_item_id' => $cartItemId,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
+            return $this->buildCartResponse(null, $user, $guestSessionId);
         }
+
+        $refreshedCart = $this->findCart($user, $guestSessionId);
+
+        return $this->buildCartResponse($refreshedCart, $user, $guestSessionId);
     }
 
     // This moves guest cart items into the signed-in account cart.
     public function moveGuestCartItemsToUserCart(Request $request, User $user): array
     {
-        $cartMoveSummary = [
+        $guestSessionId = $this->readGuestCartSessionId($request);
+
+        if (! $guestSessionId) {
+            return $this->emptyMoveSummary();
+        }
+
+        $guestCart = $this->findGuestCartBySessionId($guestSessionId);
+
+        if (! $guestCart || $guestCart->items->isEmpty()) {
+            $this->clearGuestCartSessionId($request);
+            return $this->emptyMoveSummary();
+        }
+
+        $moveSummary = $this->mergeGuestItemsIntoUserCart($guestCart, $user);
+        $this->deleteGuestCart($guestCart);
+        $this->clearGuestCartSessionId($request);
+
+        return $moveSummary;
+    }
+
+    // Merge each guest cart item into the user cart.
+    private function mergeGuestItemsIntoUserCart($guestCart, User $user): array
+    {
+        $moveSummary = [
             'moved_items_count' => 0,
             'skipped_items_count' => 0,
         ];
 
-        try {
-            // Step 1: read the saved guest cart session id without creating a new one.
-            $guestCartSessionId = $this->readGuestCartSessionId($request);
+        $userCart = $this->findUserCart($user);
 
-            if (! $guestCartSessionId) {
-                return $cartMoveSummary;
-            }
+        DB::transaction(function () use (&$moveSummary, $guestCart, &$userCart, $user): void {
+            foreach ($guestCart->items as $guestItem) {
+                $wasMoved = $this->moveGuestItemToUserCart($guestItem, $userCart, $user);
 
-            // Step 2: load the guest cart for the saved browser session.
-            $guestCart = $this->findGuestCartBySessionId($guestCartSessionId);
-
-            if (! $guestCart || $guestCart->items->isEmpty()) {
-                $this->clearGuestCartSessionId($request);
-                return $cartMoveSummary;
-            }
-
-            // Step 3: load the existing user cart when it already exists.
-            $userCart = $this->findUserCart($user);
-
-            // Step 4: move the items inside one database transaction.
-            DB::beginTransaction();
-
-            foreach ($guestCart->items as $guestCartItem) {
-                $existingUserCartItem = null;
-
-                if ($userCart) {
-                    $existingUserCartItem = $userCart->items()
-                        ->where('product_variant_id', $guestCartItem->product_variant_id)
-                        ->first();
-                }
-
-                // Step 5: calculate the merged quantity for the user cart.
-                $guestQuantity = (int) $guestCartItem->quantity;
-                $existingQuantity = 0;
-
-                if ($existingUserCartItem) {
-                    $existingQuantity = (int) $existingUserCartItem->quantity;
-                }
-
-                $finalQuantity = $existingQuantity + $guestQuantity;
-
-                // Step 6: load the live signed-in price for the merged quantity.
-                $resolvedVariantPrice = $this->priceService->resolveVariantPrice((int) $guestCartItem->product_variant_id, $user, $finalQuantity);
-
-                if (! $resolvedVariantPrice) {
-                    $cartMoveSummary['skipped_items_count']++;
-                    continue;
-                }
-
-                // Step 7: skip the item when the merged quantity breaks current rules.
-                $minimumQuantity = max(1, (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1));
-                $maximumQuantity = $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'];
-                $lotSize = max(1, (int) ($resolvedVariantPrice['lot_size'] ?? 1));
-
-                $quantityBelowMinimum = $finalQuantity < $minimumQuantity;
-                $quantityAboveMaximum = $maximumQuantity !== null && $finalQuantity > $maximumQuantity;
-                $quantityBreaksLotSize = $lotSize > 1 && $finalQuantity % $lotSize !== 0;
-
-                if ($quantityBelowMinimum || $quantityAboveMaximum || $quantityBreaksLotSize) {
-                    $cartMoveSummary['skipped_items_count']++;
-                    continue;
-                }
-
-                // Step 8: create the user cart only when at least one item can move.
-                if (! $userCart) {
-                    $userCart = Cart::query()->create([
-                        'user_id' => $user->id,
-                        'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-                    ]);
-                }
-
-                // Step 9: save the moved item into the user cart.
-                if ($existingUserCartItem) {
-                    $existingUserCartItem->update([
-                        'quantity' => $finalQuantity,
-                    ]);
+                if ($wasMoved) {
+                    $moveSummary['moved_items_count']++;
+                    $userCart = $this->findUserCart($user);
                 } else {
-                    $userCart->items()->create([
-                        'product_variant_id' => $guestCartItem->product_variant_id,
-                        'quantity' => $finalQuantity,
-                    ]);
+                    $moveSummary['skipped_items_count']++;
                 }
-
-                // Step 10: keep the user cart currency aligned.
-                $userCart->update([
-                    'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-                ]);
-
-                $cartMoveSummary['moved_items_count']++;
             }
+        });
 
-            // Step 11: remove the old guest cart after the move is complete.
-            $guestCart->items()->delete();
-            $guestCart->delete();
+        return $moveSummary;
+    }
 
-            DB::commit();
+    // Move one guest cart item to user cart.
+    private function moveGuestItemToUserCart($guestItem, &$userCart, User $user): bool
+    {
+        $variantId = (int) $guestItem->product_variant_id;
+        $guestQuantity = (int) $guestItem->quantity;
 
-            // Step 12: clear the saved guest cart session after the move.
-            $this->clearGuestCartSessionId($request);
+        $priceData = $this->priceService->resolveVariantPrice($variantId, $user, $guestQuantity);
 
-            return $cartMoveSummary;
-        } catch (Throwable $exception) {
-            if (DB::transactionLevel() > 0) {
-                DB::rollBack();
-            }
-
-            Log::error('Failed to move guest cart into user cart.', [
-                'user_id' => $user->id,
-                'session_id' => $request->session()->get('guest_cart_session_id'),
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
+        if (! $priceData) {
+            return false;
         }
+
+        if (!$this->quantityValidator->isValid($guestQuantity, $priceData)) {
+            return false;
+        }
+
+        if (! $userCart) {
+            $userCart = $this->createUserCart($user, $priceData);
+        }
+
+        $existingItem = $userCart->items()
+            ->where('product_variant_id', $variantId)
+            ->first();
+
+        $finalQuantity = $guestQuantity;
+
+        if ($existingItem) {
+            $finalQuantity = (int) $existingItem->quantity + $guestQuantity;
+
+            if (!$this->quantityValidator->isValid($finalQuantity, $priceData)) {
+                return false;
+            }
+
+            $existingItem->update(['quantity' => $finalQuantity]);
+        } else {
+            $userCart->items()->create([
+                'product_variant_id' => $variantId,
+                'quantity' => $finalQuantity,
+            ]);
+        }
+
+        $userCart->update([
+            'currency' => $priceData['currency'] ?? 'INR',
+        ]);
+
+        return true;
+    }
+
+    // Check if quantity complies with pricing rules.
+    private function createUserCart(User $user, array $priceData): Cart
+    {
+        return Cart::query()->create([
+            'user_id' => $user->id,
+            'currency' => $priceData['currency'] ?? 'INR',
+        ]);
+    }
+
+    // Delete guest cart after migration.
+    private function deleteGuestCart($guestCart): void
+    {
+        $guestCart->items()->delete();
+        $guestCart->delete();
+    }
+
+    // Return empty move summary.
+    private function emptyMoveSummary(): array
+    {
+        return [
+            'moved_items_count' => 0,
+            'skipped_items_count' => 0,
+        ];
     }
 
     // This loads one cart for the current shopper identity.
@@ -445,37 +375,7 @@ class CartService
         return (int) ($resolvedProductPrice['product_variant_id'] ?? 0);
     }
 
-    // This validates cart quantity using the live current variant rules.
-    protected function validateCartQuantity(int $quantity, array $resolvedVariantPrice): void
-    {
-        // Step 1: read the live min quantity, max quantity, and lot size.
-        $minimumQuantity = max(1, (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1));
-        $maximumQuantity = $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'];
-        $lotSize = max(1, (int) ($resolvedVariantPrice['lot_size'] ?? 1));
-
-        // Step 2: block quantities below the configured minimum.
-        if ($quantity < $minimumQuantity) {
-            throw ValidationException::withMessages([
-                'quantity' => "Quantity must be at least {$minimumQuantity}.",
-            ]);
-        }
-
-        // Step 3: block quantities above the configured maximum when one exists.
-        if ($maximumQuantity !== null && $quantity > $maximumQuantity) {
-            throw ValidationException::withMessages([
-                'quantity' => "Quantity must not exceed {$maximumQuantity}.",
-            ]);
-        }
-
-        // Step 4: block quantities that do not match the configured lot size.
-        if ($lotSize > 1 && $quantity % $lotSize !== 0) {
-            throw ValidationException::withMessages([
-                'quantity' => "Quantity must be in multiples of {$lotSize}.",
-            ]);
-        }
-    }
-
-    // This builds the full cart payload for both signed-in and guest shoppers.
+    // This reads the saved guest cart session id when one already exists.
     protected function buildCartResponse(?Cart $cart, ?User $user, ?string $guestCartSessionId): array
     {
         // Step 1: return a clean empty cart structure when no cart exists.
@@ -549,17 +449,19 @@ class CartService
             ]);
         }
 
-        // Step 3: calculate the cart line totals from the live price.
-        $unitPrice = round((float) ($resolvedVariantPrice['amount'] ?? 0), 4);
-        $unitTaxAmount = round((float) ($resolvedVariantPrice['tax_amount'] ?? 0), 4);
-        $unitPriceAfterGst = round((float) ($resolvedVariantPrice['price_after_gst'] ?? 0), 4);
-        $lineSubtotal = round($unitPrice * (int) $cartItem->quantity, 4);
-        $lineTaxAmount = round($unitTaxAmount * (int) $cartItem->quantity, 4);
-        $lineTotal = round($unitPriceAfterGst * (int) $cartItem->quantity, 4);
+        // Step 3: validate quantity constraints using centralized validator.
+        if (!$this->quantityValidator->isValid((int) $cartItem->quantity, $resolvedVariantPrice)) {
+            throw ValidationException::withMessages([
+                'quantity' => $this->quantityValidator->getErrorMessage((int) $cartItem->quantity, $resolvedVariantPrice),
+            ]);
+        }
 
-        // Step 4: return a cart item payload that the storefront can render directly.
+        // Step 4: calculate all pricing fields using centralized calculator.
+        $pricing = $this->itemCalculator->calculateItemPricing($resolvedVariantPrice, (int) $cartItem->quantity);
+
+        // Step 5: return a cart item payload that the storefront can render directly.
         return [
-            'id' => $cartItem->id,
+            'id' => encrypt_url_value($cartItem->id),
             'product_id' => $product?->id,
             'product_variant_id' => $cartItem->product_variant_id,
             'product_name' => $product?->name,
@@ -567,19 +469,19 @@ class CartService
             'sku' => $productVariant?->sku,
             'image_url' => filled($imagePath) ? asset($imagePath) : null,
             'quantity' => (int) $cartItem->quantity,
-            'currency' => $resolvedVariantPrice['currency'] ?? 'INR',
-            'price_type' => $resolvedVariantPrice['price_type'] ?? null,
-            'unit_price' => $unitPrice,
-            'base_unit_price' => round((float) ($resolvedVariantPrice['base_amount'] ?? $unitPrice), 4),
-            'gst_rate' => round((float) ($resolvedVariantPrice['gst_rate'] ?? 0), 4),
-            'tax_amount' => $lineTaxAmount,
-            'unit_price_after_gst' => $unitPriceAfterGst,
-            'line_subtotal' => $lineSubtotal,
-            'line_total' => $lineTotal,
-            'discount_amount' => round((float) ($resolvedVariantPrice['discount_amount'] ?? 0) * (int) $cartItem->quantity, 4),
-            'min_order_quantity' => (int) ($resolvedVariantPrice['min_order_quantity'] ?? 1),
-            'max_order_quantity' => $resolvedVariantPrice['max_order_quantity'] === null ? null : (int) $resolvedVariantPrice['max_order_quantity'],
-            'lot_size' => (int) ($resolvedVariantPrice['lot_size'] ?? 1),
+            'currency' => $pricing['currency'],
+            'price_type' => $pricing['price_type'],
+            'unit_price' => $pricing['unit_price'],
+            'base_unit_price' => $pricing['base_unit_price'],
+            'gst_rate' => $pricing['gst_rate'],
+            'tax_amount' => $pricing['tax_amount'],
+            'unit_price_after_gst' => $pricing['unit_price_after_gst'],
+            'line_subtotal' => $pricing['subtotal_amount'],
+            'line_total' => $pricing['total_amount'],
+            'discount_amount' => $pricing['discount_amount'],
+            'min_order_quantity' => $pricing['min_order_quantity'],
+            'max_order_quantity' => $pricing['max_order_quantity'],
+            'lot_size' => $pricing['lot_size'],
         ];
     }
 
@@ -622,13 +524,6 @@ class CartService
     {
         // Step 1: load the signed-in shopper cart from the shared cart flow.
         return $this->findCart($user, null);
-    }
-
-    // This validates cart quantity using the live current variant rules.
-    public function validateUserCartQuantity(int $quantity, array $resolvedVariantPrice): void
-    {
-        // Step 1: validate the requested quantity with the shared cart rules.
-        $this->validateCartQuantity($quantity, $resolvedVariantPrice);
     }
 
     // This reads the saved guest cart session id when one already exists.

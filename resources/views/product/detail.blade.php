@@ -66,7 +66,7 @@
         $primaryBadge = filled($applicationLabel) ? $applicationLabel : 'Premium Series';
         $secondaryBadge = ((int) ($product->id ?? 1) % 2 === 0) ? 'Clinical Ready' : 'Best Seller';
         $stockStatus = trim((string) ($product->stock_status ?? 'Out of Stock'));
-        $quoteUrl = route('quotation.create', ['product_id' => $product->id]);
+        $quoteUrl = route('quotation.create', ['product_id' => encrypt_url_value($product->id)]);
         $cartVariantId = $product->visible_variant_id ?? null;
         $loginUrl = route('login');
         // Step 1: read the business-owned overview directly from the product row for the detail section.
@@ -108,8 +108,8 @@
                     'meta' => trim((string) ($resource->description ?? '')) ?: $resourcePresentation['meta'],
                     'icon' => $resourcePresentation['icon'],
                     'href' => route('products.technical-resources.download', [
-                        'productId' => $product->id,
-                        'resourceId' => $resource->id,
+                        'productId' => encrypt_url_value($product->id),
+                        'resourceId' => encrypt_url_value($resource->id),
                     ]),
                 ];
             })
@@ -120,7 +120,7 @@
         $bulkTierRows = collect($product->bulk_price_tiers ?? [])->values();
         if ($bulkTierRows->isEmpty()) {
             $bulkTierRows = collect([
-                ['label' => 'Standard Price', 'discount' => 'Current Price', 'price' => $currentPrice, 'min' => 1, 'max' => null, 'discount_value' => 0],
+                ['label' => 'Standard Price', 'discount_value' => 0, 'price' => $currentPrice, 'min' => 1, 'max' => null],
             ]);
         }
         $selectedTierRow = $bulkTierRows->first();
@@ -421,10 +421,15 @@
                                 @if ($tier['max'] !== null) data-max="{{ (int) $tier['max'] }}" @endif
                                 data-price="{{ $tier['price'] !== null ? (float) $tier['price'] : '' }}"
                                 data-label="{{ e((string) $tier['label']) }}"
-                                data-discount="{{ e((string) $tier['discount']) }}"
+                                data-discount-value="{{ (float) ($tier['discount_value'] ?? 0) }}"
                             >
                                 <span class="{{ $loop->last ? 'font-semibold text-slate-900' : '' }}">{{ $tier['label'] }}</span>
-                                <span class="{{ $loop->last ? 'font-semibold text-primary-600' : 'text-slate-600' }}">{{ $tier['discount'] }}</span>
+                                <span class="{{ $loop->last ? 'font-semibold text-primary-600' : 'text-slate-600' }}">
+                                    @php
+                                        $discValue = (float) ($tier['discount_value'] ?? 0);
+                                        echo $discValue > 0 ? rtrim(rtrim(number_format($discValue, 2, '.', ''), '0'), '.') . '% Off' : 'Current Price';
+                                    @endphp
+                                </span>
                                 <span class="text-right font-semibold text-slate-900">{!! $formatInr($tier['price']) !!}</span>
                             </div>
                         @endforeach
@@ -532,7 +537,7 @@
                                         <p class="text-sm leading-6 text-slate-500">{{ $relatedProduct->brand ?? 'Biogenix' }}</p>
                                         <div class="flex items-center justify-between gap-3">
                                             <p class="text-lg font-extrabold tracking-tight text-primary-700">{!! $formatInr($relatedPrice) !!}</p>
-                                            <a href="{{ route('products.productDetails', $relatedProduct->id) }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View</a>
+                                            <a href="{{ route('products.productDetails', ['productId' => encrypt_url_value($relatedProduct->id)]) }}" class="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">View</a>
                                         </div>
                                     </div>
                                 </article>
@@ -743,7 +748,8 @@
 
                     const unitPrice = String(activeRow.dataset.price || '').trim();
                     const labelText = String(activeRow.dataset.label || '').trim();
-                    const discountText = String(activeRow.dataset.discount || '').trim();
+                    const discountValue = Number(activeRow.dataset.discountValue || 0);
+                    const discountText = discountValue > 0 ? String(Number(discountValue).toFixed(2)).replace(/\.?0+$/, '') + '% Off' : 'Current Price';
 
                     if (tierLabel) {
                         tierLabel.textContent = labelText ? ('Tier: ' + labelText) : 'Tier';

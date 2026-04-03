@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
-use App\Services\Order\OrderService;
+use App\Services\Order\OrderLifecycleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,11 +14,11 @@ use Throwable;
 class OrderController extends Controller
 {
     // This renders the customer profile orders page with real backend data.
-    public function showCustomerOrdersPage(Request $request, OrderService $orderService): View
+    public function showCustomerOrdersPage(Request $request, OrderLifecycleService $orderService): View
     {
         try {
             // Step 1: load the signed-in user's profile order page data.
-            $pageData = $orderService->customerOrdersPageData($request->user());
+            $pageData = $orderService->getCustomerOrdersPageData($request->user());
 
             // Step 2: return the profile orders screen with backend data.
             return view('userProfile.orders.index', $pageData);
@@ -36,13 +36,16 @@ class OrderController extends Controller
     }
 
     // This renders the order CRUD page with create form, edit form, and the user's order list.
-    public function showOrderCrud(Request $request, OrderService $orderService): View
+    public function showOrderCrud(Request $request, OrderLifecycleService $orderService): View
     {
+        $editingOrderId = decrypt_url_value($request->query('edit_order_id'));
+        $editingOrderId = $editingOrderId === null ? null : (int) $editingOrderId;
+
         try {
             // Step 1: load all order page data for the logged-in user.
-            return view('order.OrderCrud', $orderService->orderCrudPageData(
+            return view('order.OrderCrud', $orderService->getOrderCrudPageData(
                 $request->user(),
-                $request->integer('edit_order_id'),
+                $editingOrderId,
             ));
         } catch (Throwable $exception) {
             Log::error('Failed to load order CRUD page.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
@@ -58,7 +61,7 @@ class OrderController extends Controller
     }
 
     // This validates the submitted form and creates a new order for the logged-in user.
-    public function createOrder(Request $request, OrderService $orderService): RedirectResponse
+    public function createOrder(Request $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted order form.
@@ -79,7 +82,7 @@ class OrderController extends Controller
     }
 
     // This validates the submitted form and updates one existing order by id.
-    public function editOrderById(int $orderId, Request $request, OrderService $orderService): RedirectResponse
+    public function editOrderById(int $orderId, Request $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted edit form.
@@ -89,7 +92,7 @@ class OrderController extends Controller
             $order = $orderService->updateOrderById($orderId, $validatedOrder, $request->user());
 
             // Step 3: redirect to the order detail page after a successful update.
-            return redirect()->route('orders.show', $order->id)
+            return redirect()->route('orders.show', ['orderId' => encrypt_url_value($order->id)])
                 ->with('success', 'Order #'.$order->id.' updated successfully.');
         } catch (Throwable $exception) {
             Log::error('Failed to update order from controller.', ['order_id' => $orderId, 'user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
@@ -100,7 +103,7 @@ class OrderController extends Controller
     }
 
     // This loads one order by id and shows the order detail page.
-    public function getOrderById(int $orderId, Request $request, OrderService $orderService): View
+    public function getOrderById(int $orderId, Request $request, OrderLifecycleService $orderService): View
     {
         try {
             // Step 1: load the requested order with relations for the current user.
@@ -127,7 +130,7 @@ class OrderController extends Controller
     }
 
     // This softly deletes one order by id for the current logged-in user.
-    public function softDeleteOrderById(int $orderId, Request $request, OrderService $orderService): RedirectResponse
+    public function softDeleteOrderById(int $orderId, Request $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: soft delete the selected order.
@@ -145,11 +148,11 @@ class OrderController extends Controller
     }
 
     // This starts the reorder checkout flow for one existing order.
-    public function ReOrder(int $orderId, Request $request, OrderService $orderService): RedirectResponse
+    public function ReOrder(int $orderId, Request $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: prepare the reorder checkout items from the selected order.
-            $orderService->ReOrder($orderId, $request->user(), $request);
+            $orderService->prepareReOrder($orderId, $request->user(), $request);
 
             // Step 2: send the customer to the separate reorder checkout page.
             return redirect()->route('orders.reorder.checkout');
@@ -244,7 +247,7 @@ class OrderController extends Controller
     }
 
     // This submits the separate reorder checkout page without using the cart flow.
-    public function submitReOrderCheckout(Request $request, OrderService $orderService): RedirectResponse
+    public function submitReOrderCheckout(Request $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: validate the reorder checkout form fields.

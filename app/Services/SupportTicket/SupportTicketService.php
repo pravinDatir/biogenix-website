@@ -46,49 +46,42 @@ class SupportTicketService
     // This returns the active support ticket category slugs used by forms and validation.
     public function availableCategorySlugs(): array
     {
-        try {
-            // Step 1: start the category query.
-            $categoryQuery = SupportTicketCategory::query();
+        // Step 1: start the category query.
+        $categoryQuery = SupportTicketCategory::query();
 
-            // Step 2: keep only active categories.
-            $categoryQuery->where('is_active', true);
+        // Step 2: keep only active categories.
+        $categoryQuery->where('is_active', true);
 
-            // Step 3: keep the business display order stable.
-            $categoryQuery->orderBy('sort_order');
-            $categoryQuery->orderBy('name');
+        // Step 3: keep the business display order stable.
+        $categoryQuery->orderBy('sort_order');
+        $categoryQuery->orderBy('name');
 
-            // Step 4: load the raw category slugs.
-            $rawCategorySlugs = $categoryQuery->pluck('slug')->all();
+        // Step 4: load the raw category slugs.
+        $rawCategorySlugs = $categoryQuery->pluck('slug')->all();
 
-            // Step 5: clean the category values one by one.
-            $categorySlugs = [];
+        // Step 5: clean the category values one by one.
+        $categorySlugs = [];
 
-            foreach ($rawCategorySlugs as $rawCategorySlug) {
-                if (! is_string($rawCategorySlug)) {
-                    continue;
-                }
-
-                $categorySlug = trim($rawCategorySlug);
-
-                if ($categorySlug === '') {
-                    continue;
-                }
-
-                $categorySlugs[] = $categorySlug;
+        foreach ($rawCategorySlugs as $rawCategorySlug) {
+            if (! is_string($rawCategorySlug)) {
+                continue;
             }
 
-            // Step 6: keep the form usable even before master data is ready.
-            if ($categorySlugs === []) {
-                $categorySlugs = self::CATEGORIES;
-            }
-        } catch (Throwable $exception) {
-            Log::error('Failed to load support ticket categories.', ['error' => $exception->getMessage()]);
+            $categorySlug = trim($rawCategorySlug);
 
-            // Step 7: fall back to the safe default list when category loading fails.
+            if ($categorySlug === '') {
+                continue;
+            }
+
+            $categorySlugs[] = $categorySlug;
+        }
+
+        // Step 6: keep the form usable even before master data is ready.
+        if ($categorySlugs === []) {
             $categorySlugs = self::CATEGORIES;
         }
 
-        // Step 8: return the final category list.
+        // Step 7: return the final category list.
         return $categorySlugs;
     }
 
@@ -152,13 +145,8 @@ class SupportTicketService
         }
 
         // Step 2: start a database transaction so the ticket and attachments stay in sync.
-        DB::beginTransaction();
-
-        // Step 3: prepare the return value before the ticket is created.
-        $ticketId = 0;
-
-        try {
-            // Step 4: create the main support ticket record.
+        return DB::transaction(function () use ($user, $ticketData, $attachments): int {
+            // Step 3: create the main support ticket record.
             $ticket = SupportTicket::query()->create([
                 'ticket_number' => $this->generateTicketNumber(),
                 'owner_user_id' => $user->id,
@@ -171,28 +159,15 @@ class SupportTicketService
                 'last_activity_at' => now(),
             ]);
 
-            // Step 5: store the new ticket id for the return value.
+            // Step 4: store the new ticket id for the return value.
             $ticketId = (int) $ticket->id;
 
-            // Step 6: save any uploaded files linked to the ticket.
+            // Step 5: save any uploaded files linked to the ticket.
             $this->saveTicketAttachments($ticketId, $user->id, $attachments);
 
-            // Step 7: finish the database transaction after all records are ready.
-            DB::commit();
-        } catch (Throwable $exception) {
-            // Step 8: undo database changes when ticket creation fails.
-            DB::rollBack();
-
-            Log::error('Failed to create support ticket.', [
-                'user_id' => $user->id,
-                'error' => $exception->getMessage(),
-            ]);
-
-            throw $exception;
-        }
-
-        // Step 9: return the created ticket id.
-        return $ticketId;
+            // Step 6: return the created ticket id.
+            return $ticketId;
+        });
     }
 
     // This checks whether the user can create tickets.
@@ -311,11 +286,6 @@ class SupportTicketService
     // This generates a readable support ticket number.
     protected function generateTicketNumber(): string
     {
-        try {
-            return 'ST-'.now()->format('YmdHis').'-'.str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
-        } catch (Throwable $exception) {
-            Log::error('Failed to generate support ticket number.', ['error' => $exception->getMessage()]);
-            throw $exception;
-        }
+        return 'ST-'.now()->format('YmdHis').'-'.str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
     }
 }

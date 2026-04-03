@@ -89,29 +89,31 @@
                 <article class="{{ $panelClass }}">
                     <div class="grid gap-6 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center">
                         <div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl {{ $order['image_background'] }} p-3 shadow-inner">
-                            <img src="{{ $order['image'] }}" alt="{{ $order['product'] }}" class="h-full w-full rounded-xl object-cover mix-blend-multiply">
+                            <img src="{{ $order['image'] }}" alt="{{ $order['product_name'] ?? 'Order' }}" class="h-full w-full rounded-xl object-cover mix-blend-multiply">
                         </div>
 
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-3">
                                 <span class="inline-flex rounded-lg px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider {{ $statusStyle['badge'] }}">
-                                    {{ $order['status'] }}
+                                    {{ ucfirst($order['status']) }}
                                 </span>
-                                <span class="text-[12px] font-bold tracking-tight text-slate-400"># {{ $order['id'] }}</span>
+                                <span class="text-[12px] font-bold tracking-tight text-slate-400"># ORD-{{ str_pad((string) $order['id'], 6, '0', STR_PAD_LEFT) }}</span>
                             </div>
 
-                            <h3 class="mt-3 text-xl font-bold tracking-tight text-slate-900">{{ $order['product'] }}</h3>
+                            <h3 class="mt-3 text-xl font-bold tracking-tight text-slate-900">
+                                {{ $order['product_name'] . ($order['item_count'] > 1 ? ' + ' . ($order['item_count'] - 1) . ' more items' : '') }}
+                            </h3>
 
                             <div class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500">
                                 <span class="inline-flex items-center gap-2">
                                     <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    {{ $order['date'] }}
+                                    {{ ($order['submitted_at'] ?: $order['created_at'])->format('M d, Y') }}
                                 </span>
-                                <span class="text-lg font-bold text-slate-900">{{ $order['total'] }}</span>
+                                <span class="text-lg font-bold text-slate-900">{{ $order['currency'] }} {{ number_format($order['total_amount'], 2) }}</span>
                                 <span class="inline-flex items-center rounded-full bg-slate-50 px-3 py-1 text-[12px] font-semibold text-slate-500">
-                                    {{ $order['summary_note'] }}
+                                    {{ $order['summary_note'] ?: ($order['item_count'] === 1 ? '1 item in this order' : $order['item_count'] . ' items in this order') }}
                                 </span>
                             </div>
                         </div>

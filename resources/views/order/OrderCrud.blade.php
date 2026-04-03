@@ -137,7 +137,7 @@
                 @endif
             </div>
 
-            <form method="POST" action="{{ $editingOrder ? route('orders.update', $editingOrder->id) : route('orders.store') }}" class="mt-8 space-y-8">
+            <form method="POST" action="{{ $editingOrder ? route('orders.update', ['orderId' => encrypt_url_value($editingOrder->id)]) : route('orders.store') }}" class="mt-8 space-y-8">
                 @csrf
                 @if ($editingOrder)
                     @method('PUT')
@@ -317,16 +317,16 @@
 
                             {{-- Actions --}}
                             <div class="flex flex-wrap items-center gap-2 lg:justify-end">
-                                <button type="button" data-order-details-link data-order-url="{{ route('orders.show', $order->id) }}" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-primary-700 hover:border-primary-200 cursor-pointer">
+                                <button type="button" data-order-details-link data-order-url="{{ route('orders.show', ['orderId' => encrypt_url_value($order->id)]) }}" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-primary-700 hover:border-primary-200 cursor-pointer">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     View Details
                                 </button>
-                                <a href="{{ route('orders.index', ['edit_order_id' => $order->id]) }}" class="inline-flex h-10 items-center justify-center rounded-xl bg-slate-900 px-4 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 no-underline">Modify</a>
-                                <form method="POST" action="{{ route('orders.reorder', $order->id) }}" class="inline">
+                                <a href="{{ route('orders.index', ['edit_order_id' => encrypt_url_value($order->id)]) }}" class="inline-flex h-10 items-center justify-center rounded-xl bg-slate-900 px-4 text-[13px] font-bold text-white shadow-sm transition hover:bg-slate-800 no-underline">Modify</a>
+                                <form method="POST" action="{{ route('orders.reorder', ['orderId' => encrypt_url_value($order->id)]) }}" class="inline">
                                     @csrf 
                                     <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-emerald-600 px-4 text-[13px] font-bold text-white shadow-sm transition hover:bg-emerald-700">Reorder</button>
                                 </form>
-                                <form method="POST" action="{{ route('orders.destroy', $order->id) }}" onsubmit="return confirm('Archive this record?')" class="inline">
+                                <form method="POST" action="{{ route('orders.destroy', ['orderId' => encrypt_url_value($order->id)]) }}" onsubmit="return confirm('Archive this record?')" class="inline">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl border border-rose-100 bg-rose-50 px-4 text-[13px] font-bold text-rose-600 transition hover:bg-rose-100">Delete</button>
                                 </form>

@@ -11,7 +11,7 @@
     $meetingUser = auth()->user();
 
     // Business step: keep old values visible after validation so the user can correct only the fields that failed.
-    $minimumMeetingDate = $minimumMeetingDate ?? now()->toDateString();
+    $minimumMeetingDate = $minimumMeetingDate instanceof \Carbon\Carbon ? $minimumMeetingDate->toDateString() : ($minimumMeetingDate ?? now()->toDateString());
     $preferredDateValue = old('preferred_date', $minimumMeetingDate);
     $startTimeValue = old('start_time', '09:00');
     $endTimeValue = old('end_time', '10:00');

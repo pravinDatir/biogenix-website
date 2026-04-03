@@ -523,7 +523,7 @@
                                         ? null
                                         : max($defaultQuantity, (int) $product->visible_max_order_quantity);
                                     $lotSize = max(1, (int) ($product->visible_lot_size ?? 1));
-                                    $detailUrl = route('products.productDetails', $product->id);
+                                    $detailUrl = route('products.productDetails', ['productId' => encrypt_url_value($product->id)]);
                                     $variantId = $product->visible_variant_id ?? null;
                                     $imageUrl = filled($product->image_path ?? null) ? asset($product->image_path) : null;
                                     $catalogHoverImages = collect([

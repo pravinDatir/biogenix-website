@@ -22,8 +22,8 @@ class BookMeetingController extends Controller
             Log::error('Failed to load book meeting page.', ['error' => $exception->getMessage()]);
 
             return $this->viewWithError('information.book-meeting', [
-                'minimumMeetingDate' => now()->toDateString(),
-            ], $exception, 'Unable to load the book meeting page.');
+                'minimumMeetingDate' => now(),
+            ], $exception, 'Unable to load the book meeting page');
         }
     }
 

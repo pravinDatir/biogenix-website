@@ -344,7 +344,7 @@
 
         const buildCurrentCartItem = function (item) {
             return {
-                cartItemId: Number(item.id || 0),
+                cartItemId: String(item.id || ''),
                 productId: Number(item.product_id || 0),
                 variantId: item.product_variant_id == null ? null : Number(item.product_variant_id),
                 quantity: normalizeQuantity(item),
