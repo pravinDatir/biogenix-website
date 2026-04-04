@@ -602,89 +602,49 @@
                                             </div>
                                         @endif
 
-                                        <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
-                                            <div class="flex flex-row items-center justify-between gap-1 whitespace-nowrap overflow-hidden">
-                                                <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400 shrink-0">Price</span>
-                                                <div class="flex items-baseline gap-1.5 overflow-hidden">
-                                                    <span class="text-[16px] font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
-                                                    @if ($showMrpPrice)
-                                                        <span class="text-[11px] font-medium text-slate-400 line-through tracking-tighter">{!! $formatInr($mrpPrice, 2) !!}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="hidden space-y-2.5">
-                                            <div class="flex min-h-[2.65rem] items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white px-3 shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
-                                                <div class="flex min-w-0 items-center gap-3 text-[0.95rem] font-medium text-slate-600">
-                                                <span class="whitespace-nowrap">Min <span class="font-semibold text-slate-900">{{ number_format($defaultQuantity) }}</span></span>
-                                                @if (($product->visible_max_order_quantity ?? null) !== null)
-                                                    <span class="h-4 w-px bg-slate-200"></span>
-                                                    <span class="whitespace-nowrap">Max <span class="font-semibold text-slate-900">{{ number_format((int) $product->visible_max_order_quantity) }}</span></span>
-                                                @endif
-                                                <span class="h-4 w-px bg-slate-200"></span>
-                                                <span class="whitespace-nowrap">Lot <span class="font-semibold text-slate-900">{{ number_format($lotSize) }}</span></span>
+                                        <div class="mt-auto flex flex-col gap-2.5">
+                                            <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
+                                                <div class="flex flex-row items-center justify-between gap-1 whitespace-nowrap overflow-hidden">
+                                                    <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400 shrink-0">Price</span>
+                                                    <div class="flex items-baseline gap-1.5 overflow-hidden">
+                                                        <span class="text-[16px] font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
+                                                        @if ($showMrpPrice)
+                                                            <span class="text-[11px] font-medium text-slate-400 line-through tracking-tighter">{!! $formatInr($mrpPrice, 2) !!}</span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <div class="hidden min-w-0">
-                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Quantity</p>
-                                                <p class="mt-1 text-xs font-medium text-slate-500">
-                                                    Min {{ $defaultQuantity }}
-                                                    @if ($lotSize > 1)
-                                                        • Step {{ $lotSize }}
-                                                    @endif
-                                                </p>
-                                            </div>
-
-                                            {{-- Step 3: keep the quantity stepper compact and let it follow the real min, max, and lot-size rules coming from backend pricing. --}}
-                                            <div
-                                                data-catalog-quantity-control
-                                                data-product-id="{{ $product->id }}"
-                                                data-min-quantity="{{ $defaultQuantity }}"
-                                                data-max-quantity="{{ $maxQuantity ?? '' }}"
-                                                data-lot-size="{{ $lotSize }}"
-                                                class="hidden h-[3.05rem] w-full items-center overflow-hidden rounded-full border border-slate-200 bg-white px-1.5 shadow-[0_10px_22px_rgba(15,23,42,0.05)]"
-                                            >
-                                                <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-full w-9 shrink-0 items-center justify-center text-[1.6rem] font-medium text-slate-300 transition">-</button>
-                                                <div class="flex h-full min-w-0 flex-1 items-center rounded-full bg-slate-50 px-1.5">
-                                                    <button type="button" data-catalog-qty-button data-direction="-1" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[1.4rem] font-medium text-primary-600 shadow-[0_6px_14px_rgba(15,23,42,0.06)] transition">-</button>
-                                                    <span data-catalog-quantity-value class="inline-flex min-w-0 flex-1 items-center justify-center px-3 text-[1.05rem] font-semibold tracking-tight text-slate-900">{{ number_format($defaultQuantity) }}</span>
-                                                    <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary-100 bg-primary-600 text-[1.4rem] font-medium text-white shadow-[0_10px_18px_rgba(26,77,46,0.2)] transition">+</button>
-                                                </div>
-                                                <button type="button" data-catalog-qty-button data-direction="1" class="inline-flex h-full w-9 shrink-0 items-center justify-center text-[1.6rem] font-medium text-slate-300 transition">+</button>
-                                            </div>
-                                        </div>
-
-                                        <div data-catalog-action-group class="mt-auto flex w-full items-center gap-2">
-                                            {{-- Buy Now --}}
-                                             <div class="w-[70%]">
-                                                <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-orange-500 px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-orange-500/25 transition hover:bg-orange-600 hover-lift glow-orange cursor-pointer">
-                                                    <span>Buy Now</span>
-                                                </button>
-                                            </div>
-
-                                            {{-- Add to Cart --}}
-                                            <div class="w-[30%]">
-                                                @guest
-                                                    <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 hover-lift cursor-pointer" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
-                                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                            <circle cx="8" cy="20" r="1.5"></circle>
-                                                            <circle cx="18" cy="20" r="1.5"></circle>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
-                                                        </svg>
-                                                    </a>
-                                                @else
-                                                    <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 hover-lift cursor-pointer" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
-                                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                                            <circle cx="8" cy="20" r="1.5"></circle>
-                                                            <circle cx="18" cy="20" r="1.5"></circle>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
-                                                        </svg>
+                                            <div data-catalog-action-group class="flex w-full items-center gap-2">
+                                                {{-- Buy Now --}}
+                                                 <div class="w-[70%]">
+                                                    <button type="submit" form="catalogBuyNowForm{{ $product->id }}" data-catalog-buy-now class="flex h-11 w-full min-w-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-orange-500 px-3 text-[13px] font-bold uppercase tracking-wide text-white shadow-md shadow-orange-500/25 transition hover:bg-orange-600 hover-lift glow-orange cursor-pointer">
+                                                        <span>Buy Now</span>
                                                     </button>
-                                                @endguest
+                                                </div>
+
+                                                {{-- Add to Cart --}}
+                                                <div class="w-[30%]">
+                                                    @guest
+                                                        <a href="{{ route('login') }}" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 hover-lift cursor-pointer" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                                <circle cx="8" cy="20" r="1.5"></circle>
+                                                                <circle cx="18" cy="20" r="1.5"></circle>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
+                                                            </svg>
+                                                        </a>
+                                                    @else
+                                                        <button type="button" class="js-add-to-cart flex h-11 w-full min-w-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:shadow-xl hover:shadow-primary-600/25 hover-lift cursor-pointer" title="Add to Cart" data-product-id="{{ $product->id }}" data-variant-id="{{ $variantId ?? '' }}" data-quantity="{{ $defaultQuantity }}" data-product-name="{{ e((string) ($product->name ?? '')) }}" data-unit-price="{{ $price }}" data-model="{{ $product->visible_variant_sku ?? $product->sku ?? 'N/A' }}" data-image="{{ $imageUrl }}">
+                                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                                <circle cx="8" cy="20" r="1.5"></circle>
+                                                                <circle cx="18" cy="20" r="1.5"></circle>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10V6m-2 2h4"></path>
+                                                            </svg>
+                                                        </button>
+                                                    @endguest
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
