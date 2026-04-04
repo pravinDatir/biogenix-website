@@ -152,9 +152,15 @@
             }
 
             .home-categories-heading h2,
-            .home-categories-heading p {
-                color: #fff;
+            .home-solutions-heading h2 {
+                color: #020617 !important;
                 font-weight: 700;
+            }
+
+            .home-categories-heading p,
+            .home-solutions-heading p {
+                color: #334155 !important;
+                font-weight: 600;
             }
 
             .home-hero::before,
@@ -709,7 +715,7 @@
 
         <section class="home-categories bg-transparent py-12 md:py-16">
             <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-                <div class="home-reveal home-categories-heading">
+                <div class="home-reveal home-categories-heading text-slate-900">
                     <x-ui.section-heading title="Core Product Categories"
                         subtitle="Designed for modern diagnostics workflows and scalable healthcare operations." />
                 </div>
@@ -776,7 +782,7 @@
 
         <section class="home-solutions py-12 md:py-16">
             <div class="mx-auto w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-10">
-                <div class="home-reveal">
+                <div class="home-reveal home-solutions-heading">
                     <x-ui.section-heading title="Clinical Business Solutions"
                         subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
                 </div>
