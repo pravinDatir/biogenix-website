@@ -97,8 +97,8 @@
                             <label class="text-sm font-semibold text-slate-700">Products</label>
                             <div id="quote-item-list" class="space-y-3">
                                 @foreach ($oldProductIds as $index => $oldProductId)
-                                    <div class="{{ $rowClass }}" data-quote-row>
-                                        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                    <div class="{{ $rowClass }} relative" data-quote-row>
+                                        <div class="grid grid-cols-1 gap-3 pt-10 md:grid-cols-2">
                                             <div class="space-y-2" data-quote-product-container>
                                                 <label class="text-sm font-semibold text-slate-700">Product</label>
                                                 <div class="relative" data-custom-select-wrapper>
@@ -154,7 +154,9 @@
                                         <p class="text-sm text-slate-500" data-quote-rule>Select a product to view quantity constraints.</p>
                                         <p class="text-sm text-slate-500" data-quote-line-total>Estimated MRP line total will appear here.</p>
 
-                                        <button type="button" class="{{ $buttonSecondaryClass }} remove-quote-item hidden">Remove Item</button>
+                                        <button type="button" class="remove-quote-item absolute right-4 top-4 hidden h-9 items-center justify-center rounded-xl border border-slate-300 bg-white px-3 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500/20" title="Remove Item">
+                                            Remove Item
+                                        </button>
                                     </div>
                                 @endforeach
                             </div>
