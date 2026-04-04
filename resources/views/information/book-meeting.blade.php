@@ -180,6 +180,33 @@
                                     <p class="mt-2 text-xs font-medium text-rose-600">{{ $message }}</p>
                                 @enderror
                             </div>
+
+                            <div class="md:col-span-2">
+                                <div class="rounded-3xl border border-slate-200/80 bg-white/90 p-5 shadow-[var(--ui-shadow-soft)]">
+                                    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-slate-700">Voice Note</p>
+                                            <p class="mt-1 text-sm leading-6 text-slate-500">Tap the mic, speak your note, and tap again to stop. For now, the recognized speech will appear below on this page.</p>
+                                        </div>
+
+                                        <button type="button" id="meetingVoiceButton" class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-primary-200 bg-primary-50 text-primary-700 shadow-[var(--ui-shadow-soft)] transition hover:-translate-y-px hover:bg-primary-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20" aria-label="Start speech capture">
+                                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.25a5.25 5.25 0 005.25-5.25v-2.25a.75.75 0 00-1.5 0v2.25a3.75 3.75 0 01-7.5 0v-2.25a.75.75 0 00-1.5 0v2.25A5.25 5.25 0 0012 18.25z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5a2.75 2.75 0 002.75-2.75V7.75a2.75 2.75 0 10-5.5 0v5a2.75 2.75 0 002.75 2.75z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.25v2.25" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.5 20.5h5" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <p id="meetingVoiceStatus" class="mt-4 text-sm font-medium text-slate-500">Speech recognition is loading.</p>
+
+                                    <div class="mt-4">
+                                        <label for="meetingSpeechPreview" class="mb-2 block text-sm font-medium text-slate-700">Speech Preview</label>
+                                        <textarea id="meetingSpeechPreview" rows="4" class="{{ $inputClass }} min-h-32 resize-y" placeholder="Your recognized speech will appear here." readonly></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mt-8 flex flex-wrap items-center gap-3">
@@ -216,12 +243,20 @@
     document.addEventListener('DOMContentLoaded', function () {
         const startTimeInput = document.getElementById('start_time');
         const endTimeInput = document.getElementById('end_time');
+        const meetingVoiceButton = document.getElementById('meetingVoiceButton');
+        const meetingVoiceStatus = document.getElementById('meetingVoiceStatus');
+        const meetingSpeechPreview = document.getElementById('meetingSpeechPreview');
+        const speechRecognitionToolClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let meetingSpeechTool = null;
+        let isMeetingSpeechToolRunning = false;
+        let shouldKeepMeetingSpeechToolRunning = false;
+        let savedMeetingSpeechText = '';
 
         if (!startTimeInput || !endTimeInput) {
             return;
         }
 
-        // Business step: keep the end time aligned with the chosen start time so the user gets a cleaner schedule selection experience.
+        // Step 1: keep the end time aligned with the chosen start time.
         const syncEndTimeWindow = function () {
             endTimeInput.min = startTimeInput.value || '09:00';
 
@@ -232,6 +267,250 @@
 
         syncEndTimeWindow();
         startTimeInput.addEventListener('input', syncEndTimeWindow);
+
+        if (!meetingVoiceButton || !meetingVoiceStatus || !meetingSpeechPreview) {
+            return;
+        }
+
+        // Step 2: show the latest speech status near the mic button.
+        function updateMeetingVoiceStatus(statusText, statusType) {
+            meetingVoiceStatus.textContent = statusText;
+            meetingVoiceStatus.className = 'mt-4 text-sm font-medium';
+
+            if (statusType === 'success') {
+                meetingVoiceStatus.classList.add('text-emerald-600');
+
+                return;
+            }
+
+            if (statusType === 'error') {
+                meetingVoiceStatus.classList.add('text-rose-600');
+
+                return;
+            }
+
+            meetingVoiceStatus.classList.add('text-slate-500');
+        }
+
+        // Step 3: show the recognized speech inside the page.
+        function updateMeetingSpeechPreview(speechPreviewText) {
+            meetingSpeechPreview.value = speechPreviewText;
+        }
+
+        // Step 4: keep the mic button style aligned with the listening state.
+        function updateMeetingVoiceButton(isListening) {
+            if (isListening) {
+                meetingVoiceButton.classList.remove('border-primary-200', 'bg-primary-50', 'text-primary-700');
+                meetingVoiceButton.classList.add('border-rose-200', 'bg-rose-50', 'text-rose-600');
+                meetingVoiceButton.setAttribute('aria-label', 'Stop speech capture');
+
+                return;
+            }
+
+            meetingVoiceButton.classList.remove('border-rose-200', 'bg-rose-50', 'text-rose-600');
+            meetingVoiceButton.classList.add('border-primary-200', 'bg-primary-50', 'text-primary-700');
+            meetingVoiceButton.setAttribute('aria-label', 'Start speech capture');
+        }
+
+        // Step 5: disable the mic button when speech recognition is not available.
+        function disableMeetingVoiceButton() {
+            meetingVoiceButton.disabled = true;
+            meetingVoiceButton.classList.remove('border-primary-200', 'bg-primary-50', 'text-primary-700');
+            meetingVoiceButton.classList.add('cursor-not-allowed', 'border-slate-200', 'bg-slate-100', 'text-slate-400', 'opacity-70');
+            meetingVoiceButton.setAttribute('aria-label', 'Speech recognition is not supported by this browser');
+        }
+
+        // Step 6: prepare the browser speech tool.
+        function buildMeetingSpeechTool() {
+            if (!speechRecognitionToolClass) {
+                return null;
+            }
+
+            const speechRecognitionTool = new speechRecognitionToolClass();
+            speechRecognitionTool.lang = 'en-IN';
+            speechRecognitionTool.continuous = true;
+            speechRecognitionTool.interimResults = true;
+            speechRecognitionTool.maxAlternatives = 1;
+
+            return speechRecognitionTool;
+        }
+
+        // Step 7: start the browser speech capture.
+        function startMeetingSpeechCapture() {
+            meetingSpeechTool = buildMeetingSpeechTool();
+
+            if (!meetingSpeechTool) {
+                disableMeetingVoiceButton();
+                updateMeetingVoiceStatus('Speech recognition is not supported by this browser.', 'error');
+
+                return;
+            }
+
+            savedMeetingSpeechText = '';
+            shouldKeepMeetingSpeechToolRunning = true;
+            isMeetingSpeechToolRunning = true;
+            updateMeetingSpeechPreview('');
+
+            // Step 7A: show the active listening state.
+            meetingSpeechTool.onstart = function () {
+                updateMeetingVoiceButton(true);
+                updateMeetingVoiceStatus('Listening... Speak now and tap the mic again when you want to stop.', 'info');
+            };
+
+            // Step 7B: keep the preview box updated with the latest speech.
+            meetingSpeechTool.onresult = function (event) {
+                let previewSpeechText = savedMeetingSpeechText;
+
+                for (let resultIndex = event.resultIndex; resultIndex < event.results.length; resultIndex++) {
+                    const currentSpeechResult = event.results[resultIndex];
+                    const currentSpeechText = currentSpeechResult[0] ? currentSpeechResult[0].transcript || '' : '';
+                    const cleanSpeechText = currentSpeechText.trim();
+
+                    if (cleanSpeechText === '') {
+                        continue;
+                    }
+
+                    if (currentSpeechResult.isFinal) {
+                        if (savedMeetingSpeechText === '') {
+                            savedMeetingSpeechText = cleanSpeechText;
+                        } else {
+                            savedMeetingSpeechText = savedMeetingSpeechText + ' ' + cleanSpeechText;
+                        }
+
+                        previewSpeechText = savedMeetingSpeechText;
+
+                        continue;
+                    }
+
+                    if (savedMeetingSpeechText === '') {
+                        previewSpeechText = cleanSpeechText;
+                    } else {
+                        previewSpeechText = savedMeetingSpeechText + ' ' + cleanSpeechText;
+                    }
+                }
+
+                previewSpeechText = previewSpeechText.trim();
+
+                if (previewSpeechText !== '') {
+                    updateMeetingSpeechPreview(previewSpeechText);
+                    updateMeetingVoiceStatus('Listening... The recognized speech is showing below.', 'info');
+                }
+            };
+
+            // Step 7C: show clear browser error messages on the page.
+            meetingSpeechTool.onerror = function (event) {
+                updateMeetingVoiceButton(false);
+                isMeetingSpeechToolRunning = false;
+
+                if (event.error === 'aborted' && !shouldKeepMeetingSpeechToolRunning) {
+                    return;
+                }
+
+                if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                    shouldKeepMeetingSpeechToolRunning = false;
+                    updateMeetingVoiceStatus('Microphone access was not allowed.', 'error');
+
+                    return;
+                }
+
+                if (event.error === 'no-speech') {
+                    updateMeetingVoiceStatus('No speech was detected yet. Keep speaking or tap the mic to stop.', 'info');
+
+                    return;
+                }
+
+                shouldKeepMeetingSpeechToolRunning = false;
+                updateMeetingVoiceStatus('Speech recognition could not continue in this browser.', 'error');
+            };
+
+            // Step 7D: keep listening until the user stops the mic button.
+            meetingSpeechTool.onend = function () {
+                updateMeetingVoiceButton(false);
+                isMeetingSpeechToolRunning = false;
+
+                if (shouldKeepMeetingSpeechToolRunning) {
+                    window.setTimeout(function () {
+                        if (!shouldKeepMeetingSpeechToolRunning || !meetingSpeechTool) {
+                            return;
+                        }
+
+                        try {
+                            meetingSpeechTool.start();
+                        } catch (error) {
+                            shouldKeepMeetingSpeechToolRunning = false;
+                            updateMeetingVoiceStatus('Speech recognition paused. Please tap the mic again.', 'error');
+                        }
+                    }, 150);
+
+                    return;
+                }
+
+                const finalSpeechText = meetingSpeechPreview.value.trim();
+
+                if (finalSpeechText === '') {
+                    updateMeetingVoiceStatus('Speech capture stopped. No speech text was found.', 'error');
+
+                    return;
+                }
+
+                updateMeetingVoiceStatus('Speech capture stopped. The recognized text is shown below.', 'success');
+            };
+
+            try {
+                meetingSpeechTool.start();
+            } catch (error) {
+                shouldKeepMeetingSpeechToolRunning = false;
+                isMeetingSpeechToolRunning = false;
+                updateMeetingVoiceButton(false);
+                updateMeetingVoiceStatus('Speech recognition could not start. Please try again.', 'error');
+            }
+        }
+
+        // Step 8: stop the browser speech capture.
+        function stopMeetingSpeechCapture() {
+            if (!meetingSpeechTool) {
+                return;
+            }
+
+            shouldKeepMeetingSpeechToolRunning = false;
+            isMeetingSpeechToolRunning = false;
+
+            try {
+                meetingSpeechTool.stop();
+            } catch (error) {
+                // Step 8A: keep the stop flow stable when the browser already ended the current listen cycle.
+            }
+
+            updateMeetingVoiceButton(false);
+            updateMeetingVoiceStatus('Stopping speech capture...', 'info');
+        }
+
+        // Step 9: toggle between start and stop in one simple flow.
+        function handleMeetingVoiceButtonClick() {
+            if (meetingVoiceButton.disabled) {
+                return;
+            }
+
+            if (shouldKeepMeetingSpeechToolRunning || isMeetingSpeechToolRunning) {
+                stopMeetingSpeechCapture();
+
+                return;
+            }
+
+            startMeetingSpeechCapture();
+        }
+
+        // Step 10: disable the mic button when the browser does not support this feature.
+        if (!speechRecognitionToolClass) {
+            disableMeetingVoiceButton();
+            updateMeetingVoiceStatus('Speech recognition is not supported by this browser.', 'error');
+
+            return;
+        }
+
+        // Step 11: show the ready state when the browser supports speech recognition.
+        updateMeetingVoiceStatus('Speech recognition is ready. Tap the mic and start speaking.', 'info');
+        meetingVoiceButton.addEventListener('click', handleMeetingVoiceButtonClick);
     });
 </script>
 @endpush
