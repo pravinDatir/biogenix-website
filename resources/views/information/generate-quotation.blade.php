@@ -98,7 +98,7 @@
                             <div id="quote-item-list" class="space-y-3">
                                 @foreach ($oldProductIds as $index => $oldProductId)
                                     <div class="{{ $rowClass }} relative" data-quote-row>
-                                        <div class="grid grid-cols-1 gap-3 pt-10 md:grid-cols-2">
+                                        <div class="grid grid-cols-1 gap-3 pt-4 md:grid-cols-2">
                                             <div class="space-y-2" data-quote-product-container>
                                                 <label class="text-sm font-semibold text-slate-700">Product</label>
                                                 <div class="relative" data-custom-select-wrapper>
@@ -140,7 +140,6 @@
                                                     <p class="text-sm text-red-600">{{ $message }}</p>
                                                 @enderror
                                             </div>
-
                                             <div class="space-y-2">
                                                 <label for="quantity_{{ $index }}" class="text-sm font-semibold text-slate-700">Quantity</label>
                                                 <input id="quantity_{{ $index }}" name="quantity[]" data-quote-quantity-input class="{{ $inputClass }} @error('quantity.' . $index) border-red-500 ring-1 ring-red-100 @enderror" type="number" min="1" step="1" value="{{ $oldQuantities[$index] ?? 1 }}" placeholder="1" required>
@@ -149,12 +148,10 @@
                                                 @enderror
                                             </div>
                                         </div>
-
                                         <div class="{{ $previewClass }}" data-quote-preview>Select a product to preview MRP and quantity rules.</div>
                                         <p class="text-sm text-slate-500" data-quote-rule>Select a product to view quantity constraints.</p>
                                         <p class="text-sm text-slate-500" data-quote-line-total>Estimated MRP line total will appear here.</p>
-
-                                        <button type="button" class="remove-quote-item absolute right-4 top-4 hidden h-9 items-center justify-center rounded-xl border border-slate-300 bg-white px-3 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500/20" title="Remove Item">
+                                        <button type="button" class="remove-quote-item absolute right-4 top-3 hidden h-7 items-center justify-center rounded-lg border border-slate-300 bg-white px-2 text-[10px] font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500/20" title="Remove Item">
                                             Remove Item
                                         </button>
                                     </div>
