@@ -328,55 +328,7 @@
                         </div>
                     </details>
 
-                    <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
-                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
-                            <span class="text-sm font-semibold text-slate-900">Sub-Category</span>
-                            <span class="flex items-center gap-3">
-                                @if ($selectedApplications->isNotEmpty())
-                                    <a href="{{ $dropQueryKeys(['application_name', 'subcategory_name']) }}" class="text-xs font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
-                                @endif
-                                <svg class="h-4 w-4 text-slate-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
-                            </span>
-                        </summary>
-                        <div class="mt-4 space-y-3">
-                            @forelse ($applicationOptions as $label => $count)
-                                <label class="flex items-center justify-between gap-3 text-sm text-slate-800">
-                                    <span class="flex items-center gap-3">
-                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-primary-600" type="checkbox" name="application_name[]" value="{{ $label }}" @checked($selectedApplications->contains($label))>
-                                        <span>{{ $label }}</span>
-                                    </span>
-                                    <span class="text-xs text-slate-400">{{ $count }}</span>
-                                </label>
-                            @empty
-                                <p class="text-sm leading-6 text-slate-400">No applications available for the current catalog view.</p>
-                            @endforelse
-                        </div>
-                    </details>
 
-                    <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
-                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
-                            <span class="text-sm font-semibold text-slate-900">Brand</span>
-                            <span class="flex items-center gap-3">
-                                @if ($selectedBrands->isNotEmpty())
-                                    <a href="{{ $dropQueryKey('brand_name') }}" class="text-xs font-semibold text-primary-700 no-underline hover:text-primary-600">Reset</a>
-                                @endif
-                                <svg class="h-4 w-4 text-slate-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
-                            </span>
-                        </summary>
-                        <div class="mt-4 space-y-3">
-                            @forelse ($brandOptions as $label => $count)
-                                <label class="flex items-center justify-between gap-3 text-sm text-slate-800">
-                                    <span class="flex items-center gap-3">
-                                        <input class="catalog-auto h-4 w-4 rounded border-slate-300 text-primary-600" type="checkbox" name="brand_name[]" value="{{ $label }}" @checked($selectedBrands->contains($label))>
-                                        <span>{{ $label }}</span>
-                                    </span>
-                                    <span class="text-xs text-slate-400">{{ $count }}</span>
-                                </label>
-                            @empty
-                                <p class="text-sm leading-6 text-slate-400">No brands available for the current catalog view.</p>
-                            @endforelse
-                        </div>
-                    </details>
 
                     <details class="border-t border-slate-200 pt-4 first:border-t-0 first:pt-0" open>
                         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-slate-900 [&::-webkit-details-marker]:hidden">
