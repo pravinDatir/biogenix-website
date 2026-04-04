@@ -49,7 +49,7 @@
                     <div class="space-y-3">
                         <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Sign Up</h1>
                         <p class="text-sm text-slate-600">
-                            Are you a business owner or a healthcare professional?
+                            Get access to a smarter way of working—explore our full product portfolio, generate quotations, and manage your procurement with speed and control.
                             <a href="{{ route('b2b.signup') }}" class="font-semibold text-primary-700 no-underline transition hover:text-primary-600">
                                 </br>Register for a B2B Account
                             </a>

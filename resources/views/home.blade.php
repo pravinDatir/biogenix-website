@@ -138,12 +138,12 @@
 
             .home-page .home-primary-button {
                 border-radius: 1rem;
-                background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-500));
+                background: var(--color-orange-500);
                 box-shadow: 0 18px 30px rgba(26, 77, 46, 0.28);
             }
 
             .home-page .home-primary-button:hover {
-                background: linear-gradient(135deg, #ed6200, #ff7b21);
+                background: var(--color-orange-500);
             }
 
             .home-categories-heading h2,
@@ -597,12 +597,43 @@
                                 class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
                                 <div
                                     class="home-hero-copy-shell flex max-w-5xl flex-col items-center justify-center text-visible">
-                                    <h1
-                                        class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                                        Next-Gen <span class="text-secondary-600">Healthcare</span> Solutions
-                                    </h1>
-                                    <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
-                                        {{ $slide['copy'] }}</p>
+                                    @if($loop->index === 0)
+                                        <h1 class="font-display mb-4 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                            Precision <span class="text-secondary-600">Diagnostics</span>. Built on Experience.
+                                        </h1>
+                                        <h2 class="mb-6 text-2xl font-bold text-secondary-600 sm:text-3xl md:text-4xl">
+                                            Driven by Innovation
+                                        </h2>
+                                        <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
+                                            Biogenix delivers high-performance diagnostic solutions backed by years of industry expertise, advanced manufacturing, and a commitment to continuous innovation.
+                                        </p>
+                                    @elseif($loop->index === 1)
+                                        <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                            Driven by <span class="text-secondary-600">Innovation</span>.
+                                        </h1>
+                                        <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
+                                            From trusted manufacturing foundations to next-generation diagnostic technologies, Biogenix empowers laboratories and institutions with precision, reliability, and scale.
+                                        </p>
+                                    @elseif($loop->index === 2)
+                                        <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                            Trusted <span class="text-secondary-600">Diagnostics</span>. Proven Over Time.
+                                        </h1>
+                                        <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
+                                            With a strong legacy in diagnostic manufacturing and distribution, Biogenix continues to deliver reliable solutions to laboratories across India.
+                                        </p>
+                                    @else
+                                        <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                            Next-Gen <span class="text-secondary-600">Healthcare</span> Solutions
+                                        </h1>
+                                        <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
+                                            {{ $slide['copy'] }}
+                                        </p>
+                                    @endif
+                                    <div class="mt-8 flex justify-center">
+                                        <a href="{{ route('products.index') }}" class="home-primary-button inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white transition-all hover:scale-105 sm:text-lg">
+                                            Explore Our Products
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </article>
@@ -622,6 +653,11 @@
                                     <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
                                         Biogenix delivers precision diagnostic tools and intelligent instrument ecosystems for
                                         North India's labs and care networks.</p>
+                                    <div class="mt-8 flex justify-center">
+                                        <a href="{{ route('products.index') }}" class="home-primary-button inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white transition-all hover:scale-105 sm:text-lg">
+                                            Explore Our Products
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </article>

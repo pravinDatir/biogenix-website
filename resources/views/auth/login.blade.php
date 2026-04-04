@@ -4,10 +4,10 @@
     $kickerClass = 'inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-primary-700';
     $fieldClass = 'grid gap-2';
     $labelClass = 'text-sm font-semibold text-slate-700';
-    $inputBaseClass = 'h-14 w-full rounded-2xl border border-slate-300 bg-white px-4 text-base font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/10';
-    $inputWithIconClass = $inputBaseClass . ' px-12';
+    $inputBaseClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm font-medium text-slate-900 transition placeholder:text-slate-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/10';
+    $inputWithIconClass = $inputBaseClass . ' px-11';
     $linkClass = 'font-semibold text-primary-700 no-underline transition hover:text-primary-600';
-    $submitClass = 'inline-flex h-14 w-full items-center justify-center rounded-2xl bg-primary-600 text-base font-semibold text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
+    $submitClass = 'inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary-600 text-sm font-semibold text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-70';
 @endphp
 
 @extends('layouts.app')
@@ -15,9 +15,9 @@
 @section('title', 'Login - Biogenix')
 
 @section('content')
-<div class="mx-auto w-full max-w-6xl py-2 md:py-4">
-    <section class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_28px_70px_-32px_rgba(15,23,42,0.35)]">
-        <div class="grid min-h-[40rem] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)]">
+<div class="mx-auto w-full max-w-4xl py-4 px-4 sm:px-6 md:py-8 lg:px-8">
+    <section class="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_28px_70px_-32px_rgba(15,23,42,0.35)]">
+        <div class="grid min-h-[30rem] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(340px,420px)]">
             <aside class="relative hidden overflow-hidden lg:flex lg:items-end lg:p-9">
                 <img
                     src="{{ asset('upload/corousel/home2.jpg') }}"
@@ -49,19 +49,29 @@
                     </div>
 
                     <p class="mt-6 text-lg font-semibold leading-9 text-secondary-600">
-                        Sign in to manage catalog access, quotations, and procurement workflows from one consistent portal.
+                        Enter your Biogenix workspace to access product catalogs, pricing, quotations, and real-time order management in one unified system.
                     </p>
                 </div>
             </aside>
 
-            <div class="flex items-center bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(252,253,255,1)_100%)] px-5 py-8 sm:px-7 lg:px-10">
-                <div class="mx-auto w-full max-w-md">
+            <div class="flex items-center bg-[linear-gradient(180deg,rgba(255,255,255,1)_0%,rgba(252,253,255,1)_100%)] px-5 py-6 sm:px-6 lg:px-8">
+                <div class="mx-auto w-full max-w-sm">
                     <div>
                         <p class="{{ $kickerClass }}">Secure Access</p>
-                        <h1 class="mt-3 text-3xl font-bold leading-tight tracking-tight text-slate-950 md:text-4xl">Sign in to your account</h1>
-                        <p class="mt-4 text-sm leading-7 text-slate-500 md:text-base">
-                            Enter your credentials to continue with product discovery, order review, and account-specific pricing.
+                        <h1 class="mt-2 text-2xl font-bold leading-tight tracking-tight text-slate-950 md:text-3xl">Sign in to your account</h1>
+                        <p class="mt-2 text-xs leading-6 text-slate-500 md:text-sm">
+                            Access your Biogenix dashboard to explore products, generate quotations, track orders, and manage procurement workflows seamlessly.
                         </p>
+                    </div>
+
+                    {{-- AJAX error alert (hidden by default) --}}
+                    <div id="loginAjaxError" class="mt-5 hidden flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium leading-6 text-rose-700" role="alert">
+                        <svg class="mt-0.5 h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 8v5"></path>
+                            <path d="M12 16h.01"></path>
+                        </svg>
+                        <span id="loginAjaxErrorText"></span>
                     </div>
 
                     @if ($errorMessage)
@@ -74,15 +84,18 @@
                             <span>{{ $errorMessage }}</span>
                         </div>
                     @elseif ($successMessage)
-                        <div class="mt-8 flex items-start gap-3 rounded-2xl border border-primary-200 bg-primary-50 px-4 py-4 text-sm font-medium leading-6 text-primary-600" role="status">
-                            <svg class="mt-0.5 h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>{{ $successMessage }}</span>
+                        <div class="mt-8 rounded-2xl border border-primary-200 bg-primary-50 px-5 py-5" role="status">
+                            <div class="flex items-center gap-3">
+                                <svg class="h-6 w-6 shrink-0 text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <p class="text-base font-bold text-primary-700">Registration Submitted Successfully!</p>
+                            </div>
+                            <p class="mt-3 text-sm leading-6 text-primary-600">Your registration has been received and is being reviewed by our team. Once approved, you'll unlock access to product catalogs, quotations, and a streamlined procurement experience. We'll notify you shortly with your account status.</p>
                         </div>
                     @endif
 
-                    <form id="loginForm" method="POST" action="{{ route('login') }}" class="mt-8 grid gap-5" novalidate>
+                    <form id="loginForm" method="POST" action="{{ route('login') }}" class="mt-5 grid gap-4" novalidate>
                         @csrf
 
                         <div class="{{ $fieldClass }}" data-field-group>
@@ -202,12 +215,72 @@
 
         const loginForm = document.getElementById('loginForm');
         const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+        const ajaxErrorBox = document.getElementById('loginAjaxError');
+        const ajaxErrorText = document.getElementById('loginAjaxErrorText');
+
+        function showAjaxError(msg) {
+            ajaxErrorText.textContent = msg;
+            ajaxErrorBox.classList.remove('hidden');
+            ajaxErrorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideAjaxError() {
+            ajaxErrorBox.classList.add('hidden');
+            ajaxErrorText.textContent = '';
+        }
 
         if (loginForm && loginSubmitBtn) {
-            loginForm.addEventListener('submit', function () {
+            loginForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                hideAjaxError();
+
+                // Basic client-side check
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                if (!email || !password) {
+                    showAjaxError('Please enter both email and password.');
+                    return;
+                }
+
                 loginSubmitBtn.disabled = true;
                 loginSubmitBtn.classList.add('cursor-not-allowed', 'opacity-70');
-                loginSubmitBtn.setAttribute('aria-disabled', 'true');
+                const originalText = loginSubmitBtn.innerHTML;
+                loginSubmitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg> Signing in...';
+
+                try {
+                    const formData = new FormData(loginForm);
+                    const response = await fetch(loginForm.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                        body: formData,
+                    });
+
+                    if (response.ok || response.redirected) {
+                        // Success — reload to follow redirect
+                        window.location.href = response.url || '/';
+                        return;
+                    }
+
+                    const data = await response.json().catch(() => null);
+
+                    if (response.status === 422 && data && data.errors) {
+                        const firstError = Object.values(data.errors).flat()[0];
+                        showAjaxError(firstError || 'Invalid credentials. Please try again.');
+                    } else if (data && data.message) {
+                        showAjaxError(data.message);
+                    } else {
+                        showAjaxError('These credentials do not match our records.');
+                    }
+                } catch (err) {
+                    showAjaxError('Something went wrong. Please check your connection and try again.');
+                } finally {
+                    loginSubmitBtn.disabled = false;
+                    loginSubmitBtn.classList.remove('cursor-not-allowed', 'opacity-70');
+                    loginSubmitBtn.innerHTML = originalText;
+                }
             });
         }
     });

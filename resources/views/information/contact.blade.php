@@ -47,15 +47,25 @@
                         <div
                             class="relative h-56 w-full overflow-hidden rounded-2xl border border-[var(--ui-border)] bg-gradient-to-br from-[var(--ui-surface-subtle)] via-primary-50/60 to-[var(--ui-surface-muted)]">
                             <iframe id="contactMap" class="h-full w-full border-0"
-                                src="https://www.google.com/maps?q=Lucknow%2C%20Uttar%20Pradesh&output=embed" loading="lazy"
+                                src="https://www.google.com/maps?q=B19%2FA+S.I.L+Ancillary+Estate+Amausi+Industrial+Area+Nadarganj+Lucknow+226008&output=embed" loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade" title="Biogenix Location Map"></iframe>
                         </div>
                         <div class="mt-6">
                             <h3 class="text-3xl font-semibold tracking-tight text-slate-950">Corporate Headquarters</h3>
-                            <p class="mt-2 max-w-none text-base leading-8 text-slate-600">123 Medical Park Drive, Lucknow,
-                                Uttar Pradesh, India</p>
+                            <p class="mt-2 max-w-none text-base leading-8 text-slate-600">B19/A, S.I.L Ancillary Estate, Amausi Industrial Area, Nadarganj, Lucknow - 226008, Uttar Pradesh, India</p>
 
-                            <div class="mt-6 space-y-4">
+                            <div class="mt-4 flex flex-row flex-wrap items-center gap-4">
+                                <a href="tel:+91914097143" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-800 transition">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                    +91 914097143
+                                </a>
+                                <a href="mailto:support@biiogenix.in" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-800 transition">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    support@biiogenix.in
+                                </a>
+                            </div>
+
+                            <div class="mt-6 grid grid-cols-2 gap-4">
                                 <div class="flex items-center rounded-2xl border border-slate-100 bg-slate-50 p-4">
                                     <div
                                         class="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-primary-600">
@@ -95,9 +105,8 @@
                     </div>
 
                     <div class="mb-6">
-                        <h2 class="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">Send an Inquiry</h2>
-                        <p class="mt-2 max-w-none text-base leading-8 text-slate-600">Tell us your requirement and our
-                            dedicated team will get back to you with the next steps quickly.</p>
+                        <h2 class="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">Start a Conversation</h2>
+                        <p class="mt-2 max-w-none text-base leading-8 text-slate-600">Whether it's product inquiries, partnerships, or technical support, our team is ready to assist you with precision and clarity.</p>
                     </div>
 
                     <form id="contactForm" action="{{ route('contact.store') }}" method="POST"
@@ -195,7 +204,7 @@
                                 @disabled(!$canSubmitEnquiry)>
                                 Submit Inquiry
                             </button>
-                            <a href="https://wa.me/919876543210" target="_blank" rel="noopener"
+                            <a href="https://wa.me/91914097143" target="_blank" rel="noopener"
                                 class="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-primary-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/30 transition hover:bg-primary-600 hover:shadow-xl sm:w-auto">
                                 <svg class="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path

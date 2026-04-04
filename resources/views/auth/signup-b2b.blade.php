@@ -21,7 +21,7 @@
     <div class="{{ $cardShellClass }}">
         <div class="mb-10 text-center">
             <h1 class="text-4xl font-bold tracking-tight text-slate-950">Create Your Biogenix B2B Account</h1>
-            <p class="mx-auto mt-3 max-w-2xl text-base leading-8 text-slate-600">Join our network of healthcare professionals and research laboratories.</p>
+            <p class="mx-auto mt-3 max-w-2xl text-base leading-8 text-slate-600">Get access to a smarter way of working—explore our full product portfolio, generate quotations, and manage your procurement with speed and control.</p>
 
             <div class="mt-4">
                 <a href="{{ route('signup') }}" class="{{ $linkClass }}">
