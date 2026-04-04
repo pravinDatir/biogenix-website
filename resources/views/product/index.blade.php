@@ -584,18 +584,6 @@
                                             </div>
                                         </div>
 
-                                        <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
-                                            <div class="flex flex-row items-center justify-between gap-1.5 whitespace-nowrap overflow-hidden">
-                                                <span class="text-[11px] font-bold uppercase tracking-tight text-slate-400 shrink-0">Price</span>
-                                                <div class="flex items-baseline gap-1.5 overflow-hidden">
-                                                    <span class="text-[17px] font-extrabold tracking-tight text-primary-700 truncate">{!! $formatInr($price, 2) !!}</span>
-                                                    @if ($showMrpPrice)
-                                                        <span class="text-[11px] font-medium text-slate-400 line-through tracking-tighter truncate">{!! $formatInr($mrpPrice, 2) !!}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         @if ($bulkSummary)
                                             <div class="rounded-3xl border border-primary-100/80 bg-primary-50/70 px-3 py-2.5">
                                                 <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-600">Bulk Offer</p>
@@ -613,6 +601,18 @@
                                                 <p class="mt-1 text-xs font-semibold text-transparent">Placeholder</p>
                                             </div>
                                         @endif
+
+                                        <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
+                                            <div class="flex flex-row items-center justify-between gap-1 whitespace-nowrap overflow-hidden">
+                                                <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400 shrink-0">Price</span>
+                                                <div class="flex items-baseline gap-1.5 overflow-hidden">
+                                                    <span class="text-[16px] font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
+                                                    @if ($showMrpPrice)
+                                                        <span class="text-[11px] font-medium text-slate-400 line-through tracking-tighter">{!! $formatInr($mrpPrice, 2) !!}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="hidden space-y-2.5">
                                             <div class="flex min-h-[2.65rem] items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white px-3 shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
