@@ -586,15 +586,14 @@
 
                                         <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
                                             <div class="flex flex-row items-center justify-between gap-1.5 whitespace-nowrap overflow-hidden">
-                                                <span class="text-[12px] font-semibold text-slate-500 shrink-0 capitalize">Price:</span>
-                                                <span class="text-[17px] font-extrabold tracking-tight text-primary-700 truncate">{!! $formatInr($price, 2) !!}</span>
+                                                <span class="text-[11px] font-bold uppercase tracking-tight text-slate-400 shrink-0">Price</span>
+                                                <div class="flex items-baseline gap-1.5 overflow-hidden">
+                                                    <span class="text-[17px] font-extrabold tracking-tight text-primary-700 truncate">{!! $formatInr($price, 2) !!}</span>
+                                                    @if ($showMrpPrice)
+                                                        <span class="text-[11px] font-medium text-slate-400 line-through tracking-tighter truncate">{!! $formatInr($mrpPrice, 2) !!}</span>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            @if ($showMrpPrice)
-                                                <p class="mt-0.5 text-right text-[11px] font-medium text-slate-400 line-through tracking-tight overflow-hidden text-ellipsis whitespace-nowrap">{!! $formatInr($mrpPrice, 2) !!}</p>
-                                            @else
-                                                {{-- Maintain height consistency for cards without MRP --}}
-                                                <p class="mt-0.5 h-[17px]"></p>
-                                            @endif
                                         </div>
 
                                         @if ($bulkSummary)
