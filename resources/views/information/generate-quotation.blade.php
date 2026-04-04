@@ -62,10 +62,10 @@
         <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Biogenix Quotation" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-b from-[#013b2a] via-[#013b2a]/95 to-[#013b2a]/90"></div>
         <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
-            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl">
+            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl text-shadow-lg">
                 {{ $pageTitle }}
             </h1>
-            <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-200 md:text-lg">
+            <p class="mx-auto mt-6 max-w-2xl text-base font-medium leading-8 text-secondary-600 md:text-lg text-shadow-sm">
                 {{ $pageDescription }}
             </p>
         </div>

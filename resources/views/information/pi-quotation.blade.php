@@ -26,17 +26,27 @@
 @endphp
 
 @section('content')
-<div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
+<div>
+    {{-- Premium Hero --}}
+    <section class="relative overflow-hidden bg-primary-800 py-16 text-white md:py-24">
+        <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="Biogenix PI" class="absolute inset-0 h-full w-full object-cover opacity-10" loading="lazy" decoding="async">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#013b2a] via-[#013b2a]/95 to-[#013b2a]/90"></div>
+        <div class="relative z-10 mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
+            <h1 class="mx-auto max-w-4xl font-display text-4xl font-bold tracking-tight text-secondary-600 md:text-5xl lg:text-6xl text-shadow-lg">
+                Create Proforma Invoice
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-base font-medium leading-8 text-secondary-600 md:text-lg text-shadow-sm">
+                Review clinical requirements and draft official supply order documents.
+            </p>
+        </div>
+    </section>
 
-    {{-- ═══ PI Header Info ═══ --}}
-    <div class="mb-5 rounded-xl bg-white border border-slate-100 p-6 shadow-sm">
-        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div>
-                <h1 class="text-[2rem] font-bold tracking-tight text-primary-800 leading-none">Create Proforma Invoice</h1>
-                <p class="mt-2 text-sm font-medium text-slate-600">Drafting clinical supply order</p>
-            </div>
-            <div class="rounded-xl bg-slate-50 p-5 md:w-[450px]">
-                <div class="grid grid-cols-2 gap-y-4 gap-x-6">
+    <div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
+
+        {{-- ═══ PI Header Info ═══ --}}
+        <div class="mb-5 rounded-[24px] bg-white border border-slate-100 p-6 shadow-sm">
+            <div class="rounded-xl bg-slate-50 p-5 w-full">
+                <div class="grid grid-cols-1 gap-y-4 gap-x-6 md:grid-cols-4">
                     <div>
                         <label class="mb-1 block text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">PI Number</label>
                         <input id="piNumber" type="text" value="PI/2023-24/0842"
@@ -60,7 +70,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     {{-- ═══ Customer Details ═══ --}}
     <div class="mb-5 grid grid-cols-1 gap-5 md:grid-cols-2">
