@@ -163,7 +163,7 @@
             $integerPart = $remaining . ',' . $lastThree;
         }
 
-        return ($negative ? '-' : '') . '<span class="text-base font-medium opacity-60">Rs.</span> ' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
+        return ($negative ? '-' : '') . '<span class="text-[13px] font-medium opacity-60 mr-1.5">Rs.</span>' . $integerPart . ($decimals > 0 ? '.' . $fractionPart : '');
     };
 
     $resolveVisualVariant = function ($product, int $index): string {
@@ -585,24 +585,33 @@
                                         </div>
 
                                         <div class="rounded-3xl border border-slate-200/70 bg-slate-50/90 px-3 py-2.5">
-                                            <div class="flex items-end justify-between gap-3">
-                                                <span class="text-sm font-semibold text-slate-500">Price:</span>
-                                                <span class="text-xl font-extrabold tracking-tight text-primary-700">{!! $formatInr($price, 2) !!}</span>
+                                            <div class="flex flex-row items-center justify-between gap-1.5 whitespace-nowrap overflow-hidden">
+                                                <span class="text-[12px] font-semibold text-slate-500 shrink-0 capitalize">Price:</span>
+                                                <span class="text-[17px] font-extrabold tracking-tight text-primary-700 truncate">{!! $formatInr($price, 2) !!}</span>
                                             </div>
                                             @if ($showMrpPrice)
-                                                <p class="mt-1 text-right text-sm font-medium text-slate-400 line-through">{!! $formatInr($mrpPrice, 2) !!}</p>
+                                                <p class="mt-0.5 text-right text-[11px] font-medium text-slate-400 line-through tracking-tight overflow-hidden text-ellipsis whitespace-nowrap">{!! $formatInr($mrpPrice, 2) !!}</p>
+                                            @else
+                                                {{-- Maintain height consistency for cards without MRP --}}
+                                                <p class="mt-0.5 h-[17px]"></p>
                                             @endif
                                         </div>
 
                                         @if ($bulkSummary)
                                             <div class="rounded-3xl border border-primary-100/80 bg-primary-50/70 px-3 py-2.5">
                                                 <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-primary-600">Bulk Offer</p>
-                                                <p class="mt-1 text-xs font-semibold text-emerald-900">
+                                                <p class="mt-1 text-xs font-semibold text-emerald-900 truncate">
                                                     {{ $bulkSummary['label'] ?? 'Bulk pricing available' }}
                                                     @if (filled($bulkSummary['discount'] ?? null))
                                                         | {{ $bulkSummary['discount'] }}
                                                     @endif
                                                 </p>
+                                            </div>
+                                        @else
+                                            {{-- Invisible placeholder to keep card height identical to those with bulk offers --}}
+                                            <div class="invisible rounded-3xl border border-transparent bg-transparent px-3 py-2.5 pointer-events-none select-none">
+                                                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-transparent">Bulk Offer</p>
+                                                <p class="mt-1 text-xs font-semibold text-transparent">Placeholder</p>
                                             </div>
                                         @endif
 
