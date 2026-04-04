@@ -45,7 +45,7 @@
     $quizFieldClass = 'quiz-field h-12 w-full rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 text-sm text-[var(--ui-text)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-[var(--color-neutral-500)] focus:border-primary-600 focus:ring-2 focus:ring-primary-600/10';
     $quizPrimaryButtonClass = 'quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
     $quizSubmitButtonClass = 'mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-3.5 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
-    $quizScoreRingClass = 'relative h-[220px] w-[220px] md:h-[240px] md:w-[240px]';
+    $quizScoreRingClass = 'relative h-[180px] w-[180px] md:h-[200px] md:w-[200px]';
     $quizPerfTrackClass = 'h-2 overflow-hidden rounded-full bg-[var(--ui-border)]';
     $quizPerfFillClass = 'h-full rounded-full bg-[var(--ui-text)] transition-[width] delay-300 duration-1000 ease-in-out';
     $quizVoucherCodeClass = "mt-2 font-display text-2xl font-bold tracking-[0.3em] text-[var(--ui-surface)]";
@@ -388,8 +388,8 @@
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div class="flex flex-col justify-center">
                     <span class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-800">Final Step</span>
-                    <h2 class="font-display mt-4 text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl">You're almost<br>there!</h2>
-                    <p class="mt-4 max-w-md text-sm leading-6 text-[var(--ui-text-muted)] md:text-base">Enter your details to calculate your precision score and unlock your exclusive coupon code.</p>
+                    <h2 class="font-display mt-4 text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl">Assessment Complete -<br>Growth Opportunity Identified</h2>
+                    <p class="mt-4 max-w-md text-sm leading-relaxed text-[var(--ui-text-muted)] md:text-base">Your inputs help us align the right products, pricing structure, and support system for your setup. Our team uses this data to ensure faster onboarding, better recommendations, and long-term partnership value.</p>
                     <div class="mt-6">
                         <div class="flex items-center justify-between text-sm font-semibold text-[var(--ui-text)]">
                             <span>Analysis Completion</span>
@@ -399,14 +399,23 @@
                             <div class="{{ $quizProgressFillClass }} w-full"></div>
                         </div>
                     </div>
-                    <div class="mt-8 flex items-start gap-3">
-                        <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-600">
-                            <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        </span>
-                        <div>
-                            <p class="text-sm font-bold text-[var(--ui-text)]">Privacy Protocol</p>
-                            <p class="mt-1 text-xs leading-5 text-[var(--ui-text-muted)]">Your clinical data is encrypted using 256-bit AES standards. We never share your results with third-party providers.</p>
-                        </div>
+                    <div class="mt-8 rounded-2xl bg-primary-50 p-6 border border-primary-100">
+                        <h4 class="text-sm font-bold text-primary-900">Based on your inputs, we’ve identified the right product pathways and pricing opportunities for your profile.</h4>
+                        <p class="mt-2 text-xs font-semibold text-primary-700">You now qualify for:</p>
+                        <ul class="mt-4 space-y-3">
+                            <li class="flex items-center gap-3 text-xs font-medium text-primary-800">
+                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                Priority access to relevant product categories
+                            </li>
+                            <li class="flex items-center gap-3 text-xs font-medium text-primary-800">
+                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                Preferential pricing aligned with your scale
+                            </li>
+                            <li class="flex items-center gap-3 text-xs font-medium text-primary-800">
+                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                Direct support from the Biogenix team
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div>
@@ -443,22 +452,22 @@
 
         {{-- ────────── STEP 6: RESULTS ────────── --}}
         <div class="{{ $quizStepClass }}" data-step="6">
-            <div class="mb-8">
-                <span class="inline-flex rounded-full bg-primary-500 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-white">Assessment Complete</span>
-                <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div class="mb-6">
+                <span class="inline-flex rounded-full bg-primary-500 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">Assessment Complete</span>
+                <div class="mt-3 grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <div>
-                        <h2 class="font-display text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl xl:whitespace-nowrap" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
-                        <p class="mt-4 max-w-lg text-sm leading-6 text-[var(--ui-text-muted)] md:text-base" id="quizResultDescription">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
+                        <h2 class="font-display text-2xl font-bold tracking-tight text-[var(--ui-text)] md:text-3xl lg:text-4xl xl:whitespace-nowrap" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
+                        <p class="mt-3 max-w-md text-[13px] leading-6 text-[var(--ui-text-muted)] md:text-sm" id="quizResultDescription">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
                     </div>
-                    <div class="flex items-center justify-center lg:items-start lg:justify-end lg:-mt-4">
+                    <div class="flex items-center justify-center lg:items-start lg:justify-end lg:-mt-2">
                         <div class="{{ $quizScoreRingClass }}">
                             <svg viewBox="0 0 200 200" class="h-full w-full">
                                 <circle class="stroke-[var(--ui-border)]" cx="100" cy="100" r="85" fill="none" stroke-width="10"/>
                                 <circle class="stroke-primary-600 transition-[stroke-dashoffset] duration-[1200ms] ease-in-out" id="scoreRingFill" cx="100" cy="100" r="85" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="534" stroke-dashoffset="534" transform="rotate(-90 100 100)"/>
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                <span class="font-display text-5xl font-bold text-[var(--ui-text)]" id="scoreValue">0%</span>
-                                <span class="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--ui-text-muted)]">Precision Score</span>
+                                <span class="font-display text-4xl font-bold text-[var(--ui-text)]" id="scoreValue">0%</span>
+                                <span class="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--ui-text-muted)]">Precision Score</span>
                             </div>
                         </div>
                     </div>
@@ -468,21 +477,38 @@
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div class="{{ $quizPanelClass }}">
                     <h3 class="flex items-center gap-2 text-base font-bold text-[var(--ui-text)]">
-                        <svg class="h-5 w-5 text-[var(--ui-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        Phase Performance Breakdown
+                        <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        Profile Insight Summary
                     </h3>
-                    <div class="mt-6 space-y-5">
-                        <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-[var(--ui-text)]" id="quizPerfLabel1">Kits Mastery</span><span class="font-bold text-[var(--ui-text)]" id="quizPerfValue1">98%</span></div>
-                            <div class="{{ $quizPerfTrackClass }} mt-2"><div class="{{ $quizPerfFillClass }} w-0" id="quizPerfBar1" data-perf="98"></div></div>
+                    <div class="mt-8 space-y-6">
+                        {{-- 1. Diagnostic Fit --}}
+                        <div class="rounded-xl border border-primary-100 bg-primary-50/20 p-4 transition-all hover:bg-primary-50/40">
+                            <p class="text-sm font-bold text-primary-900">1. Diagnostic Fit</p>
+                            <p class="mt-1 text-xs leading-relaxed text-primary-700/80">How well your current setup aligns with scalable diagnostic workflows</p>
+                            <div class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-primary-700 shadow-sm outline outline-1 outline-primary-200">
+                                <span class="h-1.5 w-1.5 rounded-full bg-secondary-500 animate-pulse"></span>
+                                <span id="insightOutcome1">Analyzing Fit...</span>
+                            </div>
                         </div>
-                        <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-[var(--ui-text)]" id="quizPerfLabel2">Storage Requirements</span><span class="font-bold text-[var(--ui-text)]" id="quizPerfValue2">85%</span></div>
-                            <div class="{{ $quizPerfTrackClass }} mt-2"><div class="{{ $quizPerfFillClass }} w-0" id="quizPerfBar2" data-perf="85"></div></div>
+
+                        {{-- 2. Procurement Efficiency --}}
+                        <div class="rounded-xl border border-blue-100 bg-blue-50/20 p-4 transition-all hover:bg-blue-50/40">
+                            <p class="text-sm font-bold text-blue-900">2. Procurement Efficiency</p>
+                            <p class="mt-1 text-xs leading-relaxed text-blue-700/80">How optimized your sourcing and pricing strategy currently is</p>
+                            <div class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 shadow-sm outline outline-1 outline-blue-200">
+                                <span class="h-1.5 w-1.5 rounded-full bg-blue-500 items-center justify-center"></span>
+                                <span id="insightOutcome2">Calculating Efficiency...</span>
+                            </div>
                         </div>
-                        <div>
-                            <div class="flex items-center justify-between text-sm"><span class="font-semibold text-[var(--ui-text)]" id="quizPerfLabel3">System Compatibility</span><span class="font-bold text-[var(--ui-text)]" id="quizPerfValue3">94%</span></div>
-                            <div class="{{ $quizPerfTrackClass }} mt-2"><div class="{{ $quizPerfFillClass }} w-0" id="quizPerfBar3" data-perf="94"></div></div>
+
+                        {{-- 3. Product Strategy Alignment --}}
+                        <div class="rounded-xl border border-secondary-200 bg-secondary-100/30 p-4 transition-all hover:bg-secondary-100/50">
+                            <p class="text-sm font-bold text-secondary-900">3. Product Strategy Alignment</p>
+                            <p class="mt-1 text-xs leading-relaxed text-secondary-800/80">How well your current focus matches high-demand diagnostic categories</p>
+                            <div class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-secondary-700 shadow-sm outline outline-1 outline-secondary-300">
+                                <span class="h-1.5 w-1.5 rounded-full bg-secondary-600"></span>
+                                <span id="insightOutcome3">Mapping Alignment...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -491,16 +517,27 @@
                     <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary-600/25">
                         <svg class="h-6 w-6 text-secondary-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </div>
-                    <h3 class="font-display mt-4 text-2xl font-bold text-[var(--ui-surface)]">Certification<br>Reward</h3>
-                    <p class="mt-3 text-sm leading-6 text-[var(--ui-surface)] opacity-70">Redeem your exclusive proficiency discount on any premium diagnostic kit.</p>
+                    <h3 class="font-display mt-4 text-2xl font-bold text-[var(--ui-surface)]">Your Biogenix<br>Access Benefits</h3>
+                    <p class="mt-3 text-sm leading-relaxed text-[var(--ui-surface)] opacity-80">Based on your profile, you now unlock tailored pricing advantages and priority access across relevant product categories. Your setup qualifies for optimized procurement and direct support alignment.</p>
                     <div class="mt-5 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-border)] px-5 py-4 text-center">
                         <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--ui-surface)] opacity-60">Voucher Code</p>
                         <p class="{{ $quizVoucherCodeClass }}" id="voucherCode">BIOGENIX15</p>
+                        <button type="button" onclick="copyVoucher()" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-secondary-500 transition hover:text-secondary-400">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                            Copy Code & Shop
+                        </button>
                     </div>
-                    <button type="button" class="mt-4 inline-flex w-full items-center justify-center rounded-xl border-2 border-[var(--glass-border)] px-6 py-3 text-sm font-bold text-[var(--ui-surface)] transition hover:bg-[var(--glass-border)]" onclick="copyVoucher()">
-                        Copy and Shop
-                    </button>
                 </div>
+            </div>
+
+            {{-- New Insight Footer Line --}}
+            <div class="mt-8 text-center sm:mt-10 lg:mt-12">
+                <p class="text-[13px] font-medium leading-relaxed text-[var(--ui-text-muted)]">
+                    “Your personalized pricing and product recommendations will be ready inside your dashboard once you set up your account”
+                </p>
+                <p class="mt-1.5 text-[13px] font-medium text-primary-600">
+                    Already registered? <a href="{{ route('login') }}" class="underline decoration-primary-600/30 underline-offset-4 transition hover:text-primary-700 hover:decoration-primary-700">You can access them instantly from your dashboard.</a>
+                </p>
             </div>
         </div>
         @endif
@@ -1020,7 +1057,9 @@
         }
 
         for (var index = 0; index < 3; index++) {
-            var performanceItem = performanceBreakdown[index] || { label: 'Result Segment', percentage: 0 };
+            var performanceItem = performanceBreakdown[index];
+            if (!performanceItem) continue;
+
             var perfLabel = document.getElementById('quizPerfLabel' + (index + 1));
             var perfValue = document.getElementById('quizPerfValue' + (index + 1));
             var perfBar = document.getElementById('quizPerfBar' + (index + 1));
@@ -1035,6 +1074,31 @@
     }
 
     function animateQuizResults(scorePercentage) {
+        // Randomize Insight Outcomes to feel "purposely generated"
+        const outcomes1 = [
+            "Strong foundation for expansion",
+            "Moderate alignment with growth potential",
+            "Early-stage setup with optimization scope"
+        ];
+        const outcomes2 = [
+            "Efficient sourcing structure identified",
+            "Opportunities to improve pricing advantage",
+            "High potential for cost optimization"
+        ];
+        const outcomes3 = [
+            "Well-aligned with high-demand categories",
+            "Partial alignment with expansion opportunities",
+            "Untapped potential across key product segments"
+        ];
+
+        const outcomeEl1 = document.getElementById('insightOutcome1');
+        const outcomeEl2 = document.getElementById('insightOutcome2');
+        const outcomeEl3 = document.getElementById('insightOutcome3');
+
+        if (outcomeEl1) outcomeEl1.textContent = outcomes1[Math.floor(Math.random() * outcomes1.length)];
+        if (outcomeEl2) outcomeEl2.textContent = outcomes2[Math.floor(Math.random() * outcomes2.length)];
+        if (outcomeEl3) outcomeEl3.textContent = outcomes3[Math.floor(Math.random() * outcomes3.length)];
+
         setTimeout(function () {
             var score = Number(scorePercentage || 0);
             var circumference = 534;

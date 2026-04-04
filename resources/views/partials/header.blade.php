@@ -43,20 +43,22 @@
                 padding: 0.4rem 0.4rem;
                 font-size: 0.74rem;
             }
-            .header-auth-button {
+            .header-auth-button, .header-cart-button, .header-profile-button {
+                height: 2.5rem;
                 min-height: 2.5rem;
+            }
+            .header-auth-button {
                 padding-inline: 1rem;
                 font-size: 0.8125rem;
             }
             .header-cart-button {
                 gap: 0.45rem;
-                padding: 0.55rem 0.8rem;
+                padding-inline: 0.8rem;
             }
             .header-cart-label {
                 font-size: 0.8125rem;
             }
             .header-profile-button {
-                height: 2.5rem;
                 width: 2.5rem;
             }
         }
@@ -115,7 +117,7 @@
             <button
                 type="button"
                 onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
-                class="header-cart-button inline-flex items-center gap-2 rounded-2xl border border-primary-100 bg-primary-50 px-3 py-2 text-primary-700 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:gap-2.5 2xl:px-3.5 2xl:py-2.5"
+                class="header-cart-button inline-flex h-10 items-center gap-2 rounded-xl border border-primary-100 bg-primary-50 px-3 text-primary-700 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:h-11 2xl:gap-2.5 2xl:px-3.5"
                 aria-label="View cart"
             >
                 <span class="relative inline-flex h-7 w-7 items-center justify-center text-inherit">
@@ -137,7 +139,7 @@
             {{-- Profile icon --}}
             <a
                 href="{{ $profileHref }}"
-                class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-primary-100 bg-primary-50 text-primary-700 no-underline shadow-sm transition hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
+                class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 no-underline shadow-sm transition hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
                 aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}"
                 title="Profile"
             >

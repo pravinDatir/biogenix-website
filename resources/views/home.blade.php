@@ -16,26 +16,26 @@
                 --home-navy: var(--color-primary-800);
                 --home-panel: rgba(255, 255, 255, 0.74);
                 /* background: url('{{ asset('upload/backgrounds/homebg1.jpg') }}') top center / contain no-repeat; */
-                 
-                 background-image:
-                                url('{{ asset('upload/backgrounds/homebg2.png') }}'),
-                                url('{{ asset('upload/backgrounds/homebg4.jpg') }}'),
-                                url('{{ asset('upload/backgrounds/homebg3.jpg') }}');
 
-                            background-repeat: no-repeat, no-repeat, no-repeat;
+                background-image:
+                    url('{{ asset('upload/backgrounds/homebg2.png') }}'),
+                    url('{{ asset('upload/backgrounds/homebg4.jpg') }}'),
+                    url('{{ asset('upload/backgrounds/homebg3.jpg') }}');
 
-                            background-position:
-                                top center,
-                                center center,
-                                bottom center;
+                background-repeat: no-repeat, no-repeat, no-repeat;
 
-                              background-size:
-                                100% auto,
-                                100% auto,
-                                100% auto;
+                background-position:
+                    top center,
+                    center center,
+                    bottom center;
+
+                background-size:
+                    100% 83vh,
+                    100% auto,
+                    100% auto;
             }
 
-            
+
 
             .home-page .home-card,
             .home-page .home-panel {
@@ -138,6 +138,11 @@
 
             .home-page .home-primary-button {
                 border-radius: 1rem;
+            }
+
+
+
+            .home-page .home-primary-button {
                 background: var(--color-orange-500);
                 box-shadow: 0 18px 30px rgba(26, 77, 46, 0.28);
             }
@@ -582,7 +587,7 @@
     <div class="home-page">
 
         <section class="home-hero relative overflow-hidden bg-primary-800 text-white"
-            style="min-height: 72vh; background-color: #0D2B19;">
+            style="min-height: 83vh; background-color: #0D2B19;">
             <div class="home-hero-track-overlay absolute inset-0 opacity-30"></div>
             <div class="absolute inset-0 overflow-hidden" id="heroCarousel">
                 <div id="heroTrack" class="flex h-full w-full translate-x-0 transition-transform duration-700 ease-out">
@@ -594,35 +599,42 @@
                             <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
 
                             <div
-                                class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
+                                class="relative z-10 mx-auto flex min-h-[83vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
                                 <div
                                     class="home-hero-copy-shell flex max-w-5xl flex-col items-center justify-center text-visible">
                                     @if($loop->index === 0)
-                                        <h1 class="font-display mb-4 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                        <h1
+                                            class="font-display mb-4 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                                             Precision <span class="text-secondary-600">Diagnostics</span>. Built on Experience.
                                         </h1>
                                         <h2 class="mb-6 text-2xl font-bold text-secondary-600 sm:text-3xl md:text-4xl">
                                             Driven by Innovation
                                         </h2>
                                         <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
-                                            Biogenix delivers high-performance diagnostic solutions backed by years of industry expertise, advanced manufacturing, and a commitment to continuous innovation.
+                                            Biogenix delivers high-performance diagnostic solutions backed by years of industry
+                                            expertise, advanced manufacturing, and a commitment to continuous innovation.
                                         </p>
                                     @elseif($loop->index === 1)
-                                        <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                        <h1
+                                            class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                                             Driven by <span class="text-secondary-600">Innovation</span>.
                                         </h1>
                                         <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
-                                            From trusted manufacturing foundations to next-generation diagnostic technologies, Biogenix empowers laboratories and institutions with precision, reliability, and scale.
+                                            From trusted manufacturing foundations to next-generation diagnostic technologies,
+                                            Biogenix empowers laboratories and institutions with precision, reliability, and scale.
                                         </p>
                                     @elseif($loop->index === 2)
-                                        <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                        <h1
+                                            class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                                             Trusted <span class="text-secondary-600">Diagnostics</span>. Proven Over Time.
                                         </h1>
                                         <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
-                                            With a strong legacy in diagnostic manufacturing and distribution, Biogenix continues to deliver reliable solutions to laboratories across India.
+                                            With a strong legacy in diagnostic manufacturing and distribution, Biogenix continues to
+                                            deliver reliable solutions to laboratories across India.
                                         </p>
                                     @else
-                                        <h1 class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                                        <h1
+                                            class="font-display mb-6 text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
                                             Next-Gen <span class="text-secondary-600">Healthcare</span> Solutions
                                         </h1>
                                         <p class="home-hero-copy max-w-3xl text-base leading-8 text-secondary-600 md:text-xl">
@@ -630,7 +642,8 @@
                                         </p>
                                     @endif
                                     <div class="mt-8 flex justify-center">
-                                        <a href="{{ route('products.index') }}" class="home-primary-button inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white transition-all hover:scale-105 sm:text-lg">
+                                        <a href="{{ route('products.index') }}"
+                                            class="home-primary-button inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white transition-all hover:scale-105 sm:text-lg">
                                             Explore Our Products
                                         </a>
                                     </div>
@@ -643,7 +656,7 @@
                                 class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" decoding="async">
                             <div class="hero-gradient-overlay absolute inset-0 z-0 opacity-90"></div>
                             <div
-                                class="relative z-10 mx-auto flex min-h-[72vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
+                                class="relative z-10 mx-auto flex min-h-[83vh] w-full max-w-none flex-col items-center justify-center px-4 py-12 text-center sm:px-6 md:py-16 lg:px-8 xl:px-10">
                                 <div
                                     class="home-hero-copy-shell flex max-w-5xl flex-col items-center justify-center text-visible">
                                     <h1
@@ -654,7 +667,8 @@
                                         Biogenix delivers precision diagnostic tools and intelligent instrument ecosystems for
                                         North India's labs and care networks.</p>
                                     <div class="mt-8 flex justify-center">
-                                        <a href="{{ route('products.index') }}" class="home-primary-button inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white transition-all hover:scale-105 sm:text-lg">
+                                        <a href="{{ route('products.index') }}"
+                                            class="home-primary-button inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white transition-all hover:scale-105 sm:text-lg">
                                             Explore Our Products
                                         </a>
                                     </div>
@@ -737,7 +751,8 @@
                                 <div class="home-category-tile__content">
                                     <div>
                                         <h3 class="font-display text-lg font-semibold tracking-tight text-slate-950">
-                                            {{ $category->name }}</h3>
+                                            {{ $category->name }}
+                                        </h3>
                                         <p class="home-category-copy mt-1.5 text-[13px] leading-5.5">
                                             {{ $categoryCopy }}
                                         </p>
@@ -832,9 +847,9 @@
                 </article>
 
                 <article class="home-panel home-newsletter-card home-reveal rounded-[var(--ui-radius-card)] xl:col-span-5">
-                    <h3 class="text-xl font-semibold text-slate-900">Newsletter</h3>
-                    <p class="mt-1.5 text-sm text-slate-600">Get product updates, launch announcements, and support
-                        advisories.</p>
+                    <h3 class="text-xl font-semibold text-slate-900">Stay Updated with Biogenix</h3>
+                    <p class="mt-1.5 text-sm text-slate-600">Get updates on new product launches, technical insights, and
+                        operational improvements designed for modern diagnostic setups.</p>
                     <form id="newsletterForm" class="mt-3 space-y-2.5" novalidate>
                         <div>
                             <label for="newsletterEmail" class="mb-1.5 block text-sm font-semibold text-slate-700">Work
@@ -858,11 +873,12 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2">
                         <div class="flex flex-col justify-center p-5 sm:p-7 lg:p-8 xl:p-10">
                             <h2
-                                class="font-display text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl lg:text-[2rem]">
-                                Strategic Presence: Northern Hub</h2>
+                                class="font-display text-[1.375rem] font-bold tracking-tight text-slate-950 sm:text-2xl md:text-3xl lg:text-[2rem] leading-[1.2]">
+                                Nationwide Presence. <br class="sm:hidden">Trusted Distribution Network.</h2>
                             <p class="mt-3 max-w-lg text-sm leading-6 text-slate-600 md:text-[15px] md:leading-7">
-                                Our state-of-the-art reference laboratory in Lucknow serves as the nerve center for North
-                                India, ensuring specialized pathology samples reach analysis within 6 hours of collection.
+                                Biogenix is supported by a growing network of authorized distributors and partners across
+                                India, ensuring reliable product availability, faster access, and localized support for
+                                laboratories, hospitals, and institutions.
                             </p>
 
                             <ul class="mt-5 space-y-2.5">
@@ -874,8 +890,8 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </span>
-                                    <span class="text-sm font-semibold text-slate-800">24/7 Operational Diagnostic
-                                        Facility</span>
+                                    <span class="text-sm font-semibold text-slate-800">Verified & Authorized Channel
+                                        Partners</span>
                                 </li>
                                 <li class="flex items-center gap-3">
                                     <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
@@ -885,8 +901,8 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </span>
-                                    <span class="text-sm font-semibold text-slate-800">Dedicated Cold-Chain Logistics
-                                        Hub</span>
+                                    <span class="text-sm font-semibold text-slate-800">Strong Regional Distribution
+                                        Coverage</span>
                                 </li>
                                 <li class="flex items-center gap-3">
                                     <span
@@ -896,17 +912,17 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </span>
-                                    <span class="text-sm font-semibold text-slate-800">AI-Integrated Result
-                                        Validation</span>
+                                    <span class="text-sm font-semibold text-slate-800">Reliable Product Availability &
+                                        Support</span>
                                 </li>
                             </ul>
 
-                            <div class="mt-6">
-                                <a href="{{ route('contact') }}"
-                                    class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:scale-105 hover:bg-primary-700">
-                                    Find a Collection Center
+                            <div class="mt-8">
+                                <a href="javascript:void(0)" onclick="openDistributorModal()"
+                                    class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-primary-600/20 transition hover:scale-[1.02] active:scale-95 hover:bg-primary-700">
+                                    Find a Distributor
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                        stroke-width="2">
+                                        stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -918,15 +934,14 @@
 
                         <div
                             class="relative min-h-[240px] lg:min-h-[360px] overflow-hidden rounded-[var(--ui-radius-card)]">
-                            <img src="{{ asset('upload/corousel/image4.jpg') }}"
-                                alt="Biogenix Northern Hub Laboratory in Lucknow"
+                            <img src="{{ asset('upload/corousel/image4.jpg') }}" alt="Biogenix Distribution Network"
                                 class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async">
                             <div
-                                class="absolute bottom-4 right-4 z-10 rounded-2xl border border-secondary-700/20 bg-secondary-600 px-4 py-2.5 shadow-sm sm:bottom-5 sm:right-5">
-                                <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-900">Center of
-                                    Excellence</p>
-                                <p class="font-display mt-1 text-lg font-bold tracking-tight text-slate-900">Lucknow, UP</p>
-                                <p class="text-xs font-medium text-slate-900">Regional Reference Lab</p>
+                                class="absolute bottom-4 right-4 z-10 rounded-2xl border border-secondary-700/20 bg-secondary-600 px-4 py-2.5 shadow-sm sm:bottom-5 sm:right-5 text-center">
+                                <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-900">Authorized
+                                    Network</p>
+                                <p class="font-display mt-1 text-lg font-bold tracking-tight text-slate-900">Pan-India
+                                    Distribution</p>
                             </div>
                         </div>
                     </div>
@@ -963,19 +978,25 @@
         <section class="bg-transparent py-12 text-white md:py-14">
             <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
                 <div class="home-cta home-reveal rounded-[var(--ui-radius-card)] px-6 py-10 sm:px-8 md:px-10 md:py-12">
-                    <h2 class="font-display text-2xl font-semibold text-white md:text-4xl">Need a faster procurement
-                        decision?</h2>
-                    <p class="mx-auto mt-3 max-w-3xl text-sm text-primary-50/90 md:text-base">
-                        Generate a compliant MRP-only quote instantly, or schedule a meeting with our team for institutional
-                        onboarding and product consultation.
+                    <h2 class="font-display text-2xl font-semibold text-white md:text-4xl">Make Smarter Procurement
+                        Decisions, Faster</h2>
+                    <p class="mx-auto mt-3 max-w-3xl text-sm text-primary-50/90 md:text-base leading-relaxed">
+                        Get instant access to compliant pricing, curated product recommendations, and procurement-ready
+                        solutions—built specifically for your diagnostic needs. No delays. No back-and-forth. Just clarity
+                        and speed.
                     </p>
-                    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                    <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:items-center sm:justify-center sm:gap-4">
                         <x-ui.action-link :href="route('quotation.create')"
-                            class="min-h-11 px-6 bg-primary-600 hover:bg-primary-700 text-white shadow-lg border-none">Generate
+                            class="h-12 w-full sm:w-auto px-8 bg-primary-600 hover:bg-primary-700 text-white shadow-xl shadow-primary-600/20 border-none text-[15px] font-bold">Generate
                             Quote</x-ui.action-link>
                         <x-ui.action-link :href="route('book-meeting')" variant="inverse"
-                            class="min-h-11 px-5 hover-lift">Book a Meeting</x-ui.action-link>
+                            class="h-12 w-full sm:w-auto px-8 hover-lift text-[15px] font-bold">Book a
+                            Meeting</x-ui.action-link>
                     </div>
+                    {{-- Micro-line --}}
+                    <p class="mt-6 text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">
+                        Trusted by diagnostic labs, hospitals, and distributors across India
+                    </p>
                 </div>
             </div>
         </section>
@@ -1185,6 +1206,192 @@
                     }
                 }
             });
+        </script>
+    @endpush
+
+    {{-- Authorized Distributor Modal --}}
+    <div id="distributorModal"
+        class="fixed inset-0 z-[110] flex items-center justify-center p-4 transition-all duration-300 opacity-0 pointer-events-none"
+        role="dialog" aria-modal="true">
+        {{-- Backdrop --}}
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeDistributorModal()"></div>
+
+        {{-- Modal Content --}}
+        <div class="relative w-full max-w-4xl overflow-hidden rounded-[28px] border border-white/20 bg-white/95 shadow-[0_24px_80px_rgba(26,77,46,0.2)] backdrop-blur-md transition-all duration-300 scale-95 translate-y-4"
+            id="distributorModalContent">
+            {{-- Close Button --}}
+            <button onclick="closeDistributorModal()"
+                class="absolute right-5 top-5 z-20 inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-rose-600">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="max-h-[min(85vh,700px)] overflow-y-auto px-6 py-8 sm:px-8 lg:px-10">
+                <div class="mb-8">
+                    <h2 class="font-display text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Authorized
+                        Biogenix Network</h2>
+                    <p class="mt-2 text-sm text-slate-600">Trusted partners providing reliable access and clinical support
+                        across India.</p>
+                </div>
+
+                {{-- Filter Bar --}}
+                <div class="sticky top-0 z-10 -mx-6 mb-8 bg-white/95 px-6 pb-4 pt-1 backdrop-blur-sm sm:-mx-10 sm:px-10">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <div class="relative">
+                            <label
+                                class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Search</label>
+                            <div class="relative">
+                                <input type="text" id="distributorSearch" placeholder="Distributor name..."
+                                    class="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10">
+                                <svg class="absolute left-3.5 top-3 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">State</label>
+                            <select id="distributorState"
+                                class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10">
+                                <option value="">All States</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">City</label>
+                            <select id="distributorCity"
+                                class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm transition focus:border-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-500/10">
+                                <option value="">All Cities</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Results List --}}
+                <div id="distributorList" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    {{-- Dynamically populated --}}
+                </div>
+
+                {{-- Empty State --}}
+                <div id="distributorEmpty" class="hidden flex-col items-center justify-center py-12 text-center">
+                    <div
+                        class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-50 text-slate-400">
+                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <p class="text-base font-semibold text-slate-900">No partner found in this region</p>
+                    <p class="mt-1 text-sm text-slate-500">Try adjusting your filters or search terms.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            const distributorDataset = [
+                { name: "Global Medilinks", state: "Uttar Pradesh", city: "Lucknow", address: "G-12, Medical Market, Hazratganj", phone: "+91 91234 56789", email: "info@globalmed.in", focus: ["Diagnostics", "Molecular"] },
+                { name: "Southern Bio Systems", state: "Karnataka", city: "Bengaluru", address: "Suite 405, Prestige Towers, Residency Rd", phone: "+91 80234 98765", email: "sales@southbio.com", focus: ["Life Science", "ELISA"] },
+                { name: "Western Life Science", state: "Maharashtra", city: "Mumbai", address: "Building A, BKC Park, Bandra East", phone: "+91 22233 44455", email: "contact@westernlife.in", focus: ["Rapid Tests", "Serology"] },
+                { name: "Oriental Diagnostics", state: "West Bengal", city: "Kolkata", address: "Harish Avenue, Ballygunge", phone: "+91 33245 11223", email: "india.oriental@biogenix.online", focus: ["Instruments", "Reagents"] },
+                { name: "Precision Lab Solutions", state: "Delhi", city: "New Delhi", address: "Okhla Phase III, Industrial Area", phone: "+91 11456 78901", email: "delhi@precisionlab.in", focus: ["Pathology", "Technical Support"] },
+                { name: "Hitech Solutions Pvt Ltd", state: "Tamil Nadu", city: "Chennai", address: "Anna Salai, Mount Road", phone: "+91 44234 56789", email: "chennai@hitechsol.com", focus: ["Molecular Diagnostics"] },
+                { name: "Matrix Meditech", state: "Gujarat", city: "Ahmedabad", address: "SG Highway, Satellite Square", phone: "+91 79234 11223", email: "matrix@amd.meditech.in", focus: ["Rapid Kits", "Serology"] }
+            ];
+
+            function openDistributorModal() {
+                const modal = document.getElementById('distributorModal');
+                const content = document.getElementById('distributorModalContent');
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modal.classList.add('opacity-100', 'pointer-events-auto');
+                content.classList.remove('scale-95', 'translate-y-4');
+                content.classList.add('scale-100', 'translate-y-0');
+                document.body.style.overflow = 'hidden';
+                initDistributorFilters();
+                renderDistributorList();
+            }
+
+            function closeDistributorModal() {
+                const modal = document.getElementById('distributorModal');
+                const content = document.getElementById('distributorModalContent');
+                modal.classList.remove('opacity-100', 'pointer-events-auto');
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-100', 'translate-y-0');
+                content.classList.add('scale-95', 'translate-y-4');
+                document.body.style.overflow = '';
+            }
+
+            function initDistributorFilters() {
+                const stateSelect = document.getElementById('distributorState');
+                const citySelect = document.getElementById('distributorCity');
+
+                // Populate states
+                const states = [...new Set(distributorDataset.map(d => d.state))].sort();
+                stateSelect.innerHTML = '<option value="">All States</option>' +
+                    states.map(s => `<option value="${s}">${s}</option>`).join('');
+
+                stateSelect.onchange = () => {
+                    const selectedState = stateSelect.value;
+                    const filteredCities = [...new Set(distributorDataset.filter(d => !selectedState || d.state === selectedState).map(d => d.city))].sort();
+                    citySelect.innerHTML = '<option value="">All Cities</option>' +
+                        filteredCities.map(c => `<option value="${c}">${c}</option>`).join('');
+                    renderDistributorList();
+                };
+
+                citySelect.onchange = renderDistributorList;
+                document.getElementById('distributorSearch').oninput = renderDistributorList;
+            }
+
+            function renderDistributorList() {
+                const searchTerm = document.getElementById('distributorSearch').value.toLowerCase();
+                const state = document.getElementById('distributorState').value;
+                const city = document.getElementById('distributorCity').value;
+                const container = document.getElementById('distributorList');
+                const emptyState = document.getElementById('distributorEmpty');
+
+                const filtered = distributorDataset.filter(d => {
+                    const matchesSearch = d.name.toLowerCase().includes(searchTerm) || d.address.toLowerCase().includes(searchTerm);
+                    const matchesState = !state || d.state === state;
+                    const matchesCity = !city || d.city === city;
+                    return matchesSearch && matchesState && matchesCity;
+                });
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
+                } else {
+                    emptyState.classList.add('hidden');
+                    emptyState.classList.remove('flex');
+                    container.innerHTML = filtered.map(d => `
+                                    <div class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-primary-200 hover:shadow-md">
+                                        <div class="flex items-start justify-between">
+                                            <div>
+                                                <span class="mb-2 inline-flex rounded-full bg-primary-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-700">Authorized Distributor</span>
+                                                <h3 class="font-display text-lg font-bold text-slate-900">${d.name}</h3>
+                                                <p class="mt-1 text-sm text-slate-500">${d.address}, ${d.city}, ${d.state}</p>
+                                            </div>
+                                            <div class="flex flex-col gap-2">
+                                                <a href="tel:${d.phone.replace(/\s+/g, '')}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Call">
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                                </a>
+                                                <a href="mailto:${d.email}" class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600 transition hover:bg-primary-600 hover:text-white" title="Email">
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 flex flex-wrap gap-1.5">
+                                            ${d.focus.map(f => `<span class="rounded-lg bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-600">${f}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                `).join('');
+                }
+            }
         </script>
     @endpush
 @endsection
