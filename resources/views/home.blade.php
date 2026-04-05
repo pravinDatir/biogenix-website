@@ -582,9 +582,40 @@
                 }
             }
 
-            @media (max-width: 768px) {
-                .home-stats {
-                    margin-top: 1rem;
+            .home-solutions-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            @media (min-width: 1024px) {
+                .home-solutions-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 1023px) {
+                .home-solutions-grid {
+                    display: flex;
+                    overflow-x: auto;
+                    scroll-snap-type: x mandatory;
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
+                    gap: 1.25rem;
+                    padding-bottom: 1.5rem;
+                    scroll-behavior: smooth;
+                    margin: 0 -0.5rem;
+                    padding: 0 0.5rem 1.5rem 0.5rem;
+                }
+
+                .home-solutions-grid::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .home-solutions-grid .home-route-card {
+                    flex: 0 0 calc(100% - 1.5rem);
+                    scroll-snap-align: center;
+                    min-height: 26rem;
                 }
             }
         </style>
@@ -786,52 +817,71 @@
                     <x-ui.section-heading title="Clinical Business Solutions"
                         subtitle="Purpose-built pathways for B2B institutions and B2C healthcare buyers." />
                 </div>
-                <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                    <article class="home-route-card home-reveal ">
-                        <img src="{{ asset('upload/corousel/b2b-enterprise-bg.png') }}" alt="B2B Enterprise Solutions"
-                            loading="lazy" decoding="async">
-                        <span class="home-route-card__chip">B2B Operations</span>
-                        <div class="home-route-card__content">
-                            <div class="home-route-card__panel">
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For institutions
-                                    and channel partners</p>
-                                <h3 class="mt-3 text-2xl font-semibold text-white">Distributor, lab, and hospital buying
-                                    with structured support.</h3>
-                                <p class="mt-3 text-sm leading-7 text-primary-50/90">Account-based ordering, product
-                                    discovery, quotation approval flow, and coordinated support for healthcare institutions.
-                                </p>
-                                <div class="mt-5 flex flex-wrap gap-3">
-                                    <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])" variant="inverse">B2B
-                                        Login</x-ui.action-link>
-                                    <x-ui.action-link href="{{ url('/b2b-signup') }}"
-                                        class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2B
-                                        Sign Up</x-ui.action-link>
+                <div class="relative mt-6">
+                    <!-- Carousel Navigation Buttons (Visible only on mobile/tablet) -->
+                    <button id="solutionsPrev" type="button" aria-label="Previous solution"
+                        class="absolute -left-2 top-1/2 z-20 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-300/50 bg-white/90 text-slate-700 backdrop-blur-md shadow-lg transition-all hover:scale-110 hover:bg-white hover:text-primary-600 lg:hidden focus:outline-none ring-1 ring-black/5">
+                        <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+
+                    <button id="solutionsNext" type="button" aria-label="Next solution"
+                        class="absolute -right-2 top-1/2 z-20 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-300/50 bg-white/90 text-slate-700 backdrop-blur-md shadow-lg transition-all hover:scale-110 hover:bg-white hover:text-primary-600 lg:hidden focus:outline-none ring-1 ring-black/5">
+                        <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+
+                    <div class="home-solutions-grid" id="solutionsCarousel">
+                        <article class="home-route-card home-reveal">
+                            <img src="{{ asset('upload/corousel/b2b-enterprise-bg.png') }}"
+                                alt="B2B Enterprise Solutions" loading="lazy" decoding="async">
+                            <span class="home-route-card__chip">B2B Operations</span>
+                            <div class="home-route-card__content">
+                                <div class="home-route-card__panel">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For
+                                        institutions and channel partners</p>
+                                    <h3 class="mt-3 text-2xl font-semibold text-white">Distributor, lab, and hospital
+                                        buying with structured support.</h3>
+                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Account-based ordering, product
+                                        discovery, quotation approval flow, and coordinated support for healthcare
+                                        institutions.</p>
+                                    <div class="mt-5 flex flex-wrap gap-3">
+                                        <x-ui.action-link :href="route('login', ['user_type' => 'b2b'])"
+                                            variant="inverse">B2B Login</x-ui.action-link>
+                                        <x-ui.action-link href="{{ url('/b2b-signup') }}"
+                                            class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2B
+                                            Sign Up</x-ui.action-link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
-                    <article class="home-route-card home-reveal">
-                        <img src="{{ asset('upload/corousel/b2c-consumer-bg.png') }}" alt="B2C Direct-to-Consumer"
-                            loading="lazy" decoding="async">
-                        <span class="home-route-card__chip">B2C Access</span>
-                        <div class="home-route-card__content">
-                            <div class="home-route-card__panel">
-                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For direct and
-                                    retail buyers</p>
-                                <h3 class="mt-3 text-2xl font-semibold text-white">A cleaner buying path for faster product
-                                    access.</h3>
-                                <p class="mt-3 text-sm leading-7 text-primary-50/90">Simple MRP-visible catalog flow with
-                                    quick quotation generation and immediate assistance through support channels.</p>
-                                <div class="mt-5 flex flex-wrap gap-3">
-                                    <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])" variant="inverse">B2C
-                                        Login</x-ui.action-link>
-                                    <x-ui.action-link href="{{ url('/signup') }}"
-                                        class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2C
-                                        Sign Up</x-ui.action-link>
+                        </article>
+
+                        <article class="home-route-card home-reveal">
+                            <img src="{{ asset('upload/corousel/b2c-consumer-bg.png') }}" alt="B2C Direct-to-Consumer"
+                                loading="lazy" decoding="async">
+                            <span class="home-route-card__chip">B2C Access</span>
+                            <div class="home-route-card__content">
+                                <div class="home-route-card__panel">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/65">For direct and
+                                        retail buyers</p>
+                                    <h3 class="mt-3 text-2xl font-semibold text-white">A cleaner buying path for faster
+                                        product access.</h3>
+                                    <p class="mt-3 text-sm leading-7 text-primary-50/90">Simple MRP-visible catalog flow
+                                        with quick quotation generation and immediate assistance through support
+                                        channels.</p>
+                                    <div class="mt-5 flex flex-wrap gap-3">
+                                        <x-ui.action-link :href="route('login', ['user_type' => 'b2c'])"
+                                            variant="inverse">B2C Login</x-ui.action-link>
+                                        <x-ui.action-link href="{{ url('/signup') }}"
+                                            class="bg-black/30 hover:bg-black/50 border border-white/10 text-white backdrop-blur-md transition-colors">B2C
+                                            Sign Up</x-ui.action-link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1210,6 +1260,72 @@
                             catCarousel.scrollBy({ left: itemWidth + 16, behavior: 'smooth' });
                         });
                     }
+                }
+
+                /* â”€â”€â”€ Solutions Carousel Auto Scroll (Mobile Only) â”€â”€â”€ */
+                const solCarousel = document.getElementById('solutionsCarousel');
+                const solPrev = document.getElementById('solutionsPrev');
+                const solNext = document.getElementById('solutionsNext');
+                let solScrollInterval;
+
+                function startSolScroll() {
+                    if (!solCarousel || window.innerWidth >= 1024) return;
+                    if (solScrollInterval) clearInterval(solScrollInterval);
+
+                    solScrollInterval = setInterval(() => {
+                        const maxScrollLeft = solCarousel.scrollWidth - solCarousel.clientWidth;
+                        if (solCarousel.scrollLeft >= maxScrollLeft - 10) {
+                            solCarousel.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            const itemWidth = solCarousel.children[0]?.offsetWidth || 300;
+                            const gap = 20; // 1.25rem
+                            solCarousel.scrollBy({ left: itemWidth + gap, behavior: 'smooth' });
+                        }
+                    }, 4000);
+                }
+
+                function stopSolScroll() {
+                    if (solScrollInterval) clearInterval(solScrollInterval);
+                }
+
+                if (solCarousel) {
+                    // Only start if on mobile
+                    if (window.innerWidth < 1024) {
+                        setTimeout(() => { startSolScroll(); }, 2000);
+                    }
+
+                    solCarousel.addEventListener('mouseenter', stopSolScroll);
+                    solCarousel.addEventListener('mouseleave', startSolScroll);
+                    solCarousel.addEventListener('touchstart', stopSolScroll, { passive: true });
+                    solCarousel.addEventListener('touchend', startSolScroll, { passive: true });
+
+                    if (solPrev) {
+                        solPrev.addEventListener('click', () => {
+                            const itemWidth = solCarousel.children[0]?.offsetWidth || 300;
+                            solCarousel.scrollBy({ left: -(itemWidth + 20), behavior: 'smooth' });
+                            stopSolScroll();
+                            startSolScroll();
+                        });
+                    }
+
+                    if (solNext) {
+                        solNext.addEventListener('click', () => {
+                            const itemWidth = solCarousel.children[0]?.offsetWidth || 300;
+                            solCarousel.scrollBy({ left: itemWidth + 20, behavior: 'smooth' });
+                            stopSolScroll();
+                            startSolScroll();
+                        });
+                    }
+
+                    // Re-check on resize
+                    window.addEventListener('resize', () => {
+                        if (window.innerWidth >= 1024) {
+                            stopSolScroll();
+                            solCarousel.scrollTo({ left: 0 });
+                        } else {
+                            startSolScroll();
+                        }
+                    });
                 }
             });
         </script>
