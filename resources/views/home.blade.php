@@ -820,15 +820,15 @@
                 <div class="relative mt-6">
                     <!-- Carousel Navigation Buttons (Visible only on mobile/tablet) -->
                     <button id="solutionsPrev" type="button" aria-label="Previous solution"
-                        class="absolute -left-2 top-1/2 z-20 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-300/50 bg-white/90 text-slate-700 backdrop-blur-md shadow-lg transition-all hover:scale-110 hover:bg-white hover:text-primary-600 lg:hidden focus:outline-none ring-1 ring-black/5">
-                        <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        class="absolute -left-2 top-1/2 z-20 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-md transition-all hover:scale-110 hover:bg-white/20 lg:hidden focus:outline-none ring-1 ring-white/5">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
                         </svg>
                     </button>
 
                     <button id="solutionsNext" type="button" aria-label="Next solution"
-                        class="absolute -right-2 top-1/2 z-20 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-300/50 bg-white/90 text-slate-700 backdrop-blur-md shadow-lg transition-all hover:scale-110 hover:bg-white hover:text-primary-600 lg:hidden focus:outline-none ring-1 ring-black/5">
-                        <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        class="absolute -right-2 top-1/2 z-20 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-md transition-all hover:scale-110 hover:bg-white/20 lg:hidden focus:outline-none ring-1 ring-white/5">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6" />
                         </svg>
                     </button>
