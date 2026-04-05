@@ -126,140 +126,142 @@
             </svg>
         </button>
 
+        @auth
         {{-- Support Ticket Toggle Button --}}
         <button onclick="toggleSupportForm()" class="group flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-xl shadow-primary-600/30 transition-all hover:scale-105 hover:bg-primary-600" aria-label="Open support ticket">
             <svg class="h-7 w-7 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.477 2 2 5.582 2 10c0 2.476 1.343 4.675 3.444 6.136.213 1.393-.454 3.125-.5 3.245a.5.5 0 00.643.64c.12-.046 1.85-.712 3.244-1.127A9.852 9.852 0 0012 18c5.523 0 10-3.582 10-8s-4.477-8-10-8zm-3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
             </svg>
         </button>
+        @endauth
     </div>
 
-    {{-- Floating Support Form (Dedicated Position) --}}
-    <div id="supportTicketForm" class="fixed inset-0 z-[9999] hidden flex-col bg-white opacity-0 pointer-events-none transition-all duration-300 sm:inset-auto sm:right-6 sm:bottom-24 sm:h-auto sm:max-h-[min(75vh,600px)] sm:w-[340px] sm:rounded-[32px] sm:border sm:border-slate-200 sm:shadow-[0_48px_120px_rgba(15,23,42,0.3)] translate-y-4 sm:translate-y-2 sm:scale-95 overflow-hidden">
-        <div class="flex items-start justify-between bg-primary-600 px-5 py-4">
+    {{-- Floating Support Form (Dedicated Compact Position) --}}
+    {{-- Floating Support Form (Dedicated Compact Position) --}}
+    <style>
+        #supportTicketForm {
+            position: fixed !important;
+            right: 1.5rem !important;
+            bottom: 6rem !important;
+            width: 380px !important;
+            max-width: calc(100vw - 2.5rem) !important;
+            height: auto !important;
+            max-height: min(85vh, 620px) !important;
+            border-radius: 2.25rem !important;
+            background: white !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 48px 120px rgba(15,23,42,0.3) !important;
+            overflow: hidden !important;
+            z-index: 99999 !important;
+            display: none !important; /* Initial state, toggled by JS */
+            flex-direction: column !important;
+        }
+        #supportTicketForm.flex {
+            display: flex !important;
+        }
+        @media (max-width: 640px) {
+            #supportTicketForm {
+                right: 1.25rem !important;
+                bottom: 5rem !important;
+                width: calc(100vw - 2.5rem) !important;
+            }
+        }
+    </style>
+    @auth
+    <div id="supportTicketForm" class="hidden flex-col bg-white border border-slate-200 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1),0_0_20px_-5px_rgba(26,77,46,0.05)] z-50 fixed bottom-24 right-6 w-full max-w-[380px] sm:max-h-[85vh] max-h-[85vh] rounded-[2.25rem] overflow-hidden" 
+         aria-labelledby="supportFormTitle" 
+         role="dialog" 
+         aria-modal="true">
+        <div class="flex items-center justify-between bg-primary-600 px-6 py-4">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-md">
+                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-md ring-1 ring-white/20">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 13v4m-2-2h4" />
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-base font-bold leading-tight text-white">Biogenix Workspace Support</h3>
-                    <p class="mt-0.5 text-[11px] font-medium text-blue-100 opacity-90">Average response time: &lt; 2 hours</p>
+                    <h3 class="text-sm font-bold tracking-tight text-white">Support Workspace</h3>
+                    <p class="mt-0.5 text-[10px] font-medium text-blue-100 opacity-80">Response: &lt; 2 hours</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="toggleSupportForm()" class="inline-flex h-10 w-10 items-center justify-center rounded-xl text-blue-100 transition-colors hover:bg-white/10 hover:text-white sm:hidden">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m14 0-4-4m4 4-4 4" />
-                    </svg>
-                </button>
-                <button onclick="toggleSupportForm()" class="hidden sm:inline-flex p-1 text-blue-100 transition-colors hover:text-white">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            <button onclick="toggleSupportForm()" class="inline-flex h-9 w-9 items-center justify-center rounded-xl text-blue-100 transition-colors hover:bg-white/10 hover:text-white">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
 
-        <div class="flex-1 overflow-y-auto bg-white p-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+        <div class="flex-1 overflow-y-auto bg-white p-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent overscroll-contain">
             <h4 class="mb-1 text-xl font-bold tracking-tight text-slate-900">Raise a Ticket</h4>
             <p class="mb-4 text-[13px] leading-relaxed text-slate-500">Submit your request and our technical experts will assist you immediately.</p>
 
             @if ($supportWidgetIsAuthenticated)
-                <form action="{{ route('support-tickets.store') }}" method="POST" enctype="multipart/form-data" class="space-y-3">
+                <form action="{{ route('support-tickets.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col h-full min-h-0">
                     @csrf
-                    <input type="hidden" name="support_ticket_form_source" value="layout_widget">
-                    <input type="hidden" name="priority" value="{{ $supportWidgetDefaultPriority }}">
+                    <div class="flex-1 space-y-4 pb-6 min-h-0">
+                        <input type="hidden" name="support_ticket_form_source" value="layout_widget">
+                        <input type="hidden" name="priority" value="{{ $supportWidgetDefaultPriority }}">
 
-                    @if ($supportWidgetShouldOpen && $errors->any())
-                        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                            {{-- This keeps the ticket widget errors close to the fields that need attention. --}}
-                            <p class="font-semibold">Please review the ticket details below.</p>
-                            <ul class="mt-2 list-disc space-y-1 pl-5">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <div>
-                        {{-- This collects the short business summary that support can scan quickly. --}}
-                        <label for="supportSubject" class="mb-1 block text-[13px] font-semibold text-slate-800">Subject</label>
-                        <input
-                            type="text"
-                            id="supportSubject"
-                            name="subject"
-                            value="{{ old('subject') }}"
-                            class="h-10 w-full rounded-md border border-slate-200 px-3 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
-                            placeholder="Briefly describe the issue"
-                            maxlength="150"
-                            required
-                        >
-                    </div>
-
-                    <div>
-                        {{-- Custom Dropdown to replace native blue-highlighting select --}}
-                        <label for="supportCategory" class="mb-1 block text-[13px] font-semibold text-slate-800">Category</label>
-                        <div class="relative" id="customCategoryDropdown">
-                            <button
-                                type="button"
-                                onclick="toggleCategoryList()"
-                                id="categoryToggleBtn"
-                                class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 pl-3 pr-3 text-[13px] text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
-                            >
-                                <span id="selectedCategoryLabel">Select a category</span>
-                                <svg class="h-3 w-3 text-slate-400 transition-transform duration-200" id="categoryChevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-
-                            <input type="hidden" name="category" id="supportCategoryInput" value="{{ old('category') }}" required>
-
-                            <div
-                                id="categoryList"
-                                class="absolute left-0 right-0 top-full z-[10010] mt-1.5 hidden flex-col overflow-hidden rounded-xl border border-slate-200 bg-white opacity-0 shadow-xl transition duration-200"
-                            >
-                                <div class="max-h-48 overflow-y-auto py-1.5">
-                                    @foreach ($supportWidgetCategoryOptions as $supportWidgetCategory)
-                                        <button
-                                            type="button"
-                                            onclick="selectCategory('{{ $supportWidgetCategory }}', '{{ ucwords(str_replace('_', ' ', $supportWidgetCategory)) }}')"
-                                            class="flex w-full items-center px-4 py-2 text-[13px] transition hover:bg-primary-50 hover:text-primary-700"
-                                            data-category-option="{{ $supportWidgetCategory }}"
-                                        >
-                                            {{ ucwords(str_replace('_', ' ', $supportWidgetCategory)) }}
-                                        </button>
+                        @if ($supportWidgetShouldOpen && $errors->any())
+                            <div class="mb-4 rounded-xl bg-red-50 p-4 text-xs text-red-600">
+                                <ul class="list-disc pl-4 space-y-1">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
                                     @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <div>
+                            <label for="supportSubject" class="mb-1 block text-[13px] font-semibold text-slate-800">Subject</label>
+                            <input type="text" id="supportSubject" name="subject" value="{{ old('subject') }}" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Briefly describe the issue" required>
+                        </div>
+
+                        <div>
+                            <label for="supportCategory" class="mb-1 block text-[13px] font-semibold text-slate-800">Category</label>
+                            <div class="relative" id="customSupportCategory">
+                                <button type="button" onclick="toggleSupportCategoryList(event)" class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 text-[13px] text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600" id="supportCategoryTrigger">
+                                    <span id="selectedCategoryText">Select a category</span>
+                                    <svg class="pointer-events-none h-4 w-4 text-slate-400 transition-transform duration-200" id="supportCategoryChevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                
+                                <input type="hidden" name="category_slug" id="supportCategoryInput" value="{{ old('category_slug') }}" required>
+                                
+                                <div id="supportCategoryList" class="absolute left-0 right-0 top-full z-[1000] mt-1 hidden max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl">
+                                    @forelse($supportWidgetCategoryOptions as $slug)
+                                        <button type="button" onclick="selectSupportCategory('{{ $slug }}', '{{ ucwords(str_replace('-', ' ', $slug)) }}')" class="flex w-full items-center px-4 py-2 text-left text-[13px] text-slate-700 transition hover:bg-primary-50 hover:text-primary-700">
+                                            {{ ucwords(str_replace('-', ' ', $slug)) }}
+                                        </button>
+                                    @empty
+                                        <div class="px-4 py-2 text-[12px] text-slate-400 italic">No categories available</div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
+
+                        <div>
+                            <label for="supportDescription" class="mb-1 block text-[13px] font-semibold text-slate-800">Message</label>
+                            <textarea id="supportDescription" name="description" rows="3" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Provide detailed information about your request..." required>{{ old('description') }}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-[13px] font-semibold text-slate-800">Attachments</label>
+                            <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-center transition-colors hover:bg-slate-50">
+                                <svg class="mb-1.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                                <span class="text-[10px] font-medium text-slate-500">Click to upload supporting files</span>
+                                <input type="file" class="hidden" name="attachments[]" multiple>
+                            </label>
+                        </div>
                     </div>
 
-                    <div>
-                        {{-- This captures the full issue narrative that the backend stores on the ticket. --}}
-                        <label for="supportDescription" class="mb-1 block text-[13px] font-semibold text-slate-800">Message</label>
-                        <textarea id="supportDescription" name="description" rows="3" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Provide detailed information about your request..." required>{{ old('description') }}</textarea>
-                    </div>
-
-                    <div>
-                        {{-- This allows the user to attach evidence that helps the support team resolve the issue faster. --}}
-                        <label class="mb-1 block text-[13px] font-semibold text-slate-800">Attachments</label>
-                        <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-center transition-colors hover:bg-slate-50">
-                            <svg class="mb-1.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                            </svg>
-                            <span class="text-[10px] font-medium text-slate-500">Click to upload supporting files</span>
-                            <span class="mt-0.5 text-[9px] uppercase tracking-wider text-slate-400">Up to 5 files (max 5 MB)</span>
-                            <input type="file" class="hidden" name="attachments[]" multiple>
-                        </label>
-                    </div>
-
-                    <div class="mt-3 flex items-center justify-between border-t border-slate-100 pb-1 pt-3">
-                        <span class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.05em] text-slate-400">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <div class="sticky bottom-0 -mx-5 -mb-5 flex items-center justify-between border-t border-slate-100 bg-white px-5 pb-[6px] pt-3">
+                        <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                             Secure
                         </span>
                         <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-primary-600 px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-primary-700">
@@ -292,6 +294,7 @@
             @endif
         </div>
     </div>
+    @endauth
 
     <script>
         (function () {
@@ -458,124 +461,103 @@
             const form = document.getElementById('supportTicketForm');
             if (!form) return;
 
-            const isOpening = form.classList.contains('hidden');
+            const isOpening = !form.classList.contains('flex');
 
             if (isOpening) {
-                // Opening State
-                form.classList.remove('hidden');
+                // Initial show using flex class for !important display property
                 form.classList.add('flex');
                 
-                // Trigger transition after a tiny delay so the browser registers the removal of 'hidden'
+                // Allow a tiny delay for the opacity transition to kick in
                 window.requestAnimationFrame(() => {
                     window.requestAnimationFrame(() => {
-                        form.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4', 'translate-y-2', 'scale-95');
+                        form.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4', 'scale-95');
+                        form.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
                     });
                 });
-            } else {
-                // Closing State
-                form.classList.add('opacity-0', 'pointer-events-none');
+
+                // Business step: Handle clicks outside the form to close it
+                const closeOnOutsideClick = (e) => {
+                    const toggleBtn = document.querySelector('[onclick="toggleSupportForm()"]');
+                    if (!form.contains(e.target) && !toggleBtn.contains(e.target)) {
+                        toggleSupportForm();
+                        document.removeEventListener('click', closeOnOutsideClick);
+                    }
+                };
                 
-                // Close custom dropdown if open
-                const list = document.getElementById('categoryList');
-                if (list && !list.classList.contains('hidden')) {
-                    toggleCategoryList();
-                }
-
-                // Add back the transform states based on current viewport (optional but cleaner)
-                if (window.innerWidth >= 640) {
-                    form.classList.add('translate-y-2', 'scale-95');
-                } else {
-                    form.classList.add('translate-y-4');
-                }
-
+                // Delay adding the listener to avoid the current click event triggering it immediately
                 window.setTimeout(() => {
+                    document.addEventListener('click', closeOnOutsideClick);
+                }, 100);
+
+            } else {
+                form.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+                form.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4', 'scale-95');
+                
+                window.setTimeout(() => {
+                    // Check if it's still intended to be closed
                     if (form.classList.contains('opacity-0')) {
-                        form.classList.add('hidden');
                         form.classList.remove('flex');
                     }
                 }, 300);
             }
         }
 
-        /* --- Custom Dropdown Logic --- */
-        function toggleCategoryList() {
-            const list = document.getElementById('categoryList');
-            const chevron = document.getElementById('categoryChevron');
+        /* --- Custom Category Dropdown Logic --- */
+        function toggleSupportCategoryList(e) {
+            if (e) e.stopPropagation();
+            const list = document.getElementById('supportCategoryList');
+            const chevron = document.getElementById('supportCategoryChevron');
             if (!list) return;
 
             const isHidden = list.classList.contains('hidden');
             if (isHidden) {
                 list.classList.remove('hidden');
-                window.requestAnimationFrame(() => {
-                    list.classList.remove('opacity-0');
-                    list.classList.add('opacity-100');
-                    if (chevron) chevron.classList.add('rotate-180');
-                });
+                if (chevron) chevron.classList.add('rotate-180');
             } else {
-                list.classList.remove('opacity-100');
-                list.classList.add('opacity-0');
+                list.classList.add('hidden');
                 if (chevron) chevron.classList.remove('rotate-180');
-                window.setTimeout(() => {
-                    if (list.classList.contains('opacity-0')) {
-                        list.classList.add('hidden');
-                    }
-                }, 200);
             }
         }
 
-        function selectCategory(value, label) {
+        function selectSupportCategory(slug, label) {
             const input = document.getElementById('supportCategoryInput');
-            const labelEl = document.getElementById('selectedCategoryLabel');
-            const options = document.querySelectorAll('[data-category-option]');
-
-            if (input) input.value = value;
-            if (labelEl) {
-                labelEl.textContent = label;
-                labelEl.classList.add('text-slate-900');
+            const text = document.getElementById('selectedCategoryText');
+            const trigger = document.getElementById('supportCategoryTrigger');
+            
+            if (input) input.value = slug;
+            if (text) text.innerText = label;
+            if (trigger) {
+                trigger.classList.add('border-primary-600', 'ring-1', 'ring-primary-600');
             }
-
-            options.forEach(opt => {
-                const isActive = opt.getAttribute('data-category-option') === value;
-                opt.classList.toggle('bg-primary-600', isActive);
-                opt.classList.toggle('text-white', isActive);
-                opt.classList.toggle('hover:bg-primary-700', isActive);
-                opt.classList.toggle('hover:bg-primary-50', !isActive);
-                opt.classList.toggle('hover:text-primary-700', !isActive);
-            });
-
-            toggleCategoryList();
+            
+            const list = document.getElementById('supportCategoryList');
+            const chevron = document.getElementById('supportCategoryChevron');
+            if (list) list.classList.add('hidden');
+            if (chevron) chevron.classList.remove('rotate-180');
         }
-
-        // Initialize from old input if exists
-        document.addEventListener('DOMContentLoaded', function() {
-            const input = document.getElementById('supportCategoryInput');
-            if (input && input.value) {
-                const option = document.querySelector(`[data-category-option="${input.value}"]`);
-                if (option) {
-                    selectCategory(input.value, option.textContent.trim());
-                }
-            }
-        });
 
         document.addEventListener('mousedown', function(e) {
             const form = document.getElementById('supportTicketForm');
-            const dropdown = document.getElementById('customCategoryDropdown');
-            const list = document.getElementById('categoryList');
+            const list = document.getElementById('supportCategoryList');
+            const chevron = document.getElementById('supportCategoryChevron');
 
             if (!form || form.classList.contains('hidden')) return;
 
             // Close custom dropdown when clicking outside of it
-            if (dropdown && !dropdown.contains(e.target) && list && !list.classList.contains('hidden')) {
-                toggleCategoryList();
-                return;
+            const categoryContainer = document.getElementById('customSupportCategory');
+            if (categoryContainer && !categoryContainer.contains(e.target)) {
+                if (list && !list.classList.contains('hidden')) {
+                    list.classList.add('hidden');
+                    if (chevron) chevron.classList.remove('rotate-180');
+                }
             }
 
             const isToggleBtn = e.target.closest('button[onclick="toggleSupportForm()"]');
             if (isToggleBtn) return;
 
-            if (!form.contains(e.target)) {
+            if (!form.contains(e.target) && !categoryContainer?.contains(e.target)) {
                 // Check if it's already shown
-                if (!form.classList.contains('opacity-0')) {
+                if (form.classList.contains('flex') && !form.classList.contains('opacity-0')) {
                     toggleSupportForm();
                 }
             }
