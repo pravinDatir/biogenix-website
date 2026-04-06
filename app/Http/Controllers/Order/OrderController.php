@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Order\StoreOrderRequest;
+use App\Http\Requests\Order\UpdateOrderRequest;
+use App\Http\Requests\Order\SubmitReOrderCheckoutRequest;
 use App\Services\Order\OrderLifecycleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -61,11 +64,11 @@ class OrderController extends Controller
     }
 
     // This validates the submitted form and creates a new order for the logged-in user.
-    public function createOrder(Request $request, OrderLifecycleService $orderService): RedirectResponse
+    public function createOrder(StoreOrderRequest $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted order form.
-            $validatedOrder = $this->validateOrderRequest($request);
+            $validatedOrder = $request->validated();
 
             // Step 2: create the order using the order service.
             $order = $orderService->createOrder($validatedOrder, $request->user());
@@ -82,11 +85,11 @@ class OrderController extends Controller
     }
 
     // This validates the submitted form and updates one existing order by id.
-    public function editOrderById(int $orderId, Request $request, OrderLifecycleService $orderService): RedirectResponse
+    public function editOrderById(int $orderId, UpdateOrderRequest $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted edit form.
-            $validatedOrder = $this->validateOrderRequest($request);
+            $validatedOrder = $request->validated();
 
             // Step 2: update the existing order and item rows.
             $order = $orderService->updateOrderById($orderId, $validatedOrder, $request->user());
@@ -247,27 +250,11 @@ class OrderController extends Controller
     }
 
     // This submits the separate reorder checkout page without using the cart flow.
-    public function submitReOrderCheckout(Request $request, OrderLifecycleService $orderService): RedirectResponse
+    public function submitReOrderCheckout(SubmitReOrderCheckoutRequest $request, OrderLifecycleService $orderService): RedirectResponse
     {
         try {
             // Step 1: validate the reorder checkout form fields.
-            $validatedCheckout = $request->validate([
-                'reorder_items' => ['required', 'string'],
-                'coupon_code' => ['nullable', 'string', 'max:50'],
-                'selected_address_source' => ['required', 'string', 'in:existing,new'],
-                'selected_user_address_id' => ['nullable', 'integer'],
-                'new_address_label' => ['nullable', 'string', 'max:255'],
-                'new_address_line1' => ['nullable', 'string', 'max:255'],
-                'new_address_city' => ['nullable', 'string', 'max:128'],
-                'new_address_state' => ['nullable', 'string', 'max:128'],
-                'new_address_postal_code' => ['nullable', 'string', 'max:20'],
-                'new_address_country' => ['nullable', 'string', 'max:128'],
-                'new_address_phone' => ['nullable', 'string', 'max:32'],
-                'gstin' => ['nullable', 'string', 'max:20'],
-                'pan_number' => ['nullable', 'string', 'max:20'],
-                'registered_business_name' => ['nullable', 'string', 'max:255'],
-                'notes' => ['nullable', 'string', 'max:1000'],
-            ]);
+            $validatedCheckout = $request->validated();
 
             // Step 2: create the final reorder order from the latest live pricing.
             $submittedOrder = $orderService->submitReOrderCheckout($validatedCheckout, $request->user());
@@ -291,25 +278,5 @@ class OrderController extends Controller
         }
     }
 
-    // This validates the shared order form for both create and update flows.
-    protected function validateOrderRequest(Request $request): array
-    {
-        try {
-            // Step 1: validate order header and item array fields.
-            return $request->validate([
-                'status' => ['required', 'in:draft,submitted,cancelled'],
-                'product_id' => ['required', 'array', 'min:1'],
-                'product_id.*' => ['nullable', 'integer', 'exists:products,id'],
-                'quantity' => ['required', 'array', 'min:1'],
-                'quantity.*' => ['nullable', 'integer', 'min:1'],
-                'shipping_amount' => ['nullable', 'numeric', 'min:0'],
-                'adjustment_amount' => ['nullable', 'numeric'],
-                'rounding_amount' => ['nullable', 'numeric'],
-                'notes' => ['nullable', 'string', 'max:1000'],
-            ]);
-        } catch (Throwable $exception) {
-            Log::error('Failed to validate order request.', ['user_id' => $request->user()?->id, 'error' => $exception->getMessage()]);
-            throw $exception;
-        }
     }
 }

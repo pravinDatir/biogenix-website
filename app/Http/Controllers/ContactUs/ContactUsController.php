@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\ContactUs;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ContactUs\StoreContactEnquiryRequest;
 use App\Services\ContactUs\ContactUsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Throwable;
 
@@ -29,7 +29,7 @@ class ContactUsController extends Controller
     }
 
     // This validates and stores one contact enquiry from the website.
-    public function store(Request $request, ContactUsService $contactUsService): RedirectResponse
+    public function store(StoreContactEnquiryRequest $request, ContactUsService $contactUsService): RedirectResponse
     {
         try {
             // Step 1: load the active enquiry type ids so the form only accepts business-approved options.
@@ -46,13 +46,7 @@ class ContactUsController extends Controller
             }
 
             // Step 2: validate the basic public contact form fields.
-            $validated = $request->validate([
-                'full_name' => ['required', 'string', 'max:150'],
-                'email' => ['required', 'email', 'max:150'],
-                'phone' => ['required', 'digits:10'],
-                'enquiry_type_id' => ['required', Rule::in($activeEnquiryTypeIds)],
-                'message' => ['required', 'string', 'max:500'],
-            ]);
+            $validated = $request->validated();
 
             // Step 3: store the enquiry through the service so the controller stays easy to follow.
             $contactUsEnquiryId = $contactUsService->createEnquiry($validated);

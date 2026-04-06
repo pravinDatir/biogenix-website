@@ -3,15 +3,16 @@
 namespace App\Services\Checkout;
 
 use App\Models\Authorization\User;
-use App\Models\Authorization\UserAddress;
 use App\Models\Cart\Cart;
 use App\Models\Order\Order;
 use App\Services\Cart\CartService;
 use App\Services\Coupon\CouponService;
+use App\Services\Inventory\InventoryManagementService;
 use App\Services\Notification\EmailNotificationService;
+use App\Services\Order\OrderAddressService;
+use App\Services\Order\OrderCalculationService;
 use App\Services\Pricing\PriceService;
 use App\Services\Utility\OrderItemCalculator;
-use App\Services\Utility\QuantityValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -26,7 +27,9 @@ class CheckoutService
         protected CouponService $couponService,
         protected EmailNotificationService $emailNotificationService,
         protected OrderItemCalculator $itemCalculator,
-        protected QuantityValidator $quantityValidator,
+        protected OrderCalculationService $calculationService,
+        protected OrderAddressService $addressService,
+        protected InventoryManagementService $inventoryService,
     ) {
     }
 
@@ -73,6 +76,15 @@ class CheckoutService
 
         $this->storeCheckoutDiscountLines($order, $createdItems, $orderItems);
         $this->storeCheckoutOrderAddresses($order, $user, $validatedCheckout);
+
+        // Deduct stock for each successful order item
+        foreach ($orderItems as $orderItem) {
+            $this->inventoryService->deductStock(
+                (int) $orderItem['product_id'],
+                $orderItem['product_variant_id'] ? (int) $orderItem['product_variant_id'] : null,
+                (int) $orderItem['quantity']
+            );
+        }
 
         $cart->items()->delete();
         $cart->delete();
@@ -256,16 +268,29 @@ class CheckoutService
             }
 
             // Step 3: validate quantity constraints before creating the order item.
-            if (!$this->quantityValidator->isValid($quantity, $resolvedVariantPrice)) {
+            if (! $this->calculationService->isValidQuantity($quantity, $resolvedVariantPrice)) {
                 throw ValidationException::withMessages([
-                    'quantity' => $this->quantityValidator->getErrorMessage($quantity, $resolvedVariantPrice),
+                    'quantity' => $this->calculationService->getQuantityErrorMessage($quantity, $resolvedVariantPrice),
                 ]);
             }
 
-            // Step 4: calculate all pricing fields using centralized calculator.
+            // Step 4: check if sufficient stock is available for this item
+            $hasStock = $this->inventoryService->checkAvailability(
+                (int) $product->id,
+                (int) $cartItem->product_variant_id,
+                $quantity
+            );
+
+            if (! $hasStock) {
+                throw ValidationException::withMessages([
+                    'stock' => "{$product->name} - {$productVariant->variant_name} is out of stock.",
+                ]);
+            }
+
+            // Step 5: calculate all pricing fields using centralized calculator.
             $pricing = $this->itemCalculator->calculateItemPricing($resolvedVariantPrice, $quantity);
 
-            // Step 5: add the prepared order item row.
+            // Step 6: add the prepared order item row.
             $preparedOrderItems[] = [
                 'product_id' => $product->id,
                 'product_variant_id' => $productVariant->id,
@@ -284,7 +309,7 @@ class CheckoutService
             ];
         }
 
-        // Step 6: return all final prepared order item rows.
+        // Step 7: return all final prepared order item rows.
         return $preparedOrderItems;
     }
 
@@ -429,133 +454,16 @@ class CheckoutService
     // This stores the selected shipping and billing addresses for a submitted order.
     protected function storeCheckoutOrderAddresses(Order $order, User $user, array $validatedCheckout): void
     {
-        // Step 1: resolve the checkout address that the customer selected or entered.
-        $checkoutAddressData = $this->resolveCheckoutAddressData($user, $validatedCheckout);
+        // Step 1: resolve the checkout address using the address service.
+        $checkoutAddressData = $this->addressService->resolveCheckoutAddress($user, $validatedCheckout);
 
-        // Step 2: create the shipping address row.
-        $shippingAddressPayload = $this->buildOrderAddressPayload('shipping', $checkoutAddressData, $user, $validatedCheckout);
+        // Step 2: create the shipping address row using the address service.
+        $shippingAddressPayload = $this->addressService->buildOrderAddressPayload($order, 'shipping', $checkoutAddressData, $user, $validatedCheckout);
         $order->addresses()->create($shippingAddressPayload);
 
-        // Step 3: create the billing address row.
-        $billingAddressPayload = $this->buildOrderAddressPayload('billing', $checkoutAddressData, $user, $validatedCheckout);
+        // Step 3: create the billing address row using the address service.
+        $billingAddressPayload = $this->addressService->buildOrderAddressPayload($order, 'billing', $checkoutAddressData, $user, $validatedCheckout);
         $order->addresses()->create($billingAddressPayload);
-    }
-
-    // This resolves the final checkout address from either a saved address or a new address form.
-    protected function resolveCheckoutAddressData(User $user, array $validatedCheckout): array
-    {
-        // Step 1: decide whether checkout should use an existing or new address.
-        $selectedAddressSource = (string) ($validatedCheckout['selected_address_source'] ?? 'existing');
-        $checkoutAddress = null;
-        $contactPhone = $user->phone;
-        $addressLabel = null;
-
-        // Step 2: load the selected saved address when the customer picked one.
-        if ($selectedAddressSource === 'existing') {
-            $checkoutAddress = UserAddress::query()
-                ->where('user_id', $user->id)
-                ->whereKey((int) ($validatedCheckout['selected_user_address_id'] ?? 0))
-                ->first();
-
-            if (! $checkoutAddress) {
-                throw ValidationException::withMessages([
-                    'selected_user_address_id' => 'Please select one saved address for checkout.',
-                ]);
-            }
-
-            $addressLabel = $checkoutAddress->line2;
-        }
-
-        // Step 3: save and use the new checkout address when needed.
-        if ($selectedAddressSource === 'new') {
-            $checkoutAddress = $this->saveNewCheckoutAddressForUser($user, $validatedCheckout);
-            $contactPhone = $validatedCheckout['new_address_phone'] ?? $user->phone;
-            $addressLabel = $validatedCheckout['new_address_label'] ?? null;
-        }
-
-        // Step 4: return the final address details used for the order.
-        return [
-            'user_address' => $checkoutAddress,
-            'address_line1' => $checkoutAddress->line1,
-            'address_line2' => $checkoutAddress->line2,
-            'city' => $checkoutAddress->city,
-            'state' => $checkoutAddress->state,
-            'postal_code' => $checkoutAddress->postal_code,
-            'country' => $checkoutAddress->country ?: 'India',
-            'contact_phone' => $contactPhone,
-            'address_label' => $addressLabel,
-        ];
-    }
-
-    // This saves a new checkout address into the user address book before it is used on the order.
-    protected function saveNewCheckoutAddressForUser(User $user, array $validatedCheckout): UserAddress
-    {
-        // Step 1: check whether the user already has saved addresses.
-        $userHasSavedAddresses = $user->addresses()->exists();
-
-        // Step 2: save the new address in the user address book.
-        return $user->addresses()->create([
-            'line1' => trim((string) ($validatedCheckout['new_address_line1'] ?? '')),
-            'line2' => filled($validatedCheckout['new_address_label'] ?? null) ? trim((string) $validatedCheckout['new_address_label']) : null,
-            'city' => trim((string) ($validatedCheckout['new_address_city'] ?? '')),
-            'state' => trim((string) ($validatedCheckout['new_address_state'] ?? '')),
-            'postal_code' => trim((string) ($validatedCheckout['new_address_postal_code'] ?? '')),
-            'country' => filled($validatedCheckout['new_address_country'] ?? null) ? trim((string) $validatedCheckout['new_address_country']) : 'India',
-            'is_default_shipping' => ! $userHasSavedAddresses,
-            'is_default_billing' => ! $userHasSavedAddresses,
-        ]);
-    }
-
-    // This builds one order address payload from the chosen checkout address.
-    protected function buildOrderAddressPayload(string $addressType, array $checkoutAddressData, User $user, array $validatedCheckout): array
-    {
-        // Step 1: resolve the company name for B2B billing details.
-        $companyName = null;
-
-        if (filled($validatedCheckout['registered_business_name'] ?? null)) {
-            $companyName = trim((string) $validatedCheckout['registered_business_name']);
-        } else {
-            $companyName = $user->company?->legal_name ?: $user->company?->name;
-        }
-
-        // Step 2: keep the GST value only on billing flows for B2B users.
-        $gstin = null;
-
-        if ($addressType === 'billing' && $user->isB2b()) {
-            if (filled($validatedCheckout['gstin'] ?? null)) {
-                $gstin = trim((string) $validatedCheckout['gstin']);
-            } else {
-                $gstin = $user->company?->gst_number;
-            }
-        }
-
-        // Step 3: return one order address payload for the given address type.
-        return [
-            'address_type' => $addressType,
-            'contact_name' => $user->name,
-            'company_name' => $user->isB2b() ? $companyName : null,
-            'email' => $user->email,
-            'phone' => filled($checkoutAddressData['contact_phone'] ?? null) ? trim((string) $checkoutAddressData['contact_phone']) : $user->phone,
-            'gstin' => $gstin,
-            'line1' => trim((string) ($checkoutAddressData['address_line1'] ?? '')),
-            'line2' => filled($checkoutAddressData['address_line2'] ?? null) ? trim((string) $checkoutAddressData['address_line2']) : null,
-            'landmark' => filled($checkoutAddressData['address_label'] ?? null) ? trim((string) $checkoutAddressData['address_label']) : null,
-            'city' => trim((string) ($checkoutAddressData['city'] ?? '')),
-            'state' => trim((string) ($checkoutAddressData['state'] ?? '')),
-            'postal_code' => trim((string) ($checkoutAddressData['postal_code'] ?? '')),
-            'country_code' => $this->normalizeCountryCode($checkoutAddressData['country'] ?? 'India'),
-        ];
-    }
-
-    // This converts the entered country into the two-character code expected by order addresses.
-    protected function normalizeCountryCode(?string $country): string
-    {
-        $normalizedCountry = strtoupper(trim((string) $country));
-
-        return match ($normalizedCountry) {
-            '', 'INDIA', 'IN' => 'IN',
-            default => substr($normalizedCountry, 0, 2),
-        };
     }
 
     // This sends the order-submitted customer email without interrupting a successful checkout.

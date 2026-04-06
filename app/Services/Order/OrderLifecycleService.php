@@ -7,10 +7,10 @@ use App\Models\Order\Order;
 use App\Models\Product\ProductVariant;
 use App\Services\Authorization\DataVisibilityService;
 use App\Services\Coupon\CouponService;
+use App\Services\Inventory\InventoryManagementService;
 use App\Services\Notification\EmailNotificationService;
 use App\Services\Pricing\PriceService;
 use App\Services\Utility\OrderItemCalculator;
-use App\Services\Utility\QuantityValidator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -29,7 +29,7 @@ class OrderLifecycleService
         protected CouponService $couponService,
         protected EmailNotificationService $emailNotificationService,
         protected OrderItemCalculator $itemCalculator,
-        protected QuantityValidator $quantityValidator,
+        protected InventoryManagementService $inventoryService,
     ) {
     }
 
@@ -302,7 +302,7 @@ class OrderLifecycleService
         );
 
         // Calculate totals.
-        $orderTotals = $this->calculationService->calculateReOrderCheckoutTotals($validatedCheckout, $preparedOrderItems);
+        $orderTotals = $this->calculationService->calculateOrderTotals($validatedCheckout, $preparedOrderItems, 'reorder_checkout');
 
         // Resolve address.
         $checkoutAddressData = $this->addressService->resolveCheckoutAddress($user, $validatedCheckout);
@@ -336,6 +336,15 @@ class OrderLifecycleService
             $billingAddressPayload = $this->addressService->buildOrderAddressPayload($order, 'billing', $checkoutAddressData, $user, $validatedCheckout);
             $order->addresses()->create($shippingAddressPayload);
             $order->addresses()->create($billingAddressPayload);
+
+            // Deduct stock for each successful order item
+            foreach ($preparedOrderItems as $preparedOrderItem) {
+                $this->inventoryService->deductStock(
+                    (int) $preparedOrderItem['product_id'],
+                    $preparedOrderItem['product_variant_id'] ? (int) $preparedOrderItem['product_variant_id'] : null,
+                    (int) $preparedOrderItem['quantity']
+                );
+            }
 
             return Order::query()
                 ->with([
@@ -565,6 +574,32 @@ class OrderLifecycleService
         $rowCount = max(count($productIds), count($quantities));
         $preparedItems = [];
 
+        // Collect all product IDs that need validation.
+        $productsToLoad = [];
+        $indexMap = []; // Track which products are needed at which indices.
+
+        for ($index = 0; $index < $rowCount; $index++) {
+            $productId = (int) ($productIds[$index] ?? 0);
+            if ($productId > 0) {
+                $productsToLoad[] = $productId;
+                $indexMap[$productId] = $indexMap[$productId] ?? [];
+                $indexMap[$productId][] = $index;
+            }
+        }
+
+        // Stop early if no products.
+        if (empty($productsToLoad)) {
+            throw ValidationException::withMessages([
+                'product_id' => 'Add at least one order item.',
+            ]);
+        }
+
+        // Load all visible products in a single query using whereIn (no N+1).
+        $visibleProducts = $this->dataVisibilityService->visibleProductQuery($user)
+            ->whereIn('products.id', array_unique($productsToLoad))
+            ->get()
+            ->keyBy('id');
+
         // Prepare each item.
         for ($index = 0; $index < $rowCount; $index++) {
             $productId = (int) ($productIds[$index] ?? 0);
@@ -574,10 +609,8 @@ class OrderLifecycleService
                 continue;
             }
 
-            // Load visible product.
-            $visibleProduct = $this->dataVisibilityService->visibleProductQuery($user)
-                ->where('products.id', $productId)
-                ->first();
+            // Retrieve product from already-loaded collection.
+            $visibleProduct = $visibleProducts->get($productId);
 
             if (! $visibleProduct) {
                 throw ValidationException::withMessages([
@@ -624,7 +657,43 @@ class OrderLifecycleService
             ]);
         }
 
-        // Prepare each item.
+        // Collect variant IDs and product IDs to batch-load.
+        $variantIds = [];
+        $productIds = [];
+
+        foreach ($decodedReOrderItems as $decodedReOrderItem) {
+            $productVariantId = $decodedReOrderItem['variantId'] ?? null;
+            $productId = (int) ($decodedReOrderItem['productId'] ?? 0);
+
+            if ($productVariantId !== null && $productVariantId !== '') {
+                $variantIds[] = (int) $productVariantId;
+            }
+
+            if ($productId > 0) {
+                $productIds[] = $productId;
+            }
+        }
+
+        // Batch-load all variants with their products (no N+1 for variants).
+        $relevantVariants = [];
+        if (! empty($variantIds)) {
+            $relevantVariants = ProductVariant::query()
+                ->with('product:id,name')
+                ->whereIn('id', array_unique($variantIds))
+                ->get()
+                ->keyBy('id');
+        }
+
+        // Batch-load all visible products (no N+1 for products).
+        $relevantProducts = [];
+        if (! empty($productIds)) {
+            $relevantProducts = $this->dataVisibilityService->visibleProductQuery($user)
+                ->whereIn('products.id', array_unique($productIds))
+                ->get()
+                ->keyBy('id');
+        }
+
+        // Prepare each item using pre-loaded data.
         $preparedOrderItems = [];
 
         foreach ($decodedReOrderItems as $index => $decodedReOrderItem) {
@@ -648,31 +717,25 @@ class OrderLifecycleService
             $productVariant = null;
             $visibleProduct = null;
 
-            // Resolve price from variant.
+            // Resolve price from variant (use pre-loaded variant from collection).
             if ($productVariantId) {
+                $productVariant = $relevantVariants[$productVariantId] ?? null;
                 $resolvedPrice = $this->priceService->resolveVariantPrice($productVariantId, $user, $quantity, $couponCode);
-                $productVariant = ProductVariant::query()
-                    ->with('product:id,name')
-                    ->find($productVariantId);
                 $visibleProduct = $productVariant?->product;
             }
 
-            // Resolve price from product.
+            // Resolve price from product (use pre-loaded product from collection).
             if (! $productVariantId) {
                 $resolvedPrice = $this->priceService->resolveProductPrice($productId, $user, $quantity, $couponCode);
 
                 if (($resolvedPrice['product_variant_id'] ?? null) !== null) {
                     $productVariantId = (int) $resolvedPrice['product_variant_id'];
-                    $productVariant = ProductVariant::query()
-                        ->with('product:id,name')
-                        ->find($productVariantId);
+                    $productVariant = $relevantVariants[$productVariantId] ?? null;
                     $visibleProduct = $productVariant?->product;
                 }
 
                 if (! $visibleProduct) {
-                    $visibleProduct = $this->dataVisibilityService->visibleProductQuery($user)
-                        ->where('products.id', $productId)
-                        ->first();
+                    $visibleProduct = $relevantProducts[$productId] ?? null;
                 }
             }
 
@@ -682,37 +745,25 @@ class OrderLifecycleService
                 ]);
             }
 
-            // Validate quantity.
-            if (!$this->quantityValidator->isValid($quantity, $resolvedPrice)) {
+            // Validate quantity using centralized validation service.
+            $this->calculationService->validateOrderQuantity($quantity, $resolvedPrice, $index);
+
+            // Check if sufficient stock is available for this reorder item
+            $hasStock = $this->inventoryService->checkAvailability(
+                $visibleProduct?->id ?: $productId,
+                $productVariantId,
+                $quantity
+            );
+
+            if (! $hasStock) {
+                $productName = $visibleProduct?->name ?? 'Product';
                 throw ValidationException::withMessages([
-                    'quantity_error' => $this->quantityValidator->getErrorMessage($quantity, $resolvedPrice),
+                    'reorder_items' => "Insufficient stock for {$productName}. Try a lower quantity.",
                 ]);
             }
 
-            // Calculate all pricing fields using centralized calculator.
-            $pricing = $this->itemCalculator->calculateItemPricing($resolvedPrice, $quantity);
-
-            $productName = (string) ($visibleProduct?->name ?: ($decodedReOrderItem['name'] ?? 'Product'));
-            $variantName = $productVariant?->variant_name ?: ($resolvedPrice['variant_name'] ?? null);
-            $sku = $productVariant?->sku ?: ($resolvedPrice['variant_sku'] ?? ($decodedReOrderItem['model'] ?? 'N/A'));
-
-            // Add the item.
-            $preparedOrderItems[] = [
-                'product_id' => $visibleProduct?->id ?: $productId,
-                'product_variant_id' => $productVariantId,
-                'sku' => (string) $sku,
-                'product_name' => $productName,
-                'variant_name' => $variantName,
-                'description' => 'Created from reorder checkout.',
-                'quantity' => $quantity,
-                'unit_price' => $pricing['unit_price'],
-                'subtotal_amount' => $pricing['subtotal_amount'],
-                'discount_amount' => $pricing['discount_amount'],
-                'tax_amount' => $pricing['tax_amount'],
-                'total_amount' => $pricing['total_amount'],
-                'sort_order' => $index,
-                'item_snapshot' => $this->itemCalculator->buildMinimalSnapshot($resolvedPrice),
-            ];
+            // Build the item using centralized method.
+            $preparedOrderItems[] = $this->calculationService->buildOrderItemPayload($visibleProduct, $resolvedPrice, $quantity, $index);
         }
 
         // Stop if no valid items.

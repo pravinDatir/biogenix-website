@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Checkout;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Checkout\StartBuyNowCheckoutRequest;
+use App\Http\Requests\Checkout\SubmitCartCheckoutRequest;
+use App\Http\Requests\Checkout\SubmitCheckoutOrderRequest;
 use App\Services\Cart\CartService;
 use App\Services\Checkout\CheckoutService;
 use App\Services\Order\OrderService;
@@ -53,15 +56,11 @@ class CheckoutController extends Controller
     }
 
     // This starts the buy-now checkout by first adding the selected item into the current cart.
-    public function startCheckoutFromBuyNow(Request $request, CartService $cartService): RedirectResponse
+    public function startCheckoutFromBuyNow(StartBuyNowCheckoutRequest $request, CartService $cartService): RedirectResponse
     {
         try {
             // Step 1: validate the selected product details coming from the buy-now action.
-            $validatedSelectedItem = $request->validate([
-                'product_id' => ['required', 'integer', 'exists:products,id'],
-                'product_variant_id' => ['nullable', 'integer', 'exists:product_variants,id'],
-                'quantity' => ['required', 'integer', 'min:1'],
-            ]);
+            $validatedSelectedItem = $request->validated();
 
             // Step 2: add the selected item into the current cart.
             $cartService->addItemToCurrentCart($validatedSelectedItem, $request);
@@ -82,51 +81,28 @@ class CheckoutController extends Controller
     }
 
     // This submits the checkout page and creates the order from the current cart.
-    public function submitUserCheckoutOrder(Request $request, CheckoutService $checkoutService): RedirectResponse
+    public function submitUserCheckoutOrder(SubmitCheckoutOrderRequest $request, CheckoutService $checkoutService): RedirectResponse
     {
         try {
-            // Step 1: keep the current user id ready for address ownership validation.
-            $userId = (int) $request->user()->id;
+            // Step 1: validate the checkout form fields and place the order.
+            $validatedCheckout = $request->validated();
 
-            // Step 2: validate the checkout form fields.
-            $validatedCheckout = $request->validate([
-                'coupon_code' => ['nullable', 'string', 'max:50'],
-                'selected_address_source' => ['required', 'string', Rule::in(['existing', 'new'])],
-                'selected_user_address_id' => [
-                    'nullable',
-                    'integer',
-                    'required_if:selected_address_source,existing',
-                    Rule::exists('user_address', 'id')->where('user_id', $userId),
-                ],
-                'new_address_label' => ['nullable', 'string', 'max:255', 'required_if:selected_address_source,new'],
-                'new_address_line1' => ['nullable', 'string', 'max:255', 'required_if:selected_address_source,new'],
-                'new_address_city' => ['nullable', 'string', 'max:128', 'required_if:selected_address_source,new'],
-                'new_address_state' => ['nullable', 'string', 'max:128', 'required_if:selected_address_source,new'],
-                'new_address_postal_code' => ['nullable', 'string', 'max:20', 'required_if:selected_address_source,new'],
-                'new_address_country' => ['nullable', 'string', 'max:128'],
-                'new_address_phone' => ['nullable', 'string', 'max:32'],
-                'gstin' => ['nullable', 'string', 'max:20'],
-                'pan_number' => ['nullable', 'string', 'max:20'],
-                'registered_business_name' => ['nullable', 'string', 'max:255'],
-                'notes' => ['nullable', 'string', 'max:1000'],
-            ]);
-
-            // Step 3: place the order from the current cart.
+            // Step 2: place the order from the current cart.
             $submittedOrder = $checkoutService->placeOrderFromCart($validatedCheckout, $request->user());
 
-            // Step 4: send the customer to the existing confirmation page.
+            // Step 3: send the customer to the existing confirmation page.
             return redirect()
                 ->route('order.confirmation')
                 ->with('recentCheckoutOrder', $submittedOrder['order'])
                 ->with('success', 'Order placed successfully.');
         } catch (Throwable $exception) {
-            // Step 5: log the checkout submit failure.
+            // Step 4: log the checkout submit failure.
             Log::error('Failed to submit customer checkout order.', [
                 'user_id' => $request->user()?->id,
                 'error' => $exception->getMessage(),
             ]);
 
-            // Step 6: send the customer back with a clear checkout error.
+            // Step 5: send the customer back with a clear checkout error.
             return $this->redirectBackWithCheckoutMessage($exception, 'Unable to place your order right now.');
         }
     }
@@ -217,16 +193,11 @@ class CheckoutController extends Controller
     }
 
     // This checks out the current cart from the existing JSON route.
-    public function submitUserCartCheckout(Request $request, CheckoutService $checkoutService): JsonResponse
+    public function submitUserCartCheckout(SubmitCartCheckoutRequest $request, CheckoutService $checkoutService): JsonResponse
     {
         try {
             // Step 1: validate the optional extra checkout amounts and notes.
-            $validatedCheckout = $request->validate([
-                'shipping_amount' => ['nullable', 'numeric', 'min:0'],
-                'adjustment_amount' => ['nullable', 'numeric'],
-                'rounding_amount' => ['nullable', 'numeric'],
-                'notes' => ['nullable', 'string', 'max:1000'],
-            ]);
+            $validatedCheckout = $request->validated();
 
             // Step 2: place the order from the current cart.
             $checkoutResult = $checkoutService->placeOrderFromCart($validatedCheckout, $request->user());

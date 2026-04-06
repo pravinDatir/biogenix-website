@@ -5,6 +5,7 @@ namespace App\Services\Authorization;
 use App\Models\Authorization\Permission;
 use App\Models\Authorization\Role;
 use App\Models\Authorization\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class RolePermissionService
@@ -16,15 +17,21 @@ class RolePermissionService
             return ['guest'];
         }
 
-        $slugs = $user->roles()->pluck('roles.slug')->all();
+        return Cache::remember(
+            "user_role_slugs_{$user->id}",
+            3600,
+            function () use ($user) {
+                $slugs = $user->roles()->pluck('roles.slug')->all();
 
-        if ($slugs !== []) {
-            return $slugs;
-        }
+                if (! empty($slugs)) {
+                    return $slugs;
+                }
 
-        $this->assignDefaultRole($user);
+                $this->assignDefaultRole($user);
 
-        return $user->fresh()->roles()->pluck('roles.slug')->all();
+                return $user->fresh()->roles()->pluck('roles.slug')->all();
+            }
+        );
     }
 
     // This checks whether a user has the requested role.
@@ -47,85 +54,106 @@ class RolePermissionService
                 ->exists();
         }
 
-        // Step 3: stop early when the user has a direct deny override.
-        $userOverride = $user->permissionOverrides()
-            ->whereHas('permission', fn ($query) => $query->where('slug', $permissionSlug))
-            ->first();
+        // Step 3: cache the full permission check per user (includes overrides).
+        return Cache::remember(
+            "user_has_permission_{$user->id}_{$permissionSlug}",
+            3600,
+            function () use ($user, $permissionSlug, $roleSlugs) {
+                // Stop early when the user has a direct deny override.
+                $userOverride = $user->permissionOverrides()
+                    ->whereHas('permission', fn ($query) => $query->where('slug', $permissionSlug))
+                    ->first();
 
-        if ($userOverride?->grant_type === 'deny') {
-            return false;
-        }
+                if ($userOverride?->grant_type === 'deny') {
+                    return false;
+                }
 
-        if ($userOverride?->grant_type === 'allow') {
-            return true;
-        }
+                if ($userOverride?->grant_type === 'allow') {
+                    return true;
+                }
 
-        if (in_array('admin', $roleSlugs, true)) {
-            return true;
-        }
+                if (in_array('admin', $roleSlugs, true)) {
+                    return true;
+                }
 
-        return Permission::query()
-            ->where('slug', $permissionSlug)
-            ->whereHas('roles', fn ($query) => $query->whereIn('roles.slug', $roleSlugs))
-            ->exists();
+                return Permission::query()
+                    ->where('slug', $permissionSlug)
+                    ->whereHas('roles', fn ($query) => $query->whereIn('roles.slug', $roleSlugs))
+                    ->exists();
+            }
+        );
     }
 
     // This returns the final permission slug list after role permissions and user overrides are merged.
     public function permissionSlugsForUser(?User $user): array
     {
-        // Load active role slugs for this request
-        $roleSlugs = $this->roleSlugsForUser($user);
-
-        // Get all permissions from role matrix
-        $permissions = Permission::query()
-            ->whereHas('roles', fn ($query) => $query->whereIn('roles.slug', $roleSlugs))
-            ->pluck('slug')
-            ->flip()
-            ->map(fn () => true)
-            ->all();
-
-        // Guests do not have user-level overrides
+        // Guests do not have user-level caching (they're not persisted)
         if (! $user) {
+            $roleSlugs = $this->roleSlugsForUser($user);
+            $permissions = Permission::query()
+                ->whereHas('roles', fn ($query) => $query->whereIn('roles.slug', $roleSlugs))
+                ->pluck('slug')
+                ->flip()
+                ->map(fn () => true)
+                ->all();
             $result = array_keys($permissions);
             sort($result);
             return $result;
         }
 
-        // Admins receive the full permission list
-        if (in_array('admin', $roleSlugs, true)) {
-            $permissions = Permission::query()
-                ->pluck('slug')
-                ->flip()
-                ->map(fn () => true)
-                ->all();
-        }
+        // Cache the full permission list per user (includes role and override rules)
+        return Cache::remember(
+            "user_permission_slugs_{$user->id}",
+            3600,
+            function () use ($user) {
+                // Load active role slugs for this request
+                $roleSlugs = $this->roleSlugsForUser($user);
 
-        // Load all permission overrides for this user (with eager-loaded relationships)
-        $userOverrides = $user->permissionOverrides()
-            ->with('permission:id,slug')
-            ->get();
+                // Get all permissions from role matrix
+                $permissions = Permission::query()
+                    ->whereHas('roles', fn ($query) => $query->whereIn('roles.slug', $roleSlugs))
+                    ->pluck('slug')
+                    ->flip()
+                    ->map(fn () => true)
+                    ->all();
 
-        // Apply user-level allow and deny overrides
-        foreach ($userOverrides as $override) {
-            // Get permission slug from already-loaded relationship
-            $permission = $override->permission;
-            
-            if (! $permission || ! $permission->slug) {
-                continue;
+                // Admins receive the full permission list
+                if (in_array('admin', $roleSlugs, true)) {
+                    $permissions = Permission::query()
+                        ->pluck('slug')
+                        ->flip()
+                        ->map(fn () => true)
+                        ->all();
+                }
+
+                // Load all permission overrides for this user (with eager-loaded relationships)
+                $userOverrides = $user->permissionOverrides()
+                    ->with('permission:id,slug')
+                    ->get();
+
+                // Apply user-level allow and deny overrides
+                foreach ($userOverrides as $override) {
+                    // Get permission slug from already-loaded relationship
+                    $permission = $override->permission;
+                    
+                    if (! $permission || ! $permission->slug) {
+                        continue;
+                    }
+
+                    if ($override->grant_type === 'deny') {
+                        unset($permissions[$permission->slug]);
+                    } else {
+                        $permissions[$permission->slug] = true;
+                    }
+                }
+
+                // Return clean sorted list
+                $result = array_keys($permissions);
+                sort($result);
+
+                return $result;
             }
-
-            if ($override->grant_type === 'deny') {
-                unset($permissions[$permission->slug]);
-            } else {
-                $permissions[$permission->slug] = true;
-            }
-        }
-
-        // Return clean sorted list
-        $result = array_keys($permissions);
-        sort($result);
-
-        return $result;
+        );
     }
 
     // This assigns the default role based on the user type.
@@ -151,6 +179,9 @@ class RolePermissionService
         );
 
         $user->roles()->syncWithoutDetaching([$role->id]);
+
+        // Invalidate user's permission caches when role is assigned
+        $this->clearUserPermissionCache($user->id);
     }
 
     // This removes a role from the user when it exists.
@@ -163,5 +194,16 @@ class RolePermissionService
         }
 
         $user->roles()->detach($roleId);
+
+        // Invalidate user's permission caches when role is removed
+        $this->clearUserPermissionCache($user->id);
+    }
+
+    // Helper method to clear all permission-related caches for a user.
+    protected function clearUserPermissionCache(int $userId): void
+    {
+        Cache::forget("user_role_slugs_{$userId}");
+        Cache::forget("user_permission_slugs_{$userId}");
+        // Individual permission checks will expire naturally or be cleared on next role change
     }
 }

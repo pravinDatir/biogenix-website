@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Http\Requests\Profile\UpdatePasswordRequest;
 use App\Services\Profile\ProfileService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,13 +46,13 @@ class ProfileController extends Controller
     }
 
     // This saves the editable profile details shown on the current profile page.
-    public function updateMyProfileSection(Request $request, ProfileService $profileService): RedirectResponse
+    public function updateMyProfileSection(UpdateProfileRequest $request, ProfileService $profileService): RedirectResponse
     {
         try {
             $user = $request->user();
 
             // Step 1: validate the submitted profile fields using rules prepared for the current customer type.
-            $validated = $request->validate($profileService->profileValidationRules($user));
+            $validated = $request->validated();
 
             // Step 2: save the approved profile changes through one shared business service.
             $profileService->saveMyProfileSection($user, $validated);
@@ -70,7 +72,7 @@ class ProfileController extends Controller
 
     // This updates only the signed-in customer's password from the profile security modal.
     public function updateMyPassword(
-        Request $request,
+        UpdatePasswordRequest $request,
         ProfileService $profileService,
         UpdatesUserPasswords $passwordUpdater
     ): RedirectResponse {
@@ -78,7 +80,7 @@ class ProfileController extends Controller
             $user = $request->user();
 
             // Step 1: keep the password form input focused on password fields only so it does not trigger profile field validation.
-            $input = $request->only(['current_password', 'password', 'password_confirmation']);
+            $input = $request->validated();
 
             // Step 2: reuse the shared password update flow so the same business rules apply everywhere.
             $profileService->updateMyPassword($user, $input, $passwordUpdater);

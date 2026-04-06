@@ -3,25 +3,22 @@
 namespace App\Http\Controllers\Authorization;
 
 use App\Http\Controllers\Controller;
-use App\Models\Authorization\User;
+use App\Http\Requests\Authorization\SendSignupEmailOtpRequest;
+use App\Http\Requests\Authorization\VerifySignupEmailOtpRequest;
 use App\Services\Authorization\SignupEmailOtpService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class SignupEmailOtpController extends Controller
 {
     // This sends the signup OTP to the entered B2C email address.
-    public function sendOtp(Request $request, SignupEmailOtpService $signupOtpService): JsonResponse
+    public function sendOtp(SendSignupEmailOtpRequest $request, SignupEmailOtpService $signupOtpService): JsonResponse
     {
         try {
             // Step 1: validate the email before the OTP send flow starts.
-            $validatedData = $request->validate([
-                'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class, 'email')],
-            ]);
+            $validatedData = $request->validated();
 
             // Step 2: send the OTP through the shared signup OTP service.
             $sendResult = $signupOtpService->sendSignupOtp($validatedData['email']);
@@ -52,14 +49,11 @@ class SignupEmailOtpController extends Controller
     }
 
     // This verifies the submitted email OTP for the B2C signup flow.
-    public function verifyOtp(Request $request, SignupEmailOtpService $signupOtpService): JsonResponse
+    public function verifyOtp(VerifySignupEmailOtpRequest $request, SignupEmailOtpService $signupOtpService): JsonResponse
     {
         try {
             // Step 1: validate the email and OTP format before verification starts.
-            $validatedData = $request->validate([
-                'email' => ['required', 'string', 'email', 'max:255'],
-                'otp' => ['required', 'digits:6'],
-            ]);
+            $validatedData = $request->validated();
 
             // Step 2: verify the OTP through the shared signup OTP service.
             $verifyResult = $signupOtpService->verifySignupOtp(

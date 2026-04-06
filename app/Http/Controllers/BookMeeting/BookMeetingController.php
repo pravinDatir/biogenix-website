@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BookMeeting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BookMeeting\StoreMeetingRequest;
 use App\Services\BookMeeting\BookMeetingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,19 +29,11 @@ class BookMeetingController extends Controller
     }
 
     // This validates and stores one website meeting request.
-    public function store(Request $request, BookMeetingService $bookMeetingService): RedirectResponse
+    public function store(StoreMeetingRequest $request, BookMeetingService $bookMeetingService): RedirectResponse
     {
         try {
             // Step 1: validate the basic meeting request fields.
-            $validated = $request->validate([
-                'preferred_date' => ['required', 'date', 'after_or_equal:today'],
-                'start_time' => ['required', 'date_format:H:i'],
-                'end_time' => ['required', 'date_format:H:i'],
-                'full_name' => ['required', 'string', 'max:150'],
-                'email' => ['required', 'email', 'max:150'],
-                'phone' => ['required', 'digits:10'],
-                'organization_name' => ['nullable', 'string', 'max:150'],
-            ]);
+            $validated = $request->validated();
 
             // Step 2: keep the requested meeting time inside the normal business schedule window.
             $meetingStartTime = (string) config('common.meeting_hours.start_time', '09:00');

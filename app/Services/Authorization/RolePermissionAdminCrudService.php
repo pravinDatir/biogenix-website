@@ -4,6 +4,7 @@ namespace App\Services\Authorization;
 
 use App\Models\Authorization\Permission;
 use App\Models\Authorization\Role;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -85,6 +86,9 @@ class RolePermissionAdminCrudService
             'name' => trim((string) $validated['name']),
             'slug' => $roleSlug,
         ])->save();
+
+        // Step 3: invalidate caches for all users assigned to this role.
+        $this->clearRolePermissionCaches($roleId);
     }
 
     // This deletes a role and clears its pivot relations first.
@@ -99,11 +103,14 @@ class RolePermissionAdminCrudService
             ]);
         }
 
-        // Step 2: remove linked users and permissions from pivot tables.
+        // Step 2: invalidate caches for all users assigned to this role before deletion.
+        $this->clearRolePermissionCaches($roleId);
+
+        // Step 3: remove linked users and permissions from pivot tables.
         $role->users()->detach();
         $role->permissions()->detach();
 
-        // Step 3: delete the role row itself.
+        // Step 4: delete the role row itself.
         $role->delete();
     }
 
@@ -141,6 +148,9 @@ class RolePermissionAdminCrudService
             'name' => trim((string) $validated['name']),
             'slug' => $permissionSlug,
         ])->save();
+
+        // Step 3: invalidate caches for all affected roles and users.
+        $this->clearPermissionCaches($permissionId);
     }
 
     // This deletes one permission and clears its linked rows first.
@@ -155,11 +165,14 @@ class RolePermissionAdminCrudService
             ]);
         }
 
-        // Step 2: remove linked role and user override rows.
+        // Step 2: invalidate caches for all affected roles and users before deletion.
+        $this->clearPermissionCaches($permissionId);
+
+        // Step 3: remove linked role and user override rows.
         $permission->roles()->detach();
         $permission->userOverrides()->delete();
 
-        // Step 3: delete the permission row itself.
+        // Step 4: delete the permission row itself.
         $permission->delete();
     }
 
@@ -177,13 +190,16 @@ class RolePermissionAdminCrudService
 
         // Step 2: keep only valid permission ids before syncing the pivot table.
         $validPermissionIds = Permission::query()
-            ->whereIn('id', collect($permissionIds)->map(fn ($id) => (int) $id)->filter(fn ($id) => $id > 0)->all())
+            ->whereIn('id', collect($permissionIds)->map(fn ($id) => (int) $id)->filter(fn ($id) => $id > 0))
             ->pluck('id')
             ->map(fn ($id) => (int) $id)
             ->all();
 
         // Step 3: sync will add checked rows and remove unchecked rows.
         $role->permissions()->sync($validPermissionIds);
+
+        // Step 4: invalidate caches for all users assigned to this role.
+        $this->clearRolePermissionCaches($roleId);
     }
 
     // This creates a readable unique slug for the role.
@@ -224,5 +240,51 @@ class RolePermissionAdminCrudService
         }
 
         return $permissionSlug;
+    }
+
+    // Helper method to clear all permission caches for users assigned to a role.
+    protected function clearRolePermissionCaches(int $roleId): void
+    {
+        $role = Role::query()->with('users:id')->find($roleId);
+
+        if (! $role) {
+            return;
+        }
+
+        // Clear cache for each user assigned to this role
+        foreach ($role->users as $user) {
+            Cache::forget("user_role_slugs_{$user->id}");
+            Cache::forget("user_permission_slugs_{$user->id}");
+        }
+    }
+
+    // Helper method to clear all permission caches for users with this permission.
+    protected function clearPermissionCaches(int $permissionId): void
+    {
+        $permission = Permission::query()->with('roles.users:id')->find($permissionId);
+
+        if (! $permission) {
+            return;
+        }
+
+        // Collect all unique user IDs from all roles that have this permission
+        $userIds = collect();
+        foreach ($permission->roles as $role) {
+            foreach ($role->users as $user) {
+                $userIds->push($user->id);
+            }
+        }
+
+        // Also get users who have direct overrides for this permission
+        Permission::query()
+            ->where('id', $permissionId)
+            ->with('userOverrides:user_id')
+            ->first()?->userOverrides->each(fn ($override) => $userIds->push($override->user_id));
+
+        // Clear permutation caches for all affected users
+        $userIds->unique()->each(function ($userId) {
+            Cache::forget("user_role_slugs_{$userId}");
+            Cache::forget("user_permission_slugs_{$userId}");
+        });
     }
 }

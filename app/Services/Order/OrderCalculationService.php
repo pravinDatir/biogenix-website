@@ -2,29 +2,14 @@
 
 namespace App\Services\Order;
 
-use App\Services\Utility\QuantityValidator;
 use Illuminate\Validation\ValidationException;
 
 class OrderCalculationService
 {
-    public function __construct(
-        protected QuantityValidator $quantityValidator,
-    ) {}
+    public function __construct() {}
 
-    // Calculate final order totals from items and header amounts.
-    public function calculateOrderTotals(array $validatedOrder, array $preparedOrderItems, string $priceSource = 'current_visible_price'): array
-    {
-        return $this->calculateTotalsCore($validatedOrder, $preparedOrderItems, $priceSource);
-    }
-
-    // Calculate totals for reorder checkout.
-    public function calculateReOrderCheckoutTotals(array $validatedCheckout, array $preparedOrderItems): array
-    {
-        return $this->calculateTotalsCore($validatedCheckout, $preparedOrderItems, 'reorder_checkout');
-    }
-
-    // Core calculation logic shared by both methods.
-    protected function calculateTotalsCore(array $extraData, array $preparedOrderItems, string $priceSource = 'current_visible_price'): array
+    // Calculate order totals from items and optional header amounts.
+    public function calculateOrderTotals(array $extraData, array $preparedOrderItems, string $priceSource = 'current_visible_price'): array
     {
         // Read extra amounts from the form.
         $shippingAmount = round((float) ($extraData['shipping_amount'] ?? 0), 4);
@@ -82,13 +67,68 @@ class OrderCalculationService
     // Validate that the quantity meets min, max, and lot-size rules.
     public function validateOrderQuantity(int $quantity, array $price, int $index): void
     {
-        // Use QuantityValidator for validation logic.
-        if (!$this->quantityValidator->isValid($quantity, $price)) {
-            $errorMessage = $this->quantityValidator->getErrorMessage($quantity, $price);
+        if (! $this->isValidQuantity($quantity, $price)) {
+            $errorMessage = $this->getQuantityErrorMessage($quantity, $price);
             throw ValidationException::withMessages([
                 "quantity.$index" => "Quantity for item ".($index + 1)." - ".$errorMessage.".",
             ]);
         }
+    }
+
+    // Check if quantity is valid for the order.
+    public function isValidQuantity(int $quantity, array $priceData): bool
+    {
+        // Get minimum order quantity required.
+        $minQuantity = (int) ($priceData['min_order_quantity'] ?? 1);
+
+        // Get maximum order quantity allowed.
+        $maxQuantity = $priceData['max_order_quantity'] ?? null;
+
+        // Get lot size (must be multiple of this).
+        $lotSize = (int) ($priceData['lot_size'] ?? 1);
+
+        // Check if quantity meets minimum.
+        if ($quantity < $minQuantity) {
+            return false;
+        }
+
+        // Check if quantity exceeds maximum (if set).
+        if ($maxQuantity !== null && $quantity > $maxQuantity) {
+            return false;
+        }
+
+        // Check if quantity is multiple of lot size.
+        if ($lotSize > 1 && $quantity % $lotSize !== 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Get error message for invalid quantity.
+    public function getQuantityErrorMessage(int $quantity, array $priceData): string
+    {
+        // Get quantity constraints.
+        $minQuantity = (int) ($priceData['min_order_quantity'] ?? 1);
+        $maxQuantity = $priceData['max_order_quantity'] ?? null;
+        $lotSize = (int) ($priceData['lot_size'] ?? 1);
+
+        // Check minimum quantity failure.
+        if ($quantity < $minQuantity) {
+            return "Minimum order quantity is {$minQuantity}";
+        }
+
+        // Check maximum quantity failure.
+        if ($maxQuantity !== null && $quantity > $maxQuantity) {
+            return "Maximum order quantity is {$maxQuantity}";
+        }
+
+        // Check lot size failure.
+        if ($lotSize > 1 && $quantity % $lotSize !== 0) {
+            return "Quantity must be in multiples of {$lotSize}";
+        }
+
+        return "Quantity is invalid";
     }
 
     // Build one order item from a product and resolved price.

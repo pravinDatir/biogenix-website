@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cart\AddCartItemRequest;
+use App\Http\Requests\Cart\UpdateCartItemRequest;
 use App\Services\Cart\CartService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -42,15 +44,11 @@ class CartController extends Controller
     }
 
     // This adds one product or variant to the current cart.
-    public function addItemToUserOrGuestCart(Request $request, CartService $cartService): JsonResponse
+    public function addItemToUserOrGuestCart(AddCartItemRequest $request, CartService $cartService): JsonResponse
     {
         try {
             // Step 1: validate the add-to-cart payload.
-            $validatedCartItem = $request->validate([
-                'product_id' => ['required', 'integer', 'exists:products,id'],
-                'product_variant_id' => ['nullable', 'integer', 'exists:product_variants,id'],
-                'quantity' => ['required', 'integer', 'min:1'],
-            ]);
+            $validatedCartItem = $request->validated();
 
             // Step 2: store the cart item for the active shopper.
             $cart = $cartService->addItemToCurrentCart($validatedCartItem, $request);
@@ -74,13 +72,11 @@ class CartController extends Controller
     }
 
     // This updates the quantity of one existing cart item.
-    public function updateUserOrGuestCartItem(int $cartItemId, Request $request, CartService $cartService): JsonResponse
+    public function updateUserOrGuestCartItem(int $cartItemId, UpdateCartItemRequest $request, CartService $cartService): JsonResponse
     {
         try {
             // Step 1: validate the requested cart quantity update.
-            $validatedCartItem = $request->validate([
-                'quantity' => ['required', 'integer', 'min:1'],
-            ]);
+            $validatedCartItem = $request->validated();
 
             // Step 2: update the cart item for the active shopper.
             $cart = $cartService->updateCurrentCartItemQuantity($cartItemId, $validatedCartItem, $request);

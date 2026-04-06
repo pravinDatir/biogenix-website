@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\SupportTicket;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SupportTicket\StoreSupportTicketRequest;
 use App\Services\SupportTicket\SupportTicketService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
 
@@ -57,7 +56,7 @@ class SupportTicketController extends Controller
     }
 
     // This creates a new support ticket from the shared layout widget.
-    public function store(Request $request, SupportTicketService $supportTicketService): RedirectResponse
+    public function store(StoreSupportTicketRequest $request, SupportTicketService $supportTicketService): RedirectResponse
     {
         // Step 1: read the signed-in user once so the next steps stay easy to follow.
         $authenticatedUser = $request->user();
@@ -73,7 +72,7 @@ class SupportTicketController extends Controller
 
         try {
             // Step 4: validate the submitted widget fields against backend rules.
-            $validated = $this->validateStoreRequest($request, $supportTicketService);
+            $validated = $request->validated();
 
             // Step 5: prepare the clean ticket payload expected by the service layer.
             $ticketData = $this->buildTicketCreateData($validated);
@@ -125,21 +124,12 @@ class SupportTicketController extends Controller
     }
 
     // This validates the support ticket widget request using backend-owned rules.
+    // DEPRECATED: Use StoreSupportTicketRequest form request instead
     protected function validateStoreRequest(Request $request, SupportTicketService $supportTicketService): array
     {
-        // Step 1: load allowed categories from the backend so the form and server stay aligned.
-        $categorySlugs = $supportTicketService->availableCategorySlugs();
-
-        // Step 2: validate each submitted field with clear business limits.
-        return $request->validate([
-            'subject' => ['required', 'string', 'max:150'],
-            'category' => ['required', Rule::in($categorySlugs)],
-            'priority' => ['nullable', Rule::in(SupportTicketService::PRIORITIES)],
-            'description' => ['required', 'string', 'max:4000'],
-            'attachments' => ['nullable', 'array', 'max:5'],
-            'attachments.*' => ['file', 'max:5120'],
-            'support_ticket_form_source' => ['nullable', 'string', 'max:50'],
-        ]);
+        // This method is kept for backwards compatibility but is no longer used
+        // Validation is now handled by StoreSupportTicketRequest form request
+        return $request->validated();
     }
 
     // This prepares the create-ticket payload in a simple service-ready structure.

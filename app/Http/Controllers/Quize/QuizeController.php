@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Quize;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Quize\StoreQuizResponseRequest;
 use App\Services\Quize\QuizeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,17 +31,11 @@ class QuizeController extends Controller
     }
 
     // This validates the submitted quiz payload and returns the score result for the current page.
-    public function store(Request $request, QuizeService $quizeService): JsonResponse
+    public function store(StoreQuizResponseRequest $request, QuizeService $quizeService): JsonResponse
     {
         try {
             // Step 1: validate the participant details and the selected answers sent from the quiz page.
-            $validatedInput = $request->validate([
-                'participant_first_name' => ['required', 'string', 'max:100'],
-                'participant_last_name' => ['nullable', 'string', 'max:100'],
-                'participant_email' => ['required', 'email', 'max:150'],
-                'selected_answers' => ['required', 'array', 'min:1'],
-                'selected_answers.*' => ['required', 'integer'],
-            ]);
+            $validatedInput = $request->validated();
 
             // Step 2: save the response and calculate the final result through the shared quiz service.
             $quizResponseResult = $quizeService->createQuizResponse($validatedInput);

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Authorization;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Authorization\StoreRoleRequest;
+use App\Http\Requests\Authorization\UpdateRoleRequest;
+use App\Http\Requests\Authorization\StorePermissionRequest;
+use App\Http\Requests\Authorization\UpdatePermissionRequest;
+use App\Http\Requests\Authorization\UpsertRolePermissionsRequest;
 use App\Services\Authorization\RolePermissionAdminCrudService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,11 +40,11 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and stores a new role.
-    public function addRole(Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
+    public function addRole(StoreRoleRequest $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted role fields.
-            $validated = $this->validateRolePayload($request);
+            $validated = $request->validated();
 
             // Step 2: create the role and redirect back to the list page.
             $rolePermissionAdminCrudService->addRole($validated);
@@ -54,11 +59,11 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and updates one role.
-    public function updateRole(int $roleId, Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
+    public function updateRole(int $roleId, UpdateRoleRequest $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted role fields.
-            $validated = $this->validateRolePayload($request);
+            $validated = $request->validated();
 
             // Step 2: update the selected role and stay in edit mode.
             $rolePermissionAdminCrudService->updateRole($roleId, $validated);
@@ -89,11 +94,11 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and stores a new permission.
-    public function createPermission(Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
+    public function createPermission(StorePermissionRequest $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted permission fields.
-            $validated = $this->validatePermissionPayload($request);
+            $validated = $request->validated();
 
             // Step 2: create the permission and return to the list page.
             $rolePermissionAdminCrudService->createPermission($validated);
@@ -108,11 +113,11 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates and updates one permission.
-    public function updatePermission(int $permissionId, Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
+    public function updatePermission(int $permissionId, UpdatePermissionRequest $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the submitted permission fields.
-            $validated = $this->validatePermissionPayload($request);
+            $validated = $request->validated();
 
             // Step 2: update the selected permission and stay in permission edit mode.
             $rolePermissionAdminCrudService->updatePermission($permissionId, $validated);
@@ -143,14 +148,11 @@ class RoleAndPermissionController extends Controller
     }
 
     // This saves all checked permissions for the selected role.
-    public function upsertPermissionsForRole(int $roleId, Request $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
+    public function upsertPermissionsForRole(int $roleId, UpsertRolePermissionsRequest $request, RolePermissionAdminCrudService $rolePermissionAdminCrudService): RedirectResponse
     {
         try {
             // Step 1: validate the checkbox array from the role-permission form.
-            $validated = $request->validate([
-                'permission_ids' => ['nullable', 'array'],
-                'permission_ids.*' => ['integer', 'exists:permissions,id'],
-            ]);
+            $validated = $request->validated();
 
             // Step 2: sync checked permissions for the selected role.
             $rolePermissionAdminCrudService->upsertPermissionsForRole(
@@ -168,6 +170,7 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates the minimal role form fields.
+    // DEPRECATED: Use StoreRoleRequest or UpdateRoleRequest form requests instead
     protected function validateRolePayload(Request $request): array
     {
         try {
@@ -182,6 +185,7 @@ class RoleAndPermissionController extends Controller
     }
 
     // This validates the minimal permission form fields.
+    // DEPRECATED: Use StorePermissionRequest or UpdatePermissionRequest form requests instead
     protected function validatePermissionPayload(Request $request): array
     {
         try {

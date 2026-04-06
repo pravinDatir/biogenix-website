@@ -6,9 +6,9 @@ use App\Models\Authorization\User;
 use App\Models\Cart\Cart;
 use App\Models\Cart\CartItem;
 use App\Models\Product\ProductVariant;
+use App\Services\Order\OrderCalculationService;
 use App\Services\Pricing\PriceService;
 use App\Services\Utility\OrderItemCalculator;
-use App\Services\Utility\QuantityValidator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,7 @@ class CartService
     public function __construct(
         protected PriceService $priceService,
         protected OrderItemCalculator $itemCalculator,
-        protected QuantityValidator $quantityValidator,
+        protected OrderCalculationService $calculationService,
     ) {
     }
 
@@ -62,9 +62,9 @@ class CartService
             ]);
         }
 
-        if (!$this->quantityValidator->isValid($finalQuantity, $priceData)) {
+        if (! $this->calculationService->isValidQuantity($finalQuantity, $priceData)) {
             throw ValidationException::withMessages([
-                'quantity' => $this->quantityValidator->getErrorMessage($finalQuantity, $priceData),
+                'quantity' => $this->calculationService->getQuantityErrorMessage($finalQuantity, $priceData),
             ]);
         }
 
@@ -107,9 +107,9 @@ class CartService
             ]);
         }
 
-        if (!$this->quantityValidator->isValid($updatedQuantity, $priceData)) {
+        if (! $this->calculationService->isValidQuantity($updatedQuantity, $priceData)) {
             throw ValidationException::withMessages([
-                'quantity' => $this->quantityValidator->getErrorMessage($updatedQuantity, $priceData),
+                'quantity' => $this->calculationService->getQuantityErrorMessage($updatedQuantity, $priceData),
             ]);
         }
 
@@ -207,7 +207,7 @@ class CartService
             return false;
         }
 
-        if (!$this->quantityValidator->isValid($guestQuantity, $priceData)) {
+        if (! $this->calculationService->isValidQuantity($guestQuantity, $priceData)) {
             return false;
         }
 
@@ -224,7 +224,7 @@ class CartService
         if ($existingItem) {
             $finalQuantity = (int) $existingItem->quantity + $guestQuantity;
 
-            if (!$this->quantityValidator->isValid($finalQuantity, $priceData)) {
+            if (! $this->calculationService->isValidQuantity($finalQuantity, $priceData)) {
                 return false;
             }
 
@@ -450,9 +450,9 @@ class CartService
         }
 
         // Step 3: validate quantity constraints using centralized validator.
-        if (!$this->quantityValidator->isValid((int) $cartItem->quantity, $resolvedVariantPrice)) {
+        if (! $this->calculationService->isValidQuantity((int) $cartItem->quantity, $resolvedVariantPrice)) {
             throw ValidationException::withMessages([
-                'quantity' => $this->quantityValidator->getErrorMessage((int) $cartItem->quantity, $resolvedVariantPrice),
+                'quantity' => $this->calculationService->getQuantityErrorMessage((int) $cartItem->quantity, $resolvedVariantPrice),
             ]);
         }
 

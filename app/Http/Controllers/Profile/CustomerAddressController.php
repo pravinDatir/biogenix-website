@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\StoreAddressRequest;
+use App\Http\Requests\Profile\UpdateAddressRequest;
 use App\Services\Profile\CustomerAddressService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
@@ -37,16 +38,13 @@ class CustomerAddressController extends Controller
     }
 
     // This stores one brand-new saved address for the signed-in customer.
-    public function store(Request $request, CustomerAddressService $customerAddressService): RedirectResponse
+    public function store(StoreAddressRequest $request, CustomerAddressService $customerAddressService): RedirectResponse
     {
         try {
             $user = $request->user();
 
             // Step 1: validate the add-address form through one named error bag so the add modal can show clear field messages.
-            $validated = Validator::make(
-                $request->all(),
-                $customerAddressService->addressValidationRules()
-            )->validateWithBag('addressCreate');
+            $validated = $request->validated();
 
             // Step 2: save the new address in the shared address service.
             $customerAddressService->createAddressForUser($user, $validated);
@@ -81,7 +79,7 @@ class CustomerAddressController extends Controller
 
     // This updates one saved address directly from the address list page.
     public function update(
-        Request $request,
+        UpdateAddressRequest $request,
         int $addressId,
         CustomerAddressService $customerAddressService
     ): RedirectResponse {
@@ -90,10 +88,7 @@ class CustomerAddressController extends Controller
             $errorBagName = 'addressUpdate_'.$addressId;
 
             // Step 1: validate the submitted row using an address-specific error bag so only that row shows field errors.
-            $validated = Validator::make(
-                $request->all(),
-                $customerAddressService->addressValidationRules()
-            )->validateWithBag($errorBagName);
+            $validated = $request->validated();
 
             // Step 2: save the updated address through one shared business service.
             $customerAddressService->updateAddressForUser($user, $addressId, $validated);

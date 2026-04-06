@@ -54,7 +54,7 @@ class ProductController extends Controller
                 ],
             ]);
 
-            Log::info('Product search results loaded.', [ 'search' => $search, 'count' => $catalogData['products']->count(), 'product_ids' => collect($catalogData['products']->items())->pluck('id')->take(5)->values()->all() ]);
+            Log::info('Product search completed', ['search' => $search, 'count' => $catalogData['products']->count()]);
 
             return view('product.index', [
                 'products' => $catalogData['products'],
