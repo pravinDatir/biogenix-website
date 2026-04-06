@@ -1,1233 +1,1818 @@
 @extends('layouts.app')
 
 @section('title', 'Diagnostic Precision Quiz – Biogenix')
-@section('meta_description', 'Test your diagnostic knowledge with the Biogenix Kits Mastery quiz. Answer 4 questions and unlock a 15% discount on your first clinical order.')
+@section('meta_description', 'Test your diagnostic knowledge with the Biogenix Kits Mastery quiz.')
+
+@push('styles')
+    <style>
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            min-h-screen;
+        }
+
+        @media (min-width: 768px) {
+            .quiz-container {
+                flex-direction: row;
+                min-height: calc(100vh - 80px);
+                /* Adjust based on your header height */
+            }
+        }
+
+        .quiz-step {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .quiz-step.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quiz-option {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .quiz-step[data-step="1"] .quiz-option.selected,
+        .quiz-step[data-step="2-b2c"] .quiz-option.selected {
+            background-color: #1A4D2E !important;
+            /* Forest Green from theme.css */
+            color: white !important;
+            border-color: #1A4D2E !important;
+            box-shadow: 0 10px 30px rgba(26, 77, 46, 0.15);
+        }
+
+        .quiz-step[data-step="1"] .quiz-option.selected .option-title,
+        .quiz-step[data-step="2-b2c"] .quiz-option.selected .option-title {
+            color: white !important;
+        }
+
+        .quiz-step[data-step="1"] .quiz-option.selected .option-desc,
+        .quiz-step[data-step="2-b2c"] .quiz-option.selected .option-desc {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .quiz-step[data-step="1"] .quiz-option.selected .icon-box,
+        .quiz-step[data-step="2-b2c"] .quiz-option.selected .icon-box {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+        }
+
+        .quiz-option.selected .check-mark {
+            display: flex !important;
+        }
+
+        #scoreRingFill {
+            transition: stroke-dashoffset 1.5s ease-in-out;
+        }
+
+        .left-panel-bg {
+            background: url('{{ asset('upload/corousel/image3.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .left-panel-overlay {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: grayscale(100%) opacity(30%);
+        }
+
+        .btn-quiz-primary {
+            background-color: #1A4D2E;
+            transition: all 0.3s ease;
+        }
+
+        .btn-quiz-primary:hover {
+            background-color: #133D23;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 77, 46, 0.2);
+        }
+    </style>
+@endpush
 
 @section('content')
-@php
-    $quizQuestionsPayload = collect($quizQuestions ?? [])
-        ->values()
-        ->map(function ($quizQuestion): array {
-            return [
-                'id' => (int) $quizQuestion->id,
-                'phase_title' => (string) $quizQuestion->phase_title,
-                'question_text' => (string) $quizQuestion->question_text,
-                'question_support_details' => is_array($quizQuestion->question_support_details ?? null)
-                    ? $quizQuestion->question_support_details
-                    : [],
-                'answer_options' => collect($quizQuestion->answerOptions ?? [])
-                    ->values()
-                    ->map(function ($answerOption): array {
-                        return [
-                            'id' => (int) $answerOption->id,
-                            'option_label' => (string) $answerOption->option_label,
-                            'option_text' => (string) $answerOption->option_text,
-                        ];
-                    })
-                    ->all(),
-            ];
-        })
-        ->all();
-    $hasQuizData = count($quizQuestionsPayload) > 0;
-    $firstQuizQuestion = $hasQuizData ? $quizQuestionsPayload[0] : null;
-    $quizPageClass = 'min-h-[calc(100vh-88px)]';
-    $quizPanelClass = 'rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] p-6 shadow-[var(--ui-shadow-soft)] sm:p-8';
-    $quizProgressTrackClass = 'h-1.5 overflow-hidden rounded-full bg-[var(--ui-border)]';
-    $quizProgressFillClass = 'h-full rounded-full bg-primary-600 transition-[width] duration-500 ease-in-out';
-    $quizStepClass = 'quiz-step hidden translate-y-3 opacity-0 transition-all duration-300 [&.active]:block [&.active]:translate-y-0 [&.active]:opacity-100';
-    $quizOptionClass = 'quiz-option group relative flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-[var(--ui-border)] bg-[var(--ui-surface)] px-5 py-[1.1rem] transition-[border-color,background-color,box-shadow] duration-200 hover:border-[var(--color-neutral-200)] hover:bg-[var(--ui-surface-muted)] [&.selected]:border-primary-600 [&.selected]:bg-primary-600/5 [&.selected]:ring-2 [&.selected]:ring-primary-600/10';
-    $quizOptionRadioClass = 'quiz-option-radio inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-neutral-200)] text-[0.8rem] font-bold text-[var(--ui-text-muted)] transition-[background-color,border-color,color] duration-200 group-[.selected]:border-primary-600 group-[.selected]:bg-primary-600 group-[.selected]:text-white';
-    $quizOptionCheckClass = 'quiz-option-check ml-auto hidden group-[.selected]:flex';
-    $quizTipCardClass = 'quiz-tip-card rounded-[1.25rem] border border-[var(--ui-border)] bg-secondary-50 p-5';
-    $quizContextCardClass = 'quiz-context-card rounded-[1.25rem] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5';
-    $quizInsightCardClass = 'quiz-insight-card rounded-2xl border border-[var(--ui-border)] bg-secondary-100 p-4';
-    $quizRefCardClass = 'quiz-ref-card rounded-[1.25rem] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-5';
-    $quizFieldClass = 'quiz-field h-12 w-full rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 text-sm text-[var(--ui-text)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-[var(--color-neutral-500)] focus:border-primary-600 focus:ring-2 focus:ring-primary-600/10';
-    $quizPrimaryButtonClass = 'quiz-next-btn inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
-    $quizSubmitButtonClass = 'mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 py-3.5 text-sm font-semibold text-white shadow-[var(--ui-shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700';
-    $quizScoreRingClass = 'relative h-[180px] w-[180px] md:h-[200px] md:w-[200px]';
-    $quizPerfTrackClass = 'h-2 overflow-hidden rounded-full bg-[var(--ui-border)]';
-    $quizPerfFillClass = 'h-full rounded-full bg-[var(--ui-text)] transition-[width] delay-300 duration-1000 ease-in-out';
-    $quizVoucherCodeClass = "mt-2 font-display text-2xl font-bold tracking-[0.3em] text-[var(--ui-surface)]";
-    $quizImageOverlayClass = 'absolute inset-0 bg-gradient-to-b from-primary-600/20 to-primary-600/85';
-@endphp
-{{-- tailwind-width-safelist: w-0 w-[1%] w-[2%] w-[3%] w-[4%] w-[5%] w-[6%] w-[7%] w-[8%] w-[9%] w-[10%] w-[11%] w-[12%] w-[13%] w-[14%] w-[15%] w-[16%] w-[17%] w-[18%] w-[19%] w-[20%] w-[21%] w-[22%] w-[23%] w-[24%] w-[25%] w-[26%] w-[27%] w-[28%] w-[29%] w-[30%] w-[31%] w-[32%] w-[33%] w-[34%] w-[35%] w-[36%] w-[37%] w-[38%] w-[39%] w-[40%] w-[41%] w-[42%] w-[43%] w-[44%] w-[45%] w-[46%] w-[47%] w-[48%] w-[49%] w-[50%] w-[51%] w-[52%] w-[53%] w-[54%] w-[55%] w-[56%] w-[57%] w-[58%] w-[59%] w-[60%] w-[61%] w-[62%] w-[63%] w-[64%] w-[65%] w-[66%] w-[67%] w-[68%] w-[69%] w-[70%] w-[71%] w-[72%] w-[73%] w-[74%] w-[75%] w-[76%] w-[77%] w-[78%] w-[79%] w-[80%] w-[81%] w-[82%] w-[83%] w-[84%] w-[85%] w-[86%] w-[87%] w-[88%] w-[89%] w-[90%] w-[91%] w-[92%] w-[93%] w-[94%] w-[95%] w-[96%] w-[97%] w-[98%] w-[99%] w-full --}}
-<div class="{{ $quizPageClass }}" id="quizApp">
+    @php
+        $quizQuestionsPayload = collect($quizQuestions ?? [])
+            ->values()
+            ->map(function ($quizQuestion): array {
+                return [
+                    'id' => (int) $quizQuestion->id,
+                    'phase_title' => (string) $quizQuestion->phase_title,
+                    'question_text' => (string) $quizQuestion->question_text,
+                    'answer_options' => collect($quizQuestion->answerOptions ?? [])
+                        ->values()
+                        ->map(function ($answerOption): array {
+                            return [
+                                'id' => (int) $answerOption->id,
+                                'option_label' => (string) $answerOption->option_label,
+                                'option_text' => (string) $answerOption->option_text,
+                            ];
+                        })
+                        ->all(),
+                ];
+            })
+            ->all();
+        $hasQuizData = count($quizQuestionsPayload) > 0;
 
-    {{-- ═══ HEADER BAR ═══ --}}
-    <div class="border-b border-[var(--ui-border)] bg-[var(--ui-surface)]">
-        <div class="mx-auto w-full max-w-none px-4 py-5 sm:px-6 lg:px-8 xl:px-10">
-            <div class="flex items-end justify-between">
-                <div>
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--ui-text-muted)]" id="quizPhaseLabel">{{ $hasQuizData ? 'Assessment Phase: 01' : 'Assessment Setup' }}</p>
-                    <h1 class="font-display mt-1 text-2xl font-bold tracking-tight text-[var(--ui-text)] md:text-3xl" id="quizTitle">{{ $firstQuizQuestion['phase_title'] ?? 'Diagnostic Precision Quiz' }}</h1>
-                    <div class="{{ $quizProgressTrackClass }} mt-3 w-48 sm:w-64">
-                        <div class="{{ $quizProgressFillClass }} w-0" id="quizProgressBar"></div>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-base font-bold text-[var(--ui-text)]" id="quizStepLabel">{{ $hasQuizData ? 'Step 1 of '.count($quizQuestionsPayload) : '' }}</p>
-                    <p class="text-sm text-[var(--ui-text-muted)]" id="quizPercentLabel">{{ $hasQuizData ? round(100 / count($quizQuestionsPayload)).'% Complete' : '0% Complete' }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        // We will inject our custom first step if needed or just use it as a wrapper
+        $totalSteps = count($quizQuestionsPayload);
+    @endphp
 
-    {{-- ═══ QUIZ CONTENT ═══ --}}
-    <div class="mx-auto w-full max-w-none px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
-        @if (! $hasQuizData)
-            <div class="{{ $quizPanelClass }}">
-                <h2 class="text-xl font-bold text-[var(--ui-text)]">Quiz is not available right now.</h2>
-                <p class="mt-3 text-sm leading-6 text-[var(--ui-text-muted)]">Please run the quiz migration and seeder, then reload this page.</p>
-            </div>
-        @else
+    <div class="mx-auto w-full max-w-[95%] lg:max-w-[90%] xl:max-w-[80%] py-8 md:py-12">
+        <div
+            class="quiz-container w-full bg-white rounded-3xl md:rounded-[2rem] overflow-hidden shadow-[0_20px_60px_rgba(26,77,46,0.08)] border border-slate-100">
 
-        {{-- ────────── STEP 1 ────────── --}}
-        <div class="{{ $quizStepClass }} active" data-step="1">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div class="lg:col-span-2">
-                    <div class="{{ $quizPanelClass }}">
-                        <div class="flex items-start gap-3">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">1</span>
-                            <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">Which reagent kit is best suited for high-throughput automation?</h2>
-                        </div>
+            {{-- LEFT VISUAL PANEL --}}
+            <div
+                class="relative w-full md:w-[40%] xl:w-[42%] flex flex-col p-8 md:p-12 xl:p-16 left-panel-bg overflow-hidden border-r border-slate-100">
+                <div class="absolute inset-0 left-panel-overlay z-0"></div>
 
-                        <div class="mt-6 space-y-3" id="q1Options">
-                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(1, this)">
-                                <span class="{{ $quizOptionRadioClass }}">A</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Precision-X LIMS Kit</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(1, this)">
-                                <span class="{{ $quizOptionRadioClass }}">B</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Bio-RGT Standard</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(1, this)">
-                                <span class="{{ $quizOptionRadioClass }}">C</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Clinical-Max Assay</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(1, this)">
-                                <span class="{{ $quizOptionRadioClass }}">D</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Eco-Lite Consumable</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex cursor-not-allowed items-center gap-2 text-sm font-semibold text-[var(--color-neutral-500)]" disabled>
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
-                            Previous
-                        </button>
-                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(2)">
-                            Next
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                {{-- Sidebar --}}
-                <div class="space-y-5">
-                    <div class="{{ $quizTipCardClass }}">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
-                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
-                            Clinical Tip
-                        </p>
-                        <h3 class="mt-2 text-base font-bold text-primary-600">Automation Integration</h3>
-                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Automation-compatible kits utilize standard SBS footprints and barcoded vials. When selecting a kit for high-throughput environments, prioritize those with liquid-level sensing compatibility to minimize aspiration errors.</p>
-                    </div>
-
-                    <div class="{{ $quizContextCardClass }}">
-                        <h4 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Assessment Context</h4>
-                        <ul class="mt-3 space-y-3">
-                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
-                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
-                                Module: Reagent Classification
-                            </li>
-                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
-                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Difficulty: Intermediate
-                            </li>
-                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
-                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
-                                Time Limit: No constraints
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="relative overflow-hidden rounded-2xl min-h-[180px]">
-                        <img src="{{ asset('upload/corousel/image3.jpg') }}" alt="Automated pipetting system" class="absolute inset-0 h-full w-full object-cover" loading="lazy">
-                        <div class="{{ $quizImageOverlayClass }}"></div>
-                        <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-[var(--ui-surface)] opacity-90">Fig 1.1: Automated pipetting system with Biogenix reagents.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ────────── STEP 2 ────────── --}}
-        <div class="{{ $quizStepClass }}" data-step="2">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div class="lg:col-span-2">
-                    <div class="{{ $quizPanelClass }}">
-                        <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">What is the required storage temperature for the DNA Polymerase High Fidelity kit?</h2>
-                        <div class="mt-6 space-y-3" id="q2Options">
-                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(2, this)">
-                                <span class="{{ $quizOptionRadioClass }}">A</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Room Temperature</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(2, this)">
-                                <span class="{{ $quizOptionRadioClass }}">B</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">4°C</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(2, this)">
-                                <span class="{{ $quizOptionRadioClass }}">C</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">-20°C</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(2, this)">
-                                <span class="{{ $quizOptionRadioClass }}">D</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">-80°C</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ui-text-muted)] transition hover:text-[var(--ui-text)]" onclick="prevStep(1)">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
-                            Previous
-                        </button>
-                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(3)">
-                            Next Question
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="space-y-5">
-                    <div class="{{ $quizContextCardClass }}">
-                        <h3 class="flex items-center gap-2 text-base font-bold text-[var(--ui-text)]">
-                            <svg class="h-5 w-5 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
-                            Storage Best Practices
-                        </h3>
-                        <ul class="mt-4 space-y-4">
-                            <li>
-                                <p class="flex items-center gap-2 text-sm font-bold text-[var(--ui-text)]"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Enzymatic Stability</p>
-                                <p class="mt-1 text-sm leading-6 text-[var(--ui-text-muted)]">Most high-fidelity polymerases lose activity if exposed to repeated freeze-thaw cycles. Always use a cooling block during use.</p>
-                            </li>
-                            <li>
-                                <p class="flex items-center gap-2 text-sm font-bold text-[var(--ui-text)]"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> Reagent Segregation</p>
-                                <p class="mt-1 text-sm leading-6 text-[var(--ui-text-muted)]">Keep dNTPs and primers in separate aliquots to prevent cross-contamination during library preparation.</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="{{ $quizInsightCardClass }}">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
-                            <span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span>
-                            Clinical Insight
-                        </p>
-                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Storing at -20°C in a non-frost-free freezer is critical for maintaining long-term buffer molarity.</p>
-                    </div>
-                    <div class="{{ $quizRefCardClass }}">
-                        <h4 class="text-base font-bold text-[var(--ui-text)]">Reference Material</h4>
-                        <div class="mt-3 space-y-2">
-                            <div class="flex items-center justify-between rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 py-3">
-                                <span class="flex items-center gap-2 text-sm font-medium text-[var(--ui-text-muted)]">
-                                    <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                    Kit_Datasheet_V4.pdf
-                                </span>
-                                <svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            </div>
-                            <div class="flex items-center justify-between rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 py-3">
-                                <span class="flex items-center gap-2 text-sm font-medium text-[var(--ui-text-muted)]">
-                                    <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                    Storage_Protocol_Guide
-                                </span>
-                                <svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ────────── STEP 3 ────────── --}}
-        <div class="{{ $quizStepClass }}" data-step="3">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div class="lg:col-span-2">
-                    <div class="{{ $quizPanelClass }}">
-                        <div class="flex items-start gap-3">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">3</span>
-                            <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">Which certification standard governs IVD reagent manufacturing quality?</h2>
-                        </div>
-                        <div class="mt-6 space-y-3" id="q3Options">
-                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(3, this)">
-                                <span class="{{ $quizOptionRadioClass }}">A</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">ISO 9001:2015</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(3, this)">
-                                <span class="{{ $quizOptionRadioClass }}">B</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">ISO 13485:2016</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(3, this)">
-                                <span class="{{ $quizOptionRadioClass }}">C</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">CE-IVD Directive 98/79/EC</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(3, this)">
-                                <span class="{{ $quizOptionRadioClass }}">D</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">GMP Annex 15</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ui-text-muted)] transition hover:text-[var(--ui-text)]" onclick="prevStep(2)">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
-                            Previous
-                        </button>
-                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(4)">
-                            Next Question
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="space-y-5">
-                    <div class="{{ $quizTipCardClass }}">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
-                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
-                            Clinical Tip
-                        </p>
-                        <h3 class="mt-2 text-base font-bold text-primary-600">Regulatory Compliance</h3>
-                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">ISO 13485 is the primary quality management standard for medical devices and IVD products. It ensures traceability, risk management, and process validation throughout the product lifecycle.</p>
-                    </div>
-                    <div class="{{ $quizContextCardClass }}">
-                        <h4 class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Assessment Context</h4>
-                        <ul class="mt-3 space-y-3">
-                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
-                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>
-                                Module: Compliance Standards
-                            </li>
-                            <li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">
-                                <svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Difficulty: Advanced
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ────────── STEP 4 ────────── --}}
-        <div class="{{ $quizStepClass }}" data-step="4">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div class="lg:col-span-2">
-                    <div class="{{ $quizPanelClass }}">
-                        <div class="flex items-start gap-3">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">4</span>
-                            <h2 class="text-lg font-bold text-[var(--ui-text)] sm:text-xl">Which sample preparation method yields highest DNA purity for NGS workflows?</h2>
-                        </div>
-                        <div class="mt-6 space-y-3" id="q4Options">
-                            <div class="{{ $quizOptionClass }}" data-answer="A" onclick="selectOption(4, this)">
-                                <span class="{{ $quizOptionRadioClass }}">A</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Phenol-chloroform extraction</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="B" onclick="selectOption(4, this)">
-                                <span class="{{ $quizOptionRadioClass }}">B</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Magnetic bead-based purification</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="C" onclick="selectOption(4, this)">
-                                <span class="{{ $quizOptionRadioClass }}">C</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Silica membrane column</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                            <div class="{{ $quizOptionClass }}" data-answer="D" onclick="selectOption(4, this)">
-                                <span class="{{ $quizOptionRadioClass }}">D</span>
-                                <span class="text-sm font-semibold text-[var(--ui-text)]">Salting-out precipitation</span>
-                                <span class="{{ $quizOptionCheckClass }}"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex items-center justify-between">
-                        <button type="button" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ui-text-muted)] transition hover:text-[var(--ui-text)]" onclick="prevStep(3)">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
-                            Previous
-                        </button>
-                        <button type="button" class="{{ $quizPrimaryButtonClass }}" onclick="nextStep(5)">
-                            Finish Quiz
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="space-y-5">
-                    <div class="{{ $quizTipCardClass }}">
-                        <p class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-secondary-700">
-                            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-secondary-600"><svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg></span>
-                            Clinical Tip
-                        </p>
-                        <h3 class="mt-2 text-base font-bold text-primary-600">NGS Library Prep</h3>
-                        <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Magnetic bead-based purification provides the best combination of purity and automation compatibility for next-generation sequencing, with minimal carry-over contamination.</p>
-                    </div>
-                    <div class="relative overflow-hidden rounded-2xl min-h-[180px]">
-                        <img src="{{ asset('upload/corousel/image5.jpg') }}" alt="NGS sample preparation" class="absolute inset-0 h-full w-full object-cover" loading="lazy">
-                        <div class="{{ $quizImageOverlayClass }}"></div>
-                        <p class="absolute bottom-3 left-3 right-3 z-10 text-xs font-medium italic text-[var(--ui-surface)] opacity-90">Fig 4.1: NGS library preparation workflow.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ────────── STEP 5: LEAD CAPTURE FORM ────────── --}}
-        <div class="{{ $quizStepClass }}" data-step="5">
-            <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-                <div class="flex flex-col justify-center">
-                    <span class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-800">Final Step</span>
-                    <h2 class="font-display mt-4 text-3xl font-bold tracking-tight text-[var(--ui-text)] md:text-4xl lg:text-5xl">Assessment Complete -<br>Growth Opportunity Identified</h2>
-                    <p class="mt-4 max-w-md text-sm leading-relaxed text-[var(--ui-text-muted)] md:text-base">Your inputs help us align the right products, pricing structure, and support system for your setup. Our team uses this data to ensure faster onboarding, better recommendations, and long-term partnership value.</p>
-                    <div class="mt-6">
-                        <div class="flex items-center justify-between text-sm font-semibold text-[var(--ui-text)]">
-                            <span>Analysis Completion</span>
-                            <span>100%</span>
-                        </div>
-                        <div class="{{ $quizProgressTrackClass }} mt-2">
-                            <div class="{{ $quizProgressFillClass }} w-full"></div>
-                        </div>
-                    </div>
-                    <div class="mt-8 rounded-2xl bg-primary-50 p-6 border border-primary-100">
-                        <h4 class="text-sm font-bold text-primary-900">Based on your inputs, we’ve identified the right product pathways and pricing opportunities for your profile.</h4>
-                        <p class="mt-2 text-xs font-semibold text-primary-700">You now qualify for:</p>
-                        <ul class="mt-4 space-y-3">
-                            <li class="flex items-center gap-3 text-xs font-medium text-primary-800">
-                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                Priority access to relevant product categories
-                            </li>
-                            <li class="flex items-center gap-3 text-xs font-medium text-primary-800">
-                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                Preferential pricing aligned with your scale
-                            </li>
-                            <li class="flex items-center gap-3 text-xs font-medium text-primary-800">
-                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                Direct support from the Biogenix team
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <div class="{{ $quizPanelClass }}">
-                        <div class="{{ $quizProgressTrackClass }} mb-6">
-                            <div class="h-full w-full rounded-full bg-secondary-600"></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">First Name</label>
-                                <input type="text" id="quizFirstName" class="{{ $quizFieldClass }}" placeholder="John">
-                            </div>
-                            <div>
-                                <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Last Name</label>
-                                <input type="text" id="quizLastName" class="{{ $quizFieldClass }}" placeholder="Doe">
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--ui-text-muted)]">Email Address</label>
-                            <input type="email" id="quizEmail" class="{{ $quizFieldClass }}" placeholder="john.doe@medical-cloud.com">
-                        </div>
-                        <button type="button" id="quizSubmitButton" class="{{ $quizSubmitButtonClass }}" onclick="showResults()">
-                            Unlock My Score & Reward
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-                        </button>
-                        <p class="mt-3 flex items-center justify-center gap-1.5 text-xs text-[var(--color-neutral-500)]">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                            Secure submission via Biogenix Clinical Gateway
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ────────── STEP 6: RESULTS ────────── --}}
-        <div class="{{ $quizStepClass }}" data-step="6">
-            <div class="mb-6">
-                <span class="inline-flex rounded-full bg-primary-500 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">Assessment Complete</span>
-                <div class="mt-3 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div class="relative z-10 h-full flex flex-col justify-between">
                     <div>
-                        <h2 class="font-display text-2xl font-bold tracking-tight text-[var(--ui-text)] md:text-3xl lg:text-4xl xl:whitespace-nowrap" id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
-                        <p class="mt-3 max-w-md text-[13px] leading-6 text-[var(--ui-text-muted)] md:text-sm" id="quizResultDescription">Your technical precision in diagnostic protocols demonstrates exceptional mastery of Biogenix standards and laboratory compliance.</p>
+                        <p class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 mb-4 shadow-sm"
+                            id="leftStepCounter">STEP 01 OF 04</p>
+                        <h1 class="font-display text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.15] text-primary-900 tracking-tight transition-all duration-300"
+                            id="leftStepTitle">
+                            Let's Understand<br>Your Setup
+                        </h1>
                     </div>
-                    <div class="flex items-center justify-center lg:items-start lg:justify-end lg:-mt-2">
-                        <div class="{{ $quizScoreRingClass }}">
-                            <svg viewBox="0 0 200 200" class="h-full w-full">
-                                <circle class="stroke-[var(--ui-border)]" cx="100" cy="100" r="85" fill="none" stroke-width="10"/>
-                                <circle class="stroke-primary-600 transition-[stroke-dashoffset] duration-[1200ms] ease-in-out" id="scoreRingFill" cx="100" cy="100" r="85" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="534" stroke-dashoffset="534" transform="rotate(-90 100 100)"/>
-                            </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                <span class="font-display text-4xl font-bold text-[var(--ui-text)]" id="scoreValue">0%</span>
-                                <span class="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--ui-text-muted)]">Precision Score</span>
-                            </div>
-                        </div>
+
+                    <div class="hidden md:block">
+                        {{-- Decorative element if needed --}}
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <div class="{{ $quizPanelClass }}">
-                    <h3 class="flex items-center gap-2 text-base font-bold text-[var(--ui-text)]">
-                        <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        Profile Insight Summary
-                    </h3>
-                    <div class="mt-8 space-y-6">
-                        {{-- 1. Diagnostic Fit --}}
-                        <div class="rounded-xl border border-primary-100 bg-primary-50/20 p-4 transition-all hover:bg-primary-50/40">
-                            <p class="text-sm font-bold text-primary-900">1. Diagnostic Fit</p>
-                            <p class="mt-1 text-xs leading-relaxed text-primary-700/80">How well your current setup aligns with scalable diagnostic workflows</p>
-                            <div class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-primary-700 shadow-sm outline outline-1 outline-primary-200">
-                                <span class="h-1.5 w-1.5 rounded-full bg-secondary-500 animate-pulse"></span>
-                                <span id="insightOutcome1">Analyzing Fit...</span>
+            {{-- RIGHT CONTENT PANEL --}}
+            <div class="flex-1 flex flex-col p-6 md:p-12 xl:p-20 overflow-y-auto">
+
+                <div id="quizFormArea" class="max-w-4xl w-full mx-auto">
+
+                    {{-- HEADER ROW (Per image) --}}
+                    <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-12 mb-10 md:mb-14">
+                        <div class="lg:w-1/3">
+                            <h3 class="font-display text-lg font-bold text-primary-900 leading-tight">
+                                Personalized<br>Diagnostic<br>Pathways
+                            </h3>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <p class="text-[13px] md:text-sm text-primary-800/60 leading-relaxed max-w-lg">
+                                Different roles demand different diagnostic strategies. Whether you are delivering care,
+                                managing operations, or driving distribution, aligning products with your workflow is the
+                                first step toward efficiency and growth.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- STEPS CONTAINER --}}
+                    <div id="quizStepsWrapper">
+
+                        {{-- STEP 01 (Image content hardcoded as first step) --}}
+                        <div class="quiz-step active" data-step="1">
+                            <section>
+                                <p
+                                    class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 mb-4 shadow-sm">
+                                    QUESTION - 0</p>
+                                <h2 class="font-display text-xl md:text-2xl font-bold text-primary-900 mb-6 max-w-2xl">
+                                    Which of the following best describes you?
+                                </h2>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
+                                    <!-- Card 1 -->
+                                    <div class="quiz-option p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group flex flex-col justify-between min-h-[100px]"
+                                        onclick="handleSelection(1, 'doctor', this)">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="icon-box w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-primary-700 transition-all">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                    stroke-width="1.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4
+                                                    class="option-title font-semibold text-sm text-primary-900 leading-tight mb-0.5">
+                                                    Doctor / Clinic Owner</h4>
+                                                <p class="option-desc text-[11px] text-primary-800/50 font-medium">Focus on
+                                                    patient care and history</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#fde047] items-center justify-center text-primary-900">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="3.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 2 -->
+                                    <div class="quiz-option p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group flex flex-col justify-between min-h-[100px]"
+                                        onclick="handleSelection(1, 'lab', this)">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="icon-box w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-primary-700 transition-all">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                    stroke-width="1.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4
+                                                    class="option-title font-semibold text-sm text-primary-900 leading-tight mb-0.5">
+                                                    Laboratory / Hospital</h4>
+                                                <p class="option-desc text-[11px] text-primary-800/50 font-medium">
+                                                    High-volume sample processing</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#fde047] items-center justify-center text-primary-900">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="3.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 3 (Dealer - Selected in Image) -->
+                                    <div class="quiz-option p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group flex flex-col justify-between min-h-[100px]"
+                                        onclick="handleSelection(1, 'dealer', this)">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="icon-box w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-primary-700 transition-all">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                    stroke-width="1.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4
+                                                    class="option-title font-semibold text-sm text-primary-900 leading-tight mb-0.5">
+                                                    Dealer / Distributor</h4>
+                                                <p class="option-desc text-[11px] text-primary-800/50 font-medium">Inventory
+                                                    and logistics flow</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#fde047] items-center justify-center text-primary-900">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="3.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 4 -->
+                                    <div class="quiz-option p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group flex flex-col justify-between min-h-[100px]"
+                                        onclick="handleSelection(1, 'other', this)">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="icon-box w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm text-primary-700 transition-all">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                    stroke-width="1.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4
+                                                    class="option-title font-semibold text-sm text-primary-900 leading-tight mb-0.5">
+                                                    Other</h4>
+                                                <p class="option-desc text-[11px] text-primary-800/50 font-medium">Custom
+                                                    workflow definition</p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#fde047] items-center justify-center text-primary-900">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="3.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="otherField" class="mb-10">
+                                    <label class="block text-xs font-bold text-primary-800/60 mb-2 ml-1">Please specify your
+                                        role or organization type</label>
+                                    <input type="text"
+                                        class="w-full h-12 rounded-[var(--ui-radius-field)] border-none bg-primary-50/30 px-5 text-sm font-medium text-slate-900 ring-1 ring-slate-100 outline-none transition focus:ring-2 focus:ring-primary-600 focus:bg-white"
+                                        placeholder="Enter details here...">
+                                </div>
+
+                                <div class="flex items-center justify-between mt-10">
+                                    <button
+                                        class="flex items-center gap-2 text-slate-400 font-bold text-sm tracking-wide transition hover:text-slate-800"
+                                        onclick="prevStep()">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                        </svg>
+                                        Back
+                                    </button>
+                                    <button
+                                        class="btn-quiz-primary px-7 py-3.5 rounded-[var(--ui-radius-button)] text-white font-semibold text-sm tracking-tight flex items-center gap-2.5 shadow-lg"
+                                        onclick="nextStep(2)">
+                                        Continue to Step 02
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </section>
+                        </div>
+
+                        {{-- DYNAMIC STEP 2 (B2C) - Two-column layout per reference --}}
+                        <div id="dynamicSteps">
+                            <!-- B2C Layout -->
+                            <div class="quiz-step" data-step="2-b2c" style="display: none;">
+                                <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa] md:min-h-[85vh]">
+                                    <div class="max-w-[950px] w-[85%] mx-auto">
+                                        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                                            <div class="flex-1 flex flex-col">
+                                                <div class="mb-6">
+                                                    <span
+                                                        class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm">
+                                                        STEP 2 OF 4
+                                                    </span>
+                                                </div>
+                                                <h2
+                                                    class="font-display text-2xl md:text-3xl font-bold text-primary-900 leading-[1.15] tracking-tight mb-8">
+                                                    Tell Us About Your<br>Practice</h2>
+                                                <div class="mb-8">
+                                                    <div class="w-full h-[3px] bg-slate-200 rounded-full overflow-hidden">
+                                                        <div class="h-full w-[40%] bg-primary-600 rounded-full"></div>
+                                                    </div>
+                                                </div>
+                                                <h3
+                                                    class="font-display text-xl md:text-2xl font-bold text-primary-900 mb-6">
+                                                    What best defines your area of practice?</h3>
+                                                <div class="grid grid-cols-2 gap-3 md:gap-4 mb-6">
+                                                    <div class="quiz-option flex items-center gap-3 p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group transition hover:border-primary-200 hover:shadow-sm"
+                                                        onclick="handleSelection(2, 'general_physician', this)">
+                                                        <div
+                                                            class="icon-box w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-700 flex-shrink-0">
+                                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="1.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" />
+                                                            </svg>
+                                                        </div>
+                                                        <span
+                                                            class="option-title font-semibold text-sm text-primary-900">General
+                                                            Physician</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="3.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="quiz-option flex items-center gap-3 p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group transition hover:border-primary-200 hover:shadow-sm"
+                                                        onclick="handleSelection(2, 'diabetologist', this)">
+                                                        <div
+                                                            class="icon-box w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-700 flex-shrink-0">
+                                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="1.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19h6" />
+                                                            </svg>
+                                                        </div>
+                                                        <span
+                                                            class="option-title font-semibold text-sm text-primary-900">Diabetologist</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="3.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="quiz-option flex items-center gap-3 p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group transition hover:border-primary-200 hover:shadow-sm"
+                                                        onclick="handleSelection(2, 'cardiologist', this)">
+                                                        <div
+                                                            class="icon-box w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700 flex-shrink-0">
+                                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="1.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <span
+                                                            class="option-title font-semibold text-sm text-primary-900">Cardiologist</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="3.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div class="quiz-option flex items-center gap-3 p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group transition hover:border-primary-200 hover:shadow-sm"
+                                                        onclick="handleSelection(2, 'pathologist', this)">
+                                                        <div
+                                                            class="icon-box w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-700 flex-shrink-0">
+                                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="1.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                                            </svg>
+                                                        </div>
+                                                        <span
+                                                            class="option-title font-semibold text-sm text-primary-900">Pathologist</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="3.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="quiz-option flex items-center gap-3 mb-4 py-2 cursor-pointer group"
+                                                    onclick="handleSelection(2, 'other_spec', this)">
+                                                    <div
+                                                        class="w-5 h-5 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center flex-shrink-0 transition-colors group-[.selected]:border-primary-600">
+                                                        <div
+                                                            class="w-2.5 h-2.5 rounded-full bg-primary-600 scale-0 transition-transform group-[.selected]:scale-100">
+                                                        </div>
+                                                    </div>
+                                                    <span
+                                                        class="option-title font-semibold text-sm text-primary-900">Other</span>
+                                                </div>
+                                                <div class="mb-10"><input type="text"
+                                                        class="w-full h-12 rounded-[var(--ui-radius-field)] border-none bg-primary-50/30 px-5 text-sm font-medium text-slate-900 ring-1 ring-slate-100 outline-none transition focus:ring-2 focus:ring-primary-600 focus:bg-white"
+                                                        placeholder="Type your specialization"></div>
+                                                <div class="flex items-center justify-between mt-10">
+                                                    <button
+                                                        class="flex items-center gap-2 text-slate-400 font-bold text-sm tracking-wide transition hover:text-slate-800"
+                                                        onclick="prevStep(1)"><svg class="w-4 h-4" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                        </svg> Previous</button>
+                                                    <button
+                                                        class="btn-quiz-primary px-7 py-3.5 rounded-[var(--ui-radius-button)] text-white font-semibold text-sm tracking-tight flex items-center gap-2.5 shadow-lg"
+                                                        onclick="nextStep(3)">Continue <svg class="w-4 h-4" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                        </svg></button>
+                                                </div>
+                                            </div>
+                                            <div class="hidden lg:flex lg:w-[45%] flex-shrink-0">
+                                                <div
+                                                    class="relative w-full rounded-3xl overflow-hidden shadow-xl min-h-[500px]">
+                                                    <img src="{{ asset('upload/corousel/image3.jpg') }}"
+                                                        alt="Practice Diagnostics"
+                                                        class="absolute inset-0 w-full h-full object-cover">
+                                                    <div
+                                                        class="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/60 to-transparent">
+                                                    </div>
+                                                    <div class="absolute bottom-0 left-0 right-0 p-8">
+                                                        <h3 class="font-display text-xl font-bold text-white mb-3">
+                                                            Practice-Driven Diagnostics</h3>
+                                                        <p class="text-sm text-white/80 leading-relaxed">Each medical
+                                                            specialization has distinct diagnostic priorities. Choosing the
+                                                            right tests and kits aligned with your practice can improve
+                                                            patient outcomes while creating additional in-clinic value.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- B2B Layout -->
+                            <div class="quiz-step" data-step="2-b2b" style="display: none;">
+                                <div
+                                    class="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden min-h-[500px] border border-slate-100 bg-[#f4f6f5] md:min-h-[85vh]">
+                                    <div class="max-w-[950px] w-[85%] mx-auto py-12">
+                                        <!-- Subtle background image for the B2B step (relative to inner container or full-bleed) -->
+                                        <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="Background"
+                                            class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 grayscale blur-[1px]">
+
+                                        <div class="relative z-10 h-full flex flex-col justify-between">
+                                            <div class="mb-8">
+                                                <span
+                                                    class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm">
+                                                    STEP 2 OF 4
+                                                </span>
+                                            </div>
+
+                                            <!-- Header Area -->
+                                            <div class="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
+                                                <div class="md:w-[50%]">
+                                                    <h2
+                                                        class="font-display text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-primary-900 leading-[1.05] tracking-tight">
+                                                        Tell Us About Your<br>Business</h2>
+                                                </div>
+                                                <div class="md:w-[45%] md:text-right mt-2">
+                                                    <h3
+                                                        class="font-display text-lg md:text-xl font-bold text-primary-900 mb-3">
+                                                        Business Model Alignment</h3>
+                                                    <p
+                                                        class="text-sm text-primary-800/80 leading-relaxed md:ml-auto md:max-w-md font-medium">
+                                                        From distribution to procurement, every role in the supply chain
+                                                        requires a different product mix, pricing structure, and logistics
+                                                        strategy. Clarity here directly impacts margins and scalability.</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Content Area -->
+                                            <div class="mt-auto">
+                                                <h3
+                                                    class="font-display text-xl md:text-2xl font-bold text-primary-900 mb-6">
+                                                    What best defines your business role?</h3>
+
+                                                <div
+                                                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-8">
+                                                    <!-- Distributor -->
+                                                    <div class="quiz-option flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm cursor-pointer relative group transition hover:border-primary-200 hover:shadow-md [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                        onclick="handleSelection(2, 'distributor', this)">
+                                                        <div
+                                                            class="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-primary-800 flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                                            </svg>
+                                                        </div>
+                                                        <span
+                                                            class="font-bold text-primary-900 text-[15px]">Distributor</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="4">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Dealer / Trader -->
+                                                    <div class="quiz-option flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm cursor-pointer relative group transition hover:border-primary-200 hover:shadow-md [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                        onclick="handleSelection(2, 'dealer_trader', this)">
+                                                        <div
+                                                            class="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-primary-800 flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                                            </svg>
+                                                        </div>
+                                                        <span class="font-bold text-primary-900 text-[15px]">Dealer /
+                                                            Trader</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="4">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Diagnostic Laboratory -->
+                                                    <div class="quiz-option flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm cursor-pointer relative group transition hover:border-primary-200 hover:shadow-md [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                        onclick="handleSelection(2, 'diagnostic_lab', this)">
+                                                        <div
+                                                            class="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-primary-800 flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                                            </svg>
+                                                        </div>
+                                                        <span class="font-bold text-primary-900 text-[15px]">Diagnostic
+                                                            Laboratory</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="4">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Hospital Procurement -->
+                                                    <div class="quiz-option flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm cursor-pointer relative group transition hover:border-primary-200 hover:shadow-md [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                        onclick="handleSelection(2, 'hospital_procurement', this)">
+                                                        <div
+                                                            class="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-primary-800 flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                            </svg>
+                                                        </div>
+                                                        <span class="font-bold text-primary-900 text-[15px]">Hospital
+                                                            Procurement</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="4">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Wholesale Medical Supplier -->
+                                                    <div class="quiz-option flex items-center gap-4 p-5 rounded-2xl bg-white border border-slate-100 shadow-sm cursor-pointer relative group transition hover:border-primary-200 hover:shadow-md [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                        onclick="handleSelection(2, 'wholesale', this)">
+                                                        <div
+                                                            class="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-primary-800 flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="2">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                                            </svg>
+                                                        </div>
+                                                        <span class="font-bold text-primary-900 text-[15px]">Wholesale
+                                                            Medical Supplier</span>
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="4">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Other -->
+                                                    <div class="quiz-option flex flex-col justify-center p-4 rounded-2xl bg-white border border-slate-100 shadow-sm cursor-pointer relative group transition hover:border-primary-200 hover:shadow-md [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                        onclick="handleSelection(2, 'other_b2b', this)">
+                                                        <div class="flex items-center gap-4 mb-3">
+                                                            <div
+                                                                class="w-10 h-10 rounded-xl bg-primary-900 flex items-center justify-center text-white flex-shrink-0 shadow-inner group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="2">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                                                </svg>
+                                                            </div>
+                                                            <span
+                                                                class="font-bold text-primary-900 text-[15px]">Other</span>
+                                                        </div>
+                                                        <input type="text"
+                                                            class="w-full h-10 rounded-lg bg-[#efefef] border-none px-3 text-[13px] font-medium text-slate-800 outline-none transition focus:ring-2 focus:ring-secondary-600 focus:bg-white"
+                                                            placeholder="Specify your role..."
+                                                            onclick="event.stopPropagation()">
+                                                        <div
+                                                            class="check-mark hidden absolute right-4 top-6 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                            <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="4">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="flex justify-between items-center w-full mt-2">
+                                                    <button
+                                                        class="flex items-center gap-1.5 text-primary-900 bg-[#e2e8e5] px-6 py-2.5 rounded-lg font-bold text-[14px] tracking-wide transition hover:bg-[#d1ddd5]"
+                                                        onclick="prevStep(1)">
+                                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="2.5">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                        </svg> Back
+                                                    </button>
+                                                    <button
+                                                        class="bg-primary-900 text-white px-8 py-3.5 rounded-xl font-bold text-sm tracking-tight flex items-center gap-2 shadow-lg transition hover:bg-primary-800 ml-auto"
+                                                        onclick="nextStep(3)">
+                                                        Next <svg class="w-4 h-4 transform rotate-180" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Step 3 B2B Layout -->
+                            <div class="quiz-step" data-step="3-b2b" style="display: none;">
+                                <div
+                                    class="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden min-h-[500px] border border-slate-100 bg-[#f4f6f5] md:min-h-[85vh]">
+                                    <div class="max-w-[950px] w-[85%] mx-auto py-12">
+                                        <!-- Header / Progress Area -->
+                                        <div class="mb-12">
+                                            <div class="flex justify-between items-end mb-3">
+                                                <div>
+                                                    <span
+                                                        class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm mb-4">STEP
+                                                        03 OF 05</span>
+                                                    <h2
+                                                        class="font-display text-2xl md:text-3xl font-bold text-primary-900 tracking-tight">
+                                                        Business Scale</h2>
+                                                </div>
+                                                <div class="text-[13px] font-bold text-primary-800/80">60% Complete</div>
+                                            </div>
+                                            <!-- Progress bar -->
+                                            <div class="w-full h-2.5 bg-[#e2e8e5] rounded-full overflow-hidden">
+                                                <div class="h-full w-[60%] bg-primary-900 rounded-full"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Content Area -->
+                                        <div class="flex flex-col md:flex-row gap-8 lg:gap-20">
+                                            <!-- Left Info -->
+                                            <div class="md:w-[40%] md:pt-4">
+                                                <h3
+                                                    class="font-display text-3xl md:text-4xl font-bold text-primary-900 leading-[1.15] tracking-tight mb-5">
+                                                    Volume-Based<br>Optimization</h3>
+                                                <p class="text-[15px] text-primary-800/80 leading-relaxed font-medium">As
+                                                    your monthly volume increases, procurement strategy becomes critical.
+                                                    Bulk alignment, pricing tiers, and supply consistency can significantly
+                                                    improve operational profitability.</p>
+                                            </div>
+
+                                            <!-- Right Card -->
+                                            <div class="md:w-[60%]">
+                                                <div
+                                                    class="bg-white rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-xl shadow-primary-900/5 border border-slate-100">
+                                                    <h3
+                                                        class="font-display text-xl font-bold text-primary-900 mb-8 tracking-tight">
+                                                        What is your approximate monthly business volume?</h3>
+
+                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-10">
+                                                        <!-- TIER 1 -->
+                                                        <div class="quiz-option p-5 rounded-2xl border-2 border-transparent bg-primary-50/50 cursor-pointer relative transition hover:border-primary-200 shadow-sm [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                            onclick="handleSelection(3, 'tier1', this)">
+                                                            <p
+                                                                class="text-[11px] font-bold tracking-[0.1em] text-primary-800/60 mb-2 uppercase">
+                                                                TIER 1</p>
+                                                            <h4
+                                                                class="text-xl font-bold text-primary-900 mb-3 tracking-tight">
+                                                                ₹50K - ₹2L</h4>
+                                                            <p
+                                                                class="text-[13px] font-medium text-primary-800/70 flex items-center gap-1.5">
+                                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="2.5">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                                </svg> Standard Procurement
+                                                            </p>
+                                                            <div
+                                                                class="check-mark hidden absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                                <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="4">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- TIER 2 -->
+                                                        <div class="quiz-option p-5 rounded-2xl border-2 border-transparent bg-primary-50/50 cursor-pointer relative transition hover:border-primary-200 shadow-sm [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                            onclick="handleSelection(3, 'tier2', this)">
+                                                            <p
+                                                                class="text-[11px] font-bold tracking-[0.1em] text-primary-800/60 mb-2 uppercase">
+                                                                TIER 2</p>
+                                                            <h4
+                                                                class="text-xl font-bold text-primary-900 mb-3 tracking-tight">
+                                                                ₹2L - ₹5L</h4>
+                                                            <p
+                                                                class="text-[13px] font-medium text-primary-800/70 flex items-center gap-1.5">
+                                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="2.5">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                                </svg> Managed Supply
+                                                            </p>
+                                                            <div
+                                                                class="check-mark hidden absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                                <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="4">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- TIER 3 -->
+                                                        <div class="quiz-option p-5 rounded-2xl border-2 border-transparent bg-primary-50/50 cursor-pointer relative transition hover:border-primary-200 shadow-sm [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                            onclick="handleSelection(3, 'tier3', this)">
+                                                            <p
+                                                                class="text-[11px] font-bold tracking-[0.1em] text-primary-800/60 mb-2 uppercase">
+                                                                TIER 3</p>
+                                                            <h4
+                                                                class="text-xl font-bold text-primary-900 mb-3 tracking-tight">
+                                                                ₹5L - ₹10L</h4>
+                                                            <p
+                                                                class="text-[13px] font-medium text-primary-800/70 flex items-center gap-1.5">
+                                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="2.5">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                                </svg> Volume Optimized
+                                                            </p>
+                                                            <div
+                                                                class="check-mark hidden absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                                <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="4">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- TIER 4 -->
+                                                        <div class="quiz-option p-5 rounded-2xl border-2 border-transparent bg-primary-50/50 cursor-pointer relative transition hover:border-primary-200 shadow-sm [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600"
+                                                            onclick="handleSelection(3, 'tier4', this)">
+                                                            <p
+                                                                class="text-[11px] font-bold tracking-[0.1em] text-primary-800/60 mb-2 uppercase">
+                                                                TIER 4</p>
+                                                            <h4
+                                                                class="text-xl font-bold text-primary-900 mb-3 tracking-tight">
+                                                                ₹10L+</h4>
+                                                            <p
+                                                                class="text-[13px] font-medium text-primary-800/70 flex items-center gap-1.5">
+                                                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="2.5">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                                </svg> Enterprise Scale
+                                                            </p>
+                                                            <div
+                                                                class="check-mark hidden absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                                <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor" stroke-width="4">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex justify-between items-center w-full">
+                                                        <button
+                                                            class="flex items-center gap-1.5 text-primary-900 bg-[#e2e8e5] px-6 py-2.5 rounded-lg font-bold text-[14px] tracking-wide transition hover:bg-[#d1ddd5]"
+                                                            onclick="prevStep(2)">
+                                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor" stroke-width="2.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                            </svg> Back
+                                                        </button>
+                                                        <button
+                                                            class="bg-primary-900 text-white px-8 py-3.5 rounded-xl font-bold text-[15px] tracking-tight flex items-center gap-2 shadow-lg transition hover:bg-primary-800 ml-auto"
+                                                            onclick="nextStep(4)">
+                                                            Next <svg class="w-4 h-4 transform rotate-180" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor"
+                                                                stroke-width="2.5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 B2C Layout -->
+                            <div class="quiz-step" data-step="3-b2c" style="display: none;">
+                                <div class="relative w-full min-h-[500px] bg-[#f0f4f2] md:min-h-[85vh]">
+                                    <div class="max-w-[950px] w-[85%] mx-auto py-12">
+                                        <!-- Top Header part -->
+                                        <div class="flex flex-col md:flex-row justify-between mb-16 items-start gap-12">
+                                            <div class="md:w-1/3">
+                                                <h3
+                                                    class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm mb-4">
+                                                    SETUP ANALYSIS</h3>
+                                                <div class="w-12 h-[3px] bg-primary-900 rounded-full"></div>
+                                            </div>
+                                            <div class="md:w-2/3 md:text-right">
+                                                <h2
+                                                    class="font-display text-4xl md:text-5xl font-bold text-primary-900 leading-[1.05] mb-5 tracking-tight">
+                                                    In-House vs Outsourced<br>Diagnostics</h2>
+                                                <p
+                                                    class="text-[16px] font-medium text-primary-800/80 leading-relaxed md:ml-auto">
+                                                    Moving from external dependency to in-house diagnostics can unlock
+                                                    better control, faster reporting, and additional revenue streams—if
+                                                    supported by the right product ecosystem.</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- White Card part -->
+                                        <div
+                                            class="bg-white rounded-2xl md:rounded-3xl shadow-xl shadow-primary-900/5 border border-slate-100 p-8 md:p-12 lg:p-16 relative z-10">
+                                            <!-- Progress Row -->
+                                            <div class="flex justify-between items-end mb-3">
+                                                <h4
+                                                    class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm">
+                                                    STEP 3 OF 4</h4>
+                                                <span class="text-[12px] font-bold text-primary-900">Step 3 of 4</span>
+                                            </div>
+                                            <div class="w-full h-[3px] bg-slate-100 rounded-full mb-12">
+                                                <div class="h-full w-[60%] bg-primary-900 rounded-full"></div>
+                                            </div>
+
+                                            <!-- Question -->
+                                            <div class="text-center mb-10">
+                                                <h2
+                                                    class="font-display text-3xl md:text-[2.1rem] font-bold text-primary-900 mb-3 tracking-tight">
+                                                    How do you currently manage diagnostics?</h2>
+                                                <p class="text-[15px] font-medium text-primary-800/70 italic">Select the
+                                                    primary model for your clinical facility</p>
+                                            </div>
+
+                                            <!-- Options Stack -->
+                                            <div class="flex flex-col gap-4 md:gap-5 mb-14 max-w-2xl mx-auto">
+                                                <!-- Option 1 -->
+                                                <div class="quiz-option flex items-center gap-5 p-5 md:p-6 rounded-2xl bg-[#f8faf9] border border-transparent cursor-pointer transition hover:bg-primary-50/50 hover:border-primary-100 shadow-sm [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                                    onclick="handleSelection(3, 'external_labs', this)">
+                                                    <div
+                                                        class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary-900 shadow-sm flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        </svg>
+                                                    </div>
+                                                    <span class="font-semibold text-[16px] text-primary-900">Fully dependent
+                                                        on external labs</span>
+                                                    <div
+                                                        class="check-mark hidden ml-auto w-7 h-7 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                        <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="4">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Option 2 -->
+                                                <div class="quiz-option flex items-center gap-5 p-5 md:p-6 rounded-2xl bg-[#f8faf9] border border-transparent cursor-pointer transition hover:bg-primary-50/50 hover:border-primary-100 shadow-sm [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                                    onclick="handleSelection(3, 'hybrid', this)">
+                                                    <div
+                                                        class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary-900 shadow-sm flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                                        </svg>
+                                                    </div>
+                                                    <span class="font-semibold text-[16px] text-primary-900">Partially
+                                                        in-house, partially outsourced</span>
+                                                    <div
+                                                        class="check-mark hidden ml-auto w-7 h-7 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                        <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="4">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Option 3 -->
+                                                <div class="quiz-option flex items-center gap-5 p-5 md:p-6 rounded-2xl bg-[#f8faf9] border border-transparent cursor-pointer transition hover:bg-primary-50/50 hover:border-primary-100 shadow-sm [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                                    onclick="handleSelection(3, 'in_house', this)">
+                                                    <div
+                                                        class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary-900 shadow-sm flex-shrink-0 group-[.selected]:bg-secondary-600 group-[.selected]:text-primary-900 transition-colors">
+                                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                                        </svg>
+                                                    </div>
+                                                    <span class="font-semibold text-[16px] text-primary-900">Fully in-house
+                                                        setup</span>
+                                                    <div
+                                                        class="check-mark hidden ml-auto w-7 h-7 rounded-full bg-secondary-600 items-center justify-center text-primary-900">
+                                                        <svg class="w-4 h-4 ml-0.5" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="4">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div
+                                                class="flex justify-between items-center w-full max-w-2xl mx-auto border-t border-slate-100 pt-8">
+                                                <button
+                                                    class="flex items-center gap-1.5 text-primary-900 bg-[#e2e8e5] px-6 py-2.5 rounded-lg font-bold text-[14px] tracking-wide transition hover:bg-[#d1ddd5]"
+                                                    onclick="prevStep(2)">
+                                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                        stroke="currentColor" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                    </svg> Back
+                                                </button>
+                                                <button
+                                                    class="bg-primary-900 text-white px-8 py-3.5 rounded-xl font-bold text-[15px] tracking-tight flex items-center gap-2 shadow-lg transition hover:bg-primary-800 ml-auto"
+                                                    onclick="nextStep(4)">
+                                                    Next <svg class="w-4 h-4 transform rotate-180" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {{-- 2. Procurement Efficiency --}}
-                        <div class="rounded-xl border border-blue-100 bg-blue-50/20 p-4 transition-all hover:bg-blue-50/40">
-                            <p class="text-sm font-bold text-blue-900">2. Procurement Efficiency</p>
-                            <p class="mt-1 text-xs leading-relaxed text-blue-700/80">How optimized your sourcing and pricing strategy currently is</p>
-                            <div class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 shadow-sm outline outline-1 outline-blue-200">
-                                <span class="h-1.5 w-1.5 rounded-full bg-blue-500 items-center justify-center"></span>
-                                <span id="insightOutcome2">Calculating Efficiency...</span>
+                        <!-- Step 4-b2b Container -->
+                        <div class="quiz-step" data-step="4-b2b" style="display: none;">
+                            <div class="relative w-full min-h-[400px] p-6 md:p-8 lg:p-10 bg-[#fafefc] md:min-h-[85vh]">
+
+                                <!-- Header Section -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                                    <div>
+                                        <span
+                                            class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm mb-4">STEP
+                                            4 OF 5</span>
+                                        <h2
+                                            class="font-display text-4xl md:text-[44px] font-bold text-primary-900 tracking-tight leading-[1.05]">
+                                            Product Focus Areas</h2>
+                                    </div>
+                                    <div class="md:w-1/2 md:text-right">
+                                        <h3 class="text-xl md:text-[18px] font-bold text-primary-900 mb-1.5">Portfolio
+                                            Strength</h3>
+                                        <p
+                                            class="text-[14px] md:text-[14px] font-medium text-primary-800/70 leading-relaxed md:ml-auto max-w-[320px]">
+                                            A well-balanced product portfolio across key diagnostic categories ensures
+                                            operational resilience and clinical breadth.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Main Card Section -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto bg-[#f4f7f6] rounded-[2rem] border border-slate-100 p-8 md:p-10 lg:p-12 relative z-10">
+
+                                    <!-- Question Badge & Title -->
+                                    <div class="flex items-center gap-4 mb-5">
+                                        <div
+                                            class="w-7 h-7 rounded-full bg-secondary-600 text-primary-900 flex items-center justify-center text-[11px] font-bold shadow-sm">
+                                            4</div>
+                                        <span
+                                            class="text-[12px] font-bold uppercase tracking-[0.1em] text-primary-900">Question
+                                            4</span>
+                                    </div>
+
+                                    <h3
+                                        class="font-display text-2xl md:text-[28px] font-bold text-primary-900 mb-8 tracking-tight">
+                                        Which product categories are you currently dealing in or exploring?</h3>
+
+                                    <!-- Options Grid (Multi-Select) -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-10">
+                                        <!-- Option 1 -->
+                                        <div class="flex flex-col justify-between h-[110px] p-5 rounded-2xl bg-white border border-transparent cursor-pointer transition hover:border-secondary-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600">
+                                                <svg class="w-3.5 h-3.5 text-primary-900 opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span class="font-bold text-[15px] text-primary-900">Rapid Test Kits</span>
+                                        </div>
+
+                                        <!-- Option 2 -->
+                                        <div class="flex flex-col justify-between h-[110px] p-5 rounded-2xl bg-white border border-transparent cursor-pointer transition hover:border-secondary-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600">
+                                                <svg class="w-3.5 h-3.5 text-primary-900 opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span class="font-bold text-[15px] text-primary-900">ELISA</span>
+                                        </div>
+
+                                        <!-- Option 3 -->
+                                        <div class="flex flex-col justify-between h-[110px] p-5 rounded-2xl bg-white border border-transparent cursor-pointer transition hover:border-secondary-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600">
+                                                <svg class="w-3.5 h-3.5 text-primary-900 opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span class="font-bold text-[15px] text-primary-900">Biochemistry</span>
+                                        </div>
+
+                                        <!-- Option 4 -->
+                                        <div class="flex flex-col justify-between h-[110px] p-5 rounded-2xl bg-white border border-transparent cursor-pointer transition hover:border-secondary-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600">
+                                                <svg class="w-3.5 h-3.5 text-primary-900 opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span class="font-bold text-[15px] text-primary-900">Molecular
+                                                Diagnostics</span>
+                                        </div>
+
+                                        <!-- Option 5 -->
+                                        <div class="flex flex-col justify-between h-[110px] p-5 rounded-2xl bg-white border border-transparent cursor-pointer transition hover:border-secondary-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600">
+                                                <svg class="w-3.5 h-3.5 text-primary-900 opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span class="font-bold text-[15px] text-primary-900">Instruments</span>
+                                        </div>
+
+                                        <!-- Option 6 -->
+                                        <div class="flex flex-col justify-between h-[110px] p-5 rounded-2xl bg-white border border-transparent cursor-pointer transition hover:border-secondary-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] [&.selected]:ring-1 [&.selected]:ring-secondary-600 group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600">
+                                                <svg class="w-3.5 h-3.5 text-primary-900 opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <span class="font-bold text-[15px] text-primary-900">Consumables</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Other Specify Input -->
+                                    <div class="mb-10">
+                                        <label class="block font-bold text-[14px] text-primary-900 mb-2.5">Other
+                                            (Specify)</label>
+                                        <input type="text" placeholder="Specify any specialized diagnostic niche..."
+                                            class="w-full xl:w-[70%] bg-[#e5e9e7] border border-transparent rounded-xl px-5 py-3.5 focus:ring-2 focus:ring-primary-900 focus:border-primary-900/20 outline-none text-primary-900 font-bold text-[14px] placeholder-primary-800/50 transition-shadow">
+                                    </div>
+
+                                    <!-- Pagination -->
+                                    <div class="flex justify-between items-center w-full pt-2">
+                                        <button
+                                            class="flex items-center gap-1.5 text-primary-900 bg-[#e2e8e5] px-6 py-2.5 rounded-lg font-bold text-[14px] tracking-wide transition hover:bg-[#d1ddd5]"
+                                            onclick="prevStep(3)">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                            </svg> Back
+                                        </button>
+                                        <button
+                                            class="bg-primary-900 text-white px-7 py-3 rounded-xl font-bold text-[14px] tracking-tight flex items-center gap-2 shadow-lg transition hover:bg-primary-800 ml-auto"
+                                            onclick="nextStep(5)">
+                                            Next <svg class="w-3.5 h-3.5 transform rotate-180" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
 
-                        {{-- 3. Product Strategy Alignment --}}
-                        <div class="rounded-xl border border-secondary-200 bg-secondary-100/30 p-4 transition-all hover:bg-secondary-100/50">
-                            <p class="text-sm font-bold text-secondary-900">3. Product Strategy Alignment</p>
-                            <p class="mt-1 text-xs leading-relaxed text-secondary-800/80">How well your current focus matches high-demand diagnostic categories</p>
-                            <div class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-secondary-700 shadow-sm outline outline-1 outline-secondary-300">
-                                <span class="h-1.5 w-1.5 rounded-full bg-secondary-600"></span>
-                                <span id="insightOutcome3">Mapping Alignment...</span>
+                        <!-- Common Layout for B2C Step 4 & B2B Step 5 -->
+                        <div class="quiz-step" data-step="5-common" style="display: none;">
+                            <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa] md:min-h-[85vh]">
+
+                                <!-- Header Section -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto mb-10 flex flex-col md:flex-row justify-between items-start gap-8">
+                                    <div class="md:w-[55%]">
+                                        <span
+                                            class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm mb-4">PHASE
+                                            05</span>
+                                        <h2
+                                            class="font-display text-4xl md:text-[45px] font-bold text-primary-900 tracking-tight leading-[1.05] mb-5">
+                                            Identify Your Business<br>Growth Levers</h2>
+                                    </div>
+                                    <div class="md:w-[40%] bg-[#f4f2ef] rounded-2xl p-6 md:p-8">
+                                        <h3 class="text-[11px] font-bold uppercase tracking-widest text-[#4d5c52] mb-3">
+                                            Strategic Growth Focus</h3>
+                                        <p class="text-[13px] md:text-[14px] font-medium text-primary-800/80 leading-loose">
+                                            Improving pricing, supply reliability, or expanding your offerings are not
+                                            isolated decisions. The right combination of these factors creates long-term
+                                            operational advantage in diagnostics.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Main Card Section -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative z-10">
+
+                                    <!-- Header / Progress Area -->
+                                    <div class="mb-10">
+                                        <div class="flex justify-between items-end mb-3">
+                                            <span
+                                                class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm">STEP
+                                                05 OF 05</span>
+                                            <span class="text-[12px] font-bold text-primary-900">Step 5 of 5</span>
+                                        </div>
+                                        <div class="w-full h-2 bg-[#f0f4f2] rounded-full overflow-hidden">
+                                            <div class="h-full w-[90%] bg-primary-900 rounded-full"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Question Badge & Title -->
+                                    <div class="flex items-center gap-4 mb-2">
+                                        <div
+                                            class="w-7 h-7 rounded-full bg-secondary-600 text-primary-900 flex items-center justify-center text-[11px] font-bold shadow-sm flex-shrink-0">
+                                            5</div>
+                                        <h3 class="text-[19px] md:text-[21px] font-bold text-primary-900 tracking-tight">
+                                            Select your primary focus areas:</h3>
+                                    </div>
+                                    <p class="text-[14px] font-medium text-slate-500 mb-8 ml-12 italic">Multi-select
+                                        available. Choose all that apply to your current roadmap.</p>
+
+                                    <!-- Options Grid (Multi-Select) -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10 lg:px-6">
+                                        <!-- Option 1 -->
+                                        <div class="flex items-center justify-between h-[95px] px-6 rounded-[14px] bg-white border-2 border-transparent cursor-pointer transition shadow-sm hover:border-secondary-300 [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-[16px] text-primary-900 mb-1">Better pricing
+                                                    margins</span>
+                                                <span class="text-[12.5px] text-slate-500 font-medium">Optimize procurement
+                                                    and revenue cycle</span>
+                                            </div>
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600 ml-4 flex-shrink-0">
+                                                <svg class="w-3.5 h-3.5 text-white opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <!-- Option 2 -->
+                                        <div class="flex items-center justify-between h-[95px] px-6 rounded-[14px] bg-[#eef1ef] border-2 border-transparent cursor-pointer transition hover:border-secondary-300 [&.selected]:border-secondary-600 [&.selected]:bg-white group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-[16px] text-primary-900 mb-1">Reliable and
+                                                    consistent supply</span>
+                                                <span class="text-[12.5px] text-slate-500 font-medium">Ensure laboratory
+                                                    uptime and material access</span>
+                                            </div>
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-white bg-white flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600 ml-4 flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.1)] group-[.selected]:shadow-none">
+                                                <svg class="w-3.5 h-3.5 text-white opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <!-- Option 3 -->
+                                        <div class="flex items-center justify-between h-[95px] px-6 rounded-[14px] bg-[#eef1ef] border-2 border-transparent cursor-pointer transition hover:border-secondary-300 [&.selected]:border-secondary-600 [&.selected]:bg-white group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-[16px] text-primary-900 mb-1">Expanding product
+                                                    portfolio</span>
+                                                <span class="text-[12.5px] text-slate-500 font-medium">Introduce new
+                                                    diagnostic capabilities</span>
+                                            </div>
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-white bg-white flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600 ml-4 flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.1)] group-[.selected]:shadow-none">
+                                                <svg class="w-3.5 h-3.5 text-white opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <!-- Option 4 -->
+                                        <div class="flex items-center justify-between h-[95px] px-6 rounded-[14px] bg-white border-2 border-transparent cursor-pointer transition shadow-sm hover:border-secondary-300 [&.selected]:border-secondary-600 [&.selected]:bg-[#fffdf5] group"
+                                            onclick="this.classList.toggle('selected')">
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-[16px] text-primary-900 mb-1">Technical guidance
+                                                    and support</span>
+                                                <span class="text-[12.5px] text-slate-500 font-medium">Direct access to
+                                                    clinical specialist insights</span>
+                                            </div>
+                                            <div
+                                                class="w-5 h-5 rounded-[4px] border-2 border-slate-200 flex items-center justify-center transition-colors group-[.selected]:bg-secondary-600 group-[.selected]:border-secondary-600 ml-4 flex-shrink-0">
+                                                <svg class="w-3.5 h-3.5 text-white opacity-0 group-[.selected]:opacity-100 transition-opacity"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pagination -->
+                                    <div class="flex justify-between items-center w-full mt-6 pt-8">
+                                        <button
+                                            class="flex items-center gap-1.5 text-primary-900 bg-[#e2e8e5] px-6 py-2.5 rounded-lg font-bold text-[14px] tracking-wide transition hover:bg-[#d1ddd5]"
+                                            onclick="currentSelection.role === 'dealer' || currentSelection.role === 'lab' ? prevStep(4) : prevStep(3)">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                            </svg> Back
+                                        </button>
+                                        <div class="flex items-center gap-6 ml-auto">
+                                            <span class="italic text-[13px] text-slate-500 font-medium"
+                                                id="commonStepCounter">Step 5 of 7 Complete</span>
+                                            <button
+                                                class="bg-primary-900 text-white px-7 py-3 rounded-[10px] font-bold text-[14px] tracking-tight flex items-center gap-2 shadow-lg shadow-primary-900/20 transition hover:bg-opacity-90"
+                                                onclick="nextStep(6)">
+                                                Next <svg class="w-3.5 h-3.5 transform rotate-180" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Bottom Graphic Banner -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto h-[160px] md:h-[220px] rounded-[2rem] overflow-hidden mt-10 relative bg-gradient-to-r from-[#eef3f0] via-[#ddebe2] to-[#eef3f0]">
+                                    <!-- Subtle lighting abstract overlay -->
+                                    <div class="absolute inset-0 bg-white/20"></div>
+                                    <div
+                                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-white opacity-50 blur-3xl rounded-full">
+                                    </div>
+                                    <!-- Minimal horizontal glow line -->
+                                    <div class="absolute inset-x-0 top-1/2 h-[1px] bg-white/80 blur-[1px]"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- ────────── STEP 6: ASSESSMENT COMPLETE (LEAD FORM) ────────── --}}
+                        <div class="quiz-step" data-step="6-lead" style="display: none;">
+                            <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa]">
+
+                                <!-- Header Section - matches 5-common layout -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto mb-10 flex flex-col md:flex-row justify-between items-start gap-8">
+                                    <div class="md:w-[55%]">
+                                        <span
+                                            class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm mb-6">ASSESSMENT
+                                            COMPLETE</span>
+                                        <h2
+                                            class="font-display text-4xl md:text-[45px] font-bold text-primary-900 tracking-tight leading-[1.05] mb-5">
+                                            Digital Concierge Insights<br>Now Ready</h2>
+                                    </div>
+                                    <div class="md:w-[40%] bg-[#f4f2ef] rounded-2xl p-6 md:p-8">
+                                        <h3 class="text-[11px] font-bold uppercase tracking-widest text-[#4d5c52] mb-3">
+                                            Analysis Completion</h3>
+                                        <div
+                                            class="flex items-center justify-between text-[13px] font-bold text-primary-900 mb-3">
+                                            <span class="text-[14px] font-medium text-primary-800/80">Your profile
+                                                assessment is complete.</span>
+                                            <span>100%</span>
+                                        </div>
+                                        <div class="h-1.5 w-full bg-white/60 rounded-full overflow-hidden">
+                                            <div class="h-full w-full bg-secondary-600 rounded-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Main Card Section - matches 5-common layout -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative z-10">
+
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+                                        <!-- Left: Qualification Info -->
+                                        <div>
+                                            <h4 class="text-[17px] leading-snug font-bold text-primary-900 mb-2">Based on
+                                                your inputs, we've identified the right product pathways and pricing
+                                                opportunities for your profile.</h4>
+                                            <p
+                                                class="mt-3 text-[12px] font-bold uppercase tracking-wider text-slate-400 mb-5">
+                                                You now qualify for:</p>
+                                            <ul class="space-y-3">
+                                                <li class="flex items-start gap-3 text-[14px] font-medium text-primary-800">
+                                                    <div
+                                                        class="w-5 h-5 mt-0.5 rounded-full bg-secondary-100 flex items-center justify-center flex-shrink-0 text-secondary-700">
+                                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="3">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                    Priority access to relevant product categories
+                                                </li>
+                                                <li class="flex items-start gap-3 text-[14px] font-medium text-primary-800">
+                                                    <div
+                                                        class="w-5 h-5 mt-0.5 rounded-full bg-secondary-100 flex items-center justify-center flex-shrink-0 text-secondary-700">
+                                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="3">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                    Preferential pricing aligned with your scale
+                                                </li>
+                                                <li class="flex items-start gap-3 text-[14px] font-medium text-primary-800">
+                                                    <div
+                                                        class="w-5 h-5 mt-0.5 rounded-full bg-secondary-100 flex items-center justify-center flex-shrink-0 text-secondary-700">
+                                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" stroke-width="3">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </div>
+                                                    Direct support from the Biogenix team
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Right: Lead Capture Form -->
+                                        <div class="bg-[#f8faf9] rounded-2xl p-6 md:p-8 border border-slate-100">
+                                            <div class="grid grid-cols-2 gap-4 mb-5">
+                                                <div>
+                                                    <label
+                                                        class="mb-2 block text-[11px] font-bold uppercase tracking-[0.15em] text-slate-500">First
+                                                        Name <span class="text-red-400">*</span></label>
+                                                    <input type="text" id="quizFirstName" required
+                                                        class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-900 focus:border-primary-900/20 outline-none text-primary-900 font-bold text-[14px] placeholder-slate-400 transition-shadow"
+                                                        placeholder="John">
+                                                </div>
+                                                <div>
+                                                    <label
+                                                        class="mb-2 block text-[11px] font-bold uppercase tracking-[0.15em] text-slate-500">Last
+                                                        Name <span class="text-red-400">*</span></label>
+                                                    <input type="text" id="quizLastName" required
+                                                        class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-900 focus:border-primary-900/20 outline-none text-primary-900 font-bold text-[14px] placeholder-slate-400 transition-shadow"
+                                                        placeholder="Doe">
+                                                </div>
+                                            </div>
+                                            <div class="mb-6">
+                                                <label
+                                                    class="mb-2 block text-[11px] font-bold uppercase tracking-[0.15em] text-slate-500">Email
+                                                    Address <span class="text-red-400">*</span></label>
+                                                <input type="email" id="quizEmail" required
+                                                    class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 focus:ring-2 focus:ring-primary-900 focus:border-primary-900/20 outline-none text-primary-900 font-bold text-[14px] placeholder-slate-400 transition-shadow"
+                                                    placeholder="john.doe@medical-cloud.com">
+                                            </div>
+                                            <p id="leadFormError" class="text-red-500 text-[12px] font-bold mb-3 hidden">
+                                                Please fill in all required fields.</p>
+
+                                            <button type="button" id="quizSubmitButton"
+                                                class="w-full bg-primary-900 text-white px-7 py-3.5 rounded-xl font-bold text-[14px] tracking-tight flex items-center justify-center gap-2 shadow-lg shadow-primary-900/20 transition hover:bg-primary-800"
+                                                onclick="submitLeadForm()">
+                                                Unlock My Score & Reward
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                    stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </button>
+
+                                            <p
+                                                class="mt-5 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                                Secure clinical gateway
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- ────────── STEP 7: RESULTS ────────── --}}
+                        <div class="quiz-step" data-step="results" style="display: none;">
+                            <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa]">
+
+                                <!-- Results Header - matches 5-common layout -->
+                                <div class="max-w-[950px] w-[85%] mx-auto mb-10">
+                                    <span
+                                        class="inline-block px-4 py-1.5 rounded-full bg-secondary-600 text-primary-900 text-[11px] font-bold tracking-widest uppercase shadow-sm mb-6">Assessment
+                                        Complete</span>
+                                    <div class="flex flex-col lg:flex-row justify-between items-start gap-8">
+                                        <div class="lg:w-[55%]">
+                                            <h2 class="font-display text-4xl md:text-[45px] font-bold tracking-tight text-primary-900 leading-[1.05]"
+                                                id="quizResultTitle">Advanced<br>Proficiency Level<br>Attained.</h2>
+                                            <p class="mt-5 max-w-md text-[14px] leading-relaxed text-slate-500"
+                                                id="quizResultDescription">Your technical precision in diagnostic protocols
+                                                demonstrates exceptional mastery of Biogenix standards and laboratory
+                                                compliance.</p>
+                                        </div>
+                                        <div class="lg:w-[40%] flex items-center justify-center">
+                                            <div class="relative h-48 w-48">
+                                                <svg viewBox="0 0 200 200" class="h-full w-full">
+                                                    <circle class="stroke-slate-200" cx="100" cy="100" r="85" fill="none"
+                                                        stroke-width="8" />
+                                                    <circle
+                                                        class="stroke-secondary-600 transition-[stroke-dashoffset] duration-[1200ms] ease-in-out"
+                                                        id="scoreRingFill" cx="100" cy="100" r="85" fill="none"
+                                                        stroke-width="10" stroke-linecap="round" stroke-dasharray="534"
+                                                        stroke-dashoffset="134" transform="rotate(-90 100 100)" />
+                                                </svg>
+                                                <div
+                                                    class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+                                                    <span
+                                                        class="font-display text-[24px] leading-tight font-extrabold text-primary-900 mt-2"
+                                                        id="scoreValue">Strong<br>Match</span>
+                                                    <span
+                                                        class="mt-2 text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">Profile
+                                                        Alignment Score</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Insight Summary Card - matches 5-common layout -->
+                                <div
+                                    class="max-w-[950px] w-[85%] mx-auto bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative z-10">
+                                    <h3 class="flex items-center gap-3 text-[20px] font-bold text-primary-900">
+                                        <div
+                                            class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-900">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            </svg>
+                                        </div>
+                                        Profile Insight Summary
+                                    </h3>
+
+                                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        {{-- 1. Diagnostic Fit --}}
+                                        <div
+                                            class="rounded-2xl border-2 border-primary-50 hover:border-primary-100 bg-[#fbfdfc] p-6 transition-all duration-300">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-900 mb-4 font-bold text-[13px]">
+                                                1</div>
+                                            <p class="text-[15px] font-bold text-primary-900 mb-2">Diagnostic Fit</p>
+                                            <p class="text-[13px] leading-relaxed text-slate-500 min-h-[60px]">How well your
+                                                current setup aligns with scalable diagnostic workflows.</p>
+                                            <div
+                                                class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary-700 shadow-sm border border-slate-100 w-full">
+                                                <span class="h-2 w-2 rounded-full bg-secondary-600 animate-pulse"></span>
+                                                <span id="insightOutcome1">Optimal Alignment</span>
+                                            </div>
+                                        </div>
+
+                                        {{-- 2. Procurement Efficiency --}}
+                                        <div
+                                            class="rounded-2xl border-2 border-blue-50 hover:border-blue-100 bg-[#f8fbfe] p-6 transition-all duration-300">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-900 mb-4 font-bold text-[13px]">
+                                                2</div>
+                                            <p class="text-[15px] font-bold text-blue-900 mb-2">Procurement Efficiency</p>
+                                            <p class="text-[13px] leading-relaxed text-slate-500 min-h-[60px]">How optimized
+                                                your pricing strategy currently is.</p>
+                                            <div
+                                                class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-blue-700 shadow-sm border border-slate-100 w-full">
+                                                <span class="h-2 w-2 rounded-full bg-blue-500"></span>
+                                                <span id="insightOutcome2">High Potential</span>
+                                            </div>
+                                        </div>
+
+                                        {{-- 3. Strategy Alignment --}}
+                                        <div
+                                            class="rounded-2xl border-2 border-orange-50 hover:border-orange-100 bg-[#fdfbf9] p-6 transition-all duration-300">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-secondary-700 mb-4 font-bold text-[13px]">
+                                                3</div>
+                                            <p class="text-[15px] font-bold text-primary-900 mb-2">Platform Strategy</p>
+                                            <p class="text-[13px] leading-relaxed text-slate-500 min-h-[60px]">How well your
+                                                focus matches high-demand categories.</p>
+                                            <div
+                                                class="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-primary-700 shadow-sm border border-slate-100 w-full">
+                                                <span class="h-2 w-2 rounded-full bg-secondary-600"></span>
+                                                <span id="insightOutcome3">Strong Match</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-10 flex border-t border-slate-100 pt-8 items-center justify-between">
+                                        <p class="text-[13px] font-medium text-slate-500">Our specialized team will reach
+                                            out with your custom portfolio shortly.</p>
+                                        <a href="/"
+                                            class="bg-primary-900 text-white px-6 py-2.5 rounded-xl font-bold text-[13px] tracking-tight shadow-md transition hover:bg-primary-800">Return
+                                            to Home</a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
+
                 </div>
 
-                <div class="overflow-hidden rounded-2xl bg-primary-600 p-6 text-white shadow-sm sm:p-8">
-                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary-600/25">
-                        <svg class="h-6 w-6 text-secondary-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    </div>
-                    <h3 class="font-display mt-4 text-2xl font-bold text-[var(--ui-surface)]">Your Biogenix<br>Access Benefits</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-[var(--ui-surface)] opacity-80">Based on your profile, you now unlock tailored pricing advantages and priority access across relevant product categories. Your setup qualifies for optimized procurement and direct support alignment.</p>
-                    <div class="mt-5 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-border)] px-5 py-4 text-center">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--ui-surface)] opacity-60">Voucher Code</p>
-                        <p class="{{ $quizVoucherCodeClass }}" id="voucherCode">BIOGENIX15</p>
-                        <button type="button" onclick="copyVoucher()" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-secondary-500 transition hover:text-secondary-400">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                            Copy Code & Shop
-                        </button>
-                    </div>
-                </div>
             </div>
 
-            {{-- New Insight Footer Line --}}
-            <div class="mt-8 text-center sm:mt-10 lg:mt-12">
-                <p class="text-[13px] font-medium leading-relaxed text-[var(--ui-text-muted)]">
-                    “Your personalized pricing and product recommendations will be ready inside your dashboard once you set up your account”
-                </p>
-                <p class="mt-1.5 text-[13px] font-medium text-primary-600">
-                    Already registered? <a href="{{ route('login') }}" class="underline decoration-primary-600/30 underline-offset-4 transition hover:text-primary-700 hover:decoration-primary-700">You can access them instantly from your dashboard.</a>
-                </p>
-            </div>
         </div>
-        @endif
     </div>
-</div>
+
+    <script>
+        let currentSelection = {
+            role: ''
+        };
+
+        function handleSelection(step, value, el) {
+            const parentStep = el.closest('.quiz-step');
+            parentStep.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+
+            if (step === 1) {
+                currentSelection.role = value;
+            }
+        }
+
+        function getActualStep(step) {
+            if (step === 2 || step === 3) {
+                // Lab and Dealer branch to B2B
+                if (currentSelection.role === 'dealer' || currentSelection.role === 'lab') {
+                    return step + '-b2b';
+                } else {
+                    return step + '-b2c';
+                }
+            }
+            if (step === 4) {
+                if (currentSelection.role === 'dealer' || currentSelection.role === 'lab') return '4-b2b';
+                return '5-common'; // B2C converges here at step 4
+            }
+            if (step === 5) {
+                return '5-common'; // B2B converges here at step 5
+            }
+            if (step === 6) {
+                return '6-lead';
+            }
+            if (step === 7) {
+                return 'results';
+            }
+            return step;
+        }
+
+        function updateLayoutForStep(actualStep) {
+            const leftPanel = document.querySelector('.left-panel-bg');
+            const headerRow = document.getElementById('quizFormArea').querySelector('.flex.flex-col.lg\\:flex-row');
+            const rightPanel = document.querySelector('.flex-1.flex.flex-col');
+
+            if (actualStep === 1) {
+                if (leftPanel) leftPanel.style.display = '';
+                if (headerRow) headerRow.style.display = '';
+                if (rightPanel) rightPanel.className = 'flex-1 flex flex-col p-6 md:p-12 xl:p-20 overflow-y-auto';
+                document.getElementById('quizFormArea').classList.add('max-w-4xl');
+                document.getElementById('quizFormArea').classList.remove('max-w-full');
+                const counter = document.getElementById('leftStepCounter');
+                if (counter) {
+                    counter.innerText = 'STEP 01 OF 04';
+                    counter.className = 'inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 mb-4 shadow-sm';
+                }
+                document.getElementById('leftStepTitle').innerHTML = 'Let\'s Understand<br>Your Setup';
+            } else {
+                // All other steps: hide left panel and header
+                if (leftPanel) leftPanel.style.display = 'none';
+                if (headerRow) headerRow.style.display = 'none';
+                document.getElementById('quizFormArea').classList.remove('max-w-4xl');
+                document.getElementById('quizFormArea').classList.add('max-w-full');
+
+                if (rightPanel) {
+                    if (actualStep === '2-b2c') {
+                        rightPanel.className = 'flex-1 flex flex-col p-6 md:p-8 xl:p-12 overflow-y-auto';
+                    } else {
+                        rightPanel.className = 'flex-1 flex flex-col p-0 overflow-y-auto';
+                    }
+                }
+
+                // Update step counter on 5-common based on path
+                if (actualStep === '5-common') {
+                    const counter = document.getElementById('commonStepCounter');
+                    const badge = document.querySelector('[data-step="5-common"] .inline-flex.rounded-full.bg-secondary-600');
+                    if (counter && badge) {
+                        if (currentSelection.role === 'dealer' || currentSelection.role === 'lab') {
+                            counter.textContent = 'Step 5 of 5';
+                            badge.textContent = 'STEP 05 OF 05';
+                        } else {
+                            counter.textContent = 'Step 4 of 4';
+                            badge.textContent = 'STEP 04 OF 04';
+                        }
+                    }
+                }
+
+                // Update step counter on 6-lead based on path
+                if (actualStep === '6-lead') {
+                    const counter = document.getElementById('leadStepCounter');
+                    const badge = document.querySelector('[data-step="6-lead"] .inline-flex.rounded-full.bg-secondary-600');
+                    if (badge) {
+                        badge.textContent = 'ASSESSMENT COMPLETE';
+                    }
+                }
+            }
+        }
+
+        function nextStep(step) {
+            const active = document.querySelector('.quiz-step.active');
+            let actualStep = getActualStep(step);
+
+            if (!active.querySelector('.quiz-option.selected') && !active.querySelector('.selected') && actualStep !== 'results' && active.dataset.step !== '6-lead' && active.dataset.step !== '5-common') {
+                alert('Please select an option');
+                return;
+            }
+
+            active.classList.remove('active');
+            active.style.display = 'none';
+
+            const nextEl = document.querySelector('.quiz-step[data-step="' + actualStep + '"]');
+            if (nextEl) {
+                nextEl.style.display = 'block';
+                setTimeout(() => nextEl.classList.add('active'), 10);
+            }
+
+            updateLayoutForStep(actualStep);
+        }
+
+        function prevStep(stepTarget) {
+            const active = document.querySelector('.quiz-step.active');
+
+            if (stepTarget === undefined || !stepTarget) {
+                window.history.back();
+                return;
+            }
+
+            let actualStep = getActualStep(stepTarget);
+
+            active.classList.remove('active');
+            active.style.display = 'none';
+
+            const prevEl = document.querySelector('.quiz-step[data-step="' + actualStep + '"]');
+            if (prevEl) {
+                prevEl.style.display = 'block';
+                setTimeout(() => prevEl.classList.add('active'), 10);
+            }
+
+            updateLayoutForStep(actualStep);
+        }
+
+        function submitLeadForm() {
+            const firstName = document.getElementById('quizFirstName') ? document.getElementById('quizFirstName').value.trim() : '';
+            const lastName = document.getElementById('quizLastName') ? document.getElementById('quizLastName').value.trim() : '';
+            const email = document.getElementById('quizEmail') ? document.getElementById('quizEmail').value.trim() : '';
+
+            // Store lead data
+            currentSelection.firstName = firstName;
+            currentSelection.lastName = lastName;
+            currentSelection.email = email;
+
+            // Navigate to results
+            const active = document.querySelector('.quiz-step.active');
+            if (active) {
+                active.classList.remove('active');
+                active.style.display = 'none';
+            }
+
+            const resultsEl = document.querySelector('.quiz-step[data-step="results"]');
+            if (resultsEl) {
+                resultsEl.style.display = 'block';
+                setTimeout(() => resultsEl.classList.add('active'), 10);
+            }
+
+            updateLayoutForStep('results');
+        }
+    </script>
 @endsection
-
-@push('scripts')
-<script>
-    var quizQuestions = @json($quizQuestionsPayload);
-    var quizAnswers = {};
-    var currentStep = 1;
-    var totalQuestions = quizQuestions.length;
-    var quizSubmitUrl = @json(route('diagnostic-quiz.store'));
-    var quizSubmitButtonDefaultHtml = '';
-    var currentVoucherCode = document.getElementById('voucherCode') ? document.getElementById('voucherCode').textContent : 'BIOGENIX15';
-    var quizOptionClassName = @json($quizOptionClass);
-    var quizOptionRadioClassName = @json($quizOptionRadioClass);
-    var quizOptionCheckClassName = @json($quizOptionCheckClass);
-
-    function escapeHtml(value) {
-        return String(value || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function resolveAssetUrl(path) {
-        if (!path) {
-            return '';
-        }
-
-        if (/^https?:\/\//i.test(path)) {
-            return path;
-        }
-
-        return window.location.origin + '/' + String(path).replace(/^\/+/, '');
-    }
-
-    function getQuestionByStep(step) {
-        return quizQuestions[step - 1] || null;
-    }
-
-    function findSidebarCard(questionSupportDetails, cardType) {
-        var sidebarCards = Array.isArray(questionSupportDetails && questionSupportDetails.sidebar_cards)
-            ? questionSupportDetails.sidebar_cards
-            : [];
-
-        return sidebarCards.find(function (sidebarCard) {
-            return sidebarCard && sidebarCard.card_type === cardType;
-        }) || null;
-    }
-
-    function iconMarkup(iconName) {
-        if (iconName === 'check-circle') {
-            return '<svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-        }
-
-        if (iconName === 'clock') {
-            return '<svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>';
-        }
-
-        if (iconName === 'file-green') {
-            return '<svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>';
-        }
-
-        if (iconName === 'download') {
-            return '<svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>';
-        }
-
-        if (iconName === 'external-link') {
-            return '<svg class="h-4 w-4 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>';
-        }
-
-        return '<svg class="h-4 w-4 shrink-0 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg>';
-    }
-
-    function buildOptionMarkup(stepNumber, questionData) {
-        return (questionData.answer_options || []).map(function (answerOption) {
-            return '<div class="' + quizOptionClassName + '" data-answer="' + escapeHtml(answerOption.option_label) + '" data-question-id="' + escapeHtml(questionData.id) + '" data-option-id="' + escapeHtml(answerOption.id) + '" onclick="selectOption(' + stepNumber + ', this)">' +
-                '<span class="' + quizOptionRadioClassName + '">' + escapeHtml(answerOption.option_label) + '</span>' +
-                '<span class="text-sm font-semibold text-[var(--ui-text)]">' + escapeHtml(answerOption.option_text) + '</span>' +
-                '<span class="' + quizOptionCheckClassName + '"><svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>' +
-            '</div>';
-        }).join('');
-    }
-
-    function buildContextListMarkup(items) {
-        return (Array.isArray(items) ? items : []).map(function (item) {
-            return '<li class="flex items-center gap-2.5 text-sm text-[var(--ui-text-muted)]">' +
-                iconMarkup(item.icon) +
-                escapeHtml(item.text) +
-            '</li>';
-        }).join('');
-    }
-
-    function buildContextSectionMarkup(sections) {
-        return (Array.isArray(sections) ? sections : []).map(function (section) {
-            return '<li>' +
-                '<p class="flex items-center gap-2 text-sm font-bold text-[var(--ui-text)]"><span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> ' + escapeHtml(section.title) + '</p>' +
-                '<p class="mt-1 text-sm leading-6 text-[var(--ui-text-muted)]">' + escapeHtml(section.description) + '</p>' +
-            '</li>';
-        }).join('');
-    }
-
-    function buildReferenceListMarkup(items) {
-        return (Array.isArray(items) ? items : []).map(function (item) {
-            return '<div class="flex items-center justify-between rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface-muted)] px-4 py-3">' +
-                '<span class="flex items-center gap-2 text-sm font-medium text-[var(--ui-text-muted)]">' +
-                    iconMarkup(item.leading_icon) +
-                    escapeHtml(item.document_name) +
-                '</span>' +
-                iconMarkup(item.trailing_icon) +
-            '</div>';
-        }).join('');
-    }
-
-    function setPercentWidthClass(element, percent) {
-        if (!element) {
-            return;
-        }
-
-        var normalized = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
-
-        for (var widthValue = 0; widthValue <= 100; widthValue++) {
-            element.classList.remove(
-                widthValue === 0
-                    ? 'w-0'
-                    : widthValue === 100
-                        ? 'w-full'
-                        : 'w-[' + widthValue + '%]'
-            );
-        }
-
-        element.classList.add(
-            normalized === 0
-                ? 'w-0'
-                : normalized === 100
-                    ? 'w-full'
-                    : 'w-[' + normalized + '%]'
-        );
-    }
-
-    function hydrateQuestionStep(stepNumber) {
-        var questionData = getQuestionByStep(stepNumber);
-        var stepElement = document.querySelector('.quiz-step[data-step="' + stepNumber + '"]');
-
-        if (!questionData || !stepElement) {
-            return;
-        }
-
-        // Step 1: replace the question text and answer options with the database-backed quiz content.
-        var questionTitle = stepElement.querySelector('.lg\\:col-span-2 h2');
-        var optionsContainer = document.getElementById('q' + stepNumber + 'Options');
-
-        if (questionTitle) {
-            questionTitle.textContent = questionData.question_text || '';
-        }
-
-        if (optionsContainer) {
-            optionsContainer.innerHTML = buildOptionMarkup(stepNumber, questionData);
-        }
-
-        // Step 2: update the sidebar cards shown beside the question while keeping the same visual layout.
-        var questionSupportDetails = questionData.question_support_details || {};
-        var tipCard = findSidebarCard(questionSupportDetails, 'tip');
-        var contextListCard = findSidebarCard(questionSupportDetails, 'context_list');
-        var contextSectionsCard = findSidebarCard(questionSupportDetails, 'context_sections');
-        var insightCard = findSidebarCard(questionSupportDetails, 'insight');
-        var referenceListCard = findSidebarCard(questionSupportDetails, 'reference_list');
-        var imageCard = findSidebarCard(questionSupportDetails, 'image');
-
-        if (stepNumber === 1) {
-            if (tipCard) {
-                var stepOneTipCard = stepElement.querySelector('.quiz-tip-card');
-                if (stepOneTipCard) {
-                    var stepOneTipTitle = stepOneTipCard.querySelector('h3');
-                    var stepOneTipBody = stepOneTipCard.querySelector('p.mt-2.text-sm');
-
-                    if (stepOneTipTitle) stepOneTipTitle.textContent = tipCard.title || '';
-                    if (stepOneTipBody) stepOneTipBody.textContent = tipCard.description || '';
-                }
-            }
-
-            if (contextListCard) {
-                var stepOneContextCard = stepElement.querySelector('.quiz-context-card');
-                if (stepOneContextCard) {
-                    var stepOneContextTitle = stepOneContextCard.querySelector('h4');
-                    var stepOneContextList = stepOneContextCard.querySelector('ul');
-
-                    if (stepOneContextTitle) stepOneContextTitle.textContent = contextListCard.title || '';
-                    if (stepOneContextList) stepOneContextList.innerHTML = buildContextListMarkup(contextListCard.items);
-                }
-            }
-
-            if (imageCard) {
-                var stepOneImage = stepElement.querySelector('img');
-                var stepOneImageCaption = stepElement.querySelector('.relative p');
-
-                if (stepOneImage) {
-                    stepOneImage.src = resolveAssetUrl(imageCard.image_path);
-                    stepOneImage.alt = imageCard.image_alt_text || 'Diagnostic quiz supporting visual';
-                }
-
-                if (stepOneImageCaption) {
-                    stepOneImageCaption.textContent = imageCard.image_caption || '';
-                }
-            }
-        }
-
-        if (stepNumber === 2) {
-            if (contextSectionsCard) {
-                var stepTwoContextCard = stepElement.querySelector('.quiz-context-card');
-                if (stepTwoContextCard) {
-                    var stepTwoContextTitle = stepTwoContextCard.querySelector('h3');
-                    var stepTwoContextSections = stepTwoContextCard.querySelector('ul');
-
-                    if (stepTwoContextTitle) {
-                        stepTwoContextTitle.innerHTML = '<svg class="h-5 w-5 text-[var(--color-neutral-500)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h8M8 16h4"/></svg> ' + escapeHtml(contextSectionsCard.title || '');
-                    }
-
-                    if (stepTwoContextSections) {
-                        stepTwoContextSections.innerHTML = buildContextSectionMarkup(contextSectionsCard.sections);
-                    }
-                }
-            }
-
-            if (insightCard) {
-                var stepTwoInsightCard = stepElement.querySelector('.quiz-insight-card');
-                if (stepTwoInsightCard) {
-                    var stepTwoInsightParagraphs = stepTwoInsightCard.querySelectorAll('p');
-
-                    if (stepTwoInsightParagraphs[0]) {
-                        stepTwoInsightParagraphs[0].innerHTML = '<span class="inline-block h-2 w-2 rounded-full bg-secondary-600"></span> ' + escapeHtml(insightCard.eyebrow || 'Clinical Insight');
-                    }
-
-                    if (stepTwoInsightParagraphs[1]) {
-                        stepTwoInsightParagraphs[1].textContent = insightCard.description || '';
-                    }
-                }
-            }
-
-            if (referenceListCard) {
-                var stepTwoReferenceCard = stepElement.querySelector('.quiz-ref-card');
-                if (stepTwoReferenceCard) {
-                    var stepTwoReferenceTitle = stepTwoReferenceCard.querySelector('h4');
-                    var stepTwoReferenceList = stepTwoReferenceCard.querySelector('.mt-3.space-y-2');
-
-                    if (stepTwoReferenceTitle) stepTwoReferenceTitle.textContent = referenceListCard.title || '';
-                    if (stepTwoReferenceList) stepTwoReferenceList.innerHTML = buildReferenceListMarkup(referenceListCard.items);
-                }
-            }
-        }
-
-        if (stepNumber === 3) {
-            if (tipCard) {
-                var stepThreeTipCard = stepElement.querySelector('.quiz-tip-card');
-                if (stepThreeTipCard) {
-                    var stepThreeTipTitle = stepThreeTipCard.querySelector('h3');
-                    var stepThreeTipBody = stepThreeTipCard.querySelector('p.mt-2.text-sm');
-
-                    if (stepThreeTipTitle) stepThreeTipTitle.textContent = tipCard.title || '';
-                    if (stepThreeTipBody) stepThreeTipBody.textContent = tipCard.description || '';
-                }
-            }
-
-            if (contextListCard) {
-                var stepThreeContextCard = stepElement.querySelector('.quiz-context-card');
-                if (stepThreeContextCard) {
-                    var stepThreeContextTitle = stepThreeContextCard.querySelector('h4');
-                    var stepThreeContextList = stepThreeContextCard.querySelector('ul');
-
-                    if (stepThreeContextTitle) stepThreeContextTitle.textContent = contextListCard.title || '';
-                    if (stepThreeContextList) stepThreeContextList.innerHTML = buildContextListMarkup(contextListCard.items);
-                }
-            }
-        }
-
-        if (stepNumber === 4) {
-            if (tipCard) {
-                var stepFourTipCard = stepElement.querySelector('.quiz-tip-card');
-                if (stepFourTipCard) {
-                    var stepFourTipTitle = stepFourTipCard.querySelector('h3');
-                    var stepFourTipBody = stepFourTipCard.querySelector('p.mt-2.text-sm');
-
-                    if (stepFourTipTitle) stepFourTipTitle.textContent = tipCard.title || '';
-                    if (stepFourTipBody) stepFourTipBody.textContent = tipCard.description || '';
-                }
-            }
-
-            if (imageCard) {
-                var stepFourImage = stepElement.querySelector('img');
-                var stepFourImageCaption = stepElement.querySelector('.relative p');
-
-                if (stepFourImage) {
-                    stepFourImage.src = resolveAssetUrl(imageCard.image_path);
-                    stepFourImage.alt = imageCard.image_alt_text || 'Diagnostic quiz supporting visual';
-                }
-
-                if (stepFourImageCaption) {
-                    stepFourImageCaption.textContent = imageCard.image_caption || '';
-                }
-            }
-        }
-    }
-
-    function hydrateQuizContent() {
-        if (totalQuestions === 0) {
-            return;
-        }
-
-        for (var stepNumber = 1; stepNumber <= totalQuestions; stepNumber++) {
-            hydrateQuestionStep(stepNumber);
-        }
-
-        updateHeader(1);
-    }
-
-    function selectOption(stepNumber, element) {
-        var container = element.parentNode;
-        var options = container.querySelectorAll('.quiz-option');
-        options.forEach(function (optionElement) {
-            optionElement.classList.remove('selected');
-        });
-
-        element.classList.add('selected');
-
-        var questionData = getQuestionByStep(stepNumber);
-        var selectedOptionId = Number(element.getAttribute('data-option-id'));
-
-        if (questionData && selectedOptionId > 0) {
-            quizAnswers[questionData.id] = selectedOptionId;
-        }
-    }
-
-    function updateHeader(step) {
-        var phaseLabel = document.getElementById('quizPhaseLabel');
-        var title = document.getElementById('quizTitle');
-        var stepLabel = document.getElementById('quizStepLabel');
-        var percentLabel = document.getElementById('quizPercentLabel');
-        var progressBar = document.getElementById('quizProgressBar');
-
-        if (step <= totalQuestions) {
-            var questionData = getQuestionByStep(step);
-            var pct = totalQuestions > 0 ? Math.round((step / totalQuestions) * 100) : 0;
-            var normalizedStepLabel = step < 10 ? '0' + step : String(step);
-
-            phaseLabel.textContent = 'Assessment Phase: ' + normalizedStepLabel;
-            title.textContent = questionData ? questionData.phase_title : 'Diagnostic Precision Quiz';
-            stepLabel.textContent = 'Step ' + step + ' of ' + totalQuestions;
-            percentLabel.textContent = pct + '% Complete';
-            setPercentWidthClass(progressBar, pct);
-        } else if (step === totalQuestions + 1) {
-            phaseLabel.textContent = 'Final Step';
-            title.textContent = 'Claim Your Results';
-            stepLabel.textContent = '';
-            percentLabel.textContent = '100% Complete';
-            setPercentWidthClass(progressBar, 100);
-        } else if (step === totalQuestions + 2) {
-            phaseLabel.textContent = 'Assessment Complete';
-            title.textContent = 'Your Results';
-            stepLabel.textContent = '';
-            percentLabel.textContent = 'Complete';
-            setPercentWidthClass(progressBar, 100);
-        }
-    }
-
-    function goToStep(step) {
-        var allSteps = document.querySelectorAll('.quiz-step');
-        allSteps.forEach(function (stepElement) {
-            stepElement.classList.remove('active');
-        });
-
-        var target = document.querySelector('[data-step="' + step + '"]');
-        if (target) {
-            target.classList.add('active');
-        }
-
-        currentStep = step;
-        updateHeader(step);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function validateCurrentQuestionSelection(step) {
-        var questionData = getQuestionByStep(step);
-
-        if (!questionData) {
-            return true;
-        }
-
-        if (quizAnswers[questionData.id]) {
-            return true;
-        }
-
-        if (window.BiogenixToast) {
-            window.BiogenixToast.show('Please select one answer before moving ahead.', 'warning');
-        }
-
-        return false;
-    }
-
-    function nextStep(step) {
-        if (currentStep <= totalQuestions && !validateCurrentQuestionSelection(currentStep)) {
-            return;
-        }
-
-        goToStep(step);
-    }
-
-    function prevStep(step) {
-        goToStep(step);
-    }
-
-    function clearFieldValidationState(field) {
-        if (!field) {
-            return;
-        }
-
-        field.classList.remove('border-primary-600', 'ring-2', 'ring-primary-600/10');
-    }
-
-    function markFieldInvalid(field) {
-        if (!field) {
-            return;
-        }
-
-        field.classList.add('border-primary-600', 'ring-2', 'ring-primary-600/10');
-    }
-
-    function validateLeadDetails() {
-        var firstNameField = document.getElementById('quizFirstName');
-        var lastNameField = document.getElementById('quizLastName');
-        var emailField = document.getElementById('quizEmail');
-        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        clearFieldValidationState(firstNameField);
-        clearFieldValidationState(lastNameField);
-        clearFieldValidationState(emailField);
-
-        if (!firstNameField || firstNameField.value.trim() === '') {
-            markFieldInvalid(firstNameField);
-
-            if (window.BiogenixToast) {
-                window.BiogenixToast.show('Please enter the first name before submitting the quiz.', 'warning');
-            }
-
-            return false;
-        }
-
-        if (!emailField || !emailPattern.test(emailField.value.trim())) {
-            markFieldInvalid(emailField);
-
-            if (window.BiogenixToast) {
-                window.BiogenixToast.show('Please enter a valid email address before submitting the quiz.', 'warning');
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    function buildSelectedAnswersPayload() {
-        var selectedAnswers = {};
-
-        quizQuestions.forEach(function (questionData) {
-            if (quizAnswers[questionData.id]) {
-                selectedAnswers[questionData.id] = quizAnswers[questionData.id];
-            }
-        });
-
-        return selectedAnswers;
-    }
-
-    function toggleSubmitButtonState(isSubmitting) {
-        var submitButton = document.getElementById('quizSubmitButton');
-
-        if (!submitButton) {
-            return;
-        }
-
-        if (!quizSubmitButtonDefaultHtml) {
-            quizSubmitButtonDefaultHtml = submitButton.innerHTML;
-        }
-
-        submitButton.disabled = isSubmitting;
-        submitButton.classList.toggle('cursor-not-allowed', isSubmitting);
-        submitButton.classList.toggle('opacity-70', isSubmitting);
-
-        if (isSubmitting) {
-            submitButton.innerHTML = 'Submitting Quiz...';
-            return;
-        }
-
-        submitButton.innerHTML = quizSubmitButtonDefaultHtml;
-    }
-
-    function applyQuizResult(resultData) {
-        var resultTitle = document.getElementById('quizResultTitle');
-        var resultDescription = document.getElementById('quizResultDescription');
-        var voucherCode = document.getElementById('voucherCode');
-        var performanceBreakdown = Array.isArray(resultData.performance_breakdown) ? resultData.performance_breakdown : [];
-
-        if (resultTitle) {
-            resultTitle.innerHTML = resultData.result_title_html || 'Assessment Complete';
-        }
-
-        if (resultDescription) {
-            resultDescription.textContent = resultData.result_description || '';
-        }
-
-        if (voucherCode) {
-            voucherCode.textContent = resultData.reward_coupon_code || '';
-            currentVoucherCode = voucherCode.textContent;
-        }
-
-        for (var index = 0; index < 3; index++) {
-            var performanceItem = performanceBreakdown[index];
-            if (!performanceItem) continue;
-
-            var perfLabel = document.getElementById('quizPerfLabel' + (index + 1));
-            var perfValue = document.getElementById('quizPerfValue' + (index + 1));
-            var perfBar = document.getElementById('quizPerfBar' + (index + 1));
-
-            if (perfLabel) perfLabel.textContent = performanceItem.label || 'Result Segment';
-            if (perfValue) perfValue.textContent = String(performanceItem.percentage || 0) + '%';
-            if (perfBar) {
-                perfBar.setAttribute('data-perf', String(performanceItem.percentage || 0));
-                setPercentWidthClass(perfBar, 0);
-            }
-        }
-    }
-
-    function animateQuizResults(scorePercentage) {
-        // Randomize Insight Outcomes to feel "purposely generated"
-        const outcomes1 = [
-            "Strong foundation for expansion",
-            "Moderate alignment with growth potential",
-            "Early-stage setup with optimization scope"
-        ];
-        const outcomes2 = [
-            "Efficient sourcing structure identified",
-            "Opportunities to improve pricing advantage",
-            "High potential for cost optimization"
-        ];
-        const outcomes3 = [
-            "Well-aligned with high-demand categories",
-            "Partial alignment with expansion opportunities",
-            "Untapped potential across key product segments"
-        ];
-
-        const outcomeEl1 = document.getElementById('insightOutcome1');
-        const outcomeEl2 = document.getElementById('insightOutcome2');
-        const outcomeEl3 = document.getElementById('insightOutcome3');
-
-        if (outcomeEl1) outcomeEl1.textContent = outcomes1[Math.floor(Math.random() * outcomes1.length)];
-        if (outcomeEl2) outcomeEl2.textContent = outcomes2[Math.floor(Math.random() * outcomes2.length)];
-        if (outcomeEl3) outcomeEl3.textContent = outcomes3[Math.floor(Math.random() * outcomes3.length)];
-
-        setTimeout(function () {
-            var score = Number(scorePercentage || 0);
-            var circumference = 534;
-            var offset = circumference - (score / 100) * circumference;
-            var ring = document.getElementById('scoreRingFill');
-            var scoreValue = document.getElementById('scoreValue');
-
-            if (ring) {
-                ring.setAttribute('stroke-dashoffset', String(offset));
-            }
-
-            var current = 0;
-            var interval = setInterval(function () {
-                current += 1;
-
-                if (current > score) {
-                    clearInterval(interval);
-                    return;
-                }
-
-                if (scoreValue) {
-                    scoreValue.textContent = current + '%';
-                }
-            }, 15);
-
-            var performanceBars = [
-                document.getElementById('quizPerfBar1'),
-                document.getElementById('quizPerfBar2'),
-                document.getElementById('quizPerfBar3'),
-            ];
-
-            performanceBars.forEach(function (performanceBar) {
-                if (!performanceBar) {
-                    return;
-                }
-
-                setPercentWidthClass(performanceBar, performanceBar.getAttribute('data-perf'));
-            });
-        }, 300);
-    }
-
-    async function showResults() {
-        if (totalQuestions === 0) {
-            if (window.BiogenixToast) {
-                window.BiogenixToast.show('Quiz questions are not available right now.', 'error');
-            }
-
-            return;
-        }
-
-        for (var stepNumber = 1; stepNumber <= totalQuestions; stepNumber++) {
-            if (!validateCurrentQuestionSelection(stepNumber)) {
-                goToStep(stepNumber);
-                return;
-            }
-        }
-
-        if (!validateLeadDetails()) {
-            return;
-        }
-
-        var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        var firstNameField = document.getElementById('quizFirstName');
-        var lastNameField = document.getElementById('quizLastName');
-        var emailField = document.getElementById('quizEmail');
-
-        toggleSubmitButtonState(true);
-
-        try {
-            var response = await fetch(quizSubmitUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                body: JSON.stringify({
-                    participant_first_name: firstNameField ? firstNameField.value.trim() : '',
-                    participant_last_name: lastNameField ? lastNameField.value.trim() : '',
-                    participant_email: emailField ? emailField.value.trim() : '',
-                    selected_answers: buildSelectedAnswersPayload(),
-                }),
-            });
-
-            var result = await response.json();
-
-            if (!response.ok || result.status !== 'success') {
-                if (window.BiogenixToast) {
-                    window.BiogenixToast.show(result.message || 'Unable to submit the quiz right now.', 'error');
-                }
-
-                return;
-            }
-
-            applyQuizResult(result.data || {});
-            goToStep(totalQuestions + 2);
-            animateQuizResults((result.data || {}).score_percentage || 0);
-        } catch (error) {
-            if (window.BiogenixToast) {
-                window.BiogenixToast.show('Unable to submit the quiz right now. Please try again.', 'error');
-            }
-        } finally {
-            toggleSubmitButtonState(false);
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        hydrateQuizContent();
-    });
-
-    function copyVoucher() {
-        var code = document.getElementById('voucherCode');
-        if (!code) return;
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(code.textContent);
-        } else {
-            var range = document.createRange();
-            range.selectNodeContents(code);
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            document.execCommand('copy');
-            selection.removeAllRanges();
-        }
-
-        if (window.BiogenixToast) {
-            window.BiogenixToast.show('Voucher code copied! Use ' + currentVoucherCode + ' at checkout.', 'success');
-        }
-    }
-</script>
-@endpush
