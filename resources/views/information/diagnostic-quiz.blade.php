@@ -8,7 +8,7 @@
         .quiz-container {
             display: flex;
             flex-direction: column;
-            min-h-screen;
+            min-height: 100vh;
         }
 
         @media (min-width: 768px) {
@@ -122,13 +122,13 @@
         $totalSteps = count($quizQuestionsPayload);
     @endphp
 
-    <div class="mx-auto w-full max-w-[95%] lg:max-w-[90%] xl:max-w-[80%] py-8 md:py-12">
+    <div class="mx-auto w-full max-w-[95%] lg:max-w-[90%] xl:max-w-[80%] py-4 md:py-6">
         <div
             class="quiz-container w-full bg-white rounded-3xl md:rounded-[2rem] overflow-hidden shadow-[0_20px_60px_rgba(26,77,46,0.08)] border border-slate-100">
 
             {{-- LEFT VISUAL PANEL --}}
             <div
-                class="relative w-full md:w-[40%] xl:w-[42%] flex flex-col p-8 md:p-12 xl:p-16 left-panel-bg overflow-hidden border-r border-slate-100">
+                class="relative w-full md:w-[40%] xl:w-[42%] flex flex-col p-8 md:p-10 left-panel-bg overflow-hidden border-r border-slate-100">
                 <div class="absolute inset-0 left-panel-overlay z-0"></div>
 
                 <div class="relative z-10 h-full flex flex-col justify-between">
@@ -148,12 +148,12 @@
             </div>
 
             {{-- RIGHT CONTENT PANEL --}}
-            <div class="flex-1 flex flex-col p-6 md:p-12 xl:p-20 overflow-y-auto">
+            <div class="flex-1 flex flex-col p-6 md:p-10 xl:p-12 overflow-y-auto">
 
                 <div id="quizFormArea" class="max-w-4xl w-full mx-auto">
 
                     {{-- HEADER ROW (Per image) --}}
-                    <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-12 mb-10 md:mb-14">
+                    <div class="flex flex-col lg:flex-row lg:items-start gap-6 lg:gap-12 mb-6 md:mb-8">
                         <div class="lg:w-1/3">
                             <h3 class="font-display text-lg font-bold text-primary-900 leading-tight">
                                 Personalized<br>Diagnostic<br>Pathways
@@ -181,7 +181,7 @@
                                     Which of the following best describes you?
                                 </h2>
 
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
                                     <!-- Card 1 -->
                                     <div class="quiz-option p-4 rounded-2xl bg-primary-50 border border-transparent cursor-pointer relative group flex flex-col justify-between min-h-[100px]"
                                         onclick="handleSelection(1, 'doctor', this)">
@@ -299,7 +299,7 @@
                                     </div>
                                 </div>
 
-                                <div id="otherField" class="mb-10">
+                                <div id="otherField" class="mb-6">
                                     <label class="block text-xs font-bold text-primary-800/60 mb-2 ml-1">Please specify your
                                         role or organization type</label>
                                     <input type="text"
@@ -307,7 +307,7 @@
                                         placeholder="Enter details here...">
                                 </div>
 
-                                <div class="flex items-center justify-between mt-10">
+                                <div class="flex items-center justify-between mt-6">
                                     <button
                                         class="flex items-center gap-2 text-slate-400 font-bold text-sm tracking-wide transition hover:text-slate-800"
                                         onclick="prevStep()">
@@ -336,8 +336,7 @@
                         <div id="dynamicSteps">
                             <!-- B2C Layout -->
                             <div class="quiz-step" data-step="2-b2c" style="display: none;">
-                                <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa] md:min-h-[85vh]">
-                                    <div class="max-w-[950px] w-[85%] mx-auto">
+                                <div class="max-w-full w-full mx-auto">
                                         <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
                                             <div class="flex-1 flex flex-col">
                                                 <div class="mb-6">
@@ -475,9 +474,9 @@
                                                         </svg></button>
                                                 </div>
                                             </div>
-                                            <div class="hidden lg:flex lg:w-[45%] flex-shrink-0">
+                                            <div class="hidden lg:flex lg:w-[40%] flex-shrink-0">
                                                 <div
-                                                    class="relative w-full rounded-3xl overflow-hidden shadow-xl min-h-[500px]">
+                                                    class="relative w-full h-full rounded-3xl overflow-hidden shadow-xl">
                                                     <img src="{{ asset('upload/corousel/image3.jpg') }}"
                                                         alt="Practice Diagnostics"
                                                         class="absolute inset-0 w-full h-full object-cover">
@@ -496,14 +495,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
 
                             <!-- B2B Layout -->
                             <div class="quiz-step" data-step="2-b2b" style="display: none;">
-                                <div
-                                    class="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden min-h-[500px] border border-slate-100 bg-[#f4f6f5] md:min-h-[85vh]">
-                                    <div class="max-w-[950px] w-[85%] mx-auto py-12">
+                                <div class="max-w-full w-full mx-auto py-2 relative">
                                         <!-- Subtle background image for the B2B step (relative to inner container or full-bleed) -->
                                         <img src="{{ asset('upload/corousel/image2.jpg') }}" alt="Background"
                                             class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30 grayscale blur-[1px]">
@@ -712,13 +708,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                             <!-- Step 3 B2B Layout -->
                             <div class="quiz-step" data-step="3-b2b" style="display: none;">
-                                <div
-                                    class="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden min-h-[500px] border border-slate-100 bg-[#f4f6f5] md:min-h-[85vh]">
-                                    <div class="max-w-[950px] w-[85%] mx-auto py-12">
+                                <div class="max-w-full w-full mx-auto py-2">
                                         <!-- Header / Progress Area -->
                                         <div class="mb-12">
                                             <div class="flex justify-between items-end mb-3">
@@ -753,8 +746,7 @@
 
                                             <!-- Right Card -->
                                             <div class="md:w-[60%]">
-                                                <div
-                                                    class="bg-white rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-xl shadow-primary-900/5 border border-slate-100">
+                                                <div class="relative z-10 w-full">
                                                     <h3
                                                         class="font-display text-xl font-bold text-primary-900 mb-8 tracking-tight">
                                                         What is your approximate monthly business volume?</h3>
@@ -892,15 +884,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- Step 3 B2C Layout -->
                             <div class="quiz-step" data-step="3-b2c" style="display: none;">
-                                <div class="relative w-full min-h-[500px] bg-[#f0f4f2] md:min-h-[85vh]">
-                                    <div class="max-w-[950px] w-[85%] mx-auto py-12">
+                                <div class="max-w-full w-full mx-auto py-4">
                                         <!-- Top Header part -->
                                         <div class="flex flex-col md:flex-row justify-between mb-16 items-start gap-12">
                                             <div class="md:w-1/3">
@@ -921,9 +910,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- White Card part -->
-                                        <div
-                                            class="bg-white rounded-2xl md:rounded-3xl shadow-xl shadow-primary-900/5 border border-slate-100 p-8 md:p-12 lg:p-16 relative z-10">
+                                        <div class="relative z-10 w-full">
                                             <!-- Progress Row -->
                                             <div class="flex justify-between items-end mb-3">
                                                 <h4
@@ -1039,15 +1026,13 @@
                                                     </svg>
                                                 </button>
                                             </div>
-                                        </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
 
                         <!-- Step 4-b2b Container -->
                         <div class="quiz-step" data-step="4-b2b" style="display: none;">
-                            <div class="relative w-full min-h-[400px] p-6 md:p-8 lg:p-10 bg-[#fafefc] md:min-h-[85vh]">
+                                <div class="max-w-full w-full mx-auto">
 
                                 <!-- Header Section -->
                                 <div
@@ -1071,8 +1056,7 @@
                                 </div>
 
                                 <!-- Main Card Section -->
-                                <div
-                                    class="max-w-[950px] w-[85%] mx-auto bg-[#f4f7f6] rounded-[2rem] border border-slate-100 p-8 md:p-10 lg:p-12 relative z-10">
+                                <div class="relative z-10 w-full mb-12">
 
                                     <!-- Question Badge & Title -->
                                     <div class="flex items-center gap-4 mb-5">
@@ -1212,7 +1196,7 @@
 
                         <!-- Common Layout for B2C Step 4 & B2B Step 5 -->
                         <div class="quiz-step" data-step="5-common" style="display: none;">
-                            <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa] md:min-h-[85vh]">
+                            <div class="w-full">
 
                                 <!-- Header Section -->
                                 <div
@@ -1236,8 +1220,7 @@
                                 </div>
 
                                 <!-- Main Card Section -->
-                                <div
-                                    class="max-w-[950px] w-[85%] mx-auto bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative z-10">
+                                <div class="relative z-10 w-full mb-12">
 
                                     <!-- Header / Progress Area -->
                                     <div class="mb-10">
@@ -1386,7 +1369,7 @@
 
                         {{-- ────────── STEP 6: ASSESSMENT COMPLETE (LEAD FORM) ────────── --}}
                         <div class="quiz-step" data-step="6-lead" style="display: none;">
-                            <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa]">
+                            <div class="w-full">
 
                                 <!-- Header Section - matches 5-common layout -->
                                 <div
@@ -1415,8 +1398,7 @@
                                 </div>
 
                                 <!-- Main Card Section - matches 5-common layout -->
-                                <div
-                                    class="max-w-[950px] w-[85%] mx-auto bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative z-10">
+                                <div class="relative z-10 w-full mb-12">
 
                                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
                                         <!-- Left: Qualification Info -->
@@ -1522,10 +1504,10 @@
 
                         {{-- ────────── STEP 7: RESULTS ────────── --}}
                         <div class="quiz-step" data-step="results" style="display: none;">
-                            <div class="relative w-full min-h-[500px] p-6 md:p-8 lg:p-12 bg-[#fafbfa]">
+                            <div class="w-full">
 
                                 <!-- Results Header - matches 5-common layout -->
-                                <div class="max-w-[950px] w-[85%] mx-auto mb-10">
+                                <div class="max-w-full w-full mx-auto mb-10">
                                     <span
                                         class="inline-block px-4 py-1.5 rounded-full bg-secondary-600 text-primary-900 text-[11px] font-bold tracking-widest uppercase shadow-sm mb-6">Assessment
                                         Complete</span>
@@ -1564,8 +1546,7 @@
                                 </div>
 
                                 <!-- Insight Summary Card - matches 5-common layout -->
-                                <div
-                                    class="max-w-[950px] w-[85%] mx-auto bg-white rounded-[2rem] border border-slate-100 p-8 md:p-10 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative z-10">
+                                <div class="relative z-10 w-full mb-12">
                                     <h3 class="flex items-center gap-3 text-[20px] font-bold text-primary-900">
                                         <div
                                             class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-900">
