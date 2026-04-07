@@ -129,10 +129,10 @@
             {{-- LEFT VISUAL PANEL --}}
             <div
                 class="relative w-full md:w-[40%] xl:w-[42%] flex flex-col p-8 md:p-10 left-panel-bg overflow-hidden border-r border-slate-100">
-                <div class="absolute inset-0 left-panel-overlay z-0"></div>
+                <div id="leftPanelOverlay" class="absolute inset-0 left-panel-overlay z-0"></div>
 
                 <div class="relative z-10 h-full flex flex-col justify-between">
-                    <div>
+                    <div id="leftPanelIntro">
                         <p class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 mb-4 shadow-sm"
                             id="leftStepCounter">STEP 01 OF 04</p>
                         <h1 class="font-display text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.15] text-primary-900 tracking-tight transition-all duration-300"
@@ -141,14 +141,21 @@
                         </h1>
                     </div>
 
-                    <div class="hidden md:block">
-                        {{-- Decorative element if needed --}}
+                    <div id="quizVisualCaption" class="hidden mt-auto max-w-md text-white">
+                        <h3 class="font-display text-xl font-bold text-white mb-3" id="quizVisualCaptionTitle">
+                            Practice-Driven Diagnostics
+                        </h3>
+                        <p class="text-sm text-white/85 leading-relaxed" id="quizVisualCaptionDescription">
+                            Each medical specialization has distinct diagnostic priorities. Choosing the right tests and
+                            kits aligned with your practice can improve patient outcomes while creating additional in-clinic
+                            value.
+                        </p>
                     </div>
                 </div>
             </div>
 
             {{-- RIGHT CONTENT PANEL --}}
-            <div class="flex-1 flex flex-col p-6 md:p-10 xl:p-12 overflow-y-auto">
+            <div id="quizRightPanel" class="flex-1 flex flex-col p-6 md:p-10 xl:p-12 overflow-y-auto">
 
                 <div id="quizFormArea" class="max-w-4xl w-full mx-auto">
 
@@ -332,19 +339,17 @@
                             </section>
                         </div>
 
-                        {{-- DYNAMIC STEP 2 (B2C) - Two-column layout per reference --}}
-                        <div id="dynamicSteps">
-                            <!-- B2C Layout -->
-                            <div class="quiz-step" data-step="2-b2c" style="display: none;">
-                                <div class="max-w-full w-full mx-auto">
-                                        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
-                                            <div class="flex-1 flex flex-col">
-                                                <div class="mb-6">
-                                                    <span
-                                                        class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm">
-                                                        STEP 2 OF 4
-                                                    </span>
-                                                </div>
+                        <!-- B2C Layout (Step 2) -->
+                        <div class="quiz-step" data-step="2-b2c" style="display: none;">
+                            <div class="w-full">
+                                <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                                    <div class="flex-1 flex flex-col">
+                                        <div class="mb-6">
+                                            <span class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm">
+                                                STEP 02 OF 04
+                                            </span>
+                                        </div>
+
                                                 <h2
                                                     class="font-display text-2xl md:text-3xl font-bold text-primary-900 leading-[1.15] tracking-tight mb-8">
                                                     Tell Us About Your<br>Practice</h2>
@@ -457,7 +462,7 @@
                                                 <div class="mb-10"><input type="text"
                                                         class="w-full h-12 rounded-[var(--ui-radius-field)] border-none bg-primary-50/30 px-5 text-sm font-medium text-slate-900 ring-1 ring-slate-100 outline-none transition focus:ring-2 focus:ring-primary-600 focus:bg-white"
                                                         placeholder="Type your specialization"></div>
-                                                <div class="flex items-center justify-between mt-10">
+                                                <div class="flex items-center justify-between mt-auto pt-10">
                                                     <button
                                                         class="flex items-center gap-2 text-slate-400 font-bold text-sm tracking-wide transition hover:text-slate-800"
                                                         onclick="prevStep(1)"><svg class="w-4 h-4" fill="none"
@@ -474,9 +479,9 @@
                                                         </svg></button>
                                                 </div>
                                             </div>
-                                            <div class="hidden lg:flex lg:w-[40%] flex-shrink-0">
+                                            <div class="hidden">
                                                 <div
-                                                    class="relative w-full h-full rounded-3xl overflow-hidden shadow-xl">
+                                                    class="relative w-full min-h-[560px] rounded-3xl overflow-hidden shadow-xl">
                                                     <img src="{{ asset('upload/corousel/image3.jpg') }}"
                                                         alt="Practice Diagnostics"
                                                         class="absolute inset-0 w-full h-full object-cover">
@@ -886,10 +891,11 @@
                                             </div>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Step 3 B2C Layout -->
+                        <div class="quiz-step" data-step="3-b2c" style="display: none;">
+                            <div class="w-full py-4">
 
-                            <!-- Step 3 B2C Layout -->
-                            <div class="quiz-step" data-step="3-b2c" style="display: none;">
-                                <div class="max-w-full w-full mx-auto py-4">
                                         <!-- Top Header part -->
                                         <div class="flex flex-col md:flex-row justify-between mb-16 items-start gap-12">
                                             <div class="md:w-1/3">
@@ -1029,18 +1035,17 @@
                                     </div>
                             </div>
                         </div>
-
                         <!-- Step 4-b2b Container -->
                         <div class="quiz-step" data-step="4-b2b" style="display: none;">
-                                <div class="max-w-full w-full mx-auto">
-
+                            <div class="w-full">
                                 <!-- Header Section -->
-                                <div
-                                    class="max-w-[950px] w-[85%] mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                                <div class="max-w-[950px] w-full mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+
                                     <div>
-                                        <span
-                                            class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm mb-4">STEP
-                                            4 OF 5</span>
+                                        <span class="inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 shadow-sm mb-4">
+                                            STEP 04 OF 05
+                                        </span>
+
                                         <h2
                                             class="font-display text-4xl md:text-[44px] font-bold text-primary-900 tracking-tight leading-[1.05]">
                                             Product Focus Areas</h2>
@@ -1671,34 +1676,75 @@
 
         function updateLayoutForStep(actualStep) {
             const leftPanel = document.querySelector('.left-panel-bg');
+            const leftPanelOverlay = document.getElementById('leftPanelOverlay');
+            const leftPanelIntro = document.getElementById('leftPanelIntro');
+            const quizVisualCaption = document.getElementById('quizVisualCaption');
+            const quizVisualCaptionTitle = document.getElementById('quizVisualCaptionTitle');
+            const quizVisualCaptionDescription = document.getElementById('quizVisualCaptionDescription');
             const headerRow = document.getElementById('quizFormArea').querySelector('.flex.flex-col.lg\\:flex-row');
-            const rightPanel = document.querySelector('.flex-1.flex.flex-col');
+            const rightPanel = document.getElementById('quizRightPanel');
+            const formArea = document.getElementById('quizFormArea');
+            const counter = document.getElementById('leftStepCounter');
+            const title = document.getElementById('leftStepTitle');
+            const isStepTwoPractice = actualStep === '2-b2c';
 
             if (actualStep === 1) {
                 if (leftPanel) leftPanel.style.display = '';
+                if (leftPanel) {
+                    leftPanel.classList.remove('order-2', 'md:order-2', 'border-l');
+                    leftPanel.classList.add('border-r');
+                }
+                if (rightPanel) rightPanel.classList.remove('order-1', 'md:order-1');
+                if (leftPanelOverlay) leftPanelOverlay.className = 'absolute inset-0 left-panel-overlay z-0';
+                if (leftPanelIntro) leftPanelIntro.classList.remove('hidden');
+                if (quizVisualCaption) quizVisualCaption.classList.add('hidden');
                 if (headerRow) headerRow.style.display = '';
                 if (rightPanel) rightPanel.className = 'flex-1 flex flex-col p-6 md:p-12 xl:p-20 overflow-y-auto';
-                document.getElementById('quizFormArea').classList.add('max-w-4xl');
-                document.getElementById('quizFormArea').classList.remove('max-w-full');
-                const counter = document.getElementById('leftStepCounter');
+                formArea.classList.add('max-w-4xl');
+                formArea.classList.remove('max-w-full');
                 if (counter) {
                     counter.innerText = 'STEP 01 OF 04';
                     counter.className = 'inline-flex w-fit rounded-full bg-secondary-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-primary-900 mb-4 shadow-sm';
                 }
-                document.getElementById('leftStepTitle').innerHTML = 'Let\'s Understand<br>Your Setup';
+                if (title) title.innerHTML = 'Let\'s Understand<br>Your Setup';
+            } else if (isStepTwoPractice) {
+                if (leftPanel) {
+                    leftPanel.style.display = '';
+                    leftPanel.classList.remove('border-r');
+                    leftPanel.classList.add('order-2', 'md:order-2', 'border-l');
+                }
+                if (rightPanel) {
+                    rightPanel.className = 'order-1 md:order-1 flex-1 flex flex-col p-6 md:p-10 xl:p-12 overflow-y-auto';
+                }
+                if (leftPanelOverlay) {
+                    leftPanelOverlay.className = 'absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/60 to-transparent z-0';
+                }
+                if (leftPanelIntro) leftPanelIntro.classList.add('hidden');
+                if (quizVisualCaption) quizVisualCaption.classList.remove('hidden');
+                if (quizVisualCaptionTitle) quizVisualCaptionTitle.textContent = 'Practice-Driven Diagnostics';
+                if (quizVisualCaptionDescription) {
+                    quizVisualCaptionDescription.textContent = 'Each medical specialization has distinct diagnostic priorities. Choosing the right tests and kits aligned with your practice can improve patient outcomes while creating additional in-clinic value.';
+                }
+                if (headerRow) headerRow.style.display = 'none';
+                formArea.classList.add('max-w-4xl');
+                formArea.classList.remove('max-w-full');
             } else {
                 // All other steps: hide left panel and header
                 if (leftPanel) leftPanel.style.display = 'none';
+                if (leftPanel) {
+                    leftPanel.classList.remove('order-2', 'md:order-2', 'border-l');
+                    leftPanel.classList.add('border-r');
+                }
+                if (rightPanel) rightPanel.classList.remove('order-1', 'md:order-1');
+                if (leftPanelOverlay) leftPanelOverlay.className = 'absolute inset-0 left-panel-overlay z-0';
+                if (leftPanelIntro) leftPanelIntro.classList.remove('hidden');
+                if (quizVisualCaption) quizVisualCaption.classList.add('hidden');
                 if (headerRow) headerRow.style.display = 'none';
-                document.getElementById('quizFormArea').classList.remove('max-w-4xl');
-                document.getElementById('quizFormArea').classList.add('max-w-full');
+                formArea.classList.remove('max-w-4xl');
+                formArea.classList.add('max-w-full');
 
                 if (rightPanel) {
-                    if (actualStep === '2-b2c') {
-                        rightPanel.className = 'flex-1 flex flex-col p-6 md:p-8 xl:p-12 overflow-y-auto';
-                    } else {
-                        rightPanel.className = 'flex-1 flex flex-col p-0 overflow-y-auto';
-                    }
+                    rightPanel.className = 'flex-1 flex flex-col p-0 overflow-y-auto';
                 }
 
                 // Update step counter on 5-common based on path
@@ -1727,9 +1773,30 @@
             }
         }
 
+        function resetQuizViewport() {
+            const rightPanel = document.getElementById('quizRightPanel');
+            const quizContainer = document.querySelector('.quiz-container');
+
+            if (rightPanel) {
+                rightPanel.scrollTop = 0;
+            }
+
+            if (quizContainer) {
+                window.requestAnimationFrame(() => {
+                    quizContainer.scrollIntoView({ block: 'start', behavior: 'auto' });
+                });
+            }
+        }
+
         function nextStep(step) {
             const active = document.querySelector('.quiz-step.active');
             let actualStep = getActualStep(step);
+            const nextEl = document.querySelector('.quiz-step[data-step="' + actualStep + '"]');
+
+            if (!active || !nextEl) {
+                console.warn('Quiz step transition failed.', { requestedStep: step, actualStep });
+                return;
+            }
 
             if (!active.querySelector('.quiz-option.selected') && !active.querySelector('.selected') && actualStep !== 'results' && active.dataset.step !== '6-lead' && active.dataset.step !== '5-common') {
                 alert('Please select an option');
@@ -1739,13 +1806,11 @@
             active.classList.remove('active');
             active.style.display = 'none';
 
-            const nextEl = document.querySelector('.quiz-step[data-step="' + actualStep + '"]');
-            if (nextEl) {
-                nextEl.style.display = 'block';
-                setTimeout(() => nextEl.classList.add('active'), 10);
-            }
+            nextEl.style.display = 'block';
+            setTimeout(() => nextEl.classList.add('active'), 10);
 
             updateLayoutForStep(actualStep);
+            resetQuizViewport();
         }
 
         function prevStep(stepTarget) {
@@ -1757,17 +1822,21 @@
             }
 
             let actualStep = getActualStep(stepTarget);
+            const prevEl = document.querySelector('.quiz-step[data-step="' + actualStep + '"]');
+
+            if (!active || !prevEl) {
+                console.warn('Quiz step transition failed.', { requestedStep: stepTarget, actualStep });
+                return;
+            }
 
             active.classList.remove('active');
             active.style.display = 'none';
 
-            const prevEl = document.querySelector('.quiz-step[data-step="' + actualStep + '"]');
-            if (prevEl) {
-                prevEl.style.display = 'block';
-                setTimeout(() => prevEl.classList.add('active'), 10);
-            }
+            prevEl.style.display = 'block';
+            setTimeout(() => prevEl.classList.add('active'), 10);
 
             updateLayoutForStep(actualStep);
+            resetQuizViewport();
         }
 
         function submitLeadForm() {
@@ -1794,6 +1863,7 @@
             }
 
             updateLayoutForStep('results');
+            resetQuizViewport();
         }
     </script>
 @endsection
