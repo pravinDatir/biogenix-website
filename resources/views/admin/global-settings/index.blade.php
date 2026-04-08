@@ -3,6 +3,8 @@
 @section('title', 'Global Settings - Biogenix Admin')
 
 @section('admin_content')
+
+
 @php
     $themeModes = [
         [

@@ -24,7 +24,7 @@
         </div>
 
         {{-- Form Card --}}
-        <div class="rounded-[20px] border border-slate-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
             <div class="space-y-6 max-w-2xl">
                 
                 {{-- Select User --}}
@@ -140,3 +140,4 @@
 </script>
 @endpush
 @endsection
+

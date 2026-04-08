@@ -6,14 +6,7 @@
 
 <div class="space-y-6">
 
-    <!-- Breadcrumb -->
-    <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-slate-900 transition flex items-center gap-1.5">
-            Admin
-        </a>
-        <span class="mx-2 text-slate-300">/</span>
-        <span class="text-slate-900 font-semibold">Order Management</span>
-    </nav>
+
 
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">

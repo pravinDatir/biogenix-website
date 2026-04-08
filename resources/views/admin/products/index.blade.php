@@ -4,14 +4,7 @@
 
 @section('admin_content')
             
-            <!-- Breadcrumb -->
-            <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-                <a href="{{ route('admin.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
-                    Admin
-                </a>
-                <span class="mx-2 text-slate-300">/</span>
-                <span class="text-slate-900 font-semibold">Products</span>
-            </nav>
+
 
             <!-- Welcome Header -->
             <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">

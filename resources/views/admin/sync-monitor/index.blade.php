@@ -3,6 +3,8 @@
 @section('title', 'Server Sync Monitor - Biogenix Admin')
 
 @section('admin_content')
+
+
 @php
     $syncNodes = [
         [

@@ -43,14 +43,14 @@
         </div>
 
         {{-- Role Details Card --}}
-        <div class="rounded-[20px] border border-slate-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
             <div class="flex items-center gap-2.5 mb-6">
                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-primary-600">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </span>
-                <h2 class="text-[17px] font-extrabold text-slate-950">Role Details</h2>
+                <h2 class="text-[17px] font-extrabold text-slate-900">Role Details</h2>
             </div>
 
             <div class="space-y-5">
@@ -66,7 +66,7 @@
         </div>
 
         {{-- Assign Permissions Card --}}
-        <div class="rounded-[20px] border border-slate-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
             <div class="flex items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-2.5">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600">
@@ -74,7 +74,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                         </svg>
                     </span>
-                    <h2 class="text-[17px] font-extrabold text-slate-950">Assign Permissions</h2>
+                    <h2 class="text-[17px] font-extrabold text-slate-900">Assign Permissions</h2>
                 </div>
 
                 <div class="relative w-52">
@@ -157,3 +157,4 @@
 </script>
 @endpush
 @endsection
+

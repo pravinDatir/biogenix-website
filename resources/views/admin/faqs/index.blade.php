@@ -1,94 +1,79 @@
-@extends('layouts.app')
+@extends('admin.layout')
 
-@php
-    $panelClass = 'rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:p-8';
-    $sectionTitleClass = 'text-xl font-semibold text-slate-950';
-    $sectionCopyClass = 'mt-1 text-sm leading-6 text-slate-500';
-    $fieldLabelClass = 'mb-2 block text-sm font-semibold text-slate-700';
-    $fieldClass = 'h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 shadow-sm outline-none transition focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10';
-    $textareaClass = 'min-h-[8rem] w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10';
-    $primaryButtonClass = 'inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700';
-    $secondaryButtonClass = 'inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50';
-    $dangerButtonClass = 'inline-flex h-10 items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-4 text-sm font-semibold text-rose-700 transition hover:bg-rose-100';
-    $badgeClass = 'inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold';
-    $tableWrapClass = 'overflow-x-auto rounded-2xl border border-slate-200';
-    $tableHeadClass = 'bg-slate-50 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500';
-    $tableCellClass = 'px-4 py-4 align-top text-sm text-slate-700';
-@endphp
+@section('title', 'FAQ Management - Biogenix Admin')
 
-@section('title', 'FAQ Management')
+@section('admin_content')
 
-@section('content')
-    <div class="mx-auto w-full max-w-none space-y-6 px-4 py-6 sm:px-6 lg:px-8 xl:px-10">
-        {{-- Business step: keep FAQ summary cards at the top so admins can understand content volume before editing rows. --}}
-        <section class="rounded-[32px] border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f8fbff_58%,#dbeafe_100%)] p-6 shadow-sm md:p-8">
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                <div class="max-w-3xl">
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">Content Operations</p>
-                    <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">FAQ Management</h1>
-                    <p class="mt-3 text-sm leading-7 text-slate-600 md:text-base">
-                        Manage public FAQ content, control the business display order, and keep one default-open answer ready for first-time visitors.
-                    </p>
+
+
+    <!-- Welcome Header -->
+    <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">FAQ Management</h1>
+            <p class="text-sm text-slate-500 mt-1">Manage public FAQ content, display order, and status.</p>
+        </div>
+        <a href="{{ route('faq') }}" target="_blank" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+            Public FAQ Page
+        </a>
+    </div>
+
+    <div class="space-y-6">
+        <!-- Stats Sidebar Grid -->
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] md:p-8">
+            <div class="grid gap-4 sm:grid-cols-3">
+                <div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-4">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total FAQs</p>
+                    <p class="mt-2 text-2xl font-extrabold text-slate-900">{{ $faqSummary['total_faqs'] }}</p>
                 </div>
-                <div class="grid gap-3 sm:grid-cols-3">
-                    <div class="rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Total FAQs</p>
-                        <p class="mt-2 text-2xl font-bold text-slate-950">{{ $faqSummary['total_faqs'] }}</p>
-                    </div>
-                    <div class="rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Active FAQs</p>
-                        <p class="mt-2 text-2xl font-bold text-slate-950">{{ $faqSummary['active_faqs'] }}</p>
-                    </div>
-                    <div class="rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Categories</p>
-                        <p class="mt-2 text-2xl font-bold text-slate-950">{{ $faqSummary['categories'] }}</p>
-                    </div>
+                <div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-4">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Active FAQs</p>
+                    <p class="mt-2 text-2xl font-extrabold text-slate-900">{{ $faqSummary['active_faqs'] }}</p>
+                </div>
+                <div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-4">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Categories</p>
+                    <p class="mt-2 text-2xl font-extrabold text-slate-900">{{ $faqSummary['categories'] }}</p>
                 </div>
             </div>
         </section>
 
         @if (session('status'))
-            <div class="rounded-2xl border border-primary-200 bg-primary-50 px-4 py-4 text-sm font-medium text-primary-600">
+            <div class="rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-[13px] font-bold text-primary-700">
                 {{ session('status') }}
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700">
-                <p class="font-semibold">Please resolve the following issues:</p>
-                <ul class="mt-2 space-y-1">
+            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-[13px] text-rose-700">
+                <p class="font-bold uppercase tracking-widest text-[10px] mb-2 text-rose-500">Validation Errors</p>
+                <ul class="space-y-1 font-medium">
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <li class="flex items-center gap-2">
+                            <span class="h-1 w-1 rounded-full bg-rose-400"></span>
+                            {{ $error }}
+                        </li>
                     @endforeach
                 </ul>
             </div>
         @endif
 
-        {{-- Fresher note: keep create and update in one familiar form so the flow is easy to trace. --}}
-        <section class="{{ $panelClass }}">
-            <div class="flex items-start gap-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5.25v13.5m6.75-6.75H5.25" />
-                    </svg>
-                </div>
-                <div>
-                    <h2 class="{{ $sectionTitleClass }}">{{ $editingFaq ? 'Update FAQ' : 'Add FAQ' }}</h2>
-                    <p class="{{ $sectionCopyClass }}">Keep category, wording, and sort order clear so both customers and support teams can find answers quickly.</p>
-                </div>
+        <!-- FAQ Form -->
+        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-slate-900">{{ $editingFaq ? 'Update FAQ' : 'Add New FAQ' }}</h2>
+                <p class="text-sm text-slate-500 mt-1">Keep questions clear and concise for better customer experience.</p>
             </div>
 
-            <form method="POST" action="{{ $editingFaq ? route('admin.faqs.update', $editingFaq->id) : route('admin.faqs.store') }}" class="mt-6 space-y-5">
+            <form method="POST" action="{{ $editingFaq ? route('admin.faqs.update', $editingFaq->id) : route('admin.faqs.store') }}" class="space-y-4">
                 @csrf
+                @if ($editingFaq) @method('PUT') @endif
 
-                @if ($editingFaq)
-                    @method('PUT')
-                @endif
-
-                <div class="grid gap-5 lg:grid-cols-2">
+                <div class="grid gap-4 lg:grid-cols-2">
                     <div>
-                        <label for="faq_category" class="{{ $fieldLabelClass }}">Category</label>
-                        <select id="faq_category" name="category" class="{{ $fieldClass }}" required>
+                        <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Category</label>
+                        <select name="category" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium" required>
                             <option value="">Select category</option>
                             @foreach ($faqCategoryOptions as $faqCategoryOption)
                                 <option value="{{ $faqCategoryOption }}" @selected(old('category', $editingFaq->category ?? '') === $faqCategoryOption)>
@@ -99,141 +84,108 @@
                     </div>
 
                     <div>
-                        <label for="faq_sort_order" class="{{ $fieldLabelClass }}">Sort Order</label>
-                        <input
-                            id="faq_sort_order"
-                            type="number"
-                            name="sort_order"
-                            min="0"
-                            value="{{ old('sort_order', $editingFaq->sort_order ?? 0) }}"
-                            class="{{ $fieldClass }}"
-                            required
-                        >
+                        <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Sort Order</label>
+                        <input type="number" name="sort_order" min="0" value="{{ old('sort_order', $editingFaq->sort_order ?? 0) }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium" required>
                     </div>
                 </div>
 
                 <div>
-                    <label for="faq_question" class="{{ $fieldLabelClass }}">Question</label>
-                    <input
-                        id="faq_question"
-                        name="question"
-                        value="{{ old('question', $editingFaq->question ?? '') }}"
-                        class="{{ $fieldClass }}"
-                        required
-                    >
+                    <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Question</label>
+                    <input name="question" value="{{ old('question', $editingFaq->question ?? '') }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium" required>
                 </div>
 
                 <div>
-                    <label for="faq_answer" class="{{ $fieldLabelClass }}">Answer</label>
-                    <textarea id="faq_answer" name="answer" class="{{ $textareaClass }}" required>{{ old('answer', $editingFaq->answer ?? '') }}</textarea>
+                    <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Answer</label>
+                    <textarea name="answer" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 min-h-[140px] focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium" required>{{ old('answer', $editingFaq->answer ?? '') }}</textarea>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2">
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                    <label class="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition cursor-pointer hover:bg-white">
                         <input type="hidden" name="is_default_open" value="0">
-                        <input
-                            type="checkbox"
-                            name="is_default_open"
-                            value="1"
-                            class="mt-1 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
-                            {{ old('is_default_open', $editingFaq?->is_default_open ?? false) ? 'checked' : '' }}
-                        >
-                        <span>
-                            <span class="block font-semibold text-slate-950">Default Open</span>
-                            <span class="mt-1 block text-slate-500">Make this the first expanded FAQ on the public page.</span>
-                        </span>
+                        <input type="checkbox" name="is_default_open" value="1" @checked(old('is_default_open', $editingFaq?->is_default_open ?? false)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600">
+                        <div class="flex flex-col">
+                            <span class="text-[13px] font-bold text-slate-900">Default Expanded</span>
+                            <span class="text-[11px] text-slate-400 font-medium mt-1">Make this FAQ open by default on the public page.</span>
+                        </div>
                     </label>
 
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700">
+                    <label class="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition cursor-pointer hover:bg-white">
                         <input type="hidden" name="is_active" value="0">
-                        <input
-                            type="checkbox"
-                            name="is_active"
-                            value="1"
-                            class="mt-1 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
-                            {{ old('is_active', $editingFaq?->is_active ?? true) ? 'checked' : '' }}
-                        >
-                        <span>
-                            <span class="block font-semibold text-slate-950">Active</span>
-                            <span class="mt-1 block text-slate-500">Inactive FAQs stay in backend history but are hidden on the public page.</span>
-                        </span>
+                        <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $editingFaq?->is_active ?? true)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-600">
+                        <div class="flex flex-col">
+                            <span class="text-[13px] font-bold text-slate-900">Active</span>
+                            <span class="text-[11px] text-slate-400 font-medium mt-1">Visible on the public FAQ page.</span>
+                        </div>
                     </label>
                 </div>
 
-                <div class="flex flex-wrap gap-3">
-                    <button class="{{ $primaryButtonClass }}" type="submit">
+                <div class="flex items-center gap-3">
+                    <button class="px-6 py-2.5 rounded-xl text-sm font-extrabold text-white bg-primary-600 hover:bg-primary-700 transition shadow-lg shadow-primary-600/20 cursor-pointer" type="submit">
                         {{ $editingFaq ? 'Update FAQ' : 'Add FAQ' }}
                     </button>
-
                     @if ($editingFaq)
-                        <a class="{{ $secondaryButtonClass }}" href="{{ route('admin.faqs.index') }}">Cancel</a>
+                        <a class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer" href="{{ route('admin.faqs.index') }}">Cancel</a>
                     @endif
                 </div>
             </form>
         </section>
 
-        {{-- Business step: show the table in the exact backend order requested by the team. --}}
-        <section class="{{ $panelClass }}">
-            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <!-- FAQs Table -->
+        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-6">
                 <div>
-                    <h2 class="{{ $sectionTitleClass }}">Existing FAQs</h2>
-                    <p class="{{ $sectionCopyClass }}">Review question wording, display order, and activation status before making customer-facing changes.</p>
+                    <h2 class="text-lg font-bold text-slate-900">Existing FAQs</h2>
+                    <p class="text-sm text-slate-500 mt-1">Review wording and display order.</p>
                 </div>
-                <a href="{{ route('faq') }}" class="{{ $secondaryButtonClass }}">Open Public FAQ Page</a>
+                <span class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-[11px] font-bold text-primary-700 border border-primary-200/60">{{ $faqs->count() }} FAQs</span>
             </div>
 
             @if ($faqs->count())
-                <div class="mt-6 {{ $tableWrapClass }}">
-                    <table class="min-w-full divide-y divide-slate-200 bg-white">
-                        <thead class="{{ $tableHeadClass }}">
-                            <tr>
-                                <th class="px-4 py-3">Sr. No.</th>
-                                <th class="px-4 py-3">Category</th>
-                                <th class="px-4 py-3">Question</th>
-                                <th class="px-4 py-3">Answer</th>
-                                <th class="px-4 py-3">Sort Order</th>
-                                <th class="px-4 py-3">Default Open</th>
-                                <th class="px-4 py-3">is_active</th>
-                                <th class="px-4 py-3">created_at</th>
-                                <th class="px-4 py-3">Updated At</th>
-                                <th class="px-4 py-3">Actions</th>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-white border-b border-slate-100">
+                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest w-16">Sr.</th>
+                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
+                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Question</th>
+                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @foreach ($faqs as $faq)
-                                <tr>
-                                    <td class="{{ $tableCellClass }} font-semibold text-slate-950">{{ $loop->iteration }}</td>
-                                    <td class="{{ $tableCellClass }}">{{ $faq->category }}</td>
-                                    <td class="{{ $tableCellClass }} font-semibold text-slate-950">{{ $faq->question }}</td>
-                                    <td class="{{ $tableCellClass }}">
-                                        <div class="max-w-md leading-6 text-slate-600">{{ $faq->answer }}</div>
+                                <tr class="hover:bg-slate-50/50 transition-colors group">
+                                    <td class="px-5 py-4">
+                                        <span class="text-[13px] font-bold text-slate-400">#{{ $loop->iteration }}</span>
                                     </td>
-                                    <td class="{{ $tableCellClass }}">{{ $faq->sort_order }}</td>
-                                    <td class="{{ $tableCellClass }}">
-                                        @if ($faq->is_default_open)
-                                            <span class="{{ $badgeClass }} border-primary-200 bg-primary-50 text-primary-700">Yes</span>
-                                        @else
-                                            <span class="{{ $badgeClass }} border-slate-200 bg-slate-50 text-slate-600">No</span>
-                                        @endif
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex items-center px-3 py-1 bg-slate-50 text-slate-700 border border-slate-200/60 text-[10px] font-black uppercase tracking-widest rounded-full">{{ $faq->category }}</span>
                                     </td>
-                                    <td class="{{ $tableCellClass }}">
-                                        @if ($faq->is_active)
-                                            <span class="{{ $badgeClass }} border-primary-200 bg-primary-50 text-primary-600">Active</span>
-                                        @else
-                                            <span class="{{ $badgeClass }} border-rose-200 bg-rose-50 text-rose-700">Inactive</span>
-                                        @endif
+                                    <td class="px-5 py-4">
+                                        <div class="flex flex-col max-w-sm truncate">
+                                            <span class="text-[13px] font-bold text-slate-900 truncate">{{ $faq->question }}</span>
+                                            <span class="text-[11px] text-slate-400 font-medium truncate mt-0.5">{{ $faq->answer }}</span>
+                                        </div>
                                     </td>
-                                    <td class="{{ $tableCellClass }}">{{ $faq->created_at?->format('d M Y, h:i A') ?? '-' }}</td>
-                                    <td class="{{ $tableCellClass }}">{{ $faq->updated_at?->format('d M Y, h:i A') ?? '-' }}</td>
-                                    <td class="{{ $tableCellClass }}">
-                                        <div class="flex flex-wrap gap-2">
-                                            <a class="{{ $secondaryButtonClass }}" href="{{ route('admin.faqs.show', $faq->id) }}">Edit</a>
-                                            <a class="{{ $secondaryButtonClass }}" href="{{ route('faq') }}#faqAccordion">View Public</a>
+                                    <td class="px-5 py-4">
+                                        <div class="flex flex-col gap-1.5">
+                                            @if ($faq->is_active)
+                                                <span class="inline-flex items-center w-fit px-2 py-0.5 bg-primary-50 text-primary-600 text-[10px] font-black uppercase tracking-widest rounded border border-primary-200/60">Active</span>
+                                            @else
+                                                <span class="inline-flex items-center w-fit px-2 py-0.5 bg-rose-50 text-rose-600 text-[10px] font-black uppercase tracking-widest rounded border border-rose-200/60">Hidden</span>
+                                            @endif
 
+                                            @if ($faq->is_default_open)
+                                                <span class="inline-flex items-center w-fit px-2 py-0.5 bg-secondary-50 text-secondary-700 text-[9px] font-black uppercase tracking-widest rounded border border-secondary-200/60">Expanded</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <a class="text-primary-600 hover:text-primary-700 transition font-bold text-xs uppercase tracking-widest" href="{{ route('admin.faqs.show', $faq->id) }}">Edit</a>
                                             <form method="POST" action="{{ route('admin.faqs.delete', $faq->id) }}" onsubmit="return confirm('Delete this FAQ?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="{{ $dangerButtonClass }}" type="submit">Delete</button>
+                                                @csrf @method('DELETE')
+                                                <button class="text-rose-600 hover:text-rose-700 transition font-bold text-xs uppercase tracking-widest cursor-pointer" type="submit">Delete</button>
                                             </form>
                                         </div>
                                     </td>
@@ -243,7 +195,15 @@
                     </table>
                 </div>
             @else
-                <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">No FAQ rows found yet.</div>
+                <div class="flex flex-col items-center justify-center py-12 px-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                    <div class="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                        <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </div>
+                    <p class="text-[13px] font-bold text-slate-600 uppercase tracking-widest">No FAQs Found</p>
+                    <p class="text-xs text-slate-400 mt-1">Start by adding your first FAQ question.</p>
+                </div>
             @endif
         </section>
     </div>

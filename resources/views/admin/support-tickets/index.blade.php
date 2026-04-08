@@ -4,12 +4,7 @@
 
 @section('admin_content')
 
-    {{-- Breadcrumb --}}
-    <nav class="flex text-[13px] text-slate-500 font-medium mb-2">
-        <a href="{{ route('admin.dashboard') }}" class="ajax-link hover:text-slate-900 transition cursor-pointer">Admin</a>
-        <span class="mx-2 text-slate-300">/</span>
-        <span class="text-slate-900 font-semibold">Support Tickets</span>
-    </nav>
+
 
     {{-- Page Header --}}
     <div class="mb-5 flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -60,7 +55,8 @@
                     ];
                     @endphp
 
-                    @foreach($tickets as $t)
+                    @if (count($tickets))
+                        @foreach($tickets as $t)
                     <tr class="hover:bg-slate-50/60 transition-colors cursor-pointer ticket-row" onclick="selectTicket('{{ $t['id'] }}')" data-ticket="{{ $t['id'] }}" data-name="{{ strtolower($t['customer']) }}" data-subject="{{ strtolower($t['subject']) }}">
                         <td class="px-6 py-3.5">
                             <span class="text-[13px] font-extrabold text-primary-800">#{{ $t['id'] }}</span>
@@ -92,7 +88,20 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="5" class="px-6 py-12">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                        <svg class="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z" /></svg>
+                                    </div>
+                                    <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-widest">No Tickets Found</h3>
+                                    <p class="text-xs text-slate-400 mt-1">There are no support tickets matching your search or filters.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
 
                 </tbody>
             </table>

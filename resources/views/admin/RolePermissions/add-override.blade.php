@@ -26,13 +26,13 @@
         </div>
 
         {{-- Override Form Card --}}
-        <div class="rounded-[20px] border border-slate-200/80 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
 
             {{-- Step 1: Select User --}}
             <div class="mb-8">
                 <div class="flex items-center gap-2.5 mb-5">
                     <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-white text-[12px] font-extrabold">1</span>
-                    <h2 class="text-[17px] font-extrabold text-slate-950">Select User</h2>
+                    <h2 class="text-[17px] font-extrabold text-slate-900">Select User</h2>
                 </div>
 
                 <label class="block text-[13px] font-bold text-slate-700 mb-2">Search User</label>
@@ -70,7 +70,7 @@
             <div>
                 <div class="flex items-center gap-2.5 mb-5">
                     <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-white text-[12px] font-extrabold">2</span>
-                    <h2 class="text-[17px] font-extrabold text-slate-950">Configure Override</h2>
+                    <h2 class="text-[17px] font-extrabold text-slate-900">Configure Override</h2>
                 </div>
 
                 <label class="block text-[13px] font-bold text-slate-700 mb-2">Find Permission</label>
@@ -201,3 +201,4 @@
 </script>
 @endpush
 @endsection
+

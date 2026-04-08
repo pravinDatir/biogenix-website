@@ -10,17 +10,8 @@
         <a href="{{ route('admin.pi-quotation.index') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to Quotations">
             <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         </a>
-        <nav class="flex text-[13px] text-slate-500 font-medium">
-            <a href="{{ route('admin.dashboard') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
-                Admin
-            </a>
-            <span class="mx-2 text-slate-300">/</span>
-            <a href="{{ route('admin.pi-quotation.index') }}" class="ajax-link hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
-                Quotation / PI
-            </a>
-            <span class="mx-2 text-slate-300">/</span>
-            <span class="text-slate-900 font-semibold cursor-pointer">Generate PI Quotation</span>
-        </nav>
+        
+
     </div>
 
     {{-- ─── Page Header ─── --}}
@@ -208,6 +199,10 @@
                 <div class="flex justify-between border-b border-primary-500/30 pb-3 text-sm">
                     <span class="text-primary-100/80">Subtotal</span>
                     <span class="font-bold text-white" id="sumSubtotal">₹ 0.00</span>
+                </div>
+                <div class="flex justify-between border-b border-primary-500/30 pb-3 text-sm">
+                    <span class="text-primary-100/80">GST Total</span>
+                    <span class="font-bold text-white" id="sumGst">₹ 0.00</span>
                 </div>
                 <div class="flex justify-between border-b border-primary-500/30 pb-3 text-sm">
                     <span class="text-primary-100/80">Freight Charges</span>
