@@ -29,10 +29,11 @@ class QuizeService
         ];
     }
 
-    // This loads the full quiz question set with answer choices in display order.
+    // This loads the initial common questions for the quiz page.
     public function quizQuestions(): Collection
     {
         $quizQuestions = QuizeQuestion::query()
+            ->where('user_type', 'common')
             ->with(['answerOptions' => function ($query): void {
                 $query->orderBy('display_order')->orderBy('id');
             }])
@@ -41,7 +42,30 @@ class QuizeService
             ->get();
 
         if ($quizQuestions->isEmpty()) {
-            Log::warning('Diagnostic quiz questions are not configured.');
+            Log::warning('Common diagnostic quiz questions are not configured.');
+        }
+
+        return $quizQuestions;
+    }
+
+    // This loads quiz questions specific to the selected user type.
+    public function quizQuestionsByUserType(string $selectedUserType): Collection
+    {
+        $userTypeList = ['common', $selectedUserType];
+
+        $quizQuestions = QuizeQuestion::query()
+            ->whereIn('user_type', $userTypeList)
+            ->with(['answerOptions' => function ($query): void {
+                $query->orderBy('display_order')->orderBy('id');
+            }])
+            ->orderBy('display_order')
+            ->orderBy('id')
+            ->get();
+
+        if ($quizQuestions->isEmpty()) {
+            Log::warning('User-specific diagnostic quiz questions are not configured.', [
+                'user_type' => $selectedUserType,
+            ]);
         }
 
         return $quizQuestions;
@@ -50,11 +74,15 @@ class QuizeService
     // This validates the selected answers, calculates the result, and saves the participant response.
     public function createQuizResponse(array $validatedInput): array
     {
-        $quizQuestions = $this->quizQuestions();
+        // Get user selected type from input.
+        $selectedUserType = (string) $validatedInput['user_type'];
+
+        // Load quiz questions for this user type.
+        $quizQuestions = $this->quizQuestionsByUserType($selectedUserType);
 
         if ($quizQuestions->isEmpty()) {
             throw ValidationException::withMessages([
-                'quiz' => 'Quiz questions are not available right now. Please try again later.',
+                'quiz' => 'Quiz questions are not available for your selection. Please try again.',
             ]);
         }
 
@@ -71,8 +99,9 @@ class QuizeService
         $rewardCouponCode = $this->resolveRewardCouponCode();
 
         // Step 5: save the response header and the selected answer rows together.
-        $savedResponse = DB::transaction(function () use ($validatedInput, $scoreDetails, $rewardCouponCode): QuizeResponse {
+        $savedResponse = DB::transaction(function () use ($validatedInput, $scoreDetails, $rewardCouponCode, $selectedUserType): QuizeResponse {
             $quizeResponse = QuizeResponse::query()->create([
+                'user_type' => $selectedUserType,
                 'participant_first_name' => trim((string) $validatedInput['participant_first_name']),
                 'participant_last_name' => filled($validatedInput['participant_last_name'] ?? null)
                     ? trim((string) $validatedInput['participant_last_name'])
@@ -102,12 +131,14 @@ class QuizeService
 
         Log::info('Diagnostic quiz response saved successfully.', [
             'diagnostic_quiz_response_id' => $savedResponse->id,
+            'user_type' => $selectedUserType,
             'participant_email' => $savedResponse->participant_email,
             'score_percentage' => $savedResponse->score_percentage,
         ]);
 
         return [
             'response_id' => (int) $savedResponse->id,
+            'user_type' => $selectedUserType,
             'total_questions' => $scoreDetails['total_questions'],
             'total_correct_answers' => $scoreDetails['total_correct_answers'],
             'score_percentage' => $scoreDetails['score_percentage'],

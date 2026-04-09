@@ -14,6 +14,7 @@ class StoreQuizResponseRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_type' => ['required', 'string', 'in:common,doctor,lab,dealer,other'],
             'participant_first_name' => ['required', 'string', 'max:100'],
             'participant_last_name' => ['nullable', 'string', 'max:100'],
             'participant_email' => ['required', 'email', 'max:150'],

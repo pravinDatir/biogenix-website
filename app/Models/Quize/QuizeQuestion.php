@@ -10,6 +10,7 @@ class QuizeQuestion extends Model
     protected $table = 'diagnostic_quiz_questions';
 
     protected $fillable = [
+        'user_type',
         'phase_title',
         'question_text',
         'question_support_details',

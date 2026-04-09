@@ -10,6 +10,7 @@ class QuizeResponse extends Model
     protected $table = 'diagnostic_quiz_responses';
 
     protected $fillable = [
+        'user_type',
         'participant_first_name',
         'participant_last_name',
         'participant_email',

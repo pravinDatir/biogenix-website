@@ -15,11 +15,15 @@ return new class extends Migration
         if (! Schema::hasTable('diagnostic_quiz_questions')) {
             Schema::create('diagnostic_quiz_questions', function (Blueprint $table): void {
                 $table->id();
+                $table->string('user_type', 50)->default('common');
                 $table->string('phase_title', 150);
                 $table->text('question_text');
                 $table->json('question_support_details')->nullable();
                 $table->unsignedTinyInteger('display_order')->default(1);
                 $table->timestamps();
+
+                $table->unique(['user_type', 'display_order'], 'diagnostic_quiz_question_user_type_display_order_unique');
+                $table->index('user_type', 'diagnostic_quiz_question_user_type_index');
             });
         }
 
@@ -42,15 +46,20 @@ return new class extends Migration
         if (! Schema::hasTable('diagnostic_quiz_responses')) {
             Schema::create('diagnostic_quiz_responses', function (Blueprint $table): void {
                 $table->id();
+                $table->string('user_type', 50)->default('common');
                 $table->string('participant_first_name', 100);
                 $table->string('participant_last_name', 100)->nullable();
                 $table->string('participant_email', 150);
+                $table->unsignedTinyInteger('total_questions')->default(0);
                 $table->unsignedTinyInteger('total_correct_answers')->default(0);
                 $table->unsignedTinyInteger('score_percentage')->default(0);
                 $table->string('reward_coupon_code', 50)->nullable();
                 $table->timestamp('submitted_at')->useCurrent();
                 $table->timestamps();
 
+                $table->index(['participant_email', 'created_at'], 'diagnostic_quiz_response_email_created_index');
+                $table->index(['submitted_at'], 'diagnostic_quiz_response_submitted_at_index');
+                $table->index('user_type', 'diagnostic_quiz_response_user_type_index');
             });
         }
 
