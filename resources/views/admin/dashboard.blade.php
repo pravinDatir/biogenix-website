@@ -90,9 +90,9 @@
             </div>
 
             <!-- Charts Row -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Revenue Snapshot -->
-                <div class="lg:col-span-2 bg-white rounded-2xl p-6 lg:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 h-auto sm:h-[400px] flex flex-col justify-between relative overflow-hidden">
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Revenue Snapshot (Full Width) -->
+                <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 h-auto sm:h-[400px] flex flex-col justify-between relative overflow-hidden">
                     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                         <div>
                             <h3 class="text-lg font-bold text-slate-900">Revenue Snapshot</h3>
@@ -135,62 +135,12 @@
                         <span>SUN</span>
                     </div>
                 </div>
-
-                <!-- Fulfillment Distribution -->
-                <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col">
-                    <h3 class="text-base font-bold text-slate-900 mb-6">Fulfillment Distribution</h3>
-                    
-                    <div class="space-y-6 flex-1">
-                        <!-- Bar 1 -->
-                        <div>
-                            <div class="flex justify-between text-[11px] lg:text-[12px] font-semibold mb-2">
-                                <span class="text-slate-700">Direct Delivery</span>
-                                <span class="text-slate-500">62%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="h-2 w-[62%] rounded-full bg-primary-600"></div>
-                            </div>
-                        </div>
-
-                        <!-- Bar 2 -->
-                        <div>
-                            <div class="flex justify-between text-[11px] lg:text-[12px] font-semibold mb-2">
-                                <span class="text-slate-700">Express Logistics</span>
-                                <span class="text-slate-500">28%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="h-2 w-[28%] rounded-full bg-primary-600"></div>
-                            </div>
-                        </div>
-
-                        <!-- Bar 3 -->
-                        <div>
-                            <div class="flex justify-between text-[11px] lg:text-[12px] font-semibold mb-2">
-                                <span class="text-slate-700">Courier Partners</span>
-                                <span class="text-slate-500">10%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="h-2 w-[10%] rounded-full bg-primary-600"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Alert Box -->
-                    <div class="mt-8 bg-slate-100 border border-blue-100 rounded-xl p-4 lg:p-5">
-                        <div class="flex items-center gap-2 mb-2">
-                            <svg class="h-4 w-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                            <span class="text-[10px] lg:text-[11px] font-bold text-primary-800 uppercase tracking-wider">Storage Alert</span>
-                        </div>
-                        <p class="text-[11px] lg:text-[12px] text-slate-600 leading-relaxed mb-3">Warehouse B-4 is reaching 90% capacity for temperature-sensitive biologics. Immediate dispatch recommended.</p>
-                        <a href="#" class="text-[11px] lg:text-[12px] font-bold text-primary-800 hover:underline underline-offset-2">View Capacity Report</a>
-                    </div>
-                </div>
             </div>
 
             <!-- Priority Orders Table -->
             <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mt-6">
                 <div class="px-5 lg:px-7 py-5 lg:py-6 border-b border-slate-100 flex items-center justify-between">
-                    <h3 class="text-base font-bold text-slate-900">Priority Orders</h3>
+                    <h3 class="text-base font-bold text-slate-900">Recent Orders</h3>
                     <a href="{{ route('admin.orders') }}" class="ajax-link text-[12px] lg:text-[13px] font-bold text-primary-800 hover:underline underline-offset-2 cursor-pointer">View All Orders</a>
                 </div>
                 
@@ -207,7 +157,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100/80 text-[12px] lg:text-[13px] font-semibold text-slate-900">
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-9012</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -221,18 +171,11 @@
                                     <span class="inline-flex items-center px-2 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">Dispatching</span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <div class="relative inline-block">
-                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition cursor-pointer"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg></button>
-                                        <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
-                                            <a href="{{ route('admin.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
-                                            <button onclick="AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-9012.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
-                                        </div>
-                                    </div>
+                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-9012.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8994</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -246,18 +189,11 @@
                                     <span class="inline-flex items-center px-2 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">In Transit</span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <div class="relative inline-block">
-                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition cursor-pointer"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
-                                        <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
-                                            <a href="{{ route('admin.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
-                                        </div>
-                                    </div>
+                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-8994.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
                                 </td>
                             </tr>
 
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8851</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -271,14 +207,7 @@
                                     <span class="inline-flex items-center px-2 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">Delivered</span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
-                                    <div class="relative inline-block">
-                                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition cursor-pointer"><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/></svg></button>
-                                        <div class="hidden absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-20">
-                                            <a href="{{ route('admin.orders.view') }}" class="ajax-link flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> View</a>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg> Edit</button>
-                                            <button class="flex items-center gap-2 px-4 py-2 text-[13px] font-medium text-rose-600 hover:bg-rose-50 transition w-full text-left cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg> Cancel</button>
-                                        </div>
-                                    </div>
+                                    <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-8851.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
                                 </td>
                             </tr>
                         </tbody>

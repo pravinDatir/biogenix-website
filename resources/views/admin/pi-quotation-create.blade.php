@@ -1,13 +1,13 @@
 @extends('admin.layout')
 
-@section('title', 'Generate PI Quotation - Biogenix Admin')
+@section('title', 'Generate PI - Biogenix Admin')
 
 @section('admin_content')
 <div class="w-full py-8">
 
     <!-- Back Arrow + Breadcrumb -->
     <div class="flex items-center gap-3 mb-4">
-        <a href="{{ route('admin.pi-quotation.index') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to Quotations">
+        <a href="{{ route('admin.pi-quotation.index') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to PI Management">
             <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         </a>
         
@@ -17,7 +17,7 @@
     {{-- ─── Page Header ─── --}}
     <div class="mb-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Generate PI Quotation</h1>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Generate PI</h1>
             <p class="text-sm text-slate-500 mt-1">Create a new Proforma Invoice with product and billing details.</p>
         </div>
     </div>
@@ -33,8 +33,8 @@
         <div class="grid grid-cols-2 gap-5 sm:grid-cols-4">
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">PI Number</label>
-                <input id="piNumber" type="text" readonly
-                    class="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-800 outline-none">
+                <input id="piNumber" type="text" placeholder="Enter PI Number"
+                    class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition">
             </div>
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Date</label>
@@ -87,10 +87,14 @@
             </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4">
             <div>
                 <input id="contactPerson" type="text" placeholder="Contact Person"
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
+            </div>
+            <div>
+                <input id="customerEmail" type="email" placeholder="Email Address (Mandatory) *" required
+                    class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-400 transition">
             </div>
             <div>
                 <input id="customerGstin" type="text" placeholder="GSTIN (Customer)"
@@ -165,33 +169,22 @@
                         class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">
                 </li>
             </ol>
-            <button id="addTermBtn" type="button" class="mt-3 text-xs font-semibold text-primary-600 hover:underline cursor-pointer">+ Add Term</button>
         </div>
 
         {{-- Actions and Summary / Totals --}}
         <div>
             <!-- Save/Preview actions -->
-            <div class="mb-5 flex items-center gap-3">
-                <button id="saveDraftTopBtn" type="button"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-200/60 px-5 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-300 cursor-pointer">
-                    Save Draft
+            <div class="mb-5 flex items-center justify-end gap-3">
+                <button id="rejectPiTopBtn" type="button"
+                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-rose-200 px-5 py-2.5 text-sm font-bold text-rose-600 transition-colors hover:bg-rose-50 cursor-pointer">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    Reject PI
                 </button>
-                <button id="previewPiTopBtn" type="button"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 cursor-pointer">
-                    Preview PI
+                <button id="approvePiTopBtn" type="button"
+                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-emerald-700 cursor-pointer">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    Approve PI
                 </button>
-                <div class="flex-1 text-right">
-                    <button id="sendEmailTopBtn" type="button"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary-600 px-5 py-2.5 text-sm font-bold text-primary-800 shadow-sm transition-colors hover:bg-secondary-500 cursor-pointer">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        Send Email
-                    </button>
-                    <button id="generatePdfTopBtn" type="button"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-800 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-primary-700 cursor-pointer ml-3">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                        Generate PDF
-                    </button>
-                </div>
             </div>
 
         <div class="rounded-2xl bg-primary-600 p-6 text-white shadow-lg">
@@ -642,21 +635,19 @@ document.addEventListener('DOMContentLoaded', function () {
         closeModal();
     });
 
-    // â”€â”€â”€ Freight input recalc â”€â”€â”€
+    // ─── Freight input recalc ───
     document.getElementById('freightCharges').addEventListener('input', recalcTotals);
 
-    // â”€â”€â”€ Add Term button â”€â”€â”€
-    document.getElementById('addTermBtn').addEventListener('click', function () {
-        var list = document.getElementById('termsList');
-        var count = list.querySelectorAll('li').length + 1;
-        var li = document.createElement('li');
-        li.className = 'flex items-baseline gap-2 text-sm text-slate-700';
-        li.innerHTML = '<span class="shrink-0 font-bold text-primary-600">' + count + '.</span>' +
-            '<input type="text" value="" placeholder="Enter term..." class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">';
-        list.appendChild(li);
-    });
+    // ─── Approve / Reject Handlers ───
+    function showPiToast(msg, type) {
+        if (window.AdminToast) window.AdminToast.show(msg, type);
+        else alert(msg);
+    }
 
-    document.getElementById('sendEmailBtn').addEventListener('click', function () {
+    document.getElementById('approvePiTopBtn')?.addEventListener('click', function() { showPiToast('PI Approved successfully.', 'success'); });
+    document.getElementById('rejectPiTopBtn')?.addEventListener('click', function() { showPiToast('PI Rejected.', 'info'); });
+
+    document.getElementById('sendEmailBtn')?.addEventListener('click', function () {
         if (window.BiogenixToast) {
             window.BiogenixToast.show('Email functionality coming soon!', 'info');
         } else {
@@ -664,21 +655,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('sendEmailTopBtn').addEventListener('click', function () {
-        document.getElementById('sendEmailBtn').click();
-    });
-
-    // â”€â”€â”€ Generate PDF (placeholder) â”€â”€â”€
-    document.getElementById('generatePdfBtn').addEventListener('click', function () {
+    document.getElementById('generatePdfBtn')?.addEventListener('click', function () {
         if (window.BiogenixToast) {
             window.BiogenixToast.show('PDF generation coming soon! All form data is captured.', 'info');
         } else {
             alert('PDF generation coming soon! All form data is captured.');
         }
-    });
-
-    document.getElementById('generatePdfTopBtn').addEventListener('click', function () {
-        document.getElementById('generatePdfBtn').click();
     });
 
     // â”€â”€â”€ Show empty message initially â”€â”€â”€

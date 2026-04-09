@@ -95,12 +95,39 @@
             {{-- Selected Customer Card --}}
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Selected Customer</label>
-                <div id="selected-customer-card" class="border-2 border-primary-600 bg-slate-100 rounded-xl px-4 py-4 cursor-pointer hover:shadow-md transition">
-                    <p class="text-[14px] font-extrabold text-primary-800">Nova Scientific Group</p>
-                    <p class="text-[12px] text-slate-500 font-medium mt-0.5">ID: #CUST-99021</p>
-                    <span class="mt-2 inline-flex items-center px-2.5 py-1 bg-primary-600 text-white text-[10px] font-bold rounded-full">CURRENT: B2B</span>
-                    <div class="mt-3">
-                        <button id="change-selection-btn" class="text-[12px] font-bold text-primary-800 hover:underline focus:outline-none cursor-pointer">Change Selection</button>
+                <div class="relative">
+                    <div onclick="document.getElementById('customer-dropdown').classList.toggle('hidden')" id="selected-customer-card" class="border-2 border-primary-600 bg-slate-100 rounded-xl px-4 py-3 flex items-center justify-between cursor-pointer hover:shadow-md transition">
+                        <div>
+                            <p class="text-[14px] font-extrabold text-primary-800" id="selected-customer-name">Nova Scientific Group</p>
+                            <p class="text-[12px] text-slate-500 font-medium mt-0.5" id="selected-customer-id">ID: #CUST-99021 - B2B</p>
+                        </div>
+                        <svg class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div id="customer-dropdown" class="hidden absolute top-full left-0 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-[0_4px_20px_-4px_rgba(6,81,237,0.15)] z-[100] overflow-hidden">
+                        <div class="p-2 border-b border-slate-100">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                </div>
+                                <input type="text" id="customer-dropdown-search" placeholder="Search customers..." class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition text-slate-800">
+                            </div>
+                        </div>
+                        <div class="max-h-60 overflow-y-auto" id="customer-dropdown-list">
+                            <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition customer-dropdown-item" onclick="selectCustomer('Nova Scientific Group', 'ID: #CUST-99021 - B2B')">
+                                <p class="text-[13px] font-bold text-slate-900 customer-name-text">Nova Scientific Group</p>
+                                <p class="text-[11px] text-slate-500">ID: #CUST-99021 - B2B</p>
+                            </div>
+                            <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition customer-dropdown-item" onclick="selectCustomer('Bio-Chem Logistics', 'ID: #CUST-99088 - Retail')">
+                                <p class="text-[13px] font-bold text-slate-900 customer-name-text">Bio-Chem Logistics</p>
+                                <p class="text-[11px] text-slate-500">ID: #CUST-99088 - Retail</p>
+                            </div>
+                            <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition customer-dropdown-item" onclick="selectCustomer('LabCore Sciences', 'ID: #CUST-99124 - B2B')">
+                                <p class="text-[13px] font-bold text-slate-900 customer-name-text">LabCore Sciences</p>
+                                <p class="text-[11px] text-slate-500">ID: #CUST-99124 - B2B</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -311,6 +338,28 @@
         </div>
     </div>
 
+    <!-- Verification Confirm Modal -->
+    <div id="verification-modal" class="hidden fixed inset-0 z-[1000] flex items-center justify-center">
+        <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm cursor-pointer" onclick="this.parentElement.classList.add('hidden')"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 z-10">
+            <h3 id="verification-modal-title" class="text-lg font-bold text-slate-900 mb-2">Approve Customer</h3>
+            <p class="text-[13px] text-slate-500 mb-4">Are you sure you want to proceed with this verification?</p>
+            
+            <input type="hidden" id="verification-modal-action">
+            <input type="hidden" id="verification-modal-id">
+            
+            <div id="verification-credit-limit-container" class="mb-5 space-y-1.5 hidden">
+                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Initial Credit Limit ($)</label>
+                <input type="number" value="10000" min="0" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium">
+                <p class="text-[10px] text-slate-400">Can be adjusted later in Customer Management.</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="this.closest('#verification-modal').classList.add('hidden')" class="flex-1 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</button>
+                <button id="verification-confirm-btn" onclick="confirmVerification()" class="flex-1 py-2.5 rounded-xl text-sm font-bold bg-primary-600 hover:bg-primary-700 text-white transition cursor-pointer">Confirm</button>
+            </div>
+        </div>
+    </div>
 
 <style>
     @keyframes fade-in { from { opacity:0; transform:scale(0.96) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
@@ -322,14 +371,46 @@
 (function () {
     // ─── Pending Verification Handlers ───
     window.handleVerification = function(btn, action, id) {
+        document.getElementById('verification-modal-action').value = action;
+        document.getElementById('verification-modal-id').value = id;
+        
+        const limitDiv = document.getElementById('verification-credit-limit-container');
+        if (action === 'approve') {
+            limitDiv.classList.remove('hidden');
+            document.getElementById('verification-modal-title').textContent = 'Approve Customer';
+            document.getElementById('verification-confirm-btn').textContent = 'Approve & Save';
+            document.getElementById('verification-confirm-btn').className = 'flex-1 py-2 rounded-xl text-sm font-bold bg-primary-600 hover:bg-primary-700 text-white transition cursor-pointer shadow-md shadow-primary-600/20';
+        } else {
+            limitDiv.classList.add('hidden');
+            document.getElementById('verification-modal-title').textContent = 'Reject Customer';
+            document.getElementById('verification-confirm-btn').textContent = 'Reject Customer';
+            document.getElementById('verification-confirm-btn').className = 'flex-1 py-2 rounded-xl text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white transition cursor-pointer shadow-md shadow-rose-600/20';
+        }
+        
+        document.getElementById('verification-modal').classList.remove('hidden');
+    };
+
+    window.confirmVerification = function() {
+        const action = document.getElementById('verification-modal-action').value;
+        const id = document.getElementById('verification-modal-id').value;
+        
         const card = document.querySelector(`[data-pending-id="${id}"]`);
-        if (!card) return;
+        if (!card) {
+            document.getElementById('verification-modal').classList.add('hidden');
+            return;
+        }
         const label = action === 'approve' ? 'Approved' : 'Rejected';
         const colorClass = action === 'approve' ? 'text-primary-600' : 'text-rose-500';
         card.innerHTML = `<div class="flex items-center gap-2 py-1 px-1"><svg class="h-4 w-4 ${colorClass}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="${action === 'approve' ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}"/></svg><span class="text-[12px] font-bold ${colorClass}">${label}</span></div>`;
+        
         setTimeout(() => card.style.height = '0', 1500);
         setTimeout(() => card.remove(), 1800);
         updatePendingCount();
+        
+        document.getElementById('verification-modal').classList.add('hidden');
+        if(window.AdminToast) {
+            window.AdminToast.show(action === 'approve' ? 'Customer application approved!' : 'Customer application rejected.', action === 'approve' ? 'success' : 'info');
+        }
     };
 
     function updatePendingCount() {
@@ -393,9 +474,29 @@
         setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 2200);
     };
 
-    // ─── Change Selection ───
-    document.getElementById('change-selection-btn')?.addEventListener('click', () => {
-        window.AdminToast?.show('Select a customer from the directory below', 'info');
+    // ─── Change Selection / Custom Dropdown ───
+    window.selectCustomer = function(name, idDesc) {
+        document.getElementById('selected-customer-name').textContent = name;
+        document.getElementById('selected-customer-id').textContent = idDesc;
+        document.getElementById('customer-dropdown').classList.add('hidden');
+        if(window.AdminToast) window.AdminToast.show('Active customer context changed', 'success');
+    };
+    
+    document.getElementById('customer-dropdown-search')?.addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.customer-dropdown-item').forEach(item => {
+            const name = item.querySelector('.customer-name-text').textContent.toLowerCase();
+            item.style.display = name.includes(q) ? '' : 'none';
+        });
+    });
+    
+    // Close dropdown on outside click
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('customer-dropdown');
+        const trigger = document.getElementById('selected-customer-card');
+        if (dropdown && !dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !trigger.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
     });
 
     // ─── Escape key to close modals ───

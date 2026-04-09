@@ -277,6 +277,4 @@ class OrderController extends Controller
             return $this->redirectBackWithError($exception, 'Unable to place reorder right now.');
         }
     }
-
-    }
 }

@@ -51,7 +51,7 @@
                         ['id' => 'TK-8795', 'customer' => 'Elena Rossi',     'subject' => 'Technical Bug: Login Loop',   'priority' => 'Critical','priority_color' => 'bg-red-50 text-red-700 border border-red-200/60',        'status' => 'Resolved',    'status_color' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'],
                         ['id' => 'TK-8790', 'customer' => 'James Wilson',    'subject' => 'Feature Request: API Access', 'priority' => null,     'priority_color' => '',                             'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
                         ['id' => 'TK-8787', 'customer' => 'Priya Anand',     'subject' => 'Order Not Received',          'priority' => 'High',   'priority_color' => 'bg-rose-50 text-rose-700 border border-rose-200/60',    'status' => 'Open',        'status_color' => 'bg-amber-50 text-amber-700 border border-amber-200/60'],
-                        ['id' => 'TK-8771', 'customer' => 'Karl Messner',    'subject' => 'Refund Processing Delay',     'priority' => 'Low',    'priority_color' => 'bg-slate-50 text-slate-600 border border-slate-200/60',  'status' => 'Closed',      'status_color' => 'bg-slate-50 text-slate-500 border border-slate-200/60'],
+                        ['id' => 'TK-8771', 'customer' => 'Karl Messner',    'subject' => 'Refund Processing Delay',     'priority' => 'Low',    'priority_color' => 'bg-slate-50 text-slate-600 border border-slate-200/60',  'status' => 'Resolved',    'status_color' => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'],
                     ];
                     @endphp
 
@@ -68,23 +68,38 @@
                             <span class="text-[13px] text-slate-600 font-medium">{{ $t['subject'] }}</span>
                         </td>
                         <td class="px-6 py-3.5">
-                            @if($t['priority'])
-                            <div class="flex items-center gap-1">
-                                <span class="inline-flex items-center px-2.5 py-1 {{ $t['priority_color'] }} text-[11px] font-bold rounded-full">{{ $t['priority'] }}</span>
-                                <button class="h-5 w-5 flex items-center justify-center rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer">
-                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            <div class="relative">
+                                <button onclick="toggleDropdown(event, 'priority-dropdown-{{ $t['id'] }}')" class="flex items-center gap-1 hover:opacity-80 transition cursor-pointer focus:outline-none">
+                                    @if($t['priority'])
+                                        <span class="inline-flex items-center px-2.5 py-1 {{ $t['priority_color'] }} text-[11px] font-bold rounded-full">{{ $t['priority'] }}</span>
+                                    @else
+                                        <span class="text-[11px] font-bold text-slate-400 border border-dashed border-slate-300 rounded-full px-2.5 py-1 hover:border-slate-400 hover:text-slate-600 transition">Add Priority</span>
+                                    @endif
+                                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
+                                <div id="priority-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[0_4px_20px_-4px_rgba(6,81,237,0.15)] z-[60] overflow-hidden">
+                                    <div class="p-1">
+                                        <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'Critical')">Critical</button>
+                                        <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'High')">High</button>
+                                        <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'Medium')">Medium</button>
+                                        <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'Low')">Low</button>
+                                    </div>
+                                </div>
                             </div>
-                            @else
-                            <button class="text-[11px] font-bold text-slate-400 border border-dashed border-slate-300 rounded-full px-2.5 py-1 hover:border-slate-400 hover:text-slate-600 transition cursor-pointer">Add Priority</button>
-                            @endif
                         </td>
                         <td class="px-6 py-3.5">
-                            <div class="flex items-center gap-1">
-                                <span class="inline-flex items-center px-2.5 py-1 {{ $t['status_color'] }} text-[11px] font-bold rounded-full">{{ $t['status'] }}</span>
-                                <button class="h-5 w-5 flex items-center justify-center rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer">
-                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            <div class="relative">
+                                <button onclick="toggleDropdown(event, 'status-dropdown-{{ $t['id'] }}')" class="flex items-center gap-1 hover:opacity-80 transition cursor-pointer focus:outline-none">
+                                    <span class="inline-flex items-center px-2.5 py-1 {{ $t['status_color'] }} text-[11px] font-bold rounded-full">{{ $t['status'] }}</span>
+                                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
+                                <div id="status-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[0_4px_20px_-4px_rgba(6,81,237,0.15)] z-[60] overflow-hidden">
+                                    <div class="p-1">
+                                        <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'Open')">Open</button>
+                                        <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'In Progress')">In Progress</button>
+                                        <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'Resolved')">Resolved</button>
+                                    </div>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -106,10 +121,22 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- Pagination --}}
+        <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
+            <p class="text-[12px] font-medium text-slate-500">Showing <span class="font-bold text-slate-900">1</span> to <span class="font-bold text-slate-900">6</span> of <span class="font-bold text-slate-900">24</span> results</p>
+            <div class="flex items-center gap-1">
+                <button class="px-3 py-1.5 rounded-lg border border-slate-200 text-[12px] font-bold text-slate-400 cursor-not-allowed">Previous</button>
+                <button class="px-3 py-1.5 rounded-lg border border-primary-600 bg-primary-600 text-white text-[12px] font-bold shadow-sm shadow-primary-600/20 cursor-pointer">1</button>
+                <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-[12px] font-bold transition cursor-pointer">2</button>
+                <button class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-[12px] font-bold transition cursor-pointer">3</button>
+                <button class="px-3 py-1.5 rounded-lg border border-slate-200 text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer">Next</button>
+            </div>
+        </div>
     </div>
 
     {{-- ─── Ticket Detail + Right Panel ─── --}}
-    <div class="grid grid-cols-1 xl:grid-cols-[1fr_18rem] gap-5">
+    <div class="grid grid-cols-1 gap-5">
 
         {{-- Left: Ticket Detail --}}
         <div id="ticket-detail-panel" class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden flex flex-col">
@@ -212,42 +239,7 @@
                 </div>
             </div>
 
-            {{-- Ticket History --}}
-            <div class="px-6 py-4 border-t border-slate-100">
-                <div class="flex items-center gap-2 mb-3">
-                    <svg class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Ticket History</span>
-                </div>
-                <div class="space-y-2.5">
-                    <div class="flex items-start gap-3">
-                        <div class="mt-1 h-5 w-5 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                            <svg class="h-3 w-3 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-[12px] font-semibold text-slate-900"><span class="font-bold">Ticket Created</span> by Alice Henderson</p>
-                            <p class="text-[11px] text-slate-400">08:17 AM</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="mt-1 h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                            <svg class="h-3 w-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-[12px] font-semibold text-slate-900"><span class="font-bold">Ticket Assigned</span> to Sarah Miller</p>
-                            <p class="text-[11px] text-slate-400">08:46 AM</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="mt-1 h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                            <svg class="h-3 w-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        </div>
-                        <div>
-                            <p class="text-[12px] font-semibold text-slate-900"><span class="font-bold">Status Changed</span> to Open</p>
-                            <p class="text-[11px] text-slate-400">09:20 AM</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {{-- Ticket History removed per business requirement --}}
 
             {{-- Reply Box --}}
             <div class="px-6 py-4 border-t border-slate-100">
@@ -267,52 +259,7 @@
         </div>
 
         {{-- Right: Support Categories + Configuration --}}
-        <div class="flex flex-col gap-5">
-
-            {{-- Support Categories --}}
-            <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Support Categories</span>
-                    <button class="text-[12px] font-bold text-primary-800 hover:underline cursor-pointer">Manage</button>
-                </div>
-                <div id="categories-list">
-                    {{-- Simple rows with separator lines, matching the original design --}}
-                    <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
-                        <span class="text-[13px] font-semibold text-slate-800">Technical Support</span>
-                        <span class="text-[11px] font-bold bg-primary-600 text-white rounded-full px-2.5 py-0.5 min-w-[28px] text-center">128</span>
-                    </div>
-                    <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
-                        <span class="text-[13px] font-semibold text-slate-800">Billing &amp; Subscription</span>
-                        <span class="text-[11px] font-bold bg-slate-100 text-slate-600 rounded-full px-2.5 py-0.5 min-w-[28px] text-center">45</span>
-                    </div>
-                    <div class="flex items-center justify-between py-2.5">
-                        <span class="text-[13px] font-semibold text-slate-800">Lab Results</span>
-                        <span class="text-[11px] font-bold bg-slate-100 text-slate-600 rounded-full px-2.5 py-0.5 min-w-[28px] text-center">12</span>
-                    </div>
-                </div>
-                <button id="btn-add-category" onclick="addCategory()" class="mt-3 w-full py-2 border border-dashed border-slate-200 rounded-xl text-[12px] font-semibold text-slate-400 hover:border-primary-600 hover:text-primary-800 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                    + Add New Category
-                </button>
-            </div>
-
-            {{-- Configuration --}}
-            <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-5">
-                <div class="flex items-center gap-2 mb-4">
-                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Configuration</span>
-                </div>
-                {{-- Only 1 configuration item as per the screenshot --}}
-                <a href="{{ route('admin.ui-fields-modification') }}" class="ajax-link w-full text-left rounded-xl border border-slate-100 bg-slate-50 hover:border-primary-600/30 hover:bg-slate-100 transition px-4 py-3 group flex flex-col cursor-pointer">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[13px] font-bold text-slate-900 group-hover:text-primary-800 transition">UI Fields Modification</span>
-                        <svg class="h-3.5 w-3.5 text-slate-400 group-hover:text-primary-800 transition shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Customize ticket forms, custom fields, and data validation rules.</p>
-                </a>
-            </div>
-
-        </div>
+        {{-- Support Categories and Configuration sections hidden per business requirement --}}
     </div>
 
 
@@ -369,6 +316,29 @@
         thread.appendChild(bubble);
         input.value = '';
         bubble.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    };
+
+    // ─── Cell Dropdown handlers ───
+    window.toggleDropdown = function(e, id) {
+        if (e) e.stopPropagation();
+        document.querySelectorAll('[id^="priority-dropdown-"], [id^="status-dropdown-"]').forEach(el => {
+            if (el.id !== id) el.classList.add('hidden');
+        });
+        const target = document.getElementById(id);
+        if (target) target.classList.toggle('hidden');
+    };
+
+    document.addEventListener('click', function() {
+        document.querySelectorAll('[id^="priority-dropdown-"], [id^="status-dropdown-"]').forEach(el => {
+            el.classList.add('hidden');
+        });
+    });
+
+    window.updateDropdownVal = function(e, id, type, val) {
+        if (e) e.stopPropagation();
+        if(window.AdminToast) window.AdminToast.show(`Ticket ${id} ${type} updated to ${val}`, "success");
+        document.getElementById(`${type}-dropdown-${id}`).classList.add('hidden');
+        // A full implementation would make an AJAX request here and update the row's span colors
     };
 
     // ─── Add Category ───

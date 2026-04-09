@@ -64,7 +64,7 @@
                 <tbody class="divide-y divide-slate-100">
                     
                     <!-- Row 1 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99281</span>
                         </td>
@@ -88,13 +88,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="view" href="{{ route('admin.orders.view') }}" class="ajax-link">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="document">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="edit">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -102,7 +96,7 @@
                     </tr>
 
                     <!-- Row 2 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99280</span>
                         </td>
@@ -126,13 +120,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="view" href="{{ route('admin.orders.view') }}" class="ajax-link">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="document">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="edit">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -140,7 +128,7 @@
                     </tr>
 
                     <!-- Row 3 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99279</span>
                         </td>
@@ -164,13 +152,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="view" href="{{ route('admin.orders.view') }}" class="ajax-link">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="document">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="edit">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -178,7 +160,7 @@
                     </tr>
 
                     <!-- Row 4 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99278</span>
                         </td>
@@ -202,13 +184,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="view" href="{{ route('admin.orders.view') }}" class="ajax-link">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="document">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="edit">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -216,7 +192,7 @@
                     </tr>
 
                     <!-- Row 5 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99277</span>
                         </td>
@@ -240,13 +216,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="view" href="{{ route('admin.orders.view') }}" class="ajax-link">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="document">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                </x-ui.action-icon>
-                                <x-ui.action-icon type="edit">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>

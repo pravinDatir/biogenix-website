@@ -88,14 +88,10 @@
                 <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                 </div>
-                <h3 class="text-base font-bold text-slate-900">Brand & Logistics</h3>
+                <h3 class="text-base font-bold text-slate-900">Logistics</h3>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-700">Brand <span class="text-rose-500">*</span></label>
-                        <input id="productBrand" type="text" required placeholder="e.g. Biogenix Pro" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span class="text-slate-400 font-normal">(Optional)</span></label>
                         <input type="number" placeholder="18" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
@@ -134,29 +130,8 @@
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-700">Select Sub-Category</label>
-                        <div class="relative">
-                            <select class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium appearance-none cursor-pointer pr-10">
-                                <option value="" disabled selected>Select Sub-Category</option>
-                                <option value="1">Reagents</option>
-                                <option value="2">Assays</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="flex flex-wrap gap-2 pt-2">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">
-                            Biotechnology 
-                            <button type="button" class="hover:text-indigo-800 transition cursor-pointer"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[11px] font-bold">
-                            Reagents
-                            <button type="button" class="hover:text-indigo-800 transition cursor-pointer"><svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
-                        </span>
+                        <!-- Tags will be managed dynamically -->
                     </div>
 
                 </div>
@@ -264,7 +239,7 @@
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                         </div>
                         <p class="text-[15px] font-bold text-slate-900 mb-1">Drag and drop images here</p>
-                        <p class="text-[12px] font-medium text-slate-500 mb-4">PNG, JPG or WEBP up to 10MB each</p>
+                        <p class="text-[12px] font-medium text-slate-500 mb-4">PNG, JPG or WEBP up to 10MB each (max 3 images)</p>
                         <button type="button" class="px-5 py-2.5 rounded-lg text-[13px] font-bold text-primary-800 bg-white border border-slate-200 hover:border-primary-600 shadow-sm transition cursor-pointer">
                             Browse Files
                         </button>
@@ -286,29 +261,7 @@
                     </div>
                 </div>
 
-                <!-- Right: External Links -->
-                <div class="lg:col-span-1 space-y-4">
-                    <label class="block text-[13px] font-bold text-slate-700">External Video Links</label>
-                    <div class="space-y-3">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                            </div>
-                            <input type="url" placeholder="YouTube or Vimeo URL" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-10 pr-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
-                        </div>
-                        
-                        <button type="button" class="text-[12px] font-bold text-primary-800 hover:text-primary-800 transition flex items-center gap-1.5 py-1 cursor-pointer">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                            Add another link
-                        </button>
-
-                        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mt-4">
-                            <p class="text-[11px] leading-relaxed text-indigo-700/80 italic">
-                                * Videos will be embedded on the product page to demonstrate kit procedures and scientific efficacy.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                {{-- External Video Links section hidden per business requirement --}}
             </div>
 
             <!-- Bottom: Documents -->
@@ -374,7 +327,6 @@ const requiredFields = [
     {id:'productName', label:'Product Name'},
     {id:'productSku', label:'SKU'},
     {id:'productDesc', label:'Description'},
-    {id:'productBrand', label:'Brand'},
     {id:'productStock', label:'Stock Qty'},
     {id:'productPrice', label:'Base Price'}
 ];

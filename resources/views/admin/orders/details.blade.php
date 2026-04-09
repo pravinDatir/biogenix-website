@@ -141,11 +141,24 @@
                 </div>
                 <div class="px-5 lg:px-6 py-6 pl-8">
                     <div class="relative border-l-2 border-slate-100 ml-4 space-y-8 pb-2">
-                        
-                        <!-- Event 1: Processing -->
+                        <!-- Event 0: Dispatched -->
                         <div class="relative pl-10">
                             <div class="absolute -left-[17px] top-0 h-[32px] w-[32px] rounded-full bg-white border-2 border-primary-600 flex items-center justify-center">
-                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <div class="-mt-0.5">
+                                <h3 class="text-[14px] font-bold text-slate-900">Order Dispatched</h3>
+                                <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 25, 2023 &bull; 09:15 AM &bull; Logistics</p>
+                                <div class="mt-3 p-3.5 bg-slate-50 rounded-xl text-[13.5px] text-slate-600 font-medium leading-relaxed border border-slate-100">
+                                    Package handed over to courier. Tracking link active.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event 1: Processing -->
+                        <div class="relative pl-10">
+                            <div class="absolute -left-[17px] top-0 h-[32px] w-[32px] rounded-full bg-white border-2 border-slate-200 flex items-center justify-center">
+                                <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                             </div>
                             <div class="-mt-0.5">
                                 <h3 class="text-[14px] font-bold text-slate-900">Order Processing</h3>
@@ -211,7 +224,7 @@
                     <div>
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5">Order Status</label>
                         <div class="relative">
-                            <select class="w-full appearance-none bg-white border border-slate-200 text-sm rounded-xl px-4 py-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 font-semibold text-slate-800 transition shadow-sm hover:border-slate-300">
+                            <select id="orderStatus" class="w-full appearance-none bg-white border border-slate-200 text-sm rounded-xl px-4 py-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 font-semibold text-slate-800 transition shadow-sm hover:border-slate-300">
                                 <option>Processing</option>
                                 <option>Pending</option>
                                 <option>Dispatched</option>
@@ -239,7 +252,7 @@
                         </div>
                     </div>
 
-                    <button id="updateStatusBtn" onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Order status updated successfully!','success')},1000)" class="w-full py-3 rounded-xl text-[13px] font-bold bg-slate-100 text-primary-800 hover:bg-slate-100 transition cursor-pointer">
+                    <button id="updateStatusBtn" onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Order status updated to ' + document.getElementById('orderStatus').value,'success')},1000)" class="w-full py-3 rounded-xl text-[13px] font-bold text-white bg-primary-600 hover:bg-primary-700 transition cursor-pointer shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]">
                         Update Status
                     </button>
                 </div>
@@ -291,13 +304,7 @@
                         </div>
                     </div>
 
-                    <!-- Alert Box -->
-                    <div class="mt-6 bg-slate-100 rounded-xl p-4 flex gap-3 border border-indigo-100">
-                        <svg class="h-5 w-5 text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        <p class="text-[12.5px] font-bold text-primary-800 leading-relaxed">
-                            Requires signature upon delivery. Lab access code: 4492.
-                        </p>
-                    </div>
+                    <!-- Alert Box removed -->
 
                 </div>
             </div>

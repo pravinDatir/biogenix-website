@@ -46,19 +46,6 @@
             'card_class' => '',
             'icon_path' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0',
         ],
-        [
-            'title' => 'Logistics Sync',
-            'status' => 'Failed',
-            'rate' => '0% (Timed out)',
-            'last_sync' => 'Manual Req.',
-            'icon_bg' => 'bg-rose-50',
-            'icon_color' => 'text-rose-500',
-            'status_bg' => 'bg-rose-50',
-            'status_text' => 'text-rose-600',
-            'rate_text' => 'text-rose-600',
-            'card_class' => 'border-l-4 border-l-rose-500',
-            'icon_path' => 'M8 7h8m0 0-3-3m3 3-3 3m-2 7H8m0 0 3 3m-3-3 3-3',
-        ],
     ];
 
     $syncLogs = [
@@ -152,7 +139,7 @@
             <h3 class="text-base font-bold text-slate-900">Node Status Overview</h3>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 lg:gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid grid-cols-1 gap-4 lg:gap-6 sm:grid-cols-2 xl:grid-cols-3">
             @foreach ($syncNodes as $node)
                 <article class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex min-h-[200px] flex-col justify-between {{ $node['card_class'] }}">
                     <div class="flex items-start justify-between">
