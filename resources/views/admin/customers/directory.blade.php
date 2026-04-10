@@ -27,7 +27,7 @@
                 <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4H4"/></svg>
                 Export CSV
             </button>
-            <button id="btn-add-customer" onclick="openAddCustomerModal()" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-primary-600/20 flex items-center gap-2 cursor-pointer">
+            <button id="btn-add-customer" onclick="openAddCustomerModal()" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 flex items-center gap-2 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 Add Customer
             </button>
@@ -57,7 +57,7 @@
     </div>
 
     {{-- Main Directory Table --}}
-    <div class="bg-white rounded-b-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden relative">
+    <div class="bg-white rounded-b-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden relative">
         <div class="overflow-x-auto">
             <table class="w-full text-left whitespace-nowrap">
                 <thead>

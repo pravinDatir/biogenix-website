@@ -13,7 +13,7 @@
                     <p class="text-sm text-slate-500 mt-1">Manage your biogenix inventory and product listings.</p>
                 </div>
                 
-                <a href="{{ route('admin.products.create') }}" class="ajax-link bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-primary-600/20 flex items-center gap-2 shrink-0 cursor-pointer">
+                <a href="{{ route('admin.products.create') }}" class="ajax-link bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 flex items-center gap-2 shrink-0 cursor-pointer">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
@@ -22,7 +22,7 @@
             </div>
 
             <!-- Products Table -->
-            <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden flex flex-col relative">
+            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden flex flex-col relative">
 
                 <!-- Filter Bar -->
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -40,7 +40,7 @@
                     <!-- Category Pills -->
                     <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
                         <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-600 text-white shadow-sm transition-all duration-200 active:scale-95">All Products</a>
-                        <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-violet-50 text-violet-700 border border-violet-200/60 hover:bg-violet-100 transition shadow-sm active:scale-95">Reagents</a>
+                        <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-violet-100 transition shadow-sm active:scale-95">Reagents</a>
                         <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-primary-100 transition shadow-sm active:scale-95">Assay Kits</a>
                         <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60 hover:bg-amber-100 transition shadow-sm active:scale-95">Lab Equipment</a>
                         <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition shadow-sm active:scale-95">Consumables</a>
@@ -51,13 +51,13 @@
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Product</th>
-                                <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">SKU</th>
-                                <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
-                                <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Price</th>
-                                <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Stock</th>
-                                <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
-                                <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Product</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">SKU</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Price</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Stock</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -79,7 +79,7 @@
                                     <span class="text-[13px] font-semibold text-slate-600">BGX-7700</span>
                                 </td>
                                 <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[11px] font-bold rounded-full">Reagents</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">Reagents</span>
                                 </td>
                                 <td class="px-5 lg:px-6 py-4">
                                     <span class="text-[13px] font-bold text-slate-900">$449.00</span>
@@ -159,7 +159,7 @@
                                     <span class="text-[13px] font-semibold text-slate-600">BGX-7740</span>
                                 </td>
                                 <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[11px] font-bold rounded-full">Reagents</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">Reagents</span>
                                 </td>
                                 <td class="px-5 lg:px-6 py-4">
                                     <span class="text-[13px] font-bold text-slate-900">$549.00</span>

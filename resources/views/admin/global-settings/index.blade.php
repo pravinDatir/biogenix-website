@@ -43,10 +43,10 @@
             @foreach ($themeModes as $mode)
                 <button
                     type="button"
-                    class="flex min-h-[128px] flex-col items-center justify-center gap-4 rounded-2xl p-6 text-center transition
+                    class="cursor-pointer flex min-h-[128px] flex-col items-center justify-center gap-4 rounded-2xl p-6 text-center transition
                     {{ $mode['selected']
-                        ? 'border-2 border-primary-600 bg-slate-50/60 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.12)]'
-                        : 'border border-slate-200 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:border-slate-300 hover:bg-slate-50/40'
+                        ? 'border-2 border-primary-600 bg-slate-50/60 shadow-[var(--ui-shadow-soft)]'
+                        : 'border border-slate-200 bg-white shadow-[var(--ui-shadow-soft)] hover:border-slate-300 hover:bg-slate-50/40'
                     }}">
                     @if ($mode['icon_type'] === 'sun')
                         <svg class="h-8 w-8 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -77,7 +77,7 @@
             <h3 class="text-base font-bold text-slate-900">Portal Color Theme</h3>
         </div>
 
-        <div class="rounded-2xl border border-slate-100 bg-white p-6 lg:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+        <div class="rounded-2xl border border-slate-100 bg-white p-6 lg:p-7 shadow-[var(--ui-shadow-soft)]">
             <p class="mb-6 text-[11px] font-bold uppercase tracking-widest text-slate-400">Select a preset palette</p>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 lg:gap-6">

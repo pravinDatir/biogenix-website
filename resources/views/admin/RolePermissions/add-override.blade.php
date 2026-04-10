@@ -26,7 +26,7 @@
         </div>
 
         {{-- Override Form Card --}}
-        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[var(--ui-shadow-soft)] p-6 sm:p-8">
 
             {{-- Step 1: Select User --}}
             <div class="mb-8">
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3">
-                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-[13px] font-extrabold text-indigo-700 shrink-0">JW</span>
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-[13px] font-extrabold text-primary-700 shrink-0">JW</span>
                         <div>
                             <div class="text-[13px] font-bold text-slate-700">Current Role</div>
                             <div class="text-[12px] text-slate-500">Analyst • Department: R&D</div>
@@ -119,7 +119,7 @@
                 </div>
 
                 {{-- Override Action --}}
-                <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/50 px-5 py-4">
+                <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/50 px-6 py-4">
                     <div>
                         <div class="text-[14px] font-bold text-slate-900">Override Action</div>
                         <div class="text-[12px] text-slate-500">Decide whether to explicitly allow or strictly deny this permission.</div>

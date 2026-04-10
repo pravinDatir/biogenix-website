@@ -43,7 +43,7 @@
         </div>
 
         {{-- Role Details Card --}}
-        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[var(--ui-shadow-soft)] p-6 sm:p-8">
             <div class="flex items-center gap-2.5 mb-6">
                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-primary-600">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -66,7 +66,7 @@
         </div>
 
         {{-- Assign Permissions Card --}}
-        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[var(--ui-shadow-soft)] p-6 sm:p-8">
             <div class="flex items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-2.5">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600">
@@ -103,7 +103,7 @@
         {{-- Action Buttons --}}
         <div class="flex items-center justify-end gap-3 pb-4">
             <a href="{{ route('admin.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-            <button type="button" id="addRoleSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
+            <button type="button" id="addRoleSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-[14px] font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                 </svg>

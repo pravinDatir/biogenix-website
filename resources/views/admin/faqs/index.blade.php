@@ -22,7 +22,7 @@
 
     <div class="space-y-6">
         <!-- Stats Sidebar Grid -->
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] md:p-8">
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-[var(--ui-shadow-soft)] md:p-8">
             <div class="grid gap-4 sm:grid-cols-3">
                 <div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-4">
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total FAQs</p>
@@ -60,7 +60,7 @@
         @endif
 
         <!-- FAQ Form -->
-        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[var(--ui-shadow-soft)]">
             <div class="mb-6">
                 <h2 class="text-lg font-bold text-slate-900">{{ $editingFaq ? 'Update FAQ' : 'Add New FAQ' }}</h2>
                 <p class="text-sm text-slate-500 mt-1">Keep questions clear and concise for better customer experience.</p>
@@ -131,7 +131,7 @@
         </section>
 
         <!-- FAQs Table -->
-        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[var(--ui-shadow-soft)]">
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-6">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900">Existing FAQs</h2>
@@ -145,29 +145,29 @@
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest w-16">Sr.</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Question</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest w-16">Sr.</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Category</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Question</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @foreach ($faqs as $faq)
                                 <tr class="hover:bg-slate-50/50 transition-colors group">
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <span class="text-[13px] font-bold text-slate-400">#{{ $loop->iteration }}</span>
                                     </td>
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <span class="inline-flex items-center px-3 py-1 bg-slate-50 text-slate-700 border border-slate-200/60 text-[10px] font-black uppercase tracking-widest rounded-full">{{ $faq->category }}</span>
                                     </td>
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <div class="flex flex-col max-w-sm truncate">
                                             <span class="text-[13px] font-bold text-slate-900 truncate">{{ $faq->question }}</span>
                                             <span class="text-[11px] text-slate-400 font-medium truncate mt-0.5">{{ $faq->answer }}</span>
                                         </div>
                                     </td>
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <div class="flex flex-col gap-1.5">
                                             @if ($faq->is_active)
                                                 <span class="inline-flex items-center w-fit px-2 py-0.5 bg-primary-50 text-primary-600 text-[10px] font-black uppercase tracking-widest rounded border border-primary-200/60">Active</span>
@@ -180,7 +180,7 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-5 py-4 text-right">
+                                    <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <a class="text-primary-600 hover:text-primary-700 transition font-bold text-xs uppercase tracking-widest" href="{{ route('admin.faqs.show', $faq->id) }}">Edit</a>
                                             <form method="POST" action="{{ route('admin.faqs.delete', $faq->id) }}" onsubmit="return confirm('Delete this FAQ?');">

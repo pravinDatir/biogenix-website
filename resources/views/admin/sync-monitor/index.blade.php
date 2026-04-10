@@ -113,7 +113,7 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3">
-            <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.18)] transition hover:bg-primary-700">
+            <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-[13px] font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m14.836 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
@@ -141,7 +141,7 @@
 
         <div class="grid grid-cols-1 gap-4 lg:gap-6 sm:grid-cols-2 xl:grid-cols-3">
             @foreach ($syncNodes as $node)
-                <article class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex min-h-[200px] flex-col justify-between {{ $node['card_class'] }}">
+                <article class="bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex min-h-[200px] flex-col justify-between {{ $node['card_class'] }}">
                     <div class="flex items-start justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl {{ $node['icon_bg'] }} {{ $node['icon_color'] }}">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
@@ -195,15 +195,15 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50/50">
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Timestamp</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Source/Module</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Error Type</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right">Action</th>
+                            <tr class="bg-white border-b border-slate-100">
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Timestamp</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Source/Module</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Error Type</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100/80 text-[12px] lg:text-[13px] font-semibold text-slate-900">
@@ -255,7 +255,7 @@
                 <h3 class="text-base font-bold text-slate-900">Live Activity Feed</h3>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 relative h-full">
+            <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-[var(--ui-shadow-soft)] border border-slate-100 relative h-full">
                 <div class="absolute left-8 top-8 bottom-8 w-px bg-slate-100 hidden sm:block"></div>
 
                 <div class="space-y-6">

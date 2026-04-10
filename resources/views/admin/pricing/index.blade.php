@@ -15,10 +15,10 @@
             <p class="text-sm text-slate-500 mt-1 max-w-2xl">Manage global price matrices, quantity-based discounts, and custom overrides for Biogenix products.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-            <button onclick="AdminConfirm.show({title:'Discard Draft?',message:'All unsaved pricing changes will be lost.',confirmText:'Discard',danger:true}).then(r=>{if(r)AdminToast.show('Draft discarded','info')})" class="px-5 py-2.5 rounded-lg text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
+            <button onclick="AdminConfirm.show({title:'Discard Draft?',message:'All unsaved pricing changes will be lost.',confirmText:'Discard',danger:true}).then(r=>{if(r)AdminToast.show('Draft discarded','info')})" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
                 Discard Draft
             </button>
-            <button onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Pricing changes published successfully!','success')},1500)" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
+            <button onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Pricing changes published successfully!','success')},1500)" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
                 Publish Changes
             </button>
         </div>
@@ -36,7 +36,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- Tier 1 -->
-            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-5">
                         <span class="inline-flex items-center px-2.5 py-1 bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest rounded-md">Tier 1</span>
@@ -61,7 +61,7 @@
             </div>
 
             <!-- Tier 2 -->
-            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between relative overflow-hidden">
+            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between relative overflow-hidden">
                 <div class="absolute top-0 right-6 bg-primary-600 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-b-md">Active</div>
                 
                 <div>
@@ -88,7 +88,7 @@
             </div>
 
             <!-- Tier 3 -->
-            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-5">
                         <span class="inline-flex items-center px-2.5 py-1 bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest rounded-md">Tier 3</span>
@@ -129,7 +129,7 @@
             </button>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mt-2 pb-2">
+        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden mt-2 pb-2">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse whitespace-nowrap">
                     <thead>
@@ -165,7 +165,7 @@
                             <td class="px-6 py-5">5%</td>
                             <td class="px-6 py-5">12%</td>
                             <td class="px-6 py-5 text-center">
-                                <span class="inline-flex items-center px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded">Bulk Tier 1</span>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-primary-50 text-primary-700 text-[10px] font-bold rounded">Bulk Tier 1</span>
                             </td>
                             <td class="px-6 py-5 text-right flex justify-end">
                                 <x-ui.action-icon type="edit">
@@ -180,7 +180,7 @@
                             <td class="px-6 py-5">10%</td>
                             <td class="px-6 py-5">20%</td>
                             <td class="px-6 py-5 text-center">
-                                <span class="inline-flex items-center px-2 py-0.5 bg-fuchsia-100 text-fuchsia-700 text-[10px] font-bold rounded">Bulk Tier 2</span>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-secondary-50 text-secondary-700 text-[10px] font-bold rounded">Bulk Tier 2</span>
                             </td>
                             <td class="px-6 py-5 text-right flex justify-end">
                                 <x-ui.action-icon type="edit">
@@ -221,7 +221,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             <!-- SKU Override Card -->
-            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between">
                 <div>
                     <div class="flex items-start gap-4 mb-6">
                         <div class="h-10 w-10 rounded-xl bg-slate-100 text-primary-800 flex items-center justify-center shrink-0">
@@ -259,7 +259,7 @@
             </div>
 
             <!-- Campaign Override Card -->
-            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between">
                 <div>
                     <div class="flex items-start gap-4 mb-6">
                         <div class="h-10 w-10 rounded-xl bg-slate-100 text-primary-800 flex items-center justify-center shrink-0">

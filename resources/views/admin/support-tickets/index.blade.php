@@ -15,7 +15,7 @@
     </div>
 
     {{-- ─── Active Ticket Inbox ─── --}}
-    <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mb-5">
+    <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden mb-5">
 
         {{-- Toolbar --}}
         <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -35,11 +35,11 @@
             <table class="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                     <tr class="border-b border-slate-100">
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Ticket ID</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Customer Name</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Subject</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Priority</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Ticket ID</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Customer Name</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Subject</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Priority</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100" id="ticket-table-body">
@@ -77,7 +77,7 @@
                                     @endif
                                     <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
-                                <div id="priority-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[0_4px_20px_-4px_rgba(6,81,237,0.15)] z-[60] overflow-hidden">
+                                <div id="priority-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[60] overflow-hidden">
                                     <div class="p-1">
                                         <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'Critical')">Critical</button>
                                         <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'priority', 'High')">High</button>
@@ -93,7 +93,7 @@
                                     <span class="inline-flex items-center px-2.5 py-1 {{ $t['status_color'] }} text-[11px] font-bold rounded-full">{{ $t['status'] }}</span>
                                     <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                                 </button>
-                                <div id="status-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[0_4px_20px_-4px_rgba(6,81,237,0.15)] z-[60] overflow-hidden">
+                                <div id="status-dropdown-{{ $t['id'] }}" class="hidden absolute top-full left-0 mt-1 w-32 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[60] overflow-hidden">
                                     <div class="p-1">
                                         <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'Open')">Open</button>
                                         <button class="w-full text-left px-3 py-1.5 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="updateDropdownVal(event, '{{ $t['id'] }}', 'status', 'In Progress')">In Progress</button>
@@ -139,7 +139,7 @@
     <div class="grid grid-cols-1 gap-5">
 
         {{-- Left: Ticket Detail --}}
-        <div id="ticket-detail-panel" class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden flex flex-col">
+        <div id="ticket-detail-panel" class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden flex flex-col">
 
             {{-- Ticket Header --}}
             <div class="px-6 py-4 border-b border-slate-100">
@@ -267,7 +267,7 @@
     @keyframes ticket-fade { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     .animate-ticket-fade { animation: ticket-fade 0.2s ease-out forwards; }
     .ticket-row.active-ticket { background: #f0f3f8; }
-    .ticket-row.active-ticket td:first-child { border-left: 3px solid #1A4D2E; }
+    .ticket-row.active-ticket td:first-child { border-left: 3px solid var(--color-primary-600); }
 </style>
 
 <script>
@@ -338,7 +338,26 @@
         if (e) e.stopPropagation();
         if(window.AdminToast) window.AdminToast.show(`Ticket ${id} ${type} updated to ${val}`, "success");
         document.getElementById(`${type}-dropdown-${id}`).classList.add('hidden');
-        // A full implementation would make an AJAX request here and update the row's span colors
+        
+        // Update DOM
+        const btn = document.querySelector(`button[onclick="toggleDropdown(event, '${type}-dropdown-${id}')"]`);
+        if (btn) {
+            const span = btn.querySelector('span');
+            if (span) {
+                span.textContent = val;
+                span.className = `inline-flex items-center px-2.5 py-1 text-[11px] font-bold rounded-full`;
+                if (type === 'priority') {
+                    if (val === 'Critical') span.classList.add('bg-rose-50', 'text-rose-700', 'border', 'border-rose-200/60');
+                    else if (val === 'High') span.classList.add('bg-amber-50', 'text-amber-700', 'border', 'border-amber-200/60');
+                    else if (val === 'Medium') span.classList.add('bg-primary-50', 'text-primary-700', 'border', 'border-primary-200/60');
+                    else if (val === 'Low') span.classList.add('bg-slate-50', 'text-slate-600', 'border', 'border-slate-200/60');
+                } else if (type === 'status') {
+                    if (val === 'Open') span.classList.add('bg-amber-50', 'text-amber-700', 'border', 'border-amber-200/60');
+                    else if (val === 'In Progress') span.classList.add('bg-blue-50', 'text-blue-700', 'border', 'border-blue-200/60');
+                    else if (val === 'Resolved') span.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200/60');
+                }
+            }
+        }
     };
 
     // ─── Add Category ───

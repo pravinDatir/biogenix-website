@@ -62,7 +62,7 @@
 
         <!-- Role Management Grid -->
         <div class="grid gap-6 lg:grid-cols-3">
-            <section class="lg:col-span-2 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)]">
+            <section class="lg:col-span-2 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
                 <div class="mb-6 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 p-5">
                     <div>
                         <h2 class="text-[17px] font-extrabold text-slate-900">System Roles</h2>
@@ -104,7 +104,7 @@
                 </div>
             </section>
 
-            <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)]">
+            <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
                 <div class="mb-5 border-b border-slate-50 bg-slate-50/30 p-5">
                     <h2 class="text-[17px] font-extrabold text-slate-900">Permissions</h2>
                     <p class="text-[12px] font-medium text-slate-500 mt-0.5">Granular action-level access tokens.</p>
@@ -129,7 +129,7 @@
         </div>
 
         <!-- Permission Matrix -->
-        <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)]">
+        <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
             <div class="mb-6 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 p-5">
                 <div>
                     <h2 class="text-[17px] font-extrabold text-slate-900">Permission Mapping Matrix</h2>
@@ -185,7 +185,7 @@
 
         <!-- Overrides & Delegation -->
         <div class="grid gap-6 lg:grid-cols-2">
-            <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)]">
+            <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
                 <div class="mb-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 p-5">
                     <div>
                         <h2 class="text-[17px] font-extrabold text-slate-900">User-Based Overrides</h2>
@@ -217,7 +217,7 @@
                 </div>
             </section>
 
-            <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)]">
+            <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
                 <div class="mb-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 p-5">
                     <div>
                         <h2 class="text-[17px] font-extrabold text-slate-900">Group & Department Access</h2>
@@ -245,7 +245,7 @@
             </section>
         </div>
 
-        <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] pb-5">
+        <section class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)] pb-5">
                 <div class="mb-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 p-5">
                     <div>
                         <h2 class="text-[17px] font-extrabold text-slate-900">Delegation & Impersonation</h2>

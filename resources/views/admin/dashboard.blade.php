@@ -27,7 +27,7 @@
             <!-- KPI Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                 <!-- Card 1 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-100 text-primary-800">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 00-2-2m4-10a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2V9z"></path></svg>
@@ -44,7 +44,7 @@
                 </a>
 
                 <!-- Card 2 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -61,7 +61,7 @@
                 </a>
 
                 <!-- Card 3 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-secondary-50 text-secondary-700">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v1l2 2m-3 5h3m-3 4h3"></path></svg>
@@ -75,7 +75,7 @@
                 </a>
 
                 <!-- Card 4 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[0_4px_16px_-3px_rgba(6,81,237,0.15)] transition-shadow cursor-pointer">
+                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
@@ -92,7 +92,7 @@
             <!-- Charts Row -->
             <div class="grid grid-cols-1 gap-6">
                 <!-- Revenue Snapshot (Full Width) -->
-                <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 h-auto sm:h-[400px] flex flex-col justify-between relative overflow-hidden">
+                <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-[var(--ui-shadow-soft)] border border-slate-100 h-auto sm:h-[400px] flex flex-col justify-between relative overflow-hidden">
                     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                         <div>
                             <h3 class="text-lg font-bold text-slate-900">Revenue Snapshot</h3>
@@ -138,7 +138,7 @@
             </div>
 
             <!-- Priority Orders Table -->
-            <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mt-6">
+            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden mt-6">
                 <div class="px-5 lg:px-7 py-5 lg:py-6 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-900">Recent Orders</h3>
                     <a href="{{ route('admin.orders') }}" class="ajax-link text-[12px] lg:text-[13px] font-bold text-primary-800 hover:underline underline-offset-2 cursor-pointer">View All Orders</a>
@@ -147,13 +147,13 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="bg-slate-50/50">
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Order ID</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Client</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Biogenic Type</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Value</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Status</th>
-                                <th class="px-5 lg:px-7 py-3 lg:py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Action</th>
+                            <tr class="bg-white border-b border-slate-100">
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Order ID</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Client</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Biogenic Type</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Value</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">Status</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100/80 text-[12px] lg:text-[13px] font-semibold text-slate-900">
@@ -186,7 +186,7 @@
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-slate-600 font-medium">Synthetic Enzyme B2</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">$12,800</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
-                                    <span class="inline-flex items-center px-2 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">In Transit</span>
+                                    <span class="inline-flex items-center px-2 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[8px] lg:text-[9px] font-extrabold uppercase tracking-wider rounded">In Transit</span>
                                 </td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5 text-center">
                                     <button onclick="event.stopPropagation();AdminConfirm.show({title:'Cancel Order?',message:'This will cancel order #BGX-8994.',confirmText:'Cancel Order'}).then(r=>{if(r)AdminToast.show('Order cancelled','success')})" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer" title="Cancel Order"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>

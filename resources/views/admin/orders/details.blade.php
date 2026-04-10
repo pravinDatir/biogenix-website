@@ -48,7 +48,7 @@
         <div class="space-y-6">
             
             <!-- Order Summary -->
-            <div class="bg-white rounded-[20px] shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden flex flex-col">
+            <div class="bg-white rounded-[20px] shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden flex flex-col">
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
                     <div class="flex items-center gap-2.5">
                         <svg class="h-5 w-5 text-primary-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
@@ -134,7 +134,7 @@
             </div>
 
             <!-- Order History -->
-            <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
                     <svg class="h-5 w-5 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <h2 class="text-[15px] font-extrabold text-slate-900">Order History</h2>
@@ -215,7 +215,7 @@
         <div class="space-y-6">
             
             <!-- Manage Status -->
-            <div class="bg-white rounded-[20px] shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+            <div class="bg-white rounded-[20px] shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100">
                     <h2 class="text-[15px] font-extrabold text-slate-900">Manage Status</h2>
                 </div>
@@ -252,14 +252,14 @@
                         </div>
                     </div>
 
-                    <button id="updateStatusBtn" onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Order status updated to ' + document.getElementById('orderStatus').value,'success')},1000)" class="w-full py-3 rounded-xl text-[13px] font-bold text-white bg-primary-600 hover:bg-primary-700 transition cursor-pointer shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)]">
+                    <button id="updateStatusBtn" onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Order status updated to ' + document.getElementById('orderStatus').value,'success')},1000)" class="w-full py-3 rounded-xl text-[13px] font-bold text-white bg-primary-600 hover:bg-primary-700 transition cursor-pointer shadow-md shadow-primary-600/20">
                         Update Status
                     </button>
                 </div>
             </div>
 
             <!-- Customer Info -->
-            <div class="bg-white rounded-[20px] shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden relative">
+            <div class="bg-white rounded-[20px] shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden relative">
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                     <h2 class="text-[15px] font-extrabold text-slate-900">Customer Info</h2>
                     <a href="#" onclick="event.preventDefault();document.getElementById('customerEditModal').classList.remove('hidden')" class="text-[13px] font-bold text-primary-800 hover:underline cursor-pointer">Edit</a>

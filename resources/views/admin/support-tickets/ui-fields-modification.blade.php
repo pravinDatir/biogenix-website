@@ -25,17 +25,17 @@
             <p class="text-sm text-slate-500 mt-1">Customize ticket forms, define custom fields, and set global data validation rules.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
-            <button id="btn-discard" class="px-5 py-2.5 rounded-lg text-sm font-bold border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer">
+            <button id="btn-discard" class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer">
                 Discard Changes
             </button>
-            <button id="btn-save-config" onclick="saveConfiguration()" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
+            <button id="btn-save-config" onclick="saveConfiguration()" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
                 Save Configuration
             </button>
         </div>
     </div>
 
     {{-- ─── Standard Fields ─── --}}
-    <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden mb-5">
+    <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden mb-5">
 
         <div class="px-6 py-5 border-b border-slate-100">
             <h2 class="text-[15px] font-extrabold text-slate-900">Standard Fields</h2>
@@ -46,11 +46,11 @@
             <table class="w-full text-left whitespace-nowrap">
                 <thead>
                     <tr class="border-b border-slate-100">
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest w-1/2">Field Name</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Field Type</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">Visible</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">Required</th>
-                        <th class="px-6 py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest w-1/2">Field Name</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Field Type</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">Visible</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">Required</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -106,7 +106,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
 
         {{-- Left: Custom Attributes --}}
-        <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-6">
+        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 p-6">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-5">
                 <div>
                     <h2 class="text-[15px] font-extrabold text-slate-900">Custom Attributes</h2>
@@ -154,7 +154,7 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
                             <span class="text-[12px] font-extrabold text-slate-900 uppercase tracking-wide">Product Version</span>
-                            <span class="inline-flex items-center px-2 py-0.5 bg-violet-50 text-violet-600 text-[9px] font-extrabold rounded uppercase tracking-wide">Selectable</span>
+                            <span class="inline-flex items-center px-2 py-0.5 bg-primary-50 text-violet-600 text-[9px] font-extrabold rounded uppercase tracking-wide">Selectable</span>
                         </div>
                         <p class="text-[12px] text-slate-500">Optional field for all software-related inquiries.</p>
                     </div>
@@ -176,7 +176,7 @@
         </div>
 
         {{-- Right: Validation Rules --}}
-        <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-5">
+        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 p-5">
             <div class="flex items-center gap-2 mb-5">
                 <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -329,7 +329,7 @@
         const visible = document.getElementById('new-attr-visible').checked;
         if (!name) { document.getElementById('new-attr-name').focus(); return; }
 
-        const typeColors = { alphanumeric: 'bg-slate-100 text-slate-600', selectable: 'bg-violet-50 text-violet-600', numeric: 'bg-secondary-50 text-secondary-700', boolean: 'bg-primary-50 text-primary-600', date: 'bg-primary-50 text-primary-600' };
+        const typeColors = { alphanumeric: 'bg-slate-100 text-slate-600', selectable: 'bg-primary-50 text-violet-600', numeric: 'bg-secondary-50 text-secondary-700', boolean: 'bg-primary-50 text-primary-600', date: 'bg-primary-50 text-primary-600' };
         const list = document.getElementById('custom-attributes-list');
         const id = Date.now();
         const div = document.createElement('div');

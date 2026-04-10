@@ -31,10 +31,10 @@
             <p class="text-sm text-slate-500 mt-1">Configure product details, visibility, and pricing for the Biogenix catalog.</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.products') }}" class="ajax-link px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
+            <a href="{{ route('admin.products') }}" class="ajax-link px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
                 Cancel
             </a>
-            <button id="saveProductBtn" type="button" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
+            <button id="saveProductBtn" type="button" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
                 Save Product
             </button>
         </div>
@@ -44,7 +44,7 @@
     <form id="productForm" class="space-y-6 pb-12" novalidate>
 
         <!-- 1. Product Information -->
-        <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
             <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                 <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -83,7 +83,7 @@
         </div>
 
         <!-- 2. Brand & Logistics -->
-        <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
             <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                 <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
@@ -107,7 +107,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-6 gap-6">
             
             <!-- 3. Category Mapping -->
-            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                     <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
@@ -138,7 +138,7 @@
             </div>
 
             <!-- 4. Pricing & Visibility -->
-            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                     <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
@@ -187,7 +187,7 @@
         </div>
 
         <!-- 5. Product Specifications -->
-        <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
             <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
@@ -220,7 +220,7 @@
         </div>
 
         <!-- 6. Media Assets -->
-        <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
             <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                 <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -240,7 +240,7 @@
                         </div>
                         <p class="text-[15px] font-bold text-slate-900 mb-1">Drag and drop images here</p>
                         <p class="text-[12px] font-medium text-slate-500 mb-4">PNG, JPG or WEBP up to 10MB each (max 3 images)</p>
-                        <button type="button" class="px-5 py-2.5 rounded-lg text-[13px] font-bold text-primary-800 bg-white border border-slate-200 hover:border-primary-600 shadow-sm transition cursor-pointer">
+                        <button type="button" class="px-5 py-2.5 rounded-xl text-[13px] font-bold text-primary-800 bg-white border border-slate-200 hover:border-primary-600 shadow-sm transition cursor-pointer">
                             Browse Files
                         </button>
                     </div>

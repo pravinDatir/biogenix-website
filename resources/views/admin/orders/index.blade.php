@@ -21,7 +21,7 @@
     </div>
 
     <!-- Main Card container matching Dashboard specifications -->
-    <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden flex flex-col relative">
+    <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden flex flex-col relative">
         
         <!-- Filter Bar -->
         <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -41,7 +41,7 @@
                 <button data-status="all" class="status-pill active inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-600 text-white cursor-pointer">All Orders</button>
                 <button data-status="Pending" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60 hover:bg-amber-100 transition cursor-pointer">Pending</button>
                 <button data-status="Processing" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-primary-100 transition cursor-pointer">Processing</button>
-                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-violet-50 text-violet-700 border border-violet-200/60 hover:bg-violet-100 transition cursor-pointer">Dispatched</button>
+                <button data-status="Dispatched" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-violet-100 transition cursor-pointer">Dispatched</button>
                 <button data-status="Delivered" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition cursor-pointer">Delivered</button>
                 <button data-status="Cancelled" class="status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/60 hover:bg-rose-100 transition cursor-pointer">Cancelled</button>
             </div>
@@ -52,13 +52,13 @@
             <table id="ordersTable" class="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                     <tr class="bg-white border-b border-slate-100">
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="id">Order ID <span class="sort-icon">↕</span></th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="customer">Customer Name <span class="sort-icon">↕</span></th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="date">Date <span class="sort-icon">↕</span></th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="amount">Total Amount <span class="sort-icon">↕</span></th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Payment Status</th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Fulfillment</th>
-                        <th class="px-5 lg:px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="id">Order ID <span class="sort-icon">↕</span></th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="customer">Customer Name <span class="sort-icon">↕</span></th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="date">Date <span class="sort-icon">↕</span></th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:text-slate-600 transition" data-sort="amount">Total Amount <span class="sort-icon">↕</span></th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Payment Status</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Fulfillment</th>
+                        <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -148,7 +148,7 @@
                             <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-md">Paid</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[11px] font-bold rounded-full">Dispatched</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">Dispatched</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
@@ -177,7 +177,7 @@
                             <span class="text-[13px] font-bold text-slate-900">$450.00</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200/60 text-[11px] font-bold rounded-md">Refunded</span>
+                            <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-md">Refunded</span>
                         </td>
                         <td class="px-5 lg:px-6 py-4">
                             <span class="inline-flex items-center px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200/60 text-[11px] font-bold rounded-full">Cancelled</span>
@@ -264,13 +264,13 @@ document.querySelectorAll('.status-pill').forEach(pill => {
             let cls = 'bg-slate-50 text-slate-600 border-slate-200';
             if(s === 'Pending') cls = 'bg-amber-50 text-amber-700 border-amber-200/60';
             else if(s === 'Processing') cls = 'bg-primary-50 text-primary-700 border-primary-200/60';
-            else if(s === 'Dispatched') cls = 'bg-violet-50 text-violet-700 border-violet-200/60';
+            else if(s === 'Dispatched') cls = 'bg-primary-50 text-primary-700 border-primary-200/60';
             else if(s === 'Delivered') cls = 'bg-emerald-50 text-emerald-700 border-emerald-200/60';
             else if(s === 'Cancelled') cls = 'bg-rose-50 text-rose-700 border-rose-200/60';
             
             p.className = `status-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold border transition cursor-pointer ${cls}`;
         });
-        pill.classList.remove('bg-slate-50', 'bg-amber-50', 'bg-primary-50', 'bg-violet-50', 'bg-emerald-50', 'bg-rose-50', 'text-slate-600', 'text-amber-700', 'text-primary-700', 'text-violet-700', 'text-emerald-700', 'text-rose-700', 'border-slate-200', 'border-amber-200/60', 'border-primary-200/60', 'border-violet-200/60', 'border-emerald-200/60', 'border-rose-200/60');
+        pill.classList.remove('bg-slate-50', 'bg-amber-50', 'bg-primary-50', 'bg-primary-50', 'bg-emerald-50', 'bg-rose-50', 'text-slate-600', 'text-amber-700', 'text-primary-700', 'text-primary-700', 'text-emerald-700', 'text-rose-700', 'border-slate-200', 'border-amber-200/60', 'border-primary-200/60', 'border-primary-200/60', 'border-emerald-200/60', 'border-rose-200/60');
         pill.classList.add('bg-primary-600', 'text-white', 'active', 'border-transparent');
         filterOrders();
     });

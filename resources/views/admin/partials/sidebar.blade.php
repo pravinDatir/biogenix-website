@@ -1,5 +1,5 @@
 <aside id="admin-sidebar" class="w-64 flex-shrink-0">
-    <nav class="sticky top-24 space-y-1.5 bg-white p-4 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 pb-6">
+    <nav class="sticky top-24 space-y-1.5 bg-white p-4 rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 pb-6">
         
         <h3 class="px-3 text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 mt-2">Admin Portal</h3>
 

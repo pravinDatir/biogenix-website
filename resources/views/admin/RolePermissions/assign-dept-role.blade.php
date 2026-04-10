@@ -24,7 +24,7 @@
         </div>
 
         {{-- Form Card --}}
-        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[var(--ui-shadow-soft)] p-6 sm:p-8">
             <div class="mb-6">
                 <h2 class="text-[17px] font-extrabold text-slate-900">Create New Department & Assign Role</h2>
                 <p class="text-[13px] text-slate-500 mt-1">Fill in the details below to initialize a new department with its respective system permissions.</p>

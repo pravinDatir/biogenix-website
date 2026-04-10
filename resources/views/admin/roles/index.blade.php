@@ -16,7 +16,7 @@
 
     <div class="space-y-6">
         <!-- Stats Sidebar Grid -->
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] md:p-8">
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-[var(--ui-shadow-soft)] md:p-8">
             <div class="grid gap-4 sm:grid-cols-3">
                 <div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-4">
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Roles</p>
@@ -55,7 +55,7 @@
 
         <div class="grid gap-6 xl:grid-cols-2">
             <!-- Add/Update Role Form -->
-            <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+            <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[var(--ui-shadow-soft)]">
                 <div class="mb-6">
                     <h2 class="text-lg font-bold text-slate-900">{{ $editingRole ? 'Update Role' : 'Add Role' }}</h2>
                     <p class="text-sm text-slate-500 mt-1">Define access levels with meaningful names.</p>
@@ -87,7 +87,7 @@
             </section>
 
             <!-- Add/Update Permission Form -->
-            <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+            <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[var(--ui-shadow-soft)]">
                 <div class="mb-6">
                     <h2 class="text-lg font-bold text-slate-900">{{ $editingPermission ? 'Update Permission' : 'Add Permission' }}</h2>
                     <p class="text-sm text-slate-500 mt-1">Keep slugs focused on single system actions.</p>
@@ -108,7 +108,7 @@
                     </div>
 
                     <div class="flex items-center gap-3">
-                        <button class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-secondary-500 hover:bg-secondary-600 transition shadow-sm cursor-pointer" type="submit">
+                        <button class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 transition shadow-md shadow-primary-600/20 cursor-pointer" type="submit">
                             {{ $editingPermission ? 'Update Permission' : 'Add Permission' }}
                         </button>
                         @if ($editingPermission)
@@ -120,7 +120,7 @@
         </div>
 
         <!-- Roles Table -->
-        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[var(--ui-shadow-soft)]">
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-6">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900">Existing Roles</h2>
@@ -134,25 +134,25 @@
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Name</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Slug</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Users</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Name</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Slug</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Users</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @foreach ($roles as $role)
                                 <tr class="hover:bg-slate-50/50 transition-colors group">
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <span class="text-[13px] font-bold text-slate-900">{{ $role->name }}</span>
                                     </td>
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <span class="text-[13px] text-slate-600">{{ $role->slug }}</span>
                                     </td>
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <span class="inline-flex items-center px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-bold rounded-md border border-slate-200">{{ $role->users_count }} users</span>
                                     </td>
-                                    <td class="px-5 py-4 text-right">
+                                    <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <a class="text-primary-600 hover:text-primary-700 transition font-bold text-xs uppercase tracking-widest" href="{{ route('admin.roles.show', $role->id) }}">Edit</a>
                                             <form method="POST" action="{{ route('admin.roles.delete', $role->id) }}" onsubmit="return confirm('Delete this role?');">
@@ -172,13 +172,13 @@
         </section>
 
         <!-- Permissions Table -->
-        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[var(--ui-shadow-soft)]">
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-6">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900">Existing Permissions</h2>
                     <p class="text-sm text-slate-500 mt-1">Watch for overrides that may indicate missing rules.</p>
                 </div>
-                <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-bold text-indigo-700 border border-indigo-200/60">{{ count($permissions) }} available</span>
+                <span class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-[11px] font-bold text-primary-700 border border-primary-200/60">{{ count($permissions) }} available</span>
             </div>
 
             @if (count($permissions))
@@ -186,21 +186,21 @@
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
                             <tr class="bg-white border-b border-slate-100">
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Name</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Slug</th>
-                                <th class="px-5 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Name</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Slug</th>
+                                <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @foreach ($permissions as $permission)
                                 <tr class="hover:bg-slate-50/50 transition-colors group">
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <span class="text-[13px] font-bold text-slate-900">{{ $permission->name }}</span>
                                     </td>
-                                    <td class="px-5 py-4">
+                                    <td class="px-6 py-4">
                                         <span class="text-[13px] text-slate-600 font-mono">{{ $permission->slug }}</span>
                                     </td>
-                                    <td class="px-5 py-4 text-right">
+                                    <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <a class="text-primary-600 hover:text-primary-700 transition font-bold text-xs uppercase tracking-widest" href="{{ $editingRole ? route('admin.roles.show', ['roleId' => $editingRole->id, 'edit_permission_id' => $permission->id]) : route('admin.roles.index', ['edit_permission_id' => $permission->id]) }}">Edit</a>
                                             <form method="POST" action="{{ route('admin.roles.permissions.delete', $permission->id) }}" onsubmit="return confirm('Delete this permission?');">
@@ -220,7 +220,7 @@
         </section>
 
         <!-- Manage Role Permissions -->
-        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
+        <section class="rounded-2xl border border-slate-100 bg-white p-6 shadow-[var(--ui-shadow-soft)]">
             <div class="mb-6">
                 <h2 class="text-lg font-bold text-slate-900">Permissions for Selected Role</h2>
                 <p class="text-sm text-slate-500 mt-1">Assign the permissions for the active role.</p>

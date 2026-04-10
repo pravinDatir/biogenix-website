@@ -26,7 +26,7 @@
     </div>
 
     {{-- ─── Pending Verifications Banner ─── --}}
-    <div id="pending-verifications-section" class="bg-slate-100 border border-slate-200/60 rounded-2xl px-5 py-4 mb-5">
+    <div id="pending-verifications-section" class="bg-slate-100 border border-slate-200/60 rounded-2xl px-6 py-4 mb-5">
         <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2.5">
                 <svg class="h-5 w-5 text-secondary-700 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -56,7 +56,7 @@
             {{-- Pending Item 2 --}}
             <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-slate-100 shadow-sm gap-4" data-pending-id="2">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="h-9 w-9 rounded-full bg-violet-600 text-white flex items-center justify-center text-[11px] font-black shrink-0">AP</div>
+                    <div class="h-9 w-9 rounded-full bg-tertiary-600 text-white flex items-center justify-center text-[11px] font-black shrink-0">AP</div>
                     <div class="min-w-0">
                         <p class="text-[13px] font-bold text-slate-900 truncate">Arthur P. Morgon</p>
                         <p class="text-[11px] text-slate-500 font-medium truncate">arthur.m@gmail.com &bull; Applied for Retail</p>
@@ -87,7 +87,7 @@
     </div>
 
     {{-- ─── Category & Eligibility Management ─── --}}
-    <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-6 mb-5">
+    <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 p-6 mb-5">
         <h2 class="text-base font-extrabold text-slate-900 mb-0.5">Category &amp; Eligibility Management</h2>
         <p class="text-[13px] text-slate-500 mb-5">Select a customer to configure access levels and credit limits</p>
 
@@ -95,7 +95,7 @@
             {{-- Selected Customer Card --}}
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Selected Customer</label>
-                <div class="relative">
+                <div class="relative inline-block w-full">
                     <div onclick="document.getElementById('customer-dropdown').classList.toggle('hidden')" id="selected-customer-card" class="border-2 border-primary-600 bg-slate-100 rounded-xl px-4 py-3 flex items-center justify-between cursor-pointer hover:shadow-md transition">
                         <div>
                             <p class="text-[14px] font-extrabold text-primary-800" id="selected-customer-name">Nova Scientific Group</p>
@@ -105,7 +105,7 @@
                     </div>
 
                     <!-- Dropdown -->
-                    <div id="customer-dropdown" class="hidden absolute top-full left-0 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-[0_4px_20px_-4px_rgba(6,81,237,0.15)] z-[100] overflow-hidden">
+                    <div id="customer-dropdown" class="hidden absolute top-full left-0 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[100] overflow-hidden">
                         <div class="p-2 border-b border-slate-100">
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -150,7 +150,7 @@
     </div>
 
     {{-- ─── Customer Directory ─── --}}
-    <div class="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
 
         {{-- Table Header --}}
         <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -200,14 +200,14 @@
 
                     @php
                     $customers = [
-                        ['name' => 'Nova Scientific Group',  'email' => 'contact@nova.com',      'category' => 'B2B',    'status' => 'Active',    'date' => 'Oct 12, 2023', 'initials' => 'NS', 'color' => '#1A4D2E'],
-                        ['name' => 'David Wilson',           'email' => 'david.w@provider.net',   'category' => 'Retail', 'status' => 'Active',    'date' => 'Nov 05, 2023', 'initials' => 'DW', 'color' => '#7c3aed'],
-                        ['name' => 'Bio-Chem Logistics',    'email' => 'billing@biochem.log',    'category' => 'B2B',    'status' => 'Suspended', 'date' => 'Aug 22, 2023', 'initials' => 'BC', 'color' => '#1A4D2E'],
-                        ['name' => 'Elena Rodriguez',       'email' => 'elena.rod@webmail.com',  'category' => 'Guest',  'status' => 'Active',    'date' => 'Dec 01, 2023', 'initials' => 'ER', 'color' => '#059669'],
-                        ['name' => 'Omni BioSystems Ltd',  'email' => 'ops@omnibiosys.com',      'category' => 'B2B',    'status' => 'Active',    'date' => 'Jan 15, 2024', 'initials' => 'OB', 'color' => '#d97706'],
-                        ['name' => 'Clara Mendez',          'email' => 'c.mendez@gmail.com',     'category' => 'Retail', 'status' => 'Inactive',  'date' => 'Feb 20, 2024', 'initials' => 'CM', 'color' => '#db2777'],
-                        ['name' => 'LabCore Sciences',     'email' => 'admin@labcore.io',        'category' => 'B2B',    'status' => 'Active',    'date' => 'Mar 03, 2024', 'initials' => 'LC', 'color' => '#0f766e'],
-                        ['name' => 'Thomas Reinholt',      'email' => 't.reinholt@bionet.de',    'category' => 'Retail', 'status' => 'Active',    'date' => 'Mar 10, 2024', 'initials' => 'TR', 'color' => '#6d28d9'],
+                        ['name' => 'Nova Scientific Group',  'email' => 'contact@nova.com',      'category' => 'B2B',    'status' => 'Active',    'date' => 'Oct 12, 2023', 'initials' => 'NS', 'color' => 'var(--color-primary-600)'],
+                        ['name' => 'David Wilson',           'email' => 'david.w@provider.net',   'category' => 'Retail', 'status' => 'Active',    'date' => 'Nov 05, 2023', 'initials' => 'DW', 'color' => 'var(--color-secondary-700)'],
+                        ['name' => 'Bio-Chem Logistics',    'email' => 'billing@biochem.log',    'category' => 'B2B',    'status' => 'Suspended', 'date' => 'Aug 22, 2023', 'initials' => 'BC', 'color' => 'var(--color-primary-600)'],
+                        ['name' => 'Elena Rodriguez',       'email' => 'elena.rod@webmail.com',  'category' => 'Guest',  'status' => 'Active',    'date' => 'Dec 01, 2023', 'initials' => 'ER', 'color' => 'var(--color-tertiary-600)'],
+                        ['name' => 'Omni BioSystems Ltd',  'email' => 'ops@omnibiosys.com',      'category' => 'B2B',    'status' => 'Active',    'date' => 'Jan 15, 2024', 'initials' => 'OB', 'color' => 'var(--color-secondary-700)'],
+                        ['name' => 'Clara Mendez',          'email' => 'c.mendez@gmail.com',     'category' => 'Retail', 'status' => 'Inactive',  'date' => 'Feb 20, 2024', 'initials' => 'CM', 'color' => 'var(--color-tertiary-600)'],
+                        ['name' => 'LabCore Sciences',     'email' => 'admin@labcore.io',        'category' => 'B2B',    'status' => 'Active',    'date' => 'Mar 03, 2024', 'initials' => 'LC', 'color' => 'var(--color-primary-600)'],
+                        ['name' => 'Thomas Reinholt',      'email' => 't.reinholt@bionet.de',    'category' => 'Retail', 'status' => 'Active',    'date' => 'Mar 10, 2024', 'initials' => 'TR', 'color' => 'var(--color-tertiary-600)'],
                     ];
                     @endphp
 
@@ -222,7 +222,7 @@
                         };
                         $catClasses = match($c['category']) {
                             'B2B'    => 'bg-primary-50 text-primary-700 border border-primary-200/60',
-                            'Retail' => 'bg-violet-50 text-violet-700 border border-violet-200/60',
+                            'Retail' => 'bg-primary-50 text-primary-700 border border-primary-200/60',
                             'Guest'  => 'bg-amber-50 text-amber-700 border border-amber-200/60',
                             default  => 'bg-slate-100 text-slate-600 border border-slate-200/60',
                         };
@@ -490,15 +490,6 @@
         });
     });
     
-    // Close dropdown on outside click
-    document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('customer-dropdown');
-        const trigger = document.getElementById('selected-customer-card');
-        if (dropdown && !dropdown.classList.contains('hidden') && !dropdown.contains(e.target) && !trigger.contains(e.target)) {
-            dropdown.classList.add('hidden');
-        }
-    });
-
     // ─── Escape key to close modals ───
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') { closeManageModal(); closeAddCustomerModal(); }

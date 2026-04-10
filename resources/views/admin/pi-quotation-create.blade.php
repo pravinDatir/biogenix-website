@@ -337,7 +337,7 @@
             </div>
 
             {{-- Total Calculated Amount --}}
-            <div class="mt-5 flex items-center justify-between rounded-[14px] border border-slate-200 bg-slate-50 px-5 py-4">
+            <div class="mt-5 flex items-center justify-between rounded-[14px] border border-slate-200 bg-slate-50 px-6 py-4">
                 <div class="flex items-center gap-2">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
@@ -366,7 +366,7 @@
     </div>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+(function() {
     // â”€â”€â”€ Auto-fill PI Number and Date â”€â”€â”€
     var now = new Date();
     var fy = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function () {
     updateModalTotal();
     recalcTotals();
     syncShippingToggleState();
-});
+})();
 </script>
 @endsection
 

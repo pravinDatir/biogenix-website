@@ -24,7 +24,7 @@
         </div>
 
         {{-- Form Card --}}
-        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.11)] p-6 sm:p-8">
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[var(--ui-shadow-soft)] p-6 sm:p-8">
             <div class="space-y-6 max-w-2xl">
                 
                 {{-- Permission Name --}}
@@ -69,14 +69,14 @@
                 {{-- Tip --}}
                 <div class="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
                     <div class="flex gap-3">
-                        <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-700">
+                        <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </span>
                         <div>
                             <h4 class="text-[13px] font-extrabold text-indigo-900">Admin Tip</h4>
-                            <p class="mt-1 text-[13px] text-indigo-700/80 leading-relaxed">After creating this permission, you will still need to map it to the respective roles in the "Permission Mapping" tab.</p>
+                            <p class="mt-1 text-[13px] text-primary-700/80 leading-relaxed">After creating this permission, you will still need to map it to the respective roles in the "Permission Mapping" tab.</p>
                         </div>
                     </div>
                 </div>
