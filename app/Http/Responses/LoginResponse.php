@@ -39,6 +39,10 @@ class LoginResponse implements LoginResponseContract
             return response()->json(['two_factor' => false]);
         }
 
+        if ($request->user() && $request->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         $redirectResponse = redirect()->intended(Fortify::redirects('login'));
 
         // Step 3: tell the shopper when some guest lines could not be moved after login.

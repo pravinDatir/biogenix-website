@@ -17,12 +17,27 @@
         ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
         ['label' => 'Contact Us', 'route' => 'contact', 'href' => route('contact')],
     ];
+    
+    // Check if the user is an admin to customize the UI
+    $isAdmin = $authUser && (in_array($authUser->user_type, ['admin', 'delegated_admin'], true));
+    
+    // If admin, clear nav items or filter out storefront-heavy links if desired
+    // For now, following request to remove the entire menu bar
+    if ($isAdmin) {
+        $navItems = [];
+    }
+
     $mobileQuickActions = [
         ['label' => 'My Profile', 'href' => $profileHref, 'icon' => 'profile'],
         ['label' => 'View Cart', 'href' => '#', 'icon' => 'cart', 'onclick' => 'openCartSidebar'],
         ['label' => 'Generate Quote', 'href' => route('quotation.create'), 'icon' => 'quote'],
         ['label' => 'Support', 'href' => route('contact'), 'icon' => 'support'],
     ];
+    
+    if ($isAdmin) {
+        // Remove View Cart from mobile quick actions for admins
+        $mobileQuickActions = array_values(array_filter($mobileQuickActions, fn($a) => $a['label'] !== 'View Cart'));
+    }
 @endphp
 
 <header class="glass-header sticky top-0 z-[100]">
@@ -105,6 +120,11 @@
         <div id="headerDesktopActions" class="ml-auto hidden items-center gap-2 xl:col-start-3 xl:flex xl:justify-self-end">
             @auth
                 <span class="hidden max-w-[12rem] truncate text-sm text-slate-600 2xl:inline-block 2xl:max-w-[14rem]">{{ auth()->user()->name }} ({{ strtoupper(auth()->user()->user_type) }})</span>
+                
+                @if($isAdmin)
+                    <a href="{{ route('admin.dashboard') }}" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Dashboard</a>
+                @endif
+
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
                     <button type="submit" id="logoutBtn" class="header-auth-button hover-lift inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-[13px] font-semibold text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
@@ -114,6 +134,7 @@
                 <a href="{{ route('signup') }}" id="signupBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-200 bg-white px-4 text-[13px] font-semibold text-primary-700 shadow-sm transition hover:bg-primary-50 hover:text-primary-800 hover:border-primary-300 2xl:h-11 2xl:px-5 2xl:text-sm">Sign Up</a>
             @endauth
 
+            @if(!$isAdmin)
             <button
                 type="button"
                 onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
@@ -135,6 +156,7 @@
                 </span>
                 <span class="header-cart-label text-[13px] font-bold leading-none text-inherit 2xl:text-sm">Cart</span>
             </button>
+            @endif
 
             {{-- Profile icon --}}
             <a

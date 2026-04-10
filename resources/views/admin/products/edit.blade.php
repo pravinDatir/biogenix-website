@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Add New Product - Biogenix Admin')
+@section('title', 'Edit Product - Biogenix Admin')
 
 @section('admin_content')
 
@@ -20,22 +20,22 @@
             Products
         </a>
         <span class="mx-2 text-slate-300">›</span>
-        <span class="text-slate-900 font-semibold cursor-pointer">Add New Product</span>
+        <span class="text-slate-900 font-semibold cursor-pointer">Edit Product</span>
     </nav>
     </div>
 
     <!-- Header Actions -->
     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Add New Product</h1>
-            <p class="text-sm text-slate-500 mt-1">Configure product details, visibility, and pricing for the Biogenix catalog.</p>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Edit Product</h1>
+            <p class="text-sm text-slate-500 mt-1">Update details, visibility, and pricing for #BGX-7700.</p>
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('admin.products') }}" class="ajax-link px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition shadow-sm cursor-pointer">
                 Cancel
             </a>
             <button id="saveProductBtn" type="button" class="bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 cursor-pointer">
-                Save Product
+                Save Changes
             </button>
         </div>
     </div>
@@ -57,20 +57,20 @@
                     <!-- Product Name -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Product Name <span class="text-rose-500">*</span></label>
-                        <input id="productName" type="text" required placeholder="e.g. Molecular Grade Reagent Kit" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productName" type="text" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                     
                     <!-- SKU -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">SKU / Catalog ID <span class="text-rose-500">*</span></label>
-                        <input id="productSku" type="text" required placeholder="e.g. BGX-7700-01" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productSku" type="text" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
 
                 <!-- Description -->
                 <div class="space-y-2">
                     <label class="block text-[13px] font-bold text-slate-700">Description <span class="text-rose-500">*</span></label>
-                    <textarea id="productDesc" rows="4" required placeholder="Enter comprehensive product details, specifications, and use cases..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y"></textarea>
+                    <textarea id="productDesc" rows="4" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y">High-quality molecular grade reagent kit suitable for PCR and other sensitive experiments. Provides consistent results with minimal background noise.</textarea>
                 </div>
 
                 <!-- Specifics -> Product Overview -->
@@ -98,7 +98,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Stock Qty <span class="text-rose-500">*</span></label>
-                        <input id="productStock" type="number" required placeholder="100" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productStock" type="number" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
             </div>
@@ -120,8 +120,7 @@
                         <label class="block text-[13px] font-bold text-slate-700">Select Categories <span class="text-rose-500">*</span></label>
                         <div class="relative">
                             <select class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium appearance-none cursor-pointer pr-10">
-                                <option value="" disabled selected>Select Primary Category</option>
-                                <option value="1">Biotechnology</option>
+                                <option value="1" selected>Biotechnology</option>
                                 <option value="2">Research Tools</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
@@ -149,7 +148,7 @@
                     
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Base Price ($) <span class="text-rose-500">*</span></label>
-                        <input id="productPrice" type="number" required placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productPrice" type="number" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
 
                     <div class="space-y-3">
@@ -322,6 +321,31 @@
 
 @push('scripts')
 <script>
+// ─── Dynamic Data Fetching (from URL) ───
+(function populateEditForm() {
+    const params = new URLSearchParams(window.location.search);
+    const fields = {
+        'productName': 'name',
+        'productSku': 'sku',
+        'productPrice': 'price',
+        'productStock': 'stock'
+    };
+
+    for (const [id, param] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el && params.has(param)) {
+            let val = params.get(param);
+            if (id === 'productPrice') val = val.replace(/,/g, '');
+            el.value = val;
+        }
+    }
+    
+    const subTitle = document.querySelector('p.text-sm.text-slate-500.mt-1');
+    if (subTitle && params.has('sku')) {
+        subTitle.textContent = `Update details, visibility, and pricing for #${params.get('sku')}.`;
+    }
+})();
+
 // ─── Form Validation ───
 const requiredFields = [
     {id:'productName', label:'Product Name'},
@@ -373,7 +397,7 @@ document.getElementById('saveProductBtn')?.addEventListener('click', function() 
     AdminBtnLoading.start(this);
     setTimeout(() => {
         AdminBtnLoading.stop(this);
-        AdminToast.show('Product saved successfully!', 'success');
+        AdminToast.show('Product updated successfully!', 'success');
     }, 1500);
 });
 

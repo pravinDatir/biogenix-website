@@ -92,9 +92,9 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <x-ui.action-icon type="edit">
+                                        <a href="{{ route('admin.products.edit') }}?name=Molecular+Grade+Reagent+Kit&sku=BGX-7700&price=449.00&stock=145&category=Reagents" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
                                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </x-ui.action-icon>
+                                        </a>
                                         <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </x-ui.action-icon>
@@ -132,9 +132,9 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <x-ui.action-icon type="edit">
+                                        <a href="{{ route('admin.products.edit') }}?name=Rapid+ELISA+Assay+Kit&sku=BGX-3310&price=289.00&stock=12&category=Assay+Kits" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
                                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </x-ui.action-icon>
+                                        </a>
                                         <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </x-ui.action-icon>
@@ -172,9 +172,9 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <x-ui.action-icon type="edit">
+                                        <a href="{{ route('admin.products.edit') }}?name=Cryo-Preservation+Serum&sku=BGX-7740&price=549.00&stock=0&category=Reagents" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
                                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </x-ui.action-icon>
+                                        </a>
                                         <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </x-ui.action-icon>
@@ -212,9 +212,9 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <x-ui.action-icon type="edit">
+                                        <a href="{{ route('admin.products.edit') }}?name=PCR+Thermal+Cycler+Pro&sku=BGX-9200&price=8,990.00&stock=28&category=Lab+Equipment" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
                                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </x-ui.action-icon>
+                                        </a>
                                         <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </x-ui.action-icon>
@@ -252,9 +252,9 @@
                                 </td>
                                 <td class="px-5 lg:px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <x-ui.action-icon type="edit">
+                                        <a href="{{ route('admin.products.edit') }}?name=Lysis+Buffer+Solution&sku=LYS-9921&price=78.00&stock=320&category=Consumables" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
                                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </x-ui.action-icon>
+                                        </a>
                                         <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </x-ui.action-icon>

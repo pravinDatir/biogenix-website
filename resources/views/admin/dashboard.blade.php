@@ -25,7 +25,7 @@
             </div>
 
             <!-- KPI Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                 <!-- Card 1 -->
                 <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
@@ -74,19 +74,6 @@
                     </div>
                 </a>
 
-                <!-- Card 4 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
-                    <div class="flex items-center justify-between">
-                        <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        </div>
-                        <div class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md mb-auto mt-0.5">! Urgent</div>
-                    </div>
-                    <div class="mt-2">
-                        <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Same-day Delivery</p>
-                        <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">12</h3>
-                    </div>
-                </a>
             </div>
 
             <!-- Charts Row -->

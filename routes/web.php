@@ -120,6 +120,7 @@ Route::view('/adminPanel/dashboard', 'admin.dashboard')->name('admin.dashboard')
 Route::view('/adminPanel/dashboard', 'admin.dashboard')->name('admin.dashboard');
 Route::view('/adminPanel/products', 'admin.products.index')->name('admin.products');
 Route::view('/adminPanel/products/create', 'admin.products.create')->name('admin.products.create');
+Route::view('/adminPanel/products/edit', 'admin.products.edit')->name('admin.products.edit');
 Route::view('/adminPanel/pricing', 'admin.pricing.index')->name('admin.pricing');
 Route::view('/adminPanel/pi-quotation', 'admin.pi-quotation')->name('admin.pi-quotation.index');
 Route::view('/adminPanel/pi-quotation/create', 'admin.pi-quotation-create')->name('admin.pi-quotation.create');

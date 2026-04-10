@@ -25,7 +25,14 @@
                         <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Order #ORD-7742</h1>
                         <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-600 text-[11px] font-bold rounded-full uppercase tracking-wider">Processing</span>
                     </div>
-                    <p class="text-[13px] text-slate-500 font-medium mt-1">Placed on Oct 24, 2023 &bull; 2:45 PM</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <p class="text-[13px] text-slate-500 font-medium mt-1">Placed on Oct 24, 2023 &bull; 2:45 PM</p>
+                        <span class="text-slate-300">|</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Payment Method:</span>
+                            <span class="text-[13px] font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded-md border border-primary-200/50">Prepaid</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,6 +45,75 @@
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
                 Save Changes
             </button>
+        </div>
+    </div>
+
+    <!-- Order Status Stepper (6-Step Flow) -->
+    <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 p-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-y-8 gap-x-2 relative">
+            <!-- Step 1 -->
+            <div id="step-node-1" class="flex-1 flex flex-col items-center text-center group">
+                <div class="step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300">1</div>
+                <div class="mt-3">
+                    <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Order Received</h4>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● All orders start here</p>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-slate-200 text-xl font-light">▶</div>
+
+            <!-- Step 2 -->
+            <div id="step-node-2" class="flex-1 flex flex-col items-center text-center group">
+                <div class="step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300">2</div>
+                <div class="mt-3">
+                    <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Payment Received</h4>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● Prepaid orders only</p>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-slate-200 text-xl font-light">▶</div>
+
+            <!-- Step 3 -->
+            <div id="step-node-3" class="flex-1 flex flex-col items-center text-center group">
+                <div class="step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300">3</div>
+                <div class="mt-3">
+                    <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Processing</h4>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● Both order types</p>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-slate-200 text-xl font-light">▶</div>
+
+            <!-- Step 4 -->
+            <div id="step-node-4" class="flex-1 flex flex-col items-center text-center group">
+                <div class="step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300">4</div>
+                <div class="mt-3">
+                    <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Dispatched</h4>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● Both order types</p>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-slate-200 text-xl font-light">▶</div>
+
+            <!-- Step 5 -->
+            <div id="step-node-5" class="flex-1 flex flex-col items-center text-center group">
+                <div class="step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300">5</div>
+                <div class="mt-3">
+                    <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Delivered</h4>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● Both order types</p>
+                </div>
+            </div>
+
+            <div class="hidden md:block text-slate-200 text-xl font-light">▶</div>
+
+            <!-- Step 6 -->
+            <div id="step-node-6" class="flex-1 flex flex-col items-center text-center group">
+                <div class="step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300">6</div>
+                <div class="mt-3">
+                    <h4 class="step-label text-[13px] font-bold text-slate-400 transition-colors duration-300">Payment Received</h4>
+                    <p class="text-[11px] font-medium text-slate-400 mt-0.5 whitespace-nowrap">● COD orders only</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -147,7 +223,7 @@
                                 <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                             </div>
                             <div class="-mt-0.5">
-                                <h3 class="text-[14px] font-bold text-slate-900">Order Dispatched</h3>
+                                <h3 class="text-[14px] font-bold text-slate-900">Dispatched</h3>
                                 <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 25, 2023 &bull; 09:15 AM &bull; Logistics</p>
                                 <div class="mt-3 p-3.5 bg-slate-50 rounded-xl text-[13.5px] text-slate-600 font-medium leading-relaxed border border-slate-100">
                                     Package handed over to courier. Tracking link active.
@@ -161,7 +237,7 @@
                                 <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                             </div>
                             <div class="-mt-0.5">
-                                <h3 class="text-[14px] font-bold text-slate-900">Order Processing</h3>
+                                <h3 class="text-[14px] font-bold text-slate-900">Processing</h3>
                                 <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 24, 2023 &bull; 3:30 PM &bull; Admin: Sarah J.</p>
                                 <div class="mt-3 p-3.5 bg-slate-50 rounded-xl text-[13.5px] text-slate-600 font-medium leading-relaxed border border-slate-100">
                                     Payment confirmed. Lab equipment verified for dispatch. Shipping labels generated.
@@ -225,10 +301,12 @@
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5">Order Status</label>
                         <div class="relative">
                             <select id="orderStatus" class="w-full appearance-none bg-white border border-slate-200 text-sm rounded-xl px-4 py-3 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 font-semibold text-slate-800 transition shadow-sm hover:border-slate-300">
+                                <option>Order Received</option>
+                                <option>Payment Received (Prepaid)</option>
                                 <option>Processing</option>
-                                <option>Pending</option>
                                 <option>Dispatched</option>
                                 <option>Delivered</option>
+                                <option>Payment Received (COD)</option>
                                 <option>Cancelled</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
@@ -356,6 +434,74 @@ United States</textarea>
 
 @push('scripts')
 <script>
+// ─── Dynamic Status Tracker ───
+const updateStepper = () => {
+    const status = document.getElementById('orderStatus').value;
+    const isPrepaid = true; // Hardcoded for demo. In production this would be dynamically set.
+    
+    const steps = [
+        {id: 1, label: 'Order Received'},
+        {id: 2, label: 'Payment Received (Prepaid)', condition: isPrepaid},
+        {id: 3, label: 'Processing'},
+        {id: 4, label: 'Dispatched'},
+        {id: 5, label: 'Delivered'},
+        {id: 6, label: 'Payment Received (COD)', condition: !isPrepaid}
+    ];
+
+    // Determine current step index
+    let currentStepIndex = steps.findIndex(s => status.includes(s.label.split(' (')[0]));
+    if (currentStepIndex === -1 && status === 'Cancelled') currentStepIndex = -1;
+
+    steps.forEach((step, index) => {
+        const node = document.getElementById(`step-node-${step.id}`);
+        const icon = node.querySelector('.step-icon');
+        const label = node.querySelector('.step-label');
+        
+        // Handle visibility for payment-specific steps
+        if (Object.hasOwn(step, 'condition')) {
+            node.style.opacity = step.condition ? '1' : '0.3';
+            node.style.filter = step.condition ? 'none' : 'grayscale(1)';
+        }
+
+        // Handle active/completed/pending states
+        if (index < currentStepIndex) {
+            // Completed
+            icon.className = 'step-icon h-10 w-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-emerald-100 transition-all duration-300';
+            icon.innerHTML = '<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>';
+            label.className = 'step-label text-[13px] font-bold text-emerald-600 transition-colors duration-300';
+        } else if (index === currentStepIndex) {
+            // Active
+            icon.className = 'step-icon h-10 w-10 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold text-sm shadow-xl shadow-primary-600/30 z-10 border-4 border-white ring-1 ring-primary-100 transition-all duration-300 scale-110';
+            icon.innerHTML = step.id;
+            label.className = 'step-label text-[13px] font-extrabold text-primary-800 transition-colors duration-300';
+        } else {
+            // Pending
+            icon.className = 'step-icon h-10 w-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm z-10 border-4 border-white ring-1 ring-slate-100 transition-all duration-300';
+            icon.innerHTML = step.id;
+            label.className = 'step-label text-[13px] font-bold text-slate-400 transition-colors duration-300';
+        }
+    });
+
+    // Update Header Badge
+    const badge = document.querySelector('.inline-flex.items-center.px-2.5.py-1.bg-primary-50');
+    if (badge) badge.textContent = status;
+};
+
+document.getElementById('orderStatus').addEventListener('change', updateStepper);
+document.getElementById('updateStatusBtn').addEventListener('click', () => {
+    // Already has a demo timeout to show toast, we just ensure stepper updates too
+    setTimeout(updateStepper, 100);
+});
+
+// Initial run
+document.addEventListener('DOMContentLoaded', updateStepper);
+// Re-run for AJAX navigation
+if (typeof initCustomSelects === 'function') {
+    setTimeout(updateStepper, 300);
+} else {
+    updateStepper();
+}
+
 // ─── Add Note ───
 document.getElementById('addNoteBtn')?.addEventListener('click', () => {
     const input = document.getElementById('noteInput');
