@@ -147,6 +147,8 @@
                         newScript.appendChild(document.createTextNode(oldScript.innerHTML));
                         oldScript.parentNode.replaceChild(newScript, oldScript);
                     });
+                    
+                    if(window.initCustomSelects) setTimeout(window.initCustomSelects, 50);
 
                     window.history.pushState({}, '', url);
                     document.title = doc.title;
@@ -221,6 +223,87 @@
                 document.querySelectorAll('.relative.inline-block > div.absolute').forEach(d => d.classList.add('hidden'));
             }
         });
+
+        // ─── Global Custom Select Initializer ───
+        window.initCustomSelects = function() {
+            document.querySelectorAll('select:not([multiple]):not(.no-custom)').forEach(function(select) {
+                if(select.dataset.customized === 'true') return;
+                select.dataset.customized = 'true';
+                select.style.display = 'none';
+
+                var wrapper = document.createElement('div');
+                wrapper.className = 'relative w-full text-left inline-block';
+
+                var trigger = document.createElement('div');
+                var baseClasses = select.className.replace(/appearance-none/g, '').replace(/cursor-pointer/g, '');
+                if(!baseClasses.includes('py-') && !baseClasses.includes('h-')) baseClasses += ' py-2.5';
+                if(!baseClasses.includes('border')) baseClasses += ' border border-slate-200';
+                trigger.className = baseClasses + " flex items-center justify-between cursor-pointer focus-within:ring-1 focus-within:ring-primary-600 focus-within:border-primary-600";
+                
+                var textSpan = document.createElement('span');
+                textSpan.className = "block truncate pointer-events-none outline-none";
+                trigger.appendChild(textSpan);
+
+                var caret = document.createElement('div');
+                caret.className = "pointer-events-none flex items-center pl-2 shrink-0";
+                caret.innerHTML = `<svg class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>`;
+                trigger.appendChild(caret);
+
+                var menu = document.createElement('div');
+                menu.className = "custom-select-menu hidden absolute left-0 z-[100] mt-1 w-full max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-[var(--ui-shadow-card)] p-1";
+
+                function updateText() {
+                    var selectedOpt = select.options[select.selectedIndex];
+                    textSpan.textContent = selectedOpt ? selectedOpt.text : 'Select...';
+                    if (selectedOpt && selectedOpt.disabled) {
+                        textSpan.classList.add('text-slate-400');
+                    } else {
+                        textSpan.classList.remove('text-slate-400');
+                    }
+                }
+                
+                Array.from(select.options).forEach(function(opt, index) {
+                    var item = document.createElement('div');
+                    item.className = "px-3 py-2 text-[14px] font-medium rounded-lg cursor-pointer transition select-none " + 
+                                     (opt.disabled ? "text-slate-400 cursor-not-allowed bg-slate-50" : "text-slate-700 hover:bg-primary-50 hover:text-primary-700");
+                    item.textContent = opt.text;
+                    if(!opt.disabled) {
+                        item.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            select.selectedIndex = index;
+                            select.dispatchEvent(new Event('change'));
+                            updateText();
+                            menu.classList.add('hidden');
+                        });
+                    }
+                    menu.appendChild(item);
+                });
+
+                updateText();
+
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var hiding = !menu.classList.contains('hidden');
+                    document.querySelectorAll('.custom-select-menu').forEach(function(m) { m.classList.add('hidden'); });
+                    if(!hiding) menu.classList.remove('hidden');
+                });
+
+                select.addEventListener('change', updateText);
+
+                wrapper.appendChild(trigger);
+                wrapper.appendChild(menu);
+                select.parentNode.insertBefore(wrapper, select);
+                wrapper.appendChild(select);
+            });
+        };
+
+        // Close on outside click
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.custom-select-menu').forEach(function(m) { m.classList.add('hidden'); });
+        });
+
+        window.initCustomSelects();
+
     });
 </script>
 @stack('scripts')
