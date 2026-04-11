@@ -132,6 +132,7 @@ Route::view('/adminPanel/support-tickets', 'admin.support-tickets.index')->name(
 Route::view('/adminPanel/ui-fields-modification', 'admin.support-tickets.ui-fields-modification')->name('admin.ui-fields-modification');
 Route::view('/adminPanel/sync-monitor', 'admin.sync-monitor.index')->name('admin.sync-monitor');
 Route::view('/adminPanel/global-settings', 'admin.global-settings.index')->name('admin.global-settings');
+Route::view('/adminPanel/delivery-logistics', 'admin.delivery-logistics')->name('admin.delivery-logistics');
 
 Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
     Route::view('/role-permission', 'admin.RolePermissions.index')->name('role-permission');

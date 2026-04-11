@@ -79,9 +79,6 @@
         }
     </style>
     <div class="relative mx-auto flex min-h-[64px] w-full max-w-none items-center gap-4 px-4 py-1 sm:px-6 sm:py-1.5 xl:grid xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:items-center xl:gap-4 xl:px-6 2xl:gap-6 2xl:px-10"
-    style="background: radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.08), transparent 24%),
-            radial-gradient(circle at 88% 10%, rgba(26, 77, 46, 0.08), transparent 18%),
-            linear-gradient(180deg, #ffffff 0%, #f9faf9 100%)"
     >
         <a href="{{ route('home') }}" class="shrink-0 xl:col-start-1">
             <img src="{{ asset('upload/icons/biogenixlogo5.PNG') }}" alt="Biogenix Logo" width="120" height="64" decoding="async" class="h-12 w-auto xl:h-14 2xl:h-16">
@@ -89,7 +86,7 @@
 
         {{-- Mobile hamburger --}}
         <button
-            class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 xl:hidden"
+            class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-slate-600 shadow-sm transition hover:bg-[var(--ui-surface-subtle)] xl:hidden"
             data-menu-toggle
             aria-label="Open navigation menu"
             aria-expanded="false"
@@ -109,7 +106,7 @@
             @foreach ($navItems as $nav)
                 <a
                     href="{{ $nav['href'] }}"
-                    class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}"
+                    class="header-nav-link relative whitespace-nowrap rounded-lg font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 shadow-sm hover:text-primary-700' : 'text-[var(--ui-text-muted)] hover:bg-[var(--ui-surface-subtle)] hover:text-[var(--ui-text)]' }}"
                 >
                     {{ $nav['label'] }}
                 </a>
@@ -127,18 +124,18 @@
 
                 <form method="POST" action="{{ route('logout') }}" class="inline-block">
                     @csrf
-                    <button type="submit" id="logoutBtn" class="header-auth-button hover-lift inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-[13px] font-semibold text-slate-700 shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
+                    <button type="submit" id="logoutBtn" class="header-auth-button hover-lift inline-flex h-10 cursor-pointer items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-semibold text-[var(--ui-text)] shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 2xl:h-11 2xl:px-5 2xl:text-sm">Logout</button>
                 </form>
             @else
                 <a href="{{ route('login') }}" id="loginBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-600 bg-primary-600 px-4 text-[13px] font-semibold text-white shadow-sm transition hover:bg-primary-700 2xl:h-11 2xl:px-5 2xl:text-sm">Login</a>
-                <a href="{{ route('signup') }}" id="signupBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-primary-200 bg-white px-4 text-[13px] font-semibold text-primary-700 shadow-sm transition hover:bg-primary-50 hover:text-primary-800 hover:border-primary-300 2xl:h-11 2xl:px-5 2xl:text-sm">Sign Up</a>
+                <a href="{{ route('signup') }}" id="signupBtn" class="header-auth-button inline-flex h-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-semibold text-[var(--ui-text)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:border-[var(--ui-text-muted)] 2xl:h-11 2xl:px-5 2xl:text-sm">Sign Up</a>
             @endauth
 
             @if(!$isAdmin)
             <button
                 type="button"
                 onclick="if(typeof openCartSidebar==='function')openCartSidebar()"
-                class="header-cart-button inline-flex h-10 items-center gap-2 rounded-xl border border-primary-100 bg-primary-50 px-3 text-primary-700 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:h-11 2xl:gap-2.5 2xl:px-3.5"
+                class="header-cart-button inline-flex h-10 items-center gap-2 rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-3 text-[var(--ui-text)] shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--ui-surface-subtle)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 cursor-pointer 2xl:h-11 2xl:gap-2.5 2xl:px-3.5"
                 aria-label="View cart"
             >
                 <span class="relative inline-flex h-7 w-7 items-center justify-center text-inherit">
@@ -161,7 +158,7 @@
             {{-- Profile icon --}}
             <a
                 href="{{ $profileHref }}"
-                class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-xl border border-primary-100 bg-primary-50 text-primary-700 no-underline shadow-sm transition hover:border-primary-200 hover:bg-primary-100 hover:text-primary-800 hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
+                class="header-profile-button hover-lift inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text)] no-underline shadow-sm transition hover:bg-[var(--ui-surface-subtle)] hover:shadow-md hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/20 2xl:h-11 2xl:w-11"
                 aria-label="{{ $authUser ? 'Open account profile' : 'Open account preview' }}"
                 title="Profile"
             >
@@ -179,24 +176,24 @@
 
     <aside
         id="mobileMenuDrawer"
-        class="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] max-w-full translate-x-full flex-col bg-white shadow-[0_24px_80px_rgba(26,77,46,0.15)] transition duration-300 ease-out"
+        class="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] max-w-full translate-x-full flex-col bg-[var(--ui-surface)] shadow-[0_24px_80px_rgba(26,77,46,0.15)] transition duration-300 ease-out"
         role="dialog"
         aria-modal="true"
         aria-labelledby="mobileMenuTitle"
     >
-        <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+        <div class="flex items-center justify-between border-b border-[var(--ui-border)] px-5 py-4">
             <div class="flex items-center gap-3">
                 <img src="{{ asset('upload/icons/logo.jpg') }}" alt="Biogenix Logo" width="40" height="40" decoding="async" class="h-10 w-10 rounded-2xl object-cover">
                 <div>
-                    <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-primary-800">Biogenix Menu</p>
-                    <p class="text-xs font-medium text-slate-400">Mobile navigation</p>
+                    <p id="mobileMenuTitle" class="text-base font-semibold tracking-tight text-[var(--ui-text)]">Biogenix Menu</p>
+                    <p class="text-xs font-medium text-[var(--ui-text-muted)]">Mobile navigation</p>
                 </div>
             </div>
 
             <button
                 id="mobileMenuClose"
                 type="button"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--ui-border)] bg-[var(--ui-surface)] text-[var(--ui-text-muted)] shadow-sm transition hover:bg-[var(--ui-surface-subtle)]"
                 aria-label="Close mobile menu"
             >
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -215,8 +212,8 @@
                         </svg>
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="truncate text-base font-semibold text-slate-950">{{ $authUser?->name ?? 'Welcome to Biogenix' }}</p>
-                        <p class="mt-1 truncate text-sm text-slate-500">{{ $authUser?->email ?? 'Browse products, quotes, and support from one place.' }}</p>
+                        <p class="truncate text-base font-semibold text-[var(--ui-text)]">{{ $authUser?->name ?? 'Welcome to Biogenix' }}</p>
+                        <p class="mt-1 truncate text-sm text-[var(--ui-text-muted)]">{{ $authUser?->email ?? 'Browse products, quotes, and support from one place.' }}</p>
                         <span class="mt-3 inline-flex rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary-700">
                             {{ $accountTypeLabel }}
                         </span>
@@ -245,17 +242,17 @@
                 </div>
             </section>
 
-            <section class="rounded-[26px] border border-slate-200 bg-white p-3 shadow-sm">
+            <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-sm">
                 <div class="mb-3 flex items-center justify-between px-1">
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Navigate</p>
-                    <span class="text-xs font-medium text-slate-400">{{ count($navItems) }} links</span>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--ui-text-muted)]">Navigate</p>
+                    <span class="text-xs font-medium text-[var(--ui-text-muted)]">{{ count($navItems) }} links</span>
                 </div>
 
                 <div class="space-y-2">
                     @foreach ($navItems as $nav)
                         <a
                             href="{{ $nav['href'] }}"
-                            class="flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 hover:text-primary-700' : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900' }}"
+                            class="flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold no-underline transition {{ $currentRoute === $nav['route'] ? 'bg-primary-50 text-primary-700 hover:text-primary-700' : 'bg-[var(--ui-surface-subtle)] text-[var(--ui-text)] hover:bg-[var(--ui-border)] hover:text-[var(--ui-text)]' }}"
                         >
                             <span>{{ $nav['label'] }}</span>
                             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -266,10 +263,10 @@
                 </div>
             </section>
 
-            <section class="rounded-[26px] border border-slate-200 bg-white p-3 shadow-sm">
+            <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-3 shadow-sm">
                 <div class="mb-3 flex items-center justify-between px-1">
-                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Quick Actions</p>
-                    <span class="text-xs font-medium text-slate-400">Fast access</span>
+                    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--ui-text-muted)]">Quick Actions</p>
+                    <span class="text-xs font-medium text-[var(--ui-text-muted)]">Fast access</span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -277,7 +274,7 @@
                         @if (isset($action['onclick']))
                             <button type="button" onclick="if(typeof openCartSidebar==='function'){openCartSidebar();}var cm=document.getElementById('mobileMenuClose');if(cm){cm.click();}" class="rounded-[22px] border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-primary-200 hover:bg-primary-50 hover:text-slate-900 cursor-pointer">
                         @else
-                            <a href="{{ $action['href'] }}" class="rounded-[22px] border border-slate-200 bg-slate-50 p-3 text-left no-underline transition hover:border-primary-200 hover:bg-primary-50 hover:text-slate-900">
+                            <a href="{{ $action['href'] }}" class="rounded-[22px] border border-[var(--ui-border)] bg-[var(--ui-surface-subtle)] p-3 text-left no-underline transition hover:border-primary-200 hover:bg-primary-50 hover:text-[var(--ui-text)]">
                         @endif
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary-700 shadow-sm">
                                 @if ($action['icon'] === 'profile')
@@ -307,7 +304,7 @@
                                     </svg>
                                 @endif
                             </span>
-                            <span class="mt-3 block text-sm font-semibold text-slate-900">{{ $action['label'] }}</span>
+                            <span class="mt-3 block text-sm font-semibold text-[var(--ui-text)]">{{ $action['label'] }}</span>
                         @if (isset($action['onclick']))
                             </button>
                         @else
@@ -317,9 +314,9 @@
                 </div>
             </section>
 
-            <section class="rounded-[26px] border border-slate-200 bg-slate-50 p-4 shadow-sm">
-                <p class="text-sm font-semibold text-slate-950">Need procurement help?</p>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Talk to our team about availability, delivery windows, or commercial quotations.</p>
+            <section class="rounded-[26px] border border-[var(--ui-border)] bg-[var(--ui-surface-subtle)] p-4 shadow-sm">
+                <p class="text-sm font-semibold text-[var(--ui-text)]">Need procurement help?</p>
+                <p class="mt-2 text-sm leading-6 text-[var(--ui-text-muted)]">Talk to our team about availability, delivery windows, or commercial quotations.</p>
                 <div class="mt-4 flex flex-col gap-2">
                     <a href="tel:+91180024643649" class="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-sm transition hover:bg-slate-100 hover:text-slate-900">
                         Call Support

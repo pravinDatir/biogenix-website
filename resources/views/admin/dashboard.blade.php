@@ -9,8 +9,8 @@
             <!-- Welcome Header -->
             <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Dashboard Overview</h2>
-                    <p class="text-sm text-slate-500 mt-1">Welcome back. Here's what's happening in your biogenic supply chain today.</p>
+                    <h2 class="text-2xl font-extrabold text-[var(--ui-text)] tracking-tight">Dashboard Overview</h2>
+                    <p class="text-sm text-[var(--ui-text-muted)] mt-1">Welcome back. Here's what's happening in your biogenic supply chain today.</p>
                 </div>
                 
                 <!-- Quick Search -->
@@ -20,16 +20,16 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
-                    <input type="text" placeholder="Search analytics or orders..." class="w-full bg-white border border-slate-200 shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-700 placeholder:text-slate-400">
+                    <input type="text" placeholder="Search analytics or orders..." class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] shadow-sm text-sm rounded-xl pl-9 pr-4 py-2.5 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)]">
                 </div>
             </div>
 
             <!-- KPI Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                 <!-- Card 1 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
+                <a href="{{ route('admin.orders') }}" class="ajax-link bg-[var(--ui-surface)] rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-[var(--ui-card-border)] flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
-                        <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-100 text-primary-800">
+                        <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-[var(--ui-surface-subtle)] text-primary-800">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 00-2-2m4-10a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2V9z"></path></svg>
                         </div>
                         <div class="flex items-center gap-1.5 text-[11px] font-bold text-primary-600 bg-primary-50 px-2.5 py-1 rounded-md mb-auto mt-0.5">
@@ -38,13 +38,13 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="text-[12px] lg:text-[13px] font-semibold text-slate-500 mb-0.5">Total Orders</p>
-                        <h3 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">1,284</h3>
+                        <p class="text-[12px] lg:text-[13px] font-semibold text-[var(--ui-text-muted)] mb-0.5">Total Orders</p>
+                        <h3 class="text-2xl lg:text-3xl font-extrabold text-[var(--ui-text)] tracking-tight">1,284</h3>
                     </div>
                 </a>
 
                 <!-- Card 2 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
+                <a href="{{ route('admin.orders') }}" class="ajax-link bg-[var(--ui-surface)] rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-[var(--ui-card-border)] flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -61,7 +61,7 @@
                 </a>
 
                 <!-- Card 3 -->
-                <a href="{{ route('admin.orders') }}" class="ajax-link bg-white rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-slate-100 flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
+                <a href="{{ route('admin.orders') }}" class="ajax-link bg-[var(--ui-surface)] rounded-2xl p-5 lg:p-6 shadow-[var(--ui-shadow-soft)] border border-[var(--ui-card-border)] flex flex-col justify-between h-[130px] lg:h-[140px] hover:shadow-[var(--ui-shadow-card)] transition-shadow cursor-pointer">
                     <div class="flex items-center justify-between">
                         <div class="h-10 w-10 flex items-center justify-center rounded-xl bg-secondary-50 text-secondary-700">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v1l2 2m-3 5h3m-3 4h3"></path></svg>
@@ -79,11 +79,11 @@
             <!-- Charts Row -->
             <div class="grid grid-cols-1 gap-6">
                 <!-- Revenue Snapshot (Full Width) -->
-                <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-[var(--ui-shadow-soft)] border border-slate-100 h-auto sm:h-[400px] flex flex-col justify-between relative overflow-hidden">
+                <div class="bg-[var(--ui-surface)] rounded-2xl p-6 lg:p-7 shadow-[var(--ui-shadow-soft)] border border-[var(--ui-card-border)] h-auto sm:h-[400px] flex flex-col justify-between relative overflow-hidden">
                     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-900">Revenue Snapshot</h3>
-                            <p class="text-[11px] lg:text-xs font-semibold text-slate-400 mt-1">Global performance tracking</p>
+                            <h3 class="text-lg font-bold text-[var(--ui-text)]">Revenue Snapshot</h3>
+                            <p class="text-[11px] lg:text-xs font-semibold text-[var(--ui-text-muted)] mt-1">Global performance tracking</p>
                             <div class="mt-4 flex flex-wrap items-center gap-3 lg:gap-4">
                                 <h2 class="text-3xl lg:text-4xl font-extrabold text-primary-800 tracking-tight">$248,590.00</h2>
                                 <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-primary-600 bg-primary-50 px-2.5 py-1 rounded-md h-fit">
@@ -93,26 +93,26 @@
                             </div>
                         </div>
                         <!-- Toggle -->
-                        <div id="chartToggle" class="bg-slate-100 rounded-lg p-1 flex items-center shadow-inner self-start">
-                            <button data-period="weekly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800 cursor-pointer">Weekly</button>
-                            <button data-period="monthly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-primary-800 bg-white rounded-md shadow-sm cursor-pointer">Monthly</button>
-                            <button data-period="yearly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-slate-500 rounded-md transition hover:text-slate-800 cursor-pointer">Yearly</button>
+                        <div id="chartToggle" class="bg-[var(--ui-surface-subtle)] rounded-lg p-1 flex items-center shadow-inner self-start">
+                            <button data-period="weekly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-[var(--ui-text-muted)] rounded-md transition hover:text-[var(--ui-text)] cursor-pointer">Weekly</button>
+                            <button data-period="monthly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-primary-800 bg-[var(--ui-surface)] rounded-md shadow-sm cursor-pointer">Monthly</button>
+                            <button data-period="yearly" class="chart-toggle-btn px-3 lg:px-4 py-1.5 text-[11px] font-bold text-[var(--ui-text-muted)] rounded-md transition hover:text-[var(--ui-text)] cursor-pointer">Yearly</button>
                         </div>
                     </div>
 
                     <!-- Fake Chart Area -->
                     <div id="chartBars" class="mt-8 flex-1 grid grid-cols-7 gap-2 lg:gap-4 items-end px-1 lg:px-2 pt-10 min-h-[150px]">
-                        <div class="w-full bg-slate-100 rounded-t-sm h-[30%]"></div>
-                        <div class="w-full bg-slate-100 rounded-t-sm h-[45%]"></div>
-                        <div class="w-full bg-slate-100 rounded-t-sm h-[35%]"></div>
-                        <div class="w-full bg-slate-100 rounded-t-sm h-[55%]"></div>
-                        <div class="w-full bg-slate-100 rounded-t-sm h-[40%]"></div>
-                        <div class="w-full bg-slate-100 rounded-t-sm h-[60%]"></div>
+                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[30%]"></div>
+                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[45%]"></div>
+                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[35%]"></div>
+                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[55%]"></div>
+                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[40%]"></div>
+                        <div class="w-full bg-[var(--ui-surface-subtle)] rounded-t-sm h-[60%]"></div>
                         <div class="w-full bg-primary-600 rounded-t-sm h-[85%] shadow-[0_0_15px_rgba(9,27,63,0.3)]"></div>
                     </div>
                     
                     <!-- Chart Labels -->
-                    <div class="grid grid-cols-7 gap-2 lg:gap-4 mt-4 px-1 lg:px-2 text-center text-[9px] lg:text-[10px] font-bold text-slate-400">
+                    <div class="grid grid-cols-7 gap-2 lg:gap-4 mt-4 px-1 lg:px-2 text-center text-[9px] lg:text-[10px] font-bold text-[var(--ui-text-muted)]">
                         <span>MON</span>
                         <span>TUE</span>
                         <span>WED</span>
@@ -125,9 +125,9 @@
             </div>
 
             <!-- Priority Orders Table -->
-            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden mt-6">
-                <div class="px-5 lg:px-7 py-5 lg:py-6 border-b border-slate-100 flex items-center justify-between">
-                    <h3 class="text-base font-bold text-slate-900">Recent Orders</h3>
+            <div class="bg-[var(--ui-surface)] rounded-2xl shadow-[var(--ui-shadow-soft)] border border-[var(--ui-card-border)] overflow-hidden mt-6">
+                <div class="px-5 lg:px-7 py-5 lg:py-6 border-b border-[var(--ui-border)] flex items-center justify-between">
+                    <h3 class="text-base font-bold text-[var(--ui-text)]">Recent Orders</h3>
                     <a href="{{ route('admin.orders') }}" class="ajax-link text-[12px] lg:text-[13px] font-bold text-primary-800 hover:underline underline-offset-2 cursor-pointer">View All Orders</a>
                 </div>
                 
@@ -143,8 +143,8 @@
                                 <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100/80 text-[12px] lg:text-[13px] font-semibold text-slate-900">
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                        <tbody class="divide-y divide-[var(--ui-border)] text-[12px] lg:text-[13px] font-semibold text-[var(--ui-text)]">
+                            <tr class="hover:bg-[var(--ui-surface-subtle)]/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-9012</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -217,11 +217,11 @@ const chartData = {
 document.querySelectorAll('.chart-toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.chart-toggle-btn').forEach(b => {
-            b.classList.remove('text-primary-800', 'bg-white', 'shadow-sm');
-            b.classList.add('text-slate-500');
+            b.classList.remove('text-primary-800', 'bg-[var(--ui-surface)]', 'shadow-sm');
+            b.classList.add('text-[var(--ui-text-muted)]');
         });
-        btn.classList.remove('text-slate-500');
-        btn.classList.add('text-primary-800', 'bg-white', 'shadow-sm');
+        btn.classList.remove('text-[var(--ui-text-muted)]');
+        btn.classList.add('text-primary-800', 'bg-[var(--ui-surface)]', 'shadow-sm');
 
         const bars = document.querySelectorAll('#chartBars > div');
         const data = chartData[btn.dataset.period];

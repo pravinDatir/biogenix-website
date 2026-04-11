@@ -1,143 +1,113 @@
-@extends('admin.layout')
+{{-- Add Delegation Role Modal --}}
+<div id="add-delegation-modal" class="fixed inset-0 z-[9999]" style="display: none;" aria-hidden="true">
+    <div id="delegation-modal-backdrop" class="absolute inset-0 bg-slate-950/60 opacity-0 backdrop-blur-sm transition-opacity duration-300"></div>
 
-@section('title', 'Add Delegated Role - Biogenix Admin')
+    <div class="fixed inset-0 flex items-center justify-center p-4 py-8 pointer-events-none">
+        <div id="delegation-modal-dialog"
+            class="pointer-events-auto relative flex max-h-[85vh] w-[95%] md:w-[780px] translate-y-4 scale-95 flex-col overflow-hidden rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+            style="width: 780px; max-width: 95%;">
 
-@section('admin_content')
-    <div class="space-y-6 text-slate-900">
-
-        {{-- Back Arrow + Breadcrumb --}}
-        <div class="flex items-center gap-3 mb-6">
-            <a href="{{ route('admin.role-permission') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to Roles & Permissions">
-                <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-            </a>
-            <nav class="flex items-center text-[13px] text-slate-500 font-medium">
-            <a href="{{ route('admin.role-permission') }}" class="ajax-link hover:text-slate-900 transition cursor-pointer">Roles &amp; Permissions</a>
-            <span class="mx-2 text-slate-300">/</span>
-                <span class="text-slate-900 font-semibold cursor-pointer">Delegate Support Role</span>
-            </nav>
-        </div>
-
-        {{-- Page Header --}}
-        <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Delegate Support Role</h1>
-            <p class="text-sm text-slate-500 mt-1">Authorize internal tickets management and support proxy access.</p>
-        </div>
-
-        {{-- Form Card --}}
-        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[var(--ui-shadow-soft)] p-6 sm:p-8">
-            <div class="space-y-6 max-w-2xl">
-                
-                {{-- Select User --}}
-                <div>
-                    <label for="delegateUser" class="block text-[13px] font-bold text-slate-700 mb-2">Select User <span class="text-rose-500">*</span></label>
-                    <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                        <input id="delegateUser" type="text" placeholder="Search for user by name or email..." class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50">
-                    </div>
-                </div>
-
-                {{-- Role to Delegate --}}
-                <div>
-                    <label for="delegateRole" class="block text-[13px] font-bold text-slate-700 mb-2">Role to Delegate</label>
-                    <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                            </svg>
-                        </div>
-                        <select id="delegateRole" class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-10 text-[14px] text-slate-900 outline-none transition focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 cursor-pointer">
-                            <option value="" disabled selected>Select a role...</option>
-                            <option value="super_admin">Super Admin</option>
-                            <option value="sales_manager">Sales Manager</option>
-                            <option value="lab_technician">Lab Technician</option>
-                            <option value="inventory_manager">Inventory Manager</option>
-                            <option value="billing_admin">Billing Admin</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Expiry Date --}}
-                <div>
-                    <label for="delegateExpiry" class="block text-[13px] font-bold text-slate-700 mb-2">Expiry Date</label>
-                    <div class="relative max-w-sm">
-                        <div class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <input id="delegateExpiry" type="date" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 cursor-pointer">
-                    </div>
-                    <p class="mt-1.5 text-[12px] text-secondary-700 font-medium">Permissions will automatically revert at 00:00 on this date.</p>
-                </div>
-
-                {{-- Reason --}}
-                <div>
-                    <label for="delegateReason" class="block text-[13px] font-bold text-slate-700 mb-2">Reason for Delegation (Optional)</label>
-                    <textarea id="delegateReason" rows="3" placeholder="Provide context for the audit log..." class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 resize-none"></textarea>
-                </div>
-
-                {{-- Audit Notification --}}
-                <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3">
-                    <svg class="mt-0.5 h-4 w-4 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+            <!-- Fixed Header -->
+            <div class="shrink-0 border-b border-slate-100 bg-white px-8 py-4 z-10">
+                <div class="flex items-start justify-between gap-4">
                     <div>
-                        <div class="text-[12.5px] font-bold text-slate-700">Audit Log Note</div>
-                        <div class="text-[12px] text-slate-500 leading-relaxed">All actions performed by the user while this delegation is active will be explicitly logged with the "Delegated Role" signature for compliance tracking.</div>
+                        <h2 class="text-base font-black tracking-tight text-[#0A1633]">Add Delegation Role</h2>
+                        <p class="mt-0.5 text-[10px] font-bold text-primary-600 uppercase tracking-widest">Temporary Access Grant</p>
+                    </div>
+                    <button id="delegation-modal-close-btn" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <form id="add-delegation-form" class="flex flex-col min-h-0">
+                <!-- Scrollable Body -->
+                <div class="flex-1 overflow-y-auto px-8 py-5 space-y-4 scrollbar-thin scrollbar-thumb-slate-200">
+                    <!-- Select User -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Select User</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 group-focus-within:text-primary-600 transition-colors">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            </span>
+                            <input id="delegation-user-search" type="text" placeholder="Search by name or email..." class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-xs font-semibold outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20">
+                        </div>
+                    </div>
+
+                    <!-- Role Assignment -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Role Assignment</label>
+                        <div class="relative">
+                            <select class="h-9 w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 pr-10 text-xs font-bold text-slate-700 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20">
+                                <option value="">Select a role to delegate...</option>
+                                <option value="admin">Delegated Administrator</option>
+                                <option value="editor">Content Moderator</option>
+                                <option value="support">Senior Support Agent</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3.5 text-slate-400">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expiration Date -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Expiration Date</label>
+                        <div class="relative">
+                            <input type="date" class="h-9 w-full rounded-lg border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20">
+                        </div>
+                        <div class="flex items-center gap-2.5 px-1 mt-1">
+                            <svg class="h-3 w-3 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                            <p class="text-[9px] font-semibold text-slate-400">Access automatically revoked at 12:00 AM on this date.</p>
+                        </div>
                     </div>
                 </div>
 
-            </div>
-
-            {{-- Action Buttons --}}
-            <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
-                <a href="{{ route('admin.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-                <button type="button" id="addDelegSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(11,37,94,0.18)] transition hover:brightness-105 cursor-pointer">
-                    Add Delegation
-                </button>
-            </div>
+                <!-- Fixed Footer -->
+                <div class="shrink-0 border-t border-slate-100 bg-white px-8 py-4 flex items-center justify-end gap-5">
+                    <button id="delegation-modal-cancel-btn" type="button" class="text-xs font-bold text-slate-400 hover:text-slate-800 transition-colors uppercase tracking-wider">Cancel</button>
+                    <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-8 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700 active:scale-95">
+                        Grant Access
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-@push('scripts')
 <script>
-(function() {
-    var saveDelegBtn = document.getElementById('addDelegSaveBtn');
-    if (saveDelegBtn) {
-        saveDelegBtn.addEventListener('click', function() {
-            var userName = document.getElementById('delegateUser').value.trim();
-            if (!userName) {
-                document.getElementById('delegateUser').focus();
-                document.getElementById('delegateUser').classList.add('border-rose-400', 'ring-1', 'ring-rose-200');
-                setTimeout(function() {
-                    document.getElementById('delegateUser').classList.remove('border-rose-400', 'ring-1', 'ring-rose-200');
-                }, 2000);
-                return;
-            }
-            if (window.AdminToast) {
-                window.AdminToast.show('Delegation added for "' + userName + '" successfully!', 'success');
-            } else {
-                alert('Delegation added for "' + userName + '" successfully!');
-            }
-            var tmpLink = document.createElement('a');
-            tmpLink.href = "{{ route('admin.role-permission') }}";
-            tmpLink.className = 'ajax-link hidden';
-            document.body.appendChild(tmpLink);
-            tmpLink.click();
-            document.body.removeChild(tmpLink);
-        });
-    }
+(function initializeAdminDelegationModal() {
+    const modal = document.getElementById('add-delegation-modal');
+    const backdrop = document.getElementById('delegation-modal-backdrop');
+    const dialog = document.getElementById('delegation-modal-dialog');
+    const input = document.getElementById('delegation-user-search');
+
+    window.AdminDelegationModal = {
+        isOpen: false,
+        show() {
+            this.isOpen = true;
+            modal.style.display = 'block';
+            document.body.classList.add('overflow-hidden');
+            modal.offsetHeight;
+            requestAnimationFrame(() => {
+                backdrop.classList.replace('opacity-0', 'opacity-100');
+                dialog.classList.remove('opacity-0', 'translate-y-4', 'scale-95');
+                dialog.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+            });
+            setTimeout(() => input.focus(), 150);
+        },
+        close() {
+            this.isOpen = false;
+            backdrop.classList.replace('opacity-100', 'opacity-0');
+            dialog.classList.replace('opacity-100', 'opacity-0');
+            dialog.classList.add('translate-y-4', 'scale-95');
+            document.body.classList.remove('overflow-hidden');
+            setTimeout(() => { if(!this.isOpen) modal.style.display = 'none'; }, 300);
+        }
+    };
+
+    document.getElementById('delegation-modal-close-btn')?.addEventListener('click', () => AdminDelegationModal.close());
+    document.getElementById('delegation-modal-cancel-btn')?.addEventListener('click', () => AdminDelegationModal.close());
+    backdrop.addEventListener('click', () => AdminDelegationModal.close());
 })();
 </script>
-@endpush
-@endsection
-

@@ -21,7 +21,8 @@
     @stack('styles')
 </head>
 
-<body class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_right_15%,rgba(14,165,233,0.12),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#eff5ff_100%)] font-sans text-slate-800 antialiased">
+<body
+    class="min-h-screen bg-[var(--ui-page-bg-gradient)] font-sans text-slate-800 antialiased">
     @php($suppressShellAlerts = request()->routeIs('login', 'forgot.password', 'signup', 'b2b.signup'))
     @php($isMinimalCustomerWorkspace = trim($__env->yieldContent('customer_minimal')) === 'minimal')
     @php($loaderLogoPath = public_path('upload/icons/biogenix3D.png'))
@@ -31,7 +32,9 @@
     @php($supportWidgetShouldOpen = session('support_ticket_widget_open') || old('support_ticket_form_source') === 'layout_widget')
     @php($supportWidgetIsAuthenticated = auth()->check())
 
-    <div id="toastContainer" class="pointer-events-none fixed right-4 top-5 z-[120] flex w-[min(calc(100vw-2rem),24rem)] flex-col gap-3 sm:right-6 sm:top-6"></div>
+    <div id="toastContainer"
+        class="pointer-events-none fixed right-4 top-5 z-[120] flex w-[min(calc(100vw-2rem),24rem)] flex-col gap-3 sm:right-6 sm:top-6">
+    </div>
 
     @include('loader.loader')
 
@@ -45,14 +48,17 @@
         ::-webkit-scrollbar {
             width: 10px;
         }
+
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: var(--ui-page-bg);
         }
+
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: var(--ui-border);
             border-radius: 5px;
-            border: 2px solid #f1f5f9;
+            border: 2px solid var(--ui-page-bg);
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: var(--color-primary-500);
         }
@@ -69,16 +75,23 @@
         }
 
         @keyframes loader {
-            0% { transform: translateX(-110%) scaleX(0.9); }
-            50% { transform: translateX(100%) scaleX(1); }
-            100% { transform: translateX(220%) scaleX(0.9); }
+            0% {
+                transform: translateX(-110%) scaleX(0.9);
+            }
+
+            50% {
+                transform: translateX(100%) scaleX(1);
+            }
+
+            100% {
+                transform: translateX(220%) scaleX(0.9);
+            }
         }
 
         .loader-bar {
             animation: loader 1.6s ease-in-out infinite;
             will-change: transform;
         }
-
     </style>
 
     <div id="pageWrapper" class="flex min-h-screen flex-col">
@@ -115,24 +128,23 @@
 
     <div class="fixed bottom-10 right-6 z-50 flex flex-col items-end gap-4">
         {{-- Back-to-Top Button --}}
-        <button
-            id="backToTopBtn"
-            type="button"
-            aria-label="Back to top"
-            class="inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 opacity-0 shadow-lg ring-1 ring-slate-900/5 pointer-events-none transition-all duration-300 hover:-translate-y-1 hover:bg-primary-600 hover:text-white hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30"
-        >
+        <button id="backToTopBtn" type="button" aria-label="Back to top"
+            class="inline-flex h-12 w-12 translate-y-2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 opacity-0 shadow-lg ring-1 ring-slate-900/5 pointer-events-none transition-all duration-300 hover:-translate-y-1 hover:bg-primary-600 hover:text-white hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600/30">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
             </svg>
         </button>
 
         @auth
-        {{-- Support Ticket Toggle Button --}}
-        <button onclick="toggleSupportForm()" class="group flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-xl shadow-primary-600/30 transition-all hover:scale-105 hover:bg-primary-600" aria-label="Open support ticket">
-            <svg class="h-7 w-7 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.477 2 2 5.582 2 10c0 2.476 1.343 4.675 3.444 6.136.213 1.393-.454 3.125-.5 3.245a.5.5 0 00.643.64c.12-.046 1.85-.712 3.244-1.127A9.852 9.852 0 0012 18c5.523 0 10-3.582 10-8s-4.477-8-10-8zm-3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
-            </svg>
-        </button>
+            {{-- Support Ticket Toggle Button --}}
+            <button onclick="toggleSupportForm()"
+                class="group flex h-14 w-14 items-center justify-center rounded-full bg-primary-600 text-white shadow-xl shadow-primary-600/30 transition-all hover:scale-105 hover:bg-primary-600"
+                aria-label="Open support ticket">
+                <svg class="h-7 w-7 transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.477 2 2 5.582 2 10c0 2.476 1.343 4.675 3.444 6.136.213 1.393-.454 3.125-.5 3.245a.5.5 0 00.643.64c.12-.046 1.85-.712 3.244-1.127A9.852 9.852 0 0012 18c5.523 0 10-3.582 10-8s-4.477-8-10-8zm-3 9a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
+                </svg>
+            </button>
         @endauth
     </div>
 
@@ -148,17 +160,20 @@
             height: auto !important;
             max-height: min(85vh, 620px) !important;
             border-radius: 2.25rem !important;
-            background: white !important;
-            border: 1px solid #e2e8f0 !important;
-            box-shadow: 0 48px 120px rgba(15,23,42,0.3) !important;
+            background: var(--ui-surface) !important;
+            border: 1px solid var(--ui-border) !important;
+            box-shadow: 0 48px 120px rgba(15, 23, 42, 0.3) !important;
             overflow: hidden !important;
             z-index: 99999 !important;
-            display: none !important; /* Initial state, toggled by JS */
+            display: none !important;
+            /* Initial state, toggled by JS */
             flex-direction: column !important;
         }
+
         #supportTicketForm.flex {
             display: flex !important;
         }
+
         @media (max-width: 640px) {
             #supportTicketForm {
                 right: 1.25rem !important;
@@ -168,132 +183,169 @@
         }
     </style>
     @auth
-    <div id="supportTicketForm" class="hidden flex-col bg-white border border-slate-200 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1),0_0_20px_-5px_rgba(26,77,46,0.05)] z-50 fixed bottom-24 right-6 w-full max-w-[380px] sm:max-h-[85vh] max-h-[85vh] rounded-[2.25rem] overflow-hidden" 
-         aria-labelledby="supportFormTitle" 
-         role="dialog" 
-         aria-modal="true">
-        <div class="flex items-center justify-between bg-primary-600 px-6 py-4">
-            <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-md ring-1 ring-white/20">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 13v4m-2-2h4" />
+        <div id="supportTicketForm"
+            class="hidden flex-col bg-white border border-slate-200 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1),0_0_20px_-5px_rgba(26,77,46,0.05)] z-50 fixed bottom-24 right-6 w-full max-w-[380px] sm:max-h-[85vh] max-h-[85vh] rounded-[2.25rem] overflow-hidden"
+            aria-labelledby="supportFormTitle" role="dialog" aria-modal="true">
+            <div class="flex items-center justify-between bg-primary-600 px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-white backdrop-blur-md ring-1 ring-white/20">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 13v4m-2-2h4" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold tracking-tight text-white">Support Workspace</h3>
+                        <p class="mt-0.5 text-[10px] font-medium text-blue-100 opacity-80">Response: &lt; 2 hours</p>
+                    </div>
+                </div>
+                <button onclick="toggleSupportForm()"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-xl text-blue-100 transition-colors hover:bg-white/10 hover:text-white">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold tracking-tight text-white">Support Workspace</h3>
-                    <p class="mt-0.5 text-[10px] font-medium text-blue-100 opacity-80">Response: &lt; 2 hours</p>
-                </div>
+                </button>
             </div>
-            <button onclick="toggleSupportForm()" class="inline-flex h-9 w-9 items-center justify-center rounded-xl text-blue-100 transition-colors hover:bg-white/10 hover:text-white">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
 
-        <div class="flex-1 overflow-y-auto bg-white p-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent overscroll-contain">
-            <h4 class="mb-1 text-xl font-bold tracking-tight text-slate-900">Raise a Ticket</h4>
-            <p class="mb-4 text-[13px] leading-relaxed text-slate-500">Submit your request and our technical experts will assist you immediately.</p>
+            <div
+                class="flex-1 overflow-y-auto bg-white p-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent overscroll-contain">
+                <h4 class="mb-1 text-xl font-bold tracking-tight text-slate-900">Raise a Ticket</h4>
+                <p class="mb-4 text-[13px] leading-relaxed text-slate-500">Submit your request and our technical experts
+                    will assist you immediately.</p>
 
-            @if ($supportWidgetIsAuthenticated)
-                <form action="{{ route('support-tickets.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col h-full min-h-0">
-                    @csrf
-                    <div class="flex-1 space-y-4 pb-6 min-h-0">
-                        <input type="hidden" name="support_ticket_form_source" value="layout_widget">
-                        <input type="hidden" name="priority" value="{{ $supportWidgetDefaultPriority }}">
+                @if ($supportWidgetIsAuthenticated)
+                    <form action="{{ route('support-tickets.store') }}" method="POST" enctype="multipart/form-data"
+                        class="flex flex-col h-full min-h-0">
+                        @csrf
+                        <div class="flex-1 space-y-4 pb-6 min-h-0">
+                            <input type="hidden" name="support_ticket_form_source" value="layout_widget">
+                            <input type="hidden" name="priority" value="{{ $supportWidgetDefaultPriority }}">
 
-                        @if ($supportWidgetShouldOpen && $errors->any())
-                            <div class="mb-4 rounded-xl bg-red-50 p-4 text-xs text-red-600">
-                                <ul class="list-disc pl-4 space-y-1">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+                            @if ($supportWidgetShouldOpen && $errors->any())
+                                <div class="mb-4 rounded-xl bg-red-50 p-4 text-xs text-red-600">
+                                    <ul class="list-disc pl-4 space-y-1">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <div>
+                                <label for="supportSubject"
+                                    class="mb-1 block text-[13px] font-semibold text-slate-800">Subject</label>
+                                <input type="text" id="supportSubject" name="subject" value="{{ old('subject') }}"
+                                    class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                    placeholder="Briefly describe the issue" required>
                             </div>
-                        @endif
 
-                        <div>
-                            <label for="supportSubject" class="mb-1 block text-[13px] font-semibold text-slate-800">Subject</label>
-                            <input type="text" id="supportSubject" name="subject" value="{{ old('subject') }}" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Briefly describe the issue" required>
-                        </div>
+                            <div>
+                                <label for="supportCategory"
+                                    class="mb-1 block text-[13px] font-semibold text-slate-800">Category</label>
+                                <div class="relative" id="customSupportCategory">
+                                    <button type="button" onclick="toggleSupportCategoryList(event)"
+                                        class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 text-[13px] text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                        id="supportCategoryTrigger">
+                                        <span id="selectedCategoryText">Select a category</span>
+                                        <svg class="pointer-events-none h-4 w-4 text-slate-400 transition-transform duration-200"
+                                            id="supportCategoryChevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
 
-                        <div>
-                            <label for="supportCategory" class="mb-1 block text-[13px] font-semibold text-slate-800">Category</label>
-                            <div class="relative" id="customSupportCategory">
-                                <button type="button" onclick="toggleSupportCategoryList(event)" class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 text-[13px] text-slate-900 outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600" id="supportCategoryTrigger">
-                                    <span id="selectedCategoryText">Select a category</span>
-                                    <svg class="pointer-events-none h-4 w-4 text-slate-400 transition-transform duration-200" id="supportCategoryChevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                
-                                <input type="hidden" name="category_slug" id="supportCategoryInput" value="{{ old('category_slug') }}" required>
-                                
-                                <div id="supportCategoryList" class="absolute left-0 right-0 top-full z-[1000] mt-1 hidden max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl">
-                                    @forelse($supportWidgetCategoryOptions as $slug)
-                                        <button type="button" onclick="selectSupportCategory('{{ $slug }}', '{{ ucwords(str_replace('-', ' ', $slug)) }}')" class="flex w-full items-center px-4 py-2 text-left text-[13px] text-slate-700 transition hover:bg-primary-50 hover:text-primary-700">
-                                            {{ ucwords(str_replace('-', ' ', $slug)) }}
-                                        </button>
-                                    @empty
-                                        <div class="px-4 py-2 text-[12px] text-slate-400 italic">No categories available</div>
-                                    @endforelse
+                                    <input type="hidden" name="category_slug" id="supportCategoryInput"
+                                        value="{{ old('category_slug') }}" required>
+
+                                    <div id="supportCategoryList"
+                                        class="absolute left-0 right-0 top-full z-[1000] mt-1 hidden max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl">
+                                        @forelse($supportWidgetCategoryOptions as $slug)
+                                            <button type="button"
+                                                onclick="selectSupportCategory('{{ $slug }}', '{{ ucwords(str_replace('-', ' ', $slug)) }}')"
+                                                class="flex w-full items-center px-4 py-2 text-left text-[13px] text-slate-700 transition hover:bg-primary-50 hover:text-primary-700">
+                                                {{ ucwords(str_replace('-', ' ', $slug)) }}
+                                            </button>
+                                        @empty
+                                            <div class="px-4 py-2 text-[12px] text-slate-400 italic">No categories available</div>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
+
+                            <div>
+                                <label for="supportDescription"
+                                    class="mb-1 block text-[13px] font-semibold text-slate-800">Message</label>
+                                <textarea id="supportDescription" name="description" rows="3"
+                                    class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+                                    placeholder="Provide detailed information about your request..."
+                                    required>{{ old('description') }}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="mb-1 block text-[13px] font-semibold text-slate-800">Attachments</label>
+                                <label
+                                    class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-center transition-colors hover:bg-slate-50">
+                                    <svg class="mb-1.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
+                                    <span class="text-[10px] font-medium text-slate-500">Click to upload supporting files</span>
+                                    <input type="file" class="hidden" name="attachments[]" multiple>
+                                </label>
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="supportDescription" class="mb-1 block text-[13px] font-semibold text-slate-800">Message</label>
-                            <textarea id="supportDescription" name="description" rows="3" class="w-full rounded-md border border-slate-200 px-3 py-2 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600" placeholder="Provide detailed information about your request..." required>{{ old('description') }}</textarea>
-                        </div>
-
-                        <div>
-                            <label class="mb-1 block text-[13px] font-semibold text-slate-800">Attachments</label>
-                            <label class="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-center transition-colors hover:bg-slate-50">
-                                <svg class="mb-1.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        <div
+                            class="sticky bottom-0 -mx-5 -mb-5 flex items-center justify-between border-t border-slate-100 bg-white px-5 pb-[6px] pt-3">
+                            <span
+                                class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
-                                <span class="text-[10px] font-medium text-slate-500">Click to upload supporting files</span>
-                                <input type="file" class="hidden" name="attachments[]" multiple>
-                            </label>
+                                Secure
+                            </span>
+                            <button type="submit"
+                                class="inline-flex h-9 items-center justify-center rounded-md bg-primary-600 px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-primary-700">
+                                Submit Ticket
+                            </button>
+                        </div>
+                    </form>
+                @else
+                    <div class="space-y-4">
+                        {{-- This keeps guest users on a clear path because support tickets belong to a signed-in account. --}}
+                        <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 text-center">
+                            <div
+                                class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <h5 class="mb-2 text-sm font-bold text-slate-900">Authentication Required</h5>
+                            <p class="text-[13px] leading-relaxed text-slate-600">
+                                Please sign in to your Biogenix account to raise a support ticket and track operational
+                                coordination.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                            <a href="{{ route('login') }}"
+                                class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-6 text-[13px] font-bold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-0.5 hover:bg-primary-700">
+                                Sign In to Raise Ticket
+                            </a>
+                            <a href="{{ route('contact') }}"
+                                class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-6 text-[13px] font-bold text-slate-700 transition hover:bg-slate-50">
+                                Visit Help Center
+                            </a>
                         </div>
                     </div>
-
-                    <div class="sticky bottom-0 -mx-5 -mb-5 flex items-center justify-between border-t border-slate-100 bg-white px-5 pb-[6px] pt-3">
-                        <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                            Secure
-                        </span>
-                        <button type="submit" class="inline-flex h-9 items-center justify-center rounded-md bg-primary-600 px-6 text-[13px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-primary-700">
-                            Submit Ticket
-                        </button>
-                    </div>
-                </form>
-            @else
-                <div class="space-y-4">
-                    {{-- This keeps guest users on a clear path because support tickets belong to a signed-in account. --}}
-                    <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 text-center">
-                        <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        </div>
-                        <h5 class="mb-2 text-sm font-bold text-slate-900">Authentication Required</h5>
-                        <p class="text-[13px] leading-relaxed text-slate-600">
-                            Please sign in to your Biogenix account to raise a support ticket and track operational coordination.
-                        </p>
-                    </div>
-
-                    <div class="flex flex-col gap-3">
-                        <a href="{{ route('login') }}" class="inline-flex h-11 items-center justify-center rounded-xl bg-primary-600 px-6 text-[13px] font-bold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-0.5 hover:bg-primary-700">
-                            Sign In to Raise Ticket
-                        </a>
-                        <a href="{{ route('contact') }}" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-6 text-[13px] font-bold text-slate-700 transition hover:bg-slate-50">
-                            Visit Help Center
-                        </a>
-                    </div>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
-    </div>
     @endauth
 
     <script>
@@ -466,7 +518,7 @@
             if (isOpening) {
                 // Initial show using flex class for !important display property
                 form.classList.add('flex');
-                
+
                 // Allow a tiny delay for the opacity transition to kick in
                 window.requestAnimationFrame(() => {
                     window.requestAnimationFrame(() => {
@@ -483,7 +535,7 @@
                         document.removeEventListener('click', closeOnOutsideClick);
                     }
                 };
-                
+
                 // Delay adding the listener to avoid the current click event triggering it immediately
                 window.setTimeout(() => {
                     document.addEventListener('click', closeOnOutsideClick);
@@ -492,7 +544,7 @@
             } else {
                 form.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
                 form.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4', 'scale-95');
-                
+
                 window.setTimeout(() => {
                     // Check if it's still intended to be closed
                     if (form.classList.contains('opacity-0')) {
@@ -523,20 +575,20 @@
             const input = document.getElementById('supportCategoryInput');
             const text = document.getElementById('selectedCategoryText');
             const trigger = document.getElementById('supportCategoryTrigger');
-            
+
             if (input) input.value = slug;
             if (text) text.innerText = label;
             if (trigger) {
                 trigger.classList.add('border-primary-600', 'ring-1', 'ring-primary-600');
             }
-            
+
             const list = document.getElementById('supportCategoryList');
             const chevron = document.getElementById('supportCategoryChevron');
             if (list) list.classList.add('hidden');
             if (chevron) chevron.classList.remove('rotate-180');
         }
 
-        document.addEventListener('mousedown', function(e) {
+        document.addEventListener('mousedown', function (e) {
             const form = document.getElementById('supportTicketForm');
             const list = document.getElementById('supportCategoryList');
             const chevron = document.getElementById('supportCategoryChevron');
@@ -638,14 +690,14 @@
     <script src="{{ asset('js/main.js') }}"></script>
     <script>
         // Global Modal Logic
-        (function() {
+        (function () {
             let modalHideTimers = {};
 
-            window.toggleModal = function(id, show) {
+            window.toggleModal = function (id, show) {
                 const modal = document.getElementById(id);
                 const content = document.getElementById(id + '-content') || modal?.querySelector('.relative.flex.flex-col');
                 if (!modal) return;
-                
+
                 if (show) {
                     window.clearTimeout(modalHideTimers[id]);
                     modal.classList.remove('hidden');
@@ -664,7 +716,7 @@
                         content.classList.remove('scale-90');
                         content.classList.add('scale-85');
                     }
-                    
+
                     modalHideTimers[id] = window.setTimeout(() => {
                         modal.classList.add('hidden');
                         modal.classList.remove('flex');
@@ -674,7 +726,7 @@
             };
 
             // Delegated Close Listener
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 const closeBtn = e.target.closest('[data-modal-close], .modal-close');
                 if (closeBtn) {
                     const modalId = closeBtn.getAttribute('data-modal-close') || closeBtn.closest('[role="dialog"]')?.id;

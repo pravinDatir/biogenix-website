@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-slate-50 py-4 lg:py-8">
+<div class="min-h-screen bg-[var(--ui-page-bg)] py-4 lg:py-8">
     <div class="mx-auto flex w-full max-w-[96rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         
         {{-- Mobile sidebar toggle --}}
@@ -29,15 +29,15 @@
 {{-- Loading skeleton overlay --}}
 <div id="admin-loading-skeleton" class="hidden absolute inset-0 z-10">
     <div class="space-y-6 animate-pulse p-1">
-        <div class="h-8 bg-slate-200/60 rounded-xl w-2/5"></div>
-        <div class="h-5 bg-slate-200/40 rounded-lg w-3/5"></div>
+        <div class="h-8 bg-[var(--ui-skeleton-bg)]/60 rounded-xl w-2/5"></div>
+        <div class="h-5 bg-[var(--ui-skeleton-bg)]/40 rounded-lg w-3/5"></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-            <div class="h-[130px] bg-slate-200/50 rounded-2xl"></div>
-            <div class="h-[130px] bg-slate-200/50 rounded-2xl"></div>
-            <div class="h-[130px] bg-slate-200/50 rounded-2xl hidden sm:block"></div>
-            <div class="h-[130px] bg-slate-200/50 rounded-2xl hidden sm:block"></div>
+            <div class="h-[130px] bg-[var(--ui-skeleton-bg)]/50 rounded-2xl"></div>
+            <div class="h-[130px] bg-[var(--ui-skeleton-bg)]/50 rounded-2xl"></div>
+            <div class="h-[130px] bg-[var(--ui-skeleton-bg)]/50 rounded-2xl hidden sm:block"></div>
+            <div class="h-[130px] bg-[var(--ui-skeleton-bg)]/50 rounded-2xl hidden sm:block"></div>
         </div>
-        <div class="h-[300px] bg-slate-200/40 rounded-2xl mt-4"></div>
+        <div class="h-[300px] bg-[var(--ui-skeleton-bg)]/40 rounded-2xl mt-4"></div>
     </div>
 </div>
 
@@ -185,11 +185,11 @@
                 // Update sidebar active state
                 document.querySelectorAll('#admin-sidebar a').forEach(aEl => {
                     aEl.classList.remove('bg-primary-600', 'text-white', 'font-bold');
-                    aEl.classList.add('text-slate-500', 'hover:bg-slate-50', 'hover:text-slate-800');
+                    aEl.classList.add('text-[var(--ui-text-muted)]', 'hover:bg-[var(--ui-surface-subtle)]', 'hover:text-[var(--ui-text)]');
                     const indicator = aEl.querySelector('div.bg-white.rounded-r-md');
                     if (indicator) indicator.remove();
                     const svg = aEl.querySelector('svg');
-                    if (svg) { svg.classList.remove('text-indigo-200'); svg.classList.add('text-slate-400'); }
+                    if (svg) { svg.classList.remove('text-indigo-200'); svg.classList.add('text-[var(--ui-text-muted)]'); }
                 });
 
                 link.classList.remove('text-slate-500', 'hover:bg-slate-50', 'hover:text-slate-800');

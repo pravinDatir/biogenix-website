@@ -47,6 +47,7 @@
 
     /* UI - Neutral tones (harmonized with green primary) */
     --ui-page-bg: #f9faf9;
+    --ui-page-bg-gradient: radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_right_15%,rgba(14,165,233,0.12),transparent_28%),linear-gradient(180deg,#f8fbff_0%,#eff5ff_100%);
     --ui-surface: #ffffff;
     --ui-surface-muted: #f7f8f7;
     --ui-surface-subtle: #f1f3f1;
@@ -59,6 +60,11 @@
     --ui-shadow-soft: 0 12px 28px rgba(26, 30, 26, 0.06);
     --ui-shadow-card: 0 18px 42px rgba(26, 30, 26, 0.08);
     --ui-shadow-panel: 0 28px 70px rgba(26, 30, 26, 0.1);
+    --ui-header-bg: radial-gradient(circle at 15% 20%, rgba(255, 106, 0, 0.08), transparent 24%), radial-gradient(circle at 88% 10%, rgba(26, 77, 46, 0.08), transparent 18%), linear-gradient(180deg, #ffffff 0%, #f9faf9 100%);
+    --ui-card-shadow: var(--ui-shadow-soft);
+    --ui-card-border: var(--ui-border);
+    --ui-input-bg: #ffffff;
+    --ui-skeleton-bg: #e2e8f0;
     --ui-container-max: 100%;
 
     /* Glassmorphism Classes */
@@ -79,7 +85,7 @@
 }
 
 @utility glass-header {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--ui-header-bg);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--ui-border);
 }

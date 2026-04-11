@@ -1,142 +1,101 @@
-@extends('admin.layout')
+{{-- Add New Permission Modal --}}
+<div id="add-permission-modal" class="fixed inset-0 z-[9999]" style="display: none;" aria-hidden="true">
+    <div id="permission-modal-backdrop" class="absolute inset-0 bg-slate-950/60 opacity-0 backdrop-blur-sm transition-opacity duration-300"></div>
 
-@section('title', 'Add Permission - Biogenix Admin')
+    <div class="fixed inset-0 flex items-center justify-center p-4 py-8 pointer-events-none">
+        <div id="permission-modal-dialog"
+            class="pointer-events-auto relative flex max-h-[85vh] w-[95%] md:w-[780px] translate-y-4 scale-95 flex-col overflow-hidden rounded-2xl bg-white opacity-0 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+            style="width: 780px; max-width: 95%;">
 
-@section('admin_content')
-    <div class="space-y-6 text-slate-900">
-
-        {{-- Back Arrow + Breadcrumb --}}
-        <div class="flex items-center gap-3 mb-6">
-            <a href="{{ route('admin.role-permission') }}" class="ajax-link h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition shrink-0 cursor-pointer" title="Back to Roles & Permissions">
-                <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-            </a>
-            <nav class="flex items-center text-[13px] text-slate-500 font-medium">
-            <a href="{{ route('admin.role-permission') }}" class="ajax-link hover:text-slate-900 transition cursor-pointer">Roles &amp; Permissions</a>
-            <span class="mx-2 text-slate-300">/</span>
-                <span class="text-slate-900 font-semibold cursor-pointer">Add Global Permission</span>
-            </nav>
-        </div>
-
-        {{-- Page Header --}}
-        <div class="mb-8">
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Add Global Permission</h1>
-            <p class="text-sm text-slate-500 mt-1">Define actionable capabilities to be assigned across roles and teams.</p>
-        </div>
-
-        {{-- Form Card --}}
-        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-[var(--ui-shadow-soft)] p-6 sm:p-8">
-            <div class="space-y-6 max-w-2xl">
-                
-                {{-- Permission Name --}}
-                <div>
-                    <label for="permissionName" class="block text-[13px] font-bold text-slate-700 mb-2">Permission Internal Name <span class="text-rose-500">*</span></label>
-                    <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                            </svg>
-                        </div>
-                        <input id="permissionName" type="text" placeholder="e.g. results.export_raw" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 font-mono">
+            <!-- Fixed Header -->
+            <div class="shrink-0 border-b border-slate-100 bg-white px-8 py-4 z-10">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-base font-black tracking-tight text-[#0A1633]">Add New Permission</h2>
+                        <p class="mt-0.5 text-[11px] font-medium text-slate-500">Define a specific functional capability for the system.</p>
                     </div>
-                    <p class="mt-1.5 text-[12px] text-slate-400">Use dot notation for module grouping. Must be unique.</p>
-                </div>
-
-                {{-- Module Association --}}
-                <div>
-                    <label for="permissionModule" class="block text-[13px] font-bold text-slate-700 mb-2">Module Association</label>
-                    <div class="relative inline-block w-full" id="module-dropdown-container">
-                        <div onclick="document.getElementById('permission-module-menu').classList.toggle('hidden')" class="border border-slate-200 bg-slate-50 cursor-pointer rounded-xl h-12 w-full px-4 pr-10 text-[14px] text-slate-700 transition flex items-center justify-between">
-                            <span id="selected-module-text" class="text-slate-400">Select a target module...</span>
-                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </div>
-                        
-                        <div id="permission-module-menu" class="hidden absolute top-full left-0 z-50 mt-1 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[var(--ui-shadow-card)]">
-                            <div class="p-1">
-                                <div onclick="selectModule('lab', 'Lab Management System (LMS)')" class="px-3 py-2.5 text-[14px] font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg cursor-pointer transition">Lab Management System (LMS)</div>
-                                <div onclick="selectModule('billing', 'Billing & Finance')" class="px-3 py-2.5 text-[14px] font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg cursor-pointer transition">Billing & Finance</div>
-                                <div onclick="selectModule('users', 'User Profile & Auth')" class="px-3 py-2.5 text-[14px] font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg cursor-pointer transition">User Profile & Auth</div>
-                                <div onclick="selectModule('inventory', 'Inventory & Reagents')" class="px-3 py-2.5 text-[14px] font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg cursor-pointer transition">Inventory & Reagents</div>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="permissionModule" value="">
-                </div>
-
-                {{-- Detailed Description --}}
-                <div>
-                    <label for="permissionDesc" class="block text-[13px] font-bold text-slate-700 mb-2">Detailed Description</label>
-                    <textarea id="permissionDesc" rows="3" placeholder="Explain what this permission allows a user to do..." class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-200/50 resize-none"></textarea>
-                </div>
-
-                {{-- Tip --}}
-                <div class="rounded-xl border border-primary-100 bg-primary-50/50 p-4">
-                    <div class="flex gap-3">
-                        <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </span>
-                        <div>
-                            <h4 class="text-[13px] font-extrabold text-primary-900">Admin Tip</h4>
-                            <p class="mt-1 text-[13px] text-primary-700/80 leading-relaxed">After creating this permission, you will still need to map it to the respective roles in the "Permission Mapping" tab.</p>
-                        </div>
-                    </div>
+                    <button id="permission-modal-close-btn" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
                 </div>
             </div>
 
-            {{-- Action Buttons --}}
-            <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
-                <a href="{{ route('admin.role-permission') }}" class="ajax-link px-6 py-3 rounded-xl text-[14px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition cursor-pointer">Cancel</a>
-                <button type="button" id="addPermSaveBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-[14px] font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700 cursor-pointer">
-                    Save Permission
-                </button>
-            </div>
+            <form id="add-permission-form" class="flex flex-col min-h-0">
+                <!-- Scrollable Body -->
+                <div class="flex-1 overflow-y-auto px-8 py-5 space-y-4 scrollbar-thin scrollbar-thumb-slate-200">
+                    <div class="grid gap-4">
+                        <!-- Field: Name -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-tight">Permission Name <span class="text-rose-500">*</span></label>
+                            <input id="permission-modal-name" type="text" placeholder="e.g., View Revenue Reports" class="h-9 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-xs font-medium outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20">
+                        </div>
+
+                        <!-- Field: Identifier -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-tight">Permission Identifier <span class="text-rose-500">*</span></label>
+                                <span class="text-[9px] font-medium italic text-slate-400">System code-level reference</span>
+                            </div>
+                            <input id="permission-modal-slug" type="text" placeholder="e.g., finance.revenue.view" class="h-9 w-full rounded-lg border border-slate-200 bg-white px-3.5 text-xs font-medium outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20">
+                            <div class="flex items-start gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-100">
+                                <svg class="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                                <p class="text-[10px] text-slate-500 leading-normal">This is used for system-level checks and cannot be changed once created.</p>
+                            </div>
+                        </div>
+
+                        <!-- Field: Description -->
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-tight">Description</label>
+                            <textarea id="permission-modal-description" rows="4" placeholder="Define the scope and limitations of this permission..." class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium outline-none transition focus:border-primary-600 focus:ring-1 focus:ring-primary-600/20 resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fixed Footer -->
+                <div class="shrink-0 border-t border-slate-100 bg-white px-8 py-4 flex items-center justify-end gap-5">
+                    <button id="permission-modal-cancel-btn" type="button" class="text-xs font-bold text-slate-400 hover:text-slate-800 transition-colors uppercase tracking-wider">Cancel</button>
+                    <button type="submit" class="inline-flex h-10 items-center justify-center rounded-xl bg-primary-600 px-8 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_16px_35px_-18px_rgba(26,77,46,0.35)] transition hover:bg-primary-700 active:scale-95">
+                        Create Permission
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-@push('scripts')
 <script>
-window.selectModule = function(val, text) {
-    document.getElementById('permissionModule').value = val;
-    let span = document.getElementById('selected-module-text');
-    span.textContent = text;
-    span.classList.remove('text-slate-400');
-    span.classList.add('text-slate-900', 'font-medium');
-    document.getElementById('permission-module-menu').classList.add('hidden');
-};
+(function initializeAdminPermissionModal() {
+    const modal = document.getElementById('add-permission-modal');
+    const backdrop = document.getElementById('permission-modal-backdrop');
+    const dialog = document.getElementById('permission-modal-dialog');
+    const input = document.getElementById('permission-modal-name');
 
-(function() {
-    var savePermBtn = document.getElementById('addPermSaveBtn');
-    if (savePermBtn) {
-        savePermBtn.addEventListener('click', function() {
-            var permName = document.getElementById('permissionName').value.trim();
-            if (!permName) {
-                document.getElementById('permissionName').focus();
-                document.getElementById('permissionName').classList.add('border-rose-400', 'ring-1', 'ring-rose-200');
-                setTimeout(function() {
-                    document.getElementById('permissionName').classList.remove('border-rose-400', 'ring-1', 'ring-rose-200');
-                }, 2000);
-                return;
-            }
-            if (window.AdminToast) {
-                window.AdminToast.show('Permission "' + permName + '" created successfully!', 'success');
-            } else {
-                alert('Permission "' + permName + '" created successfully!');
-            }
-            var tmpLink = document.createElement('a');
-            tmpLink.href = "{{ route('admin.role-permission') }}";
-            tmpLink.className = 'ajax-link hidden';
-            document.body.appendChild(tmpLink);
-            tmpLink.click();
-            document.body.removeChild(tmpLink);
-        });
-    }
+    window.AdminPermissionModal = {
+        isOpen: false,
+        show() {
+            this.isOpen = true;
+            modal.style.display = 'block';
+            document.body.classList.add('overflow-hidden');
+            modal.offsetHeight;
+            requestAnimationFrame(() => {
+                backdrop.classList.replace('opacity-0', 'opacity-100');
+                dialog.classList.remove('opacity-0', 'translate-y-4', 'scale-95');
+                dialog.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+            });
+            setTimeout(() => input.focus(), 150);
+        },
+        close() {
+            this.isOpen = false;
+            backdrop.classList.replace('opacity-100', 'opacity-0');
+            dialog.classList.replace('opacity-100', 'opacity-0');
+            dialog.classList.add('translate-y-4', 'scale-95');
+            document.body.classList.remove('overflow-hidden');
+            setTimeout(() => { if(!this.isOpen) modal.style.display = 'none'; }, 300);
+        }
+    };
+
+    document.getElementById('permission-modal-close-btn')?.addEventListener('click', () => AdminPermissionModal.close());
+    document.getElementById('permission-modal-cancel-btn')?.addEventListener('click', () => AdminPermissionModal.close());
+    backdrop.addEventListener('click', () => AdminPermissionModal.close());
 })();
 </script>
-@endpush
-@endsection
-
