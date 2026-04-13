@@ -133,6 +133,8 @@ Route::view('/adminPanel/ui-fields-modification', 'admin.support-tickets.ui-fiel
 Route::view('/adminPanel/sync-monitor', 'admin.sync-monitor.index')->name('admin.sync-monitor');
 Route::view('/adminPanel/global-settings', 'admin.global-settings.index')->name('admin.global-settings');
 Route::view('/adminPanel/delivery-logistics', 'admin.delivery-logistics')->name('admin.delivery-logistics');
+Route::view('/adminPanel/quiz', 'admin.quiz.index')->name('admin.quiz.index');
+Route::view('/adminPanel/quiz/create', 'admin.quiz.create')->name('admin.quiz.create');
 
 Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
     Route::view('/role-permission', 'admin.RolePermissions.index')->name('role-permission');
