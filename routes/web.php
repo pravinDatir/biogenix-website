@@ -117,15 +117,20 @@ Route::view('/order-confirmation', 'order-confirmation')->middleware(['auth', 'p
 
 //TODO: Under development - Admin panel routes pointing to view directly for now, will connect to controllers after the views are ready.
 Route::view('/adminPanel/dashboard', 'admin.dashboard')->name('admin.dashboard');
-Route::view('/adminPanel/dashboard', 'admin.dashboard')->name('admin.dashboard');
-Route::view('/adminPanel/products', 'admin.products.index')->name('admin.products');
-Route::view('/adminPanel/products/create', 'admin.products.create')->name('admin.products.create');
-Route::view('/adminPanel/products/edit', 'admin.products.edit')->name('admin.products.edit');
+Route::get('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'index'])->name('admin.products');
+Route::get('/adminPanel/products/create', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'create'])->name('admin.products.create');
+Route::post('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'store'])->name('admin.products.store');
+Route::get('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'edit'])->name('admin.products.edit');
+Route::put('/adminPanel/products/{productId}', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'update'])->name('admin.products.update');
 Route::view('/adminPanel/pricing', 'admin.pricing.index')->name('admin.pricing');
-Route::view('/adminPanel/pi-quotation', 'admin.pi-quotation')->name('admin.pi-quotation.index');
-Route::view('/adminPanel/pi-quotation/create', 'admin.pi-quotation-create')->name('admin.pi-quotation.create');
-Route::view('/adminPanel/orders', 'admin.orders.index')->name('admin.orders');
-Route::view('/adminPanel/orders/view', 'admin.orders.details')->name('admin.orders.view');
+Route::get('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'index'])->name('admin.pi-quotation.index');
+Route::get('/adminPanel/pi-quotation/create', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'create'])->name('admin.pi-quotation.create');
+Route::post('/adminPanel/pi-quotation', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'store'])->name('admin.pi-quotation.store');
+Route::get('/adminPanel/pi-quotation/{proformaId}', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'show'])->name('admin.pi-quotation.edit');
+Route::put('/adminPanel/pi-quotation/{proformaId}', [App\Http\Controllers\AdminPanel\Proforma\ProformaCrudController::class, 'update'])->name('admin.pi-quotation.update');
+Route::get('/adminPanel/orders', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'index'])->name('admin.orders');
+Route::get('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'show'])->name('admin.orders.view');
+Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'update'])->name('admin.orders.update');
 Route::view('/adminPanel/customers', 'admin.customers.index')->name('admin.customers');
 Route::view('/adminPanel/customer-directory', 'admin.customers.directory')->name('admin.customer-directory');
 Route::view('/adminPanel/support-tickets', 'admin.support-tickets.index')->name('admin.support-tickets');

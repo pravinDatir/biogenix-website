@@ -61,206 +61,59 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            
-                            <!-- Item 1 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                                <td class="px-5 lg:px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-9 w-9 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center shrink-0">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                            @forelse ($products as $product)
+                                <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                                    <td class="px-5 lg:px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="h-9 w-9 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center shrink-0">
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-[13px] font-bold text-slate-900">{{ $product['name'] }}</span>
+                                            </div>
                                         </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[13px] font-bold text-slate-900">Molecular Grade Reagent Kit</span>
-                                            <span class="text-[11px] font-medium text-slate-400">500 reactions / vial</span>
+                                    </td>
+                                    <td class="px-5 lg:px-6 py-4">
+                                        <span class="text-[13px] font-semibold text-slate-600">{{ $product['sku'] }}</span>
+                                    </td>
+                                    <td class="px-5 lg:px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">{{ $product['categoryName'] }}</span>
+                                    </td>
+                                    <td class="px-5 lg:px-6 py-4">
+                                        <span class="text-[13px] font-bold text-slate-900">{{ $product['price'] ? '$' . number_format((float)$product['price'], 2) : 'N/A' }}</span>
+                                    </td>
+                                    <td class="px-5 lg:px-6 py-4">
+                                        <span class="text-[13px] font-semibold text-slate-600">{{ $product['stock'] }}</span>
+                                    </td>
+                                    <td class="px-5 lg:px-6 py-4">
+                                        @php
+                                            $status = $product['status'];
+                                            $statusClass = match($status) {
+                                                'Low Stock' => 'bg-amber-50 text-amber-700 border-amber-200/60',
+                                                'Out of Stock' => 'bg-rose-50 text-rose-700 border-rose-200/60',
+                                                default => 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
+                                            };
+                                        @endphp
+                                        <span class="inline-flex items-center px-2.5 py-1 {{ $statusClass }} border text-[11px] font-bold rounded-full">{{ $status }}</span>
+                                    </td>
+                                    <td class="px-5 lg:px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <a href="{{ route('admin.products.edit') }}?id={{ $product['id'] }}" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+                                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                                            </a>
+                                            <button type="button" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">BGX-7700</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">Reagents</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-bold text-slate-900">$449.00</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">145</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-full">In Stock</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.products.edit') }}?name=Molecular+Grade+Reagent+Kit&sku=BGX-7700&price=449.00&stock=145&category=Reagents" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
-                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </a>
-                                        <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </x-ui.action-icon>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <!-- Item 2 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                                <td class="px-5 lg:px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-9 w-9 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[13px] font-bold text-slate-900">Rapid ELISA Assay Kit</span>
-                                            <span class="text-[11px] font-medium text-slate-400">96-well format</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">BGX-3310</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">Assay Kits</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-bold text-slate-900">$289.00</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">12</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[11px] font-bold rounded-full">Low Stock</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.products.edit') }}?name=Rapid+ELISA+Assay+Kit&sku=BGX-3310&price=289.00&stock=12&category=Assay+Kits" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
-                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </a>
-                                        <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </x-ui.action-icon>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            <!-- Item 3 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                                <td class="px-5 lg:px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-9 w-9 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center shrink-0">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[13px] font-bold text-slate-900">Cryo-Preservation Serum</span>
-                                            <span class="text-[11px] font-medium text-slate-400">50 mL vial</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">BGX-7740</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-primary-50 text-primary-700 border border-primary-200/60 text-[11px] font-bold rounded-full">Reagents</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-bold text-slate-900">$549.00</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">0</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200/60 text-[11px] font-bold rounded-full">Out of Stock</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.products.edit') }}?name=Cryo-Preservation+Serum&sku=BGX-7740&price=549.00&stock=0&category=Reagents" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
-                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </a>
-                                        <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </x-ui.action-icon>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Item 4 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                                <td class="px-5 lg:px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-9 w-9 rounded-lg bg-secondary-50 text-secondary-700 flex items-center justify-center shrink-0">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[13px] font-bold text-slate-900">PCR Thermal Cycler Pro</span>
-                                            <span class="text-[11px] font-medium text-slate-400">96-well / gradient</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">BGX-9200</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[11px] font-bold rounded-full">Lab Equipment</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-bold text-slate-900">$8,990.00</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">28</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-full">In Stock</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.products.edit') }}?name=PCR+Thermal+Cycler+Pro&sku=BGX-9200&price=8,990.00&stock=28&category=Lab+Equipment" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
-                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </a>
-                                        <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </x-ui.action-icon>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Item 5 -->
-                            <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                                <td class="px-5 lg:px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-9 w-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[13px] font-bold text-slate-900">Lysis Buffer Solution</span>
-                                            <span class="text-[11px] font-medium text-slate-400">1L bottle</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">LYS-9921</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px) font-bold rounded-full">Consumables</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-bold text-slate-900">$78.00</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="text-[13px] font-semibold text-slate-600">320</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[11px] font-bold rounded-full">In Stock</span>
-                                </td>
-                                <td class="px-5 lg:px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.products.edit') }}?name=Lysis+Buffer+Solution&sku=LYS-9921&price=78.00&stock=320&category=Consumables" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
-                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                        </a>
-                                        <x-ui.action-icon type="delete" onclick="AdminConfirm.show({title:'Delete Product?',message:'Are you sure you want to delete this product? This action cannot be undone.',confirmText:'Delete',confirmClass:'bg-rose-600 hover:bg-rose-700'}).then(r=>{if(r)AdminToast.show('Product deleted successfully','success')})">
-                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </x-ui.action-icon>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="px-5 lg:px-6 py-8 text-center text-sm text-slate-500">
+                                        No products found.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
