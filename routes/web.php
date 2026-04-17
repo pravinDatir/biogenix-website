@@ -5,7 +5,7 @@ use App\Http\Controllers\BookMeeting\BookMeetingController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Checkout\CheckoutController;
 use App\Http\Controllers\ContactUs\ContactUsController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminPanel\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Faq\FaqController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
@@ -116,7 +116,7 @@ Route::get('/support-tickets/{ticketId}', [SupportTicketController::class, 'show
 Route::view('/order-confirmation', 'order-confirmation')->middleware(['auth', 'permission:order.confirmation'])->name('order.confirmation');
 
 //TODO: Under development - Admin panel routes pointing to view directly for now, will connect to controllers after the views are ready.
-Route::view('/adminPanel/dashboard', 'admin.dashboard')->name('admin.dashboard');
+Route::get('/adminPanel/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 Route::get('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'index'])->name('admin.products');
 Route::get('/adminPanel/products/create', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'create'])->name('admin.products.create');
 Route::post('/adminPanel/products', [App\Http\Controllers\AdminPanel\ProductCrudController::class, 'store'])->name('admin.products.store');

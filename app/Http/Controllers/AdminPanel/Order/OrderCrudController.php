@@ -87,3 +87,4 @@ class OrderCrudController extends Controller
                 ->with('error', 'Failed to update order. Please try again.');
         }
     }
+}

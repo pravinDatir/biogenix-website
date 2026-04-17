@@ -98,7 +98,7 @@
                                     </td>
                                     <td class="px-5 lg:px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ route('admin.products.edit') }}?id={{ $product['id'] }}" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+                                            <a href="{{ route('admin.products.edit', ['productId' => $product['id']]) }}" class="ajax-link p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
                                                 <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
                                             </a>
                                             <button type="button" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">

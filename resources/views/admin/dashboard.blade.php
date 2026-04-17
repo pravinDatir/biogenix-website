@@ -3,6 +3,15 @@
 @section('title', 'Admin Dashboard - Biogenix')
 
 @section('admin_content')
+@php
+    $dashboardOrderLinks = [];
+    foreach (($recentOrders ?? collect())->take(3) as $order) {
+        $dashboardOrderLinks[] = route('admin.orders.view', ['orderId' => $order['id']]);
+    }
+    while (count($dashboardOrderLinks) < 3) {
+        $dashboardOrderLinks[] = route('admin.orders');
+    }
+@endphp
             
 
 
@@ -144,7 +153,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[var(--ui-border)] text-[12px] lg:text-[13px] font-semibold text-[var(--ui-text)]">
-                            <tr class="hover:bg-[var(--ui-surface-subtle)]/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                            <tr class="hover:bg-[var(--ui-surface-subtle)]/50 transition-colors cursor-pointer" onclick="window.location.href='{{ $dashboardOrderLinks[0] }}'">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-9012</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -162,7 +171,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ $dashboardOrderLinks[1] }}'">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8994</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">
@@ -180,7 +189,7 @@
                                 </td>
                             </tr>
 
-                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                            <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer" onclick="window.location.href='{{ $dashboardOrderLinks[2] }}'">
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">#BGX-8851</td>
                                 <td class="px-5 lg:px-7 py-4 lg:py-5">
                                     <div class="flex items-center gap-3">

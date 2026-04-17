@@ -3,6 +3,15 @@
 @section('title', 'Order Management - Biogenix Admin')
 
 @section('admin_content')
+@php
+    $adminOrderLinks = [];
+    foreach (($orders ?? collect())->take(5) as $order) {
+        $adminOrderLinks[] = route('admin.orders.view', ['orderId' => $order['id']]);
+    }
+    while (count($adminOrderLinks) < 5) {
+        $adminOrderLinks[] = route('admin.orders');
+    }
+@endphp
 
 <div class="space-y-6">
 
@@ -64,7 +73,7 @@
                 <tbody class="divide-y divide-slate-100">
                     
                     <!-- Row 1 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[0] }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99281</span>
                         </td>
@@ -88,7 +97,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[0] }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -96,7 +105,7 @@
                     </tr>
 
                     <!-- Row 2 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[1] }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99280</span>
                         </td>
@@ -120,7 +129,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[1] }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -128,7 +137,7 @@
                     </tr>
 
                     <!-- Row 3 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[2] }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99279</span>
                         </td>
@@ -152,7 +161,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[2] }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -160,7 +169,7 @@
                     </tr>
 
                     <!-- Row 4 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[3] }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99278</span>
                         </td>
@@ -184,7 +193,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[3] }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>
@@ -192,7 +201,7 @@
                     </tr>
 
                     <!-- Row 5 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.orders.view') }}'">
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ $adminOrderLinks[4] }}'">
                         <td class="px-5 lg:px-6 py-4">
                             <span class="text-[13px] font-bold text-slate-900">#ORD-99277</span>
                         </td>
@@ -216,7 +225,7 @@
                         </td>
                         <td class="px-5 lg:px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ route('admin.orders.view') }}'">
+                                <x-ui.action-icon type="edit" onclick="event.stopPropagation(); window.location.href='{{ $adminOrderLinks[4] }}'">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </x-ui.action-icon>
                             </div>

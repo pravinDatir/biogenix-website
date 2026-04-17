@@ -10,33 +10,29 @@ class OrderCrudService
     // Get all orders with basic information for admin list view.
     public function getAllOrdersForAdminList(): Collection
     {
-        $allOrders = Order::with(['placedByUser', 'company'])
+        $allOrders = Order::with([
+            'placedByUser:id,name',
+            'company:id,name',
+            'items:id,order_id,product_name',
+        ])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $ordersList = [];
+        return $allOrders->map(function (Order $order): array {
+            $status = $order->status ?? 'draft';
 
-        // Prepare each order's data for admin display.
-        foreach ($allOrders as $order) {
-            $customerName = $order->placedByUser?->name ?? 'Unknown Customer';
-            $companyName = $order->company?->name ?? 'N/A';
-            $orderStatus = $order->status ?? 'Pending';
-            $totalAmount = $order->total_amount ?? 0;
-
-            $orderData = [
+            return [
                 'id' => $order->id,
-                'orderNumber' => $order->id,
-                'customerName' => $customerName,
-                'companyName' => $companyName,
-                'status' => $orderStatus,
-                'totalAmount' => $totalAmount,
+                'customerName' => $order->placedByUser?->name ?? 'Unknown Customer',
+                'companyName' => $order->company?->name ?? 'Direct Customer',
+                'status' => $status,
+                'primaryItemName' => $order->items->first()?->product_name ?? 'Items awaiting review',
+                'itemCount' => $order->items->count(),
+                'totalAmount' => (float) ($order->total_amount ?? 0),
+                'currency' => $order->currency ?? 'INR',
                 'createdDate' => $order->created_at,
             ];
-
-            $ordersList[] = $orderData;
-        }
-
-        return collect($ordersList);
+        });
     }
 
     // Get order information for viewing and editing.
@@ -96,3 +92,4 @@ class OrderCrudService
         // Return success status.
         return true;
     }
+}
