@@ -12,6 +12,7 @@ class ProformaInvoice extends Model
 {
     protected $fillable = [
         'pi_number',
+        'pi_date',
         'requester_type',
         'created_by_user_id',
         'owner_user_id',
@@ -30,6 +31,14 @@ class ProformaInvoice extends Model
         'total_amount',
         'guest_session_id',
         'notes',
+        'billing_address',
+        'shipping_address',
+        'customer_gstin',
+        'seller_state_code',
+        'seller_gstin',
+        'freight_charges',
+        'freight_tax_amount',
+        'terms',
     ];
 
     protected function casts(): array

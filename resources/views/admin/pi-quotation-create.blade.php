@@ -1,8 +1,28 @@
-@extends('admin.layout')
+﻿@extends('admin.layout')
 
 @section('title', 'Generate PI - Biogenix Admin')
 
 @section('admin_content')
+
+<form
+    method="POST"
+    id="piForm"
+    @if(isset($proforma))
+        action="{{ route('admin.pi-quotation.update', $proforma['id']) }}"
+    @else
+        action="{{ route('admin.pi-quotation.store') }}"
+    @endif
+>
+    @csrf
+    @if(isset($proforma))
+        @method('PUT')
+    @endif
+
+    {{-- Hidden inputs for status, items, and terms submitted with the form --}}
+    <input type="hidden" id="hidden_status" name="status" value="{{ old('status', $proforma['status'] ?? 'draft') }}">
+    <input type="hidden" id="hidden_items_json" name="items_json" value="">
+    <input type="hidden" id="hidden_terms" name="terms" value="">
+
 <div class="w-full py-8">
 
     <!-- Back Arrow + Breadcrumb -->
@@ -33,22 +53,26 @@
         <div class="grid grid-cols-2 gap-5 sm:grid-cols-4">
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">PI Number</label>
-                <input id="piNumber" type="text" placeholder="Enter PI Number"
+                <input id="piNumber" type="text" name="pi_number" placeholder="Enter PI Number"
+                    value="{{ old('pi_number', $proforma['piNumber'] ?? '') }}"
                     class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition">
             </div>
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Date</label>
-                <input id="piDate" type="date"
+                <input id="piDate" type="date" name="pi_date"
+                    value="{{ old('pi_date', $proforma['piDate'] ?? '') }}"
                     class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none focus:border-primary-600">
             </div>
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">State</label>
-                <input id="piStateCode" type="text" placeholder="27 (Maharashtra)"
+                <input id="piStateCode" type="text" name="seller_state_code" placeholder="27 (Maharashtra)"
+                    value="{{ old('seller_state_code', $proforma['sellerStateCode'] ?? '') }}"
                     class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
             </div>
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">GSTIN</label>
-                <input id="piGstin" type="text" placeholder="27AAACB1234F1Z5"
+                <input id="piGstin" type="text" name="seller_gstin" placeholder="27AAACB1234F1Z5"
+                    value="{{ old('seller_gstin', $proforma['sellerGstin'] ?? '') }}"
                     class="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
             </div>
         </div>
@@ -77,31 +101,35 @@
         <div class="mb-1.5 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Billing Address</label>
-                <textarea id="billingAddress" rows="4" placeholder="Enter full billing address..."
-                    class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600"></textarea>
+                <textarea id="billingAddress" name="billing_address" rows="4" placeholder="Enter full billing address..."
+                    class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">{{ old('billing_address', $proforma['billingAddress'] ?? '') }}</textarea>
             </div>
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Shipping Address</label>
-                <textarea id="shippingAddress" rows="4" placeholder="Enter full shipping address..."
-                    class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600"></textarea>
+                <textarea id="shippingAddress" name="shipping_address" rows="4" placeholder="Enter full shipping address..."
+                    class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">{{ old('shipping_address', $proforma['shippingAddress'] ?? '') }}</textarea>
             </div>
         </div>
 
         <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4">
             <div>
-                <input id="contactPerson" type="text" placeholder="Contact Person"
+                <input id="contactPerson" type="text" name="contact_person" placeholder="Contact Person"
+                    value="{{ old('contact_person', $proforma['targetName'] ?? '') }}"
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
             </div>
             <div>
-                <input id="customerEmail" type="email" placeholder="Email Address (Mandatory) *" required
+                <input id="customerEmail" type="email" name="target_email" placeholder="Email Address (Mandatory) *"
+                    value="{{ old('target_email', $proforma['targetEmail'] ?? '') }}"
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-400 transition">
             </div>
             <div>
-                <input id="customerGstin" type="text" placeholder="GSTIN (Customer)"
+                <input id="customerGstin" type="text" name="customer_gstin" placeholder="GSTIN (Customer)"
+                    value="{{ old('customer_gstin', $proforma['customerGstin'] ?? '') }}"
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
             </div>
             <div>
-                <input id="deliveryPhone" type="text" placeholder="Delivery Contact / Phone"
+                <input id="deliveryPhone" type="text" name="target_phone" placeholder="Delivery Contact / Phone"
+                    value="{{ old('target_phone', $proforma['targetPhone'] ?? '') }}"
                     class="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600">
             </div>
         </div>
@@ -199,7 +227,8 @@
                 </div>
                 <div class="flex justify-between border-b border-primary-500/30 pb-3 text-sm">
                     <span class="text-primary-100/80">Freight Charges</span>
-                    <input id="freightCharges" type="number" value="0" min="0" step="1"
+                    <input id="freightCharges" type="number" name="freight_charges" min="0" step="1"
+                        value="{{ old('freight_charges', $proforma['freightCharges'] ?? 0) }}"
                         class="w-20 rounded-lg border border-primary-500/50 bg-primary-700/50 px-2 py-1 text-right text-sm font-bold text-white outline-none focus:border-secondary-400">
                 </div>
                 <div class="flex justify-between border-b border-primary-500/30 pb-3 text-sm">
@@ -365,6 +394,11 @@
         </div>
     </div>
 </div>
+@if(isset($proforma))
+<script>
+    var preloadedItems = @json($proforma['items'] ?? []);
+</script>
+@endif
 <script>
 (function() {
     // â”€â”€â”€ Auto-fill PI Number and Date â”€â”€â”€
@@ -644,8 +678,36 @@
         else alert(msg);
     }
 
-    document.getElementById('approvePiTopBtn')?.addEventListener('click', function() { showPiToast('PI Approved successfully.', 'success'); });
-    document.getElementById('rejectPiTopBtn')?.addEventListener('click', function() { showPiToast('PI Rejected.', 'info'); });
+    // Collect all product rows into JSON before submitting the form.
+    function collectAndSubmitForm(statusValue) {
+        var rows = tableBody.querySelectorAll('.product-row');
+        var items = [];
+        rows.forEach(function(row) {
+            items.push({
+                catNo:       row.cells[1].textContent.trim(),
+                productName: row.cells[2].textContent.trim(),
+                packSize:    row.cells[3].textContent.trim(),
+                qty:         parseFloat(row.getAttribute('data-qty')) || 0,
+                rate:        parseFloat(row.getAttribute('data-rate')) || 0,
+                gst:         parseFloat(row.getAttribute('data-gst')) || 0
+            });
+        });
+        document.getElementById('hidden_items_json').value = JSON.stringify(items);
+
+        // Collect terms from the editable term inputs.
+        var termInputs = document.querySelectorAll('#termsList input[type="text"]');
+        var termsText = Array.from(termInputs).map(function(i) { return i.value.trim(); }).join('\n');
+        document.getElementById('hidden_terms').value = termsText;
+
+        // Set the approval/rejection status.
+        document.getElementById('hidden_status').value = statusValue;
+
+        // Submit the PI form to the backend.
+        document.getElementById('piForm').submit();
+    }
+
+    document.getElementById('approvePiTopBtn')?.addEventListener('click', function() { collectAndSubmitForm('approved'); });
+    document.getElementById('rejectPiTopBtn')?.addEventListener('click', function() { collectAndSubmitForm('rejected'); });
 
     document.getElementById('sendEmailBtn')?.addEventListener('click', function () {
         if (window.BiogenixToast) {
@@ -664,11 +726,21 @@
     });
 
     // â”€â”€â”€ Show empty message initially â”€â”€â”€
+    // Load existing product rows when editing an existing PI.
+    if (typeof preloadedItems !== 'undefined' && preloadedItems.length > 0) {
+        preloadedItems.forEach(function(item) { addRowToTable(item); });
+    }
+
     toggleEmptyMsg();
     updateModalTotal();
     recalcTotals();
     syncShippingToggleState();
 })();
 </script>
+
+</div>
+</form>
+
 @endsection
+
 

@@ -62,127 +62,65 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    
-                    <!-- Row 1 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.pi-quotation.create') }}'">
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-bold text-slate-900">PI-2023-001</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <div class="flex flex-col">
-                                <span class="text-[14px] font-bold text-slate-900">Global Lab Corp</span>
-                                <span class="text-[12px] font-medium text-slate-400">contact@globallab.com</span>
-                            </div>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-semibold text-slate-500">Oct 12, 2023</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-extrabold text-slate-900 tracking-tight">$12,450.00</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5 text-center">
-                            <span class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[10px] font-black uppercase tracking-widest rounded-full">Approved</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation()">
-                                    <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </x-ui.action-icon>
-                            </div>
-                        </td>
-                    </tr>
 
-                    <!-- Row 2 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.pi-quotation.create') }}'">
+                    @forelse ($proformas as $pi)
+                    @php
+                        $statusLabel = ucfirst($pi['status']);
+                        $statusClass = match(strtolower($pi['status'])) {
+                            'approved'  => 'bg-emerald-50 text-emerald-700 border border-emerald-200/60',
+                            'rejected'  => 'bg-rose-50 text-rose-700 border border-rose-200/60',
+                            'requested' => 'bg-amber-50 text-amber-700 border border-amber-200/60',
+                            default     => 'bg-slate-100 text-slate-600 border border-slate-200/60',
+                        };
+                    @endphp
+                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer"
+                        onclick="window.location.href='{{ route('admin.pi-quotation.edit', $pi['id']) }}'">
                         <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-bold text-slate-900">PI-2023-002</span>
+                            <span class="text-[14px] font-bold text-slate-900">{{ $pi['piNumber'] }}</span>
                         </td>
                         <td class="px-5 lg:px-6 py-5">
                             <div class="flex flex-col">
-                                <span class="text-[14px] font-bold text-slate-900">BioResearch Inc</span>
+                                <span class="text-[14px] font-bold text-slate-900">{{ $pi['targetName'] }}</span>
+                                @if($pi['targetEmail'])
+                                <span class="text-[12px] font-medium text-slate-400">{{ $pi['targetEmail'] }}</span>
+                                @endif
                             </div>
                         </td>
                         <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-semibold text-slate-500">Oct 14, 2023</span>
+                            <span class="text-[14px] font-semibold text-slate-500">{{ $pi['createdDate'] }}</span>
                         </td>
                         <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-extrabold text-slate-900 tracking-tight">$8,200.00</span>
+                            <span class="text-[14px] font-extrabold text-slate-900 tracking-tight">{{ $pi['totalAmount'] }}</span>
                         </td>
                         <td class="px-5 lg:px-6 py-5 text-center">
-                            <span class="inline-flex items-center px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 text-[10px] font-black uppercase tracking-widest rounded-full">Requested</span>
+                            <span class="inline-flex items-center px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full {{ $statusClass }}">
+                                {{ $statusLabel }}
+                            </span>
                         </td>
                         <td class="px-5 lg:px-6 py-5 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <x-ui.action-icon type="edit" onclick="event.stopPropagation()">
-                                    <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                    <a href="{{ route('admin.pi-quotation.edit', $pi['id']) }}">
+                                        <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                    </a>
                                 </x-ui.action-icon>
                             </div>
                         </td>
                     </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-10 text-center text-sm text-slate-400">No proforma invoices found.</td>
+                    </tr>
+                    @endforelse
 
-                    <!-- Row 3 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.pi-quotation.create') }}'">
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-bold text-slate-900">PI-2023-003</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <div class="flex flex-col">
-                                <span class="text-[14px] font-bold text-slate-900">HealthTech Solutions</span>
-                            </div>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-semibold text-slate-500">Oct 15, 2023</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-extrabold text-slate-900 tracking-tight">$25,000.00</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5 text-center">
-                            <span class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[10px] font-black uppercase tracking-widest rounded-full">Approved</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation()">
-                                    <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </x-ui.action-icon>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Row 4 -->
-                    <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer" onclick="window.location.href='{{ route('admin.pi-quotation.create') }}'">
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-bold text-slate-900">PI-2023-004</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <div class="flex flex-col">
-                                <span class="text-[14px] font-bold text-slate-900">Genomics Center</span>
-                            </div>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-semibold text-slate-500">Oct 10, 2023</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5">
-                            <span class="text-[14px] font-extrabold text-slate-900 tracking-tight">$5,100.00</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5 text-center">
-                            <span class="inline-flex items-center px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200/60 text-[10px] font-black uppercase tracking-widest rounded-full">Rejected</span>
-                        </td>
-                        <td class="px-5 lg:px-6 py-5 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <x-ui.action-icon type="edit" onclick="event.stopPropagation()">
-                                    <svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                                </x-ui.action-icon>
-                            </div>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
-        <div class="px-5 lg:px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <!-- Record count -->
+        <div class="px-5 lg:px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-4">
             <p class="text-[13px] text-slate-500 font-medium">
-                Showing 1-4 of 42 results
+                Showing {{ $proformas->count() }} {{ Str::plural('result', $proformas->count()) }}
             </p>
             <div class="flex items-center gap-2">
                 <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">

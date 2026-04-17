@@ -115,6 +115,15 @@ return new class extends Migration
                 $table->decimal('total_amount', 12, 2)->default(0);
                 $table->string('guest_session_id')->nullable()->index();
                 $table->text('notes')->nullable();
+                $table->text('billing_address')->nullable();
+                $table->text('shipping_address')->nullable();
+                $table->string('customer_gstin')->nullable();
+                $table->string('seller_state_code')->nullable();
+                $table->string('seller_gstin')->nullable();
+                $table->date('pi_date')->nullable();
+                $table->decimal('freight_charges', 12, 2)->default(0);
+                $table->decimal('freight_tax_amount', 12, 2)->default(0);
+                $table->text('terms')->nullable();
                 $table->timestamps();
                 $table->index(['owner_user_id', 'owner_company_id'], 'pi_owner_scope_index');
                 $table->index(['target_company_id', 'status'], 'pi_target_scope_index');
@@ -125,7 +134,7 @@ return new class extends Migration
             Schema::create('proforma_invoice_items', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('proforma_invoice_id')->constrained('proforma_invoices')->cascadeOnDelete();
-                $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+                $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
                 $table->unsignedBigInteger('product_variant_id')->nullable();
                 $table->string('product_name');
                 $table->string('sku');

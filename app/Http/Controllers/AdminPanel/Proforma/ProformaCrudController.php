@@ -15,119 +15,123 @@ class ProformaCrudController extends Controller
     {
     }
 
-    // Display proforma list for admin panel.
+    // Show the list of all proforma invoices.
     public function index(): View
     {
         try {
-            // Fetch all proformas with basic information.
+            // Fetch all PI records for the admin list.
             $proformas = $this->proformaCrudService->getAllProformasForAdminList();
 
-            // Return view with proformas data.
             return view('admin.pi-quotation', [
                 'proformas' => $proformas,
             ]);
         } catch (Throwable $exception) {
-            // Return view with empty proformas if error occurs.
-            $proformas = collect([]);
-
             return view('admin.pi-quotation', [
-                'proformas' => $proformas,
+                'proformas' => collect([]),
             ]);
         }
     }
 
-    // Display create proforma form.
+    // Show the blank create form for a new PI.
     public function create(): View
     {
         try {
-            // Return view for creating proforma.
             return view('admin.pi-quotation-create', []);
         } catch (Throwable $exception) {
-            // Return view if error occurs.
             return view('admin.pi-quotation-create', []);
         }
     }
 
-    // Store new proforma from form submission.
+    // Save a new PI from the create form.
     public function store(Request $request): RedirectResponse
     {
         try {
-            // Validate required proforma information.
+            // Validate all submitted PI form fields.
             $validated = $request->validate([
-                'target_name' => 'required|string|max:255',
-                'target_email' => 'nullable|email|max:255',
-                'target_phone' => 'nullable|string|max:20',
-                'status' => 'required|string|max:50',
-                'currency' => 'nullable|string|max:10',
-                'notes' => 'nullable|string',
+                'pi_number'         => 'required|string|max:50',
+                'pi_date'           => 'nullable|date',
+                'seller_state_code' => 'nullable|string|max:100',
+                'seller_gstin'      => 'nullable|string|max:20',
+                'billing_address'   => 'nullable|string',
+                'shipping_address'  => 'nullable|string',
+                'contact_person'    => 'nullable|string|max:255',
+                'target_email'      => 'nullable|email|max:255',
+                'customer_gstin'    => 'nullable|string|max:20',
+                'target_phone'      => 'nullable|string|max:20',
+                'status'            => 'required|string|max:30',
+                'freight_charges'   => 'nullable|numeric|min:0',
+                'terms'             => 'nullable|string',
+                'items_json'        => 'nullable|string',
             ]);
 
-            // Create new proforma record in database.
-            $proformaId = $this->proformaCrudService->createProforma($validated);
+            // Create the PI and its line items.
+            $this->proformaCrudService->createProforma($validated);
 
-            // Redirect to proforma list with success message.
             return redirect()->route('admin.pi-quotation.index')
-                ->with('success', 'Proforma created successfully.');
+                ->with('success', 'Proforma Invoice created successfully.');
         } catch (Throwable $exception) {
-            // Redirect back to form with error message.
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to create proforma. Please try again.');
+                ->with('error', 'Failed to create Proforma Invoice. Please try again.');
         }
     }
 
-    // Display proforma details for viewing and editing.
+    // Show the edit form for an existing PI (reuses the create view with prefilled data).
     public function show(int $proformaId): View
     {
         try {
-            // Fetch proforma information for viewing.
+            // Fetch the PI details for prefilling the form.
             $proforma = $this->proformaCrudService->getProformaForView($proformaId);
 
-            // Abort if proforma not found.
             if (!$proforma) {
                 abort(404);
             }
 
-            // Return view with proforma data.
-            return view('admin.pi-quotation-edit', [
+            // Reuse the create view; presence of $proforma signals edit mode.
+            return view('admin.pi-quotation-create', [
                 'proforma' => $proforma,
             ]);
         } catch (Throwable $exception) {
-            // Abort with error if proforma cannot be fetched.
             abort(500);
         }
     }
 
-    // Update proforma from form submission.
+    // Save updates to an existing PI from the edit form.
     public function update(Request $request, int $proformaId): RedirectResponse
     {
         try {
-            // Validate proforma information to update.
+            // Validate all submitted PI form fields.
             $validated = $request->validate([
-                'target_name' => 'required|string|max:255',
-                'target_email' => 'nullable|email|max:255',
-                'target_phone' => 'nullable|string|max:20',
-                'status' => 'required|string|max:50',
-                'notes' => 'nullable|string',
+                'pi_number'         => 'required|string|max:50',
+                'pi_date'           => 'nullable|date',
+                'seller_state_code' => 'nullable|string|max:100',
+                'seller_gstin'      => 'nullable|string|max:20',
+                'billing_address'   => 'nullable|string',
+                'shipping_address'  => 'nullable|string',
+                'contact_person'    => 'nullable|string|max:255',
+                'target_email'      => 'nullable|email|max:255',
+                'customer_gstin'    => 'nullable|string|max:20',
+                'target_phone'      => 'nullable|string|max:20',
+                'status'            => 'required|string|max:30',
+                'freight_charges'   => 'nullable|numeric|min:0',
+                'terms'             => 'nullable|string',
+                'items_json'        => 'nullable|string',
             ]);
 
-            // Update proforma record in database.
+            // Update the PI record and its line items.
             $isUpdated = $this->proformaCrudService->updateProforma($proformaId, $validated);
 
-            // Check if update was successful.
             if (!$isUpdated) {
                 return redirect()->back()
-                    ->with('error', 'Proforma not found.');
+                    ->with('error', 'Proforma Invoice not found.');
             }
 
-            // Redirect to proforma list with success message.
             return redirect()->route('admin.pi-quotation.index')
-                ->with('success', 'Proforma updated successfully.');
+                ->with('success', 'Proforma Invoice updated successfully.');
         } catch (Throwable $exception) {
-            // Redirect back to form with error message.
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to update proforma. Please try again.');
+                ->with('error', 'Failed to update Proforma Invoice. Please try again.');
         }
     }
 }
