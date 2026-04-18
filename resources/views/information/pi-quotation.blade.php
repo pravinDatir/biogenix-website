@@ -242,23 +242,37 @@
 
             {{-- Terms & Conditions --}}
             <div>
-                <h2 class="mb-4 text-xs font-bold uppercase tracking-widest text-slate-800">Terms & Conditions</h2>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-slate-800">Terms & Conditions</h2>
+                    <button type="button" id="addTermBtn" class="flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 transition-colors">
+                        <span class="text-lg leading-none pt-0.5">+</span> Add Term
+                    </button>
+                </div>
                 <div class="rounded-xl bg-slate-50 p-6">
                     <ol id="termsList" class="space-y-4">
-                        <li class="flex items-start gap-4 text-sm text-slate-700">
-                            <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400">01</span>
-                            <input type="text" value="Payment 100% advance along with confirmed Purchase"
-                                class="w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">
+                        <li class="flex items-start gap-4 text-sm text-slate-700 relative term-item">
+                            <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400 term-num">01</span>
+                            <div class="relative w-full">
+                                <input type="text" value="Payment 100% advance along with confirmed Purchase"
+                                    class="term-input w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-2 py-1 pr-10 transition-colors">
+                                <button type="button" class="term-save-btn absolute right-1 top-1/2 -translate-y-1/2 hidden bg-primary-600 text-white text-[0.65rem] font-bold px-2 py-0.5 rounded shadow-sm hover:bg-primary-700 z-10" onmousedown="event.preventDefault(); this.previousElementSibling.blur();">Save</button>
+                            </div>
                         </li>
-                        <li class="flex items-start gap-4 text-sm text-slate-700">
-                            <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400">02</span>
-                            <input type="text" value="Delivery within 7-10 working days from date of payment"
-                                class="w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">
+                        <li class="flex items-start gap-4 text-sm text-slate-700 relative term-item">
+                            <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400 term-num">02</span>
+                            <div class="relative w-full">
+                                <input type="text" value="Delivery within 7-10 working days from date of payment"
+                                    class="term-input w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-2 py-1 pr-10 transition-colors">
+                                <button type="button" class="term-save-btn absolute right-1 top-1/2 -translate-y-1/2 hidden bg-primary-600 text-white text-[0.65rem] font-bold px-2 py-0.5 rounded shadow-sm hover:bg-primary-700 z-10" onmousedown="event.preventDefault(); this.previousElementSibling.blur();">Save</button>
+                            </div>
                         </li>
-                        <li class="flex items-start gap-4 text-sm text-slate-700">
-                            <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400">03</span>
-                            <input type="text" value="Validity of this Proforma Invoice is 15 days only."
-                                class="w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-1 transition-colors">
+                        <li class="flex items-start gap-4 text-sm text-slate-700 relative term-item">
+                            <span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400 term-num">03</span>
+                            <div class="relative w-full">
+                                <input type="text" value="Validity of this Proforma Invoice is 15 days only."
+                                    class="term-input w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-2 py-1 pr-10 transition-colors">
+                                <button type="button" class="term-save-btn absolute right-1 top-1/2 -translate-y-1/2 hidden bg-primary-600 text-white text-[0.65rem] font-bold px-2 py-0.5 rounded shadow-sm hover:bg-primary-700 z-10" onmousedown="event.preventDefault(); this.previousElementSibling.blur();">Save</button>
+                            </div>
                         </li>
                     </ol>
                 </div>
@@ -586,6 +600,46 @@
             billingAddr.addEventListener('input', function () {
                 if (toggleOn) { shippingAddr.value = billingAddr.value; }
             });
+
+            // ─── Terms & Conditions interact logic ───
+            var termsList = document.getElementById('termsList');
+            var addTermBtn = document.getElementById('addTermBtn');
+            
+            function bindTermEvents(item) {
+                var input = item.querySelector('.term-input');
+                var saveBtn = item.querySelector('.term-save-btn');
+                
+                if (input && saveBtn) {
+                    input.addEventListener('focus', function() {
+                        saveBtn.classList.remove('hidden');
+                    });
+                    input.addEventListener('blur', function() {
+                        saveBtn.classList.add('hidden');
+                    });
+                }
+            }
+
+            termsList.querySelectorAll('.term-item').forEach(bindTermEvents);
+
+            if (addTermBtn) {
+                addTermBtn.addEventListener('click', function() {
+                    var items = termsList.querySelectorAll('.term-item');
+                    var count = items.length + 1;
+                    var numStr = String(count).padStart(2, '0');
+                    
+                    var li = document.createElement('li');
+                    li.className = 'flex items-start gap-4 text-sm text-slate-700 relative term-item';
+                    li.innerHTML = '<span class="shrink-0 pt-0.5 text-xs font-medium text-slate-400 term-num">' + numStr + '</span>' +
+                        '<div class="relative w-full">' +
+                            '<input type="text" value="" placeholder="Enter term..." class="term-input w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-800 outline-none hover:bg-white focus:bg-white focus:ring-1 focus:ring-primary-600 rounded px-2 py-1 pr-10 transition-colors">' +
+                            '<button type="button" class="term-save-btn absolute right-1 top-1/2 -translate-y-1/2 hidden bg-primary-600 text-white text-[0.65rem] font-bold px-2 py-0.5 rounded shadow-sm hover:bg-primary-700 z-10" onmousedown="event.preventDefault(); this.previousElementSibling.blur();">Save</button>' +
+                        '</div>';
+                    
+                    termsList.appendChild(li);
+                    bindTermEvents(li);
+                    li.querySelector('.term-input').focus();
+                });
+            }
 
             // ─── Product Table ───
             var tableBody = document.getElementById('productTableBody');

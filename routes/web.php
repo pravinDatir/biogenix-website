@@ -90,6 +90,8 @@ Route::post('/diagnostic-quiz', [QuizeController::class, 'store'])->middleware('
 Route::get('/book-meeting', [BookMeetingController::class, 'index'])->middleware(['auth', 'permission:book-meeting'])->name('book-meeting');
 Route::post('/book-meeting', [BookMeetingController::class, 'store'])->middleware(['auth', 'permission:book-meeting.store'])->name('book-meeting.store');
 Route::view('/about', 'information.about')->middleware('permission:about')->name('about');
+Route::view('/meet-team', 'information.meet-team')->name('meet-team');
+Route::view('/portfolio', 'information.portfolio')->name('portfolio');
 Route::get('/contact', [ContactUsController::class, 'index'])->middleware('permission:contact')->name('contact');
 Route::post('/contact', [ContactUsController::class, 'store'])->middleware('permission:contact.store')->name('contact.store');
 Route::view('/privacy', 'information.privacy')->middleware('permission:privacy')->name('privacy');
@@ -132,6 +134,7 @@ Route::get('/adminPanel/orders', [App\Http\Controllers\AdminPanel\Order\OrderCru
 Route::get('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'show'])->name('admin.orders.view');
 Route::put('/adminPanel/orders/{orderId}', [App\Http\Controllers\AdminPanel\Order\OrderCrudController::class, 'update'])->name('admin.orders.update');
 Route::view('/adminPanel/customers', 'admin.customers.index')->name('admin.customers');
+Route::view('/adminPanel/customers/details', 'admin.customers.details')->name('admin.customers.details');
 Route::view('/adminPanel/customer-directory', 'admin.customers.directory')->name('admin.customer-directory');
 Route::view('/adminPanel/support-tickets', 'admin.support-tickets.index')->name('admin.support-tickets');
 Route::view('/adminPanel/ui-fields-modification', 'admin.support-tickets.ui-fields-modification')->name('admin.ui-fields-modification');

@@ -47,9 +47,6 @@
                 <h2 class="text-2xl font-extrabold text-[var(--ui-text)] tracking-tight">Delivery & Logistics</h2>
                 <p class="text-sm text-[var(--ui-text-muted)] mt-1 font-medium">Configure global and local shipping parameters for distribution nodes.</p>
             </div>
-            <div class="inline-flex items-center gap-2 rounded-full bg-[var(--ui-surface)] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-700 shadow-sm ring-1 ring-emerald-100">
-                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                Live Rate Sheet
             </div>
         </div>
 
@@ -156,10 +153,7 @@
                         </div>
 
                         <div class="flex items-center justify-end gap-3">
-                            <button id="delivery-reset-btn" type="button"
-                                class="inline-flex h-10 items-center justify-center rounded-xl border border-[var(--ui-border)] bg-[var(--ui-surface)] px-4 text-[13px] font-bold text-[var(--ui-text)] transition hover:bg-[var(--ui-surface-subtle)]">
-                                Reset
-                            </button>
+
                             <button id="delivery-save-btn" type="button"
                                 class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-primary-600 bg-primary-600 px-6 text-[11px] font-black uppercase tracking-widest text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none active:scale-95">
                                 <span>Save Changes</span>
@@ -187,7 +181,6 @@
             const inputs = Array.from(form.querySelectorAll('.delivery-rate-input'));
             const status = document.getElementById('delivery-config-status');
             const saveButton = document.getElementById('delivery-save-btn');
-            const resetButton = document.getElementById('delivery-reset-btn');
 
             const normalizeValue = function (value) {
                 const numeric = Number.parseFloat(value);
@@ -200,7 +193,6 @@
                 });
 
                 saveButton.disabled = !hasChanges;
-                resetButton.disabled = !hasChanges;
                 status.textContent = hasChanges
                     ? 'Unsaved changes in delivery configuration.'
                     : 'All delivery rates are up to date.';
@@ -213,13 +205,6 @@
                     input.value = normalized || input.dataset.defaultValue;
                     syncState();
                 });
-            });
-
-            resetButton.addEventListener('click', function () {
-                inputs.forEach(function (input) {
-                    input.value = input.dataset.defaultValue;
-                });
-                syncState();
             });
 
             saveButton.addEventListener('click', function () {

@@ -34,7 +34,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
-                        <input type="text" placeholder="Search product name, SKU, or category..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input type="text" id="productSearchInput" placeholder="Search product name, SKU, or category..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
 
                     <!-- Category Pills -->
@@ -121,7 +121,7 @@
                 <!-- Pagination -->
                 <div class="px-5 lg:px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-[13px] text-slate-500 font-medium">
-                        Showing 1-5 of 34 results
+                        Showing 1-25 of 34 results
                     </p>
                     <div class="flex items-center gap-2">
                         <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">
@@ -138,4 +138,30 @@
                     </div>
                 </div>
             </div>
+
+            @push('scripts')
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const searchInput = document.getElementById('productSearchInput');
+                    const tableRows = document.querySelectorAll('tbody.divide-y > tr');
+
+                    if (searchInput) {
+                        searchInput.addEventListener('input', function (e) {
+                            const searchTerm = e.target.value.toLowerCase();
+
+                            tableRows.forEach(row => {
+                                if (row.children.length > 1) {
+                                    const text = row.textContent.toLowerCase();
+                                    if (text.includes(searchTerm)) {
+                                        row.style.display = '';
+                                    } else {
+                                        row.style.display = 'none';
+                                    }
+                                }
+                            });
+                        });
+                    }
+                });
+            </script>
+            @endpush
 @endsection

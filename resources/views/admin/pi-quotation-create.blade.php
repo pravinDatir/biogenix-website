@@ -1,4 +1,4 @@
-﻿@extends('admin.layout')
+@extends('admin.layout')
 
 @section('title', 'Generate PI - Biogenix Admin')
 
@@ -50,7 +50,7 @@
             </span>
             <h2 class="text-lg font-bold tracking-tight text-slate-900">PI Header Info</h2>
         </div>
-        <div class="grid grid-cols-2 gap-5 sm:grid-cols-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <div>
                 <label class="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">PI Number</label>
                 <input id="piNumber" type="text" name="pi_number" placeholder="Enter PI Number"
@@ -111,7 +111,7 @@
             </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4">
+        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
                 <input id="contactPerson" type="text" name="contact_person" placeholder="Contact Person"
                     value="{{ old('contact_person', $proforma['targetName'] ?? '') }}"
@@ -201,7 +201,8 @@
 
         {{-- Actions and Summary / Totals --}}
         <div>
-            <!-- Save/Preview actions -->
+            @isset($proforma)
+            <!-- Approve/Reject actions (Edit mode only) -->
             <div class="mb-5 flex items-center justify-end gap-3">
                 <button id="rejectPiTopBtn" type="button"
                     class="inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-rose-200 px-5 py-2.5 text-sm font-bold text-rose-600 transition-colors hover:bg-rose-50 cursor-pointer">
@@ -214,6 +215,7 @@
                     Approve PI
                 </button>
             </div>
+            @endisset
 
         <div class="rounded-2xl bg-primary-600 p-6 text-white shadow-lg">
             <div class="space-y-3">
@@ -526,7 +528,7 @@
         document.getElementById('sumGst').textContent = '\u20B9 ' + formatNum(gstTotal);
         document.getElementById('sumFreightTax').textContent = '\u20B9 ' + formatNum(freightTax);
         document.getElementById('sumRoundOff').textContent = '\u20B9 ' + (roundOff >= 0 ? '' : '-') + formatNum(Math.abs(roundOff));
-        document.getElementById('sumGrandTotal').textContent = '\u20B9 ' + formatNum(rounded);
+        document.getElementById('sumGrandTotal').textContent = formatNum(rounded);
         document.getElementById('sumAmountWords').textContent = numberToWords(rounded) + ' Only';
     }
 
@@ -738,7 +740,6 @@
 })();
 </script>
 
-</div>
 </form>
 
 @endsection

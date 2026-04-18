@@ -10,10 +10,11 @@
         : strtoupper($guestProfileType === 'b2b' ? 'B2B Preview' : 'Customer Preview');
     $navItems = [
         ['label' => 'Home', 'route' => 'home', 'href' => route('home')],
-        ['label' => 'Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
-        ['label' => 'Generate Quote', 'route' => 'quotation.create', 'href' => route('quotation.create')],
-        ['label' => 'PI', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
+        ['label' => 'Our Products & Solutions', 'route' => 'products.index', 'href' => route('products.index')],
+        ['label' => 'Generate Quotation', 'route' => 'quotation.create', 'href' => route('quotation.create')],
+        ['label' => 'Proforma Invoice', 'route' => 'pi-quotation.generate', 'href' => route('pi-quotation.generate')],
         ['label' => 'Book Meeting', 'route' => 'book-meeting', 'href' => route('book-meeting')],
+        ['label' => 'Meet our Team', 'route' => 'meet-team', 'href' => route('meet-team')],
         ['label' => 'About Us', 'route' => 'about', 'href' => route('about')],
         ['label' => 'Contact Us', 'route' => 'contact', 'href' => route('contact')],
     ];

@@ -54,15 +54,27 @@
                             <h3 class="text-3xl font-semibold tracking-tight text-slate-950">Corporate Headquarters</h3>
                             <p class="mt-2 max-w-none text-base leading-8 text-slate-600">B19/A, S.I.L Ancillary Estate, Amausi Industrial Area, Nadarganj, Lucknow - 226008, Uttar Pradesh, India</p>
 
-                            <div class="mt-4 flex flex-row flex-wrap items-center gap-4">
-                                <a href="tel:+91914097143" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-800 transition">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                    +91 914097143
-                                </a>
-                                <a href="mailto:support@biiogenix.in" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-800 transition">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                    support@biiogenix.in
-                                </a>
+                            <div class="mt-4 flex flex-col gap-3">
+                                <div class="flex items-start gap-2 text-sm font-semibold text-primary-700">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                        <a href="tel:+919140971443" class="hover:text-primary-800 transition">+91-9140971443</a>
+                                        <span class="text-primary-300">|</span>
+                                        <a href="tel:+919889485222" class="hover:text-primary-800 transition">+91-9889485222</a>
+                                        <span class="text-primary-300">|</span>
+                                        <a href="tel:+919616105666" class="hover:text-primary-800 transition">+91-9616105666</a>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2 text-sm font-semibold text-primary-700">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                        <a href="mailto:support@biogenix.in" class="hover:text-primary-800 transition">support@biogenix.in</a>
+                                        <span class="text-primary-300">|</span>
+                                        <a href="mailto:info@biogenix.in" class="hover:text-primary-800 transition">info@biogenix.in</a>
+                                        <span class="text-primary-300">|</span>
+                                        <a href="mailto:biogenix2007@yahoo.com" class="hover:text-primary-800 transition">biogenix2007@yahoo.com</a>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mt-6 grid grid-cols-2 gap-4">
@@ -204,7 +216,7 @@
                                 @disabled(!$canSubmitEnquiry)>
                                 Submit Inquiry
                             </button>
-                            <a href="https://wa.me/91914097143" target="_blank" rel="noopener"
+                            <a href="https://wa.me/919140971443" target="_blank" rel="noopener"
                                 class="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-primary-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-green-500/30 transition hover:bg-primary-600 hover:shadow-xl sm:w-auto">
                                 <svg class="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path

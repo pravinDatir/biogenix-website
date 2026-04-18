@@ -107,7 +107,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-6 gap-6">
             
             <!-- 3. Category Mapping -->
-            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100">
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
                     <div class="h-8 w-8 rounded-lg bg-slate-100 text-primary-800 flex items-center justify-center">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
@@ -118,15 +118,12 @@
                     
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Select Categories <span class="text-rose-500">*</span></label>
-                        <div class="relative">
+                        <div>
                             <select class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium appearance-none cursor-pointer pr-10">
                                 <option value="" disabled selected>Select Primary Category</option>
                                 <option value="1">Biotechnology</option>
                                 <option value="2">Research Tools</option>
                             </select>
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                            </div>
                         </div>
                     </div>
 
@@ -212,7 +209,7 @@
                         <label class="block text-[10px] uppercase tracking-widest font-bold text-slate-500">Attribute Value</label>
                         <input type="text" placeholder="-20°C to 4°C" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
-                    <button type="button" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100 cursor-pointer">
+                    <button type="button" onclick="this.parentElement.remove()" class="h-11 w-11 flex-shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center border border-rose-100 cursor-pointer">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                 </div>
@@ -282,32 +279,13 @@
                 </div>
 
                 <!-- Attached list -->
-                <div class="flex-1 lg:max-w-md space-y-3 mt-[26px]">
+                <div class="flex-1 lg:max-w-md space-y-3 mt-[26px]" id="documentsList">
                     
-                    <div class="flex items-center justify-between px-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl">
-                        <div class="flex items-center gap-3">
-                            <div class="h-8 w-8 rounded bg-rose-50 text-rose-600 flex items-center justify-center text-[9px] font-black tracking-widest uppercase">
-                                PDF
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-[13px] font-bold text-slate-900 truncate">Technical_Specs_v2.pdf</p>
-                                <p class="text-[11px] font-semibold text-slate-400 mt-0.5">1.2 MB</p>
-                            </div>
-                        </div>
-                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
-                    </div>
-
-                    <div class="flex items-center justify-between px-4 py-3 bg-white border border-slate-200 shadow-sm rounded-xl">
-                        <div class="flex items-center gap-3">
-                            <div class="h-8 w-8 rounded bg-primary-50 text-primary-600 flex items-center justify-center text-[9px] font-black tracking-widest uppercase">
-                                DOC
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-[13px] font-bold text-slate-900 truncate">Usage_Guidelines.docx</p>
-                                <p class="text-[11px] font-semibold text-slate-400 mt-0.5">850 KB</p>
-                            </div>
-                        </div>
-                        <button class="h-8 w-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                    <div id="noDocumentsPlaceholder" class="flex flex-col items-center justify-center p-8 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+                        <svg class="h-6 w-6 text-slate-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                        </svg>
+                        <p class="text-[12px] font-semibold text-slate-400">No documents added yet.</p>
                     </div>
 
                 </div>
@@ -450,6 +428,30 @@ function handleImageFiles() {
         reader.readAsDataURL(file);
     });
     AdminToast.show(`${files.length} image(s) added`, 'success');
+}
+
+// ─── Documents Delete ───
+const documentsList = document.getElementById('documentsList');
+if (documentsList) {
+    const noDocsPlaceholder = document.getElementById('noDocumentsPlaceholder');
+    
+    documentsList.addEventListener('click', function(e) {
+        const deleteBtn = e.target.closest('.delete-doc-btn');
+        if (deleteBtn) {
+            const item = deleteBtn.closest('.document-item');
+            if (item) {
+                item.remove();
+                
+                if (documentsList.querySelectorAll('.document-item').length === 0) {
+                    if (noDocsPlaceholder) {
+                        noDocsPlaceholder.classList.remove('hidden');
+                    }
+                }
+                
+                AdminToast.show('Document removed', 'info');
+            }
+        }
+    });
 }
 </script>
 @endpush

@@ -123,7 +123,7 @@
 
         {{-- Pagination --}}
         <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
-            <p class="text-[12px] font-medium text-slate-500">Showing <span class="font-bold text-slate-900">1</span> to <span class="font-bold text-slate-900">6</span> of <span class="font-bold text-slate-900">24</span> results</p>
+            <p class="text-[12px] font-medium text-slate-500">Showing <span class="font-bold text-slate-900">1</span> to <span class="font-bold text-slate-900">25</span> of <span class="font-bold text-slate-900">48</span> results</p>
             <div class="flex items-center gap-1">
                 <button class="px-3 py-1.5 rounded-lg border border-slate-200 text-[12px] font-bold text-slate-400 cursor-not-allowed">Previous</button>
                 <button class="px-3 py-1.5 rounded-lg border border-primary-600 bg-primary-600 text-white text-[12px] font-bold shadow-sm shadow-primary-600/20 cursor-pointer">1</button>
@@ -146,9 +146,7 @@
                     <div>
                         <div class="flex items-center gap-2 mb-1">
                             <h2 class="text-[15px] font-extrabold text-slate-900" id="detail-title">#TK-8821: Subscription Billing Issue</h2>
-                            <button class="h-6 w-6 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer">
-                                <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
-                            </button>
+
                         </div>
                         <p class="text-[12px] text-slate-500" id="detail-meta">Opened by Alice Henderson &bull; 3 hours ago</p>
                     </div>
@@ -193,26 +191,7 @@
                         </div>
                     </div>
 
-                    {{-- Time separator --}}
-                    <div class="flex items-center gap-3">
-                        <div class="flex-1 h-px bg-slate-100"></div>
-                        <span class="text-[10px] text-slate-400 font-medium whitespace-nowrap">11:30 AM &bull; Sarah Miller (Support)</span>
-                        <div class="flex-1 h-px bg-slate-100"></div>
-                    </div>
 
-                    {{-- Support reply --}}
-                    <div class="flex items-start gap-3 flex-row-reverse">
-                        <div class="h-7 w-7 rounded-full bg-primary-600 text-white flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5">SM</div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-baseline gap-2 mb-1 justify-end">
-                                <span class="text-[10px] text-slate-400">11:30 AM</span>
-                                <span class="text-[12px] font-bold text-slate-900">Sarah Miller (Support)</span>
-                            </div>
-                            <div class="bg-primary-600 rounded-xl rounded-tr-sm px-4 py-3 text-[12px] text-white leading-relaxed">
-                                "Hello Alice, I'm currently looking into your billing discrepancy. It appears there might have been a double-authorization during the renewal process. Could you please confirm if you received two receipt emails?"
-                            </div>
-                        </div>
-                    </div>
 
                     {{-- Customer followup --}}
                     <div class="flex items-start gap-3">

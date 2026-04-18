@@ -16,7 +16,7 @@
         </div>
         <div class="flex items-center gap-3 shrink-0">
             <!-- Search -->
-            <div class="relative w-full sm:w-64 relative hidden sm:block">
+            <div class="relative w-full sm:w-64">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -120,7 +120,11 @@
         <!-- Record count -->
         <div class="px-5 lg:px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-4">
             <p class="text-[13px] text-slate-500 font-medium">
-                Showing {{ $proformas->count() }} {{ Str::plural('result', $proformas->count()) }}
+                @if($proformas->count() > 0)
+                    Showing 1-25 of 124 results
+                @else
+                    Showing 0 results
+                @endif
             </p>
             <div class="flex items-center gap-2">
                 <button class="h-9 w-9 flex items-center justify-center rounded border border-slate-200 text-slate-400 bg-white hover:bg-slate-50 transition cursor-pointer">

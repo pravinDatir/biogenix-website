@@ -41,12 +41,15 @@
     </div>
 </div>
 
-{{-- Scroll-to-top button --}}
-<button id="admin-scroll-top" class="fixed bottom-6 right-6 z-[990] h-10 w-10 rounded-full bg-primary-600 text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-slate-700 translate-y-4 cursor-pointer">
-    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+{{-- Scroll-to-top button (Admin specific green one) --}}
+<button id="admin-scroll-top" style="bottom: 7.5rem;" class="fixed right-6 z-[990] h-10 w-10 rounded-full bg-primary-600 text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-primary-700 translate-y-4 cursor-pointer">
+    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
 </button>
 
 <style>
+    /* Hide the global storefront white back-to-top button to prevent duplicates */
+    #backToTopBtn { display: none !important; }
+
     /* Button loading state utility */
     .btn-loading { position: relative; color: transparent !important; pointer-events: none; }
     .btn-loading::after {

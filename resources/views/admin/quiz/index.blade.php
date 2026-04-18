@@ -21,10 +21,7 @@
                         </div>
                         <input type="text" placeholder="Search leads..." class="w-full bg-[var(--ui-input-bg)] border border-[var(--ui-border)] shadow-sm text-sm rounded-xl pl-9 pr-4 py-2 focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-[var(--ui-text)] placeholder:text-[var(--ui-text-muted)]">
                     </div>
-                    <button class="bg-[var(--ui-surface-subtle)] text-[var(--ui-text)] px-4 py-2 rounded-xl text-sm font-bold border border-[var(--ui-border)] shadow-sm hover:bg-slate-100 transition whitespace-nowrap hidden sm:flex items-center gap-2">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                        Lead Collection Setup
-                    </button>
+
                     <a href="{{ route('admin.quiz.create') }}" class="ajax-link bg-primary-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-primary-700 transition whitespace-nowrap flex items-center gap-2">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
                         Add New Questions
@@ -38,10 +35,7 @@
                 <div class="bg-[var(--ui-surface)] rounded-2xl p-6 shadow-[var(--ui-shadow-soft)] border-l-4 border-l-primary-600 border-y border-y-[var(--ui-card-border)] border-r border-r-[var(--ui-card-border)] flex flex-col justify-center min-h-[140px]">
                     <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-2">Total Leads</p>
                     <h3 class="text-4xl font-black text-[var(--ui-text)] tracking-tight mb-3">12,842</h3>
-                    <div class="flex items-center gap-1.5 text-[12px] font-bold text-emerald-600">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                        +14.2% from last month
-                    </div>
+
                 </div>
 
                 <!-- Segment Distribution (Dark Card) -->
@@ -76,7 +70,7 @@
                         <p class="text-xs font-semibold text-[var(--ui-text-muted)] mt-0.5">Real-time performance of quiz participants</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button class="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-50 transition shadow-sm">Export CSV</button>
+                        <button onclick="window.AdminToast.show('Preparing CSV export...', 'success')" class="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-50 transition shadow-sm">Export CSV</button>
                         <button class="bg-primary-900 border border-primary-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary-800 transition shadow-sm">Filter View</button>
                     </div>
                 </div>
@@ -113,8 +107,17 @@
                                         <span class="text-emerald-700 font-bold text-xs">Converted</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-slate-400 hover:text-slate-600 transition"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button>
+                                <td class="px-6 py-4 text-right relative">
+                                    <button onclick="toggleRowActions(event, 'actions-0')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
+                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                                    </button>
+                                    <div id="actions-0" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
+                                        <div class="p-1 flex flex-col gap-0.5">
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             
@@ -137,8 +140,17 @@
                                         <span class="text-amber-600 font-bold text-xs">Pending</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-slate-400 hover:text-slate-600 transition"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button>
+                                <td class="px-6 py-4 text-right relative">
+                                    <button onclick="toggleRowActions(event, 'actions-1')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
+                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                                    </button>
+                                    <div id="actions-1" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
+                                        <div class="p-1 flex flex-col gap-0.5">
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -161,8 +173,17 @@
                                         <span class="text-blue-700 font-bold text-xs">Contacted</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-slate-400 hover:text-slate-600 transition"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button>
+                                <td class="px-6 py-4 text-right relative">
+                                    <button onclick="toggleRowActions(event, 'actions-2')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
+                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                                    </button>
+                                    <div id="actions-2" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
+                                        <div class="p-1 flex flex-col gap-0.5">
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             
@@ -185,8 +206,17 @@
                                         <span class="text-emerald-700 font-bold text-xs">Converted</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-slate-400 hover:text-slate-600 transition"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button>
+                                <td class="px-6 py-4 text-right relative">
+                                    <button onclick="toggleRowActions(event, 'actions-3')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
+                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                                    </button>
+                                    <div id="actions-3" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
+                                        <div class="p-1 flex flex-col gap-0.5">
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             
@@ -209,8 +239,17 @@
                                         <span class="text-blue-700 font-bold text-xs">Contacted</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-slate-400 hover:text-slate-600 transition"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg></button>
+                                <td class="px-6 py-4 text-right relative">
+                                    <button onclick="toggleRowActions(event, 'actions-4')" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-100">
+                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                                    </button>
+                                    <div id="actions-4" class="hidden absolute right-6 top-10 mt-2 w-36 bg-white border border-slate-200 rounded-xl shadow-[var(--ui-shadow-card)] z-[50]">
+                                        <div class="p-1 flex flex-col gap-0.5">
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Viewing lead details...', 'info')">View Details</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-slate-700 transition" onclick="window.AdminToast.show('Contacting lead...', 'info')">Contact Lead</button>
+                                            <button class="w-full text-left px-3 py-2 text-[11px] font-bold rounded-lg hover:bg-slate-50 text-rose-600 transition" onclick="confirm('Delete this lead record?')">Delete</button>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
 
@@ -219,7 +258,7 @@
                 </div>
 
                 <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Showing 1-10 of 12,842 Entries</span>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Showing 1-25 of 12,842 Entries</span>
                     <div class="flex items-center gap-3 text-xs font-bold text-slate-400">
                         <button class="hover:text-slate-700 transition">Previous</button>
                         <div class="flex gap-2">
@@ -236,6 +275,16 @@
 
 @push('scripts')
 <script>
-    // Component specific scripts here if needed
+    window.toggleRowActions = function(e, id) {
+        e.stopPropagation();
+        const el = document.getElementById(id);
+        const wasHidden = el.classList.contains('hidden');
+        document.querySelectorAll('[id^="actions-"]').forEach(d => d.classList.add('hidden'));
+        if (wasHidden) el.classList.remove('hidden');
+    };
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('[id^="actions-"]').forEach(d => d.classList.add('hidden'));
+    });
 </script>
 @endpush

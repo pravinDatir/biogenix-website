@@ -209,81 +209,6 @@
                 </div>
             </div>
 
-            <!-- Order History -->
-            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
-                <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
-                    <svg class="h-5 w-5 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <h2 class="text-[15px] font-extrabold text-slate-900">Order History</h2>
-                </div>
-                <div class="px-5 lg:px-6 py-6 pl-8">
-                    <div class="relative border-l-2 border-slate-100 ml-4 space-y-8 pb-2">
-                        <!-- Event 0: Dispatched -->
-                        <div class="relative pl-10">
-                            <div class="absolute -left-[17px] top-0 h-[32px] w-[32px] rounded-full bg-white border-2 border-primary-600 flex items-center justify-center">
-                                <svg class="h-4 w-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <div class="-mt-0.5">
-                                <h3 class="text-[14px] font-bold text-slate-900">Dispatched</h3>
-                                <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 25, 2023 &bull; 09:15 AM &bull; Logistics</p>
-                                <div class="mt-3 p-3.5 bg-slate-50 rounded-xl text-[13.5px] text-slate-600 font-medium leading-relaxed border border-slate-100">
-                                    Package handed over to courier. Tracking link active.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Event 1: Processing -->
-                        <div class="relative pl-10">
-                            <div class="absolute -left-[17px] top-0 h-[32px] w-[32px] rounded-full bg-white border-2 border-slate-200 flex items-center justify-center">
-                                <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                            </div>
-                            <div class="-mt-0.5">
-                                <h3 class="text-[14px] font-bold text-slate-900">Processing</h3>
-                                <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 24, 2023 &bull; 3:30 PM &bull; Admin: Sarah J.</p>
-                                <div class="mt-3 p-3.5 bg-slate-50 rounded-xl text-[13.5px] text-slate-600 font-medium leading-relaxed border border-slate-100">
-                                    Payment confirmed. Lab equipment verified for dispatch. Shipping labels generated.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Event 2: Packed -->
-                        <div class="relative pl-10">
-                            <div class="absolute -left-[17px] top-0 h-[32px] w-[32px] rounded-full bg-white border-2 border-slate-200 flex items-center justify-center">
-                                <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <div class="-mt-0.5">
-                                <h3 class="text-[14px] font-bold text-slate-900">Items Packed</h3>
-                                <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 24, 2023 &bull; 3:00 PM &bull; Warehouse: Bay C</p>
-                                <div class="mt-3 p-3.5 bg-slate-50 rounded-xl text-[13.5px] text-slate-600 font-medium leading-relaxed border border-slate-100">
-                                    All 3 items packed with cold-chain compliance. Temperature logger attached.
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Event 3: Payment Received -->
-                        <div class="relative pl-10">
-                            <div class="absolute -left-[17px] top-0 h-[32px] w-[32px] rounded-full bg-white border-2 border-slate-200 flex items-center justify-center">
-                                <svg class="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <div class="-mt-0.5">
-                                <h3 class="text-[14px] font-bold text-slate-900">Payment Received</h3>
-                                <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 24, 2023 &bull; 2:50 PM &bull; Payment Gateway</p>
-                            </div>
-                        </div>
-
-                        <!-- Event 4: Order Received -->
-                        <div class="relative pl-10">
-                            <div class="absolute -left-[17px] top-0 h-[32px] w-[32px] rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center">
-                                <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-[14px] font-bold text-slate-900">Order Received</h3>
-                                <p class="text-[12.5px] font-medium text-slate-500 mt-0.5">Oct 24, 2023 &bull; 2:45 PM &bull; System</p>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
 
         </div>
 
@@ -291,7 +216,7 @@
         <div class="space-y-6">
             
             <!-- Manage Status -->
-            <div class="bg-white rounded-[20px] shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden">
+            <div class="bg-white rounded-[20px] shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-visible">
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100">
                     <h2 class="text-[15px] font-extrabold text-slate-900">Manage Status</h2>
                 </div>
@@ -330,9 +255,16 @@
                         </div>
                     </div>
 
-                    <button id="updateStatusBtn" onclick="AdminBtnLoading.start(this);setTimeout(()=>{AdminBtnLoading.stop(this);AdminToast.show('Order status updated to ' + document.getElementById('orderStatus').value,'success')},1000)" class="w-full py-3 rounded-xl text-[13px] font-bold text-white bg-primary-600 hover:bg-primary-700 transition cursor-pointer shadow-md shadow-primary-600/20">
-                        Update Status
-                    </button>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5">Tracking URL</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <svg class="h-4.5 w-4.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                            </div>
+                            <input id="trackingUrlInput" type="url" placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl pl-10 pr-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -488,10 +420,6 @@ const updateStepper = () => {
 };
 
 document.getElementById('orderStatus').addEventListener('change', updateStepper);
-document.getElementById('updateStatusBtn').addEventListener('click', () => {
-    // Already has a demo timeout to show toast, we just ensure stepper updates too
-    setTimeout(updateStepper, 100);
-});
 
 // Initial run
 document.addEventListener('DOMContentLoaded', updateStepper);
