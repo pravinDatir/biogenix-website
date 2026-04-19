@@ -22,6 +22,7 @@
     <input type="hidden" id="hidden_status" name="status" value="{{ old('status', $proforma['status'] ?? 'draft') }}">
     <input type="hidden" id="hidden_items_json" name="items_json" value="">
     <input type="hidden" id="hidden_terms" name="terms" value="">
+    <input type="hidden" id="hidden_submit_action" name="submit_action" value="{{ old('submit_action', 'save') }}">
 
 <div class="w-full py-8">
 
@@ -42,7 +43,7 @@
         </div>
     </div>
 
-    {{-- â•â•â• PI Header Info â•â•â• --}}
+    {{-- ═╤═ PI Header Info ═╤═ --}}
     <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="mb-5 flex items-center gap-2.5">
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 text-white">
@@ -78,7 +79,7 @@
         </div>
     </div>
 
-    {{-- â•â•â• Customer Details â•â•â• --}}
+    {{-- ═╤═ Customer Details ═╤═ --}}
     <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="mb-5 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
@@ -135,7 +136,7 @@
         </div>
     </div>
 
-    {{-- â•â•â• Product Details â•â•â• --}}
+    {{-- ═╤═ Product Details ═╤═ --}}
     <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div class="mb-4 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
@@ -145,7 +146,7 @@
                 <h2 class="text-lg font-bold tracking-tight text-slate-900">Product Details</h2>
             </div>
             <button id="addProductRow" type="button"
-                class="inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-4 py-2 text-[0.82rem] font-bold text-white shadow-[0_2px_8px_rgba(26,77,46,0.2)] transition-colors hover:bg-primary-700 cursor-pointer">
+                class="inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-4 py-2 text-[0.82rem] font-bold text-white shadow-[0_2px_8px_rgba(26,77,46,0.25)] transition-colors hover:bg-primary-700 cursor-pointer">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg>
                 Add Product Row
             </button>
@@ -174,8 +175,31 @@
         </div>
     </div>
 
-    {{-- â•â•â• Bottom: Terms & Totals â•â•â• --}}
+    {{-- ═╤═ Bottom: Terms & Totals ═╤═ --}}
     <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+        @php
+            $defaultTerms = [
+                'Supply within 3-4 week after confirmation order along with 100% advance payment.',
+                'All Disputes are subject to Lucknow Jurisdiction only',
+            ];
+
+            $savedTermsText = old('terms', $proforma['terms'] ?? implode("\n", $defaultTerms));
+            $savedTermsLines = preg_split('/\r\n|\r|\n/', (string) $savedTermsText) ?: [];
+            $termInputLines = [];
+
+            foreach ($savedTermsLines as $savedTermLine) {
+                $cleanTermLine = trim((string) $savedTermLine);
+
+                if ($cleanTermLine !== '') {
+                    $termInputLines[] = $cleanTermLine;
+                }
+            }
+
+            if ($termInputLines === []) {
+                $termInputLines = $defaultTerms;
+            }
+        @endphp
 
         {{-- Terms & Conditions --}}
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -186,16 +210,13 @@
                 <h2 class="text-lg font-bold tracking-tight text-slate-900">Terms & Conditions</h2>
             </div>
             <ol id="termsList" class="space-y-2">
+                @foreach($termInputLines as $termIndex => $termInputLine)
                 <li class="flex items-baseline gap-2 text-sm text-slate-700">
-                    <span class="shrink-0 font-bold text-primary-600">1.</span>
-                    <input type="text" value="Supply within 3-4 week after confirmation order along with 100% advance payment."
+                    <span class="shrink-0 font-bold text-primary-600">{{ $termIndex + 1 }}.</span>
+                    <input type="text" value="{{ $termInputLine }}"
                         class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">
                 </li>
-                <li class="flex items-baseline gap-2 text-sm text-slate-700">
-                    <span class="shrink-0 font-bold text-primary-600">2.</span>
-                    <input type="text" value="All Disputes are subject to Lucknow Jurisdiction only"
-                        class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">
-                </li>
+                @endforeach
             </ol>
         </div>
 
@@ -271,9 +292,9 @@
     </div>
 </div>
 
-{{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+{{-- ═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═╤═
      ADD PRODUCT MODAL
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
+     ═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═╧═ --}}
 <div id="addProductModal" class="fixed inset-0 z-[9999] hidden">
     {{-- Backdrop --}}
     <div id="modalBackdrop" class="absolute inset-0 bg-slate-950/55 opacity-0 backdrop-blur-[4px] transition-opacity duration-300"></div>
@@ -294,39 +315,48 @@
 
             {{-- Form fields --}}
             <div class="mt-6 grid gap-4 md:grid-cols-2">
-                {{-- Cat NO --}}
-                <div>
+                {{-- Cat NO with Search Results --}}
+                <div class="relative">
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Cat NO</label>
                     <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
                         </span>
-                        <input id="modalCatNo" type="text" placeholder="e.g., BG-9920"
+                        <input id="modalCatNo" type="text" placeholder="e.g., BG-9920" autocomplete="off"
                             class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
+                    </div>
+                    {{-- Cat NO Search Results --}}
+                    <div id="catNoSearchResults" class="absolute left-0 right-0 z-[10001] mt-1 hidden max-h-[180px] overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-2xl p-1">
+                        <!-- Results injected here -->
                     </div>
                 </div>
 
-                {{-- Product Name --}}
-                <div>
+                {{-- Product Name with Search Results --}}
+                <div class="relative">
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Product Name</label>
                     <div id="modalProductNameField" class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
                         <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                         </span>
-                        <input id="modalProductName" type="text" placeholder="Search or select product"
+                        <input id="modalProductName" type="text" placeholder="Search or select product" autocomplete="off"
                             class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
+                    </div>
+                    
+                    {{-- Product Name Search Results --}}
+                    <div id="productNameSearchResults" class="absolute left-0 right-0 z-[10001] mt-1 hidden max-h-[180px] overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-2xl p-1">
+                        <!-- Results injected here -->
                     </div>
                 </div>
 
-                {{-- Pack Size (read-only styled) --}}
+                {{-- Pack Size --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Pack Size</label>
-                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-slate-100">
-                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
+                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
+                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         </span>
                         <input id="modalPackSize" type="text" placeholder="e.g. Box of 5"
-                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none placeholder:text-slate-400">
+                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
                     </div>
                 </div>
 
@@ -345,14 +375,14 @@
                 {{-- Rate (Unit Price) --}}
                 <div>
                     <label class="mb-1.5 block text-[0.78rem] font-bold text-slate-800">Rate (Unit Price)</label>
-                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-slate-100">
-                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-500">
+                    <div class="flex h-11 items-center overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-primary-600">
+                        <span class="flex h-full w-[38px] shrink-0 items-center justify-center text-slate-400">
                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M3 3h18v2H3V3zm0 4h10a5 5 0 010 10H9l6 6h-4l-6-6v-2h8a3 3 0 000-6H3V7z"/>
                             </svg>
                          </span>
                         <input id="modalRate" type="number" min="0" step="0.01" value="0" placeholder="&#8377; 0.00"
-                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-600 outline-none placeholder:text-slate-400">
+                            class="h-full flex-1 bg-transparent pr-3 text-sm text-slate-800 outline-none placeholder:text-slate-400">
                     </div>
                 </div>
 
@@ -401,16 +431,30 @@
     var preloadedItems = @json($proforma['items'] ?? []);
 </script>
 @endif
+
+<script id="inventory-products-data" type="application/json">
+    @json($products ?? [])
+</script>
+
 <script>
 (function() {
-    // â”€â”€â”€ Auto-fill PI Number and Date â”€â”€â”€
+    // ─── Auto-fill PI Number and Date ───
+    var piForm = document.getElementById('piForm');
+    var piNumberInput = document.getElementById('piNumber');
+    var piDateInput = document.getElementById('piDate');
+    var customerEmailInput = document.getElementById('customerEmail');
     var now = new Date();
     var fy = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
     var piNum = 'PI/' + fy + '-' + String(fy + 1).slice(2) + '/' + String(Math.floor(1000 + Math.random() * 9000));
-    document.getElementById('piNumber').value = piNum;
-    document.getElementById('piDate').value = now.toISOString().split('T')[0];
+    if (piNumberInput && !piNumberInput.value.trim()) {
+        piNumberInput.value = piNum;
+    }
 
-    // â”€â”€â”€ Same as Billing toggle â”€â”€â”€
+    if (piDateInput && !piDateInput.value) {
+        piDateInput.value = now.toISOString().split('T')[0];
+    }
+
+    // ─── Same as Billing toggle ───
     var toggleTrack = document.getElementById('toggleTrack');
     var toggleThumb = document.getElementById('toggleThumb');
     var sameCheckbox = document.getElementById('sameAsBilling');
@@ -444,7 +488,7 @@
         if (toggleOn) { shippingAddr.value = billingAddr.value; }
     });
 
-    // â”€â”€â”€ Product Table â”€â”€â”€
+    // ─── Product Table ───
     var tableBody = document.getElementById('productTableBody');
     var emptyMsg = document.getElementById('emptyTableMsg');
 
@@ -470,6 +514,8 @@
             '<td class="px-2 py-2 text-center"><button type="button" class="del-row-btn inline-flex h-[30px] w-[30px] items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-colors hover:bg-rose-50 cursor-pointer"><svg class="h-[15px] w-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></td>';
 
         // Store data attributes for calc
+        tr.setAttribute('data-product-id', data.productId || '');
+        tr.setAttribute('data-variant-id', data.variantId || '');
         tr.setAttribute('data-qty', data.qty);
         tr.setAttribute('data-rate', data.rate);
         tr.setAttribute('data-gst', data.gst);
@@ -553,10 +599,8 @@
         return convert(Math.abs(Math.round(num)));
     }
 
-    // â”€â”€â”€ Modal logic â”€â”€â”€
+    // Modal logic
     var modal = document.getElementById('addProductModal');
-    // Move modal to body to guarantee it breaks out of relative stacking contexts
-    document.body.appendChild(modal);
     
     var backdrop = document.getElementById('modalBackdrop');
     var dialog = document.getElementById('modalDialog');
@@ -572,6 +616,8 @@
     var mRate = document.getElementById('modalRate');
     var mGst = document.getElementById('modalGst');
     var mTotal = document.getElementById('modalTotalAmount');
+    var selectedProductId = 0;
+    var selectedVariantId = 0;
     var modalIsOpen = false;
     var closeTimer = null;
 
@@ -588,6 +634,8 @@
         mQty.value = '1';
         mRate.value = '0';
         mGst.value = '18';
+        selectedProductId = 0;
+        selectedVariantId = 0;
         setProductNameError(false);
         updateModalTotal();
 
@@ -634,8 +682,103 @@
     mQty.addEventListener('input', updateModalTotal);
     mRate.addEventListener('input', updateModalTotal);
     mGst.addEventListener('input', updateModalTotal);
-    mProdName.addEventListener('input', function () {
-        setProductNameError(false);
+
+    // ─── Inventory Product Search Logic ───
+    var inventoryProductsData = document.getElementById('inventory-products-data');
+    var inventoryProducts = [];
+    if (inventoryProductsData) {
+        try {
+            inventoryProducts = JSON.parse(inventoryProductsData.textContent);
+            console.log('AdminPI: Loaded ' + inventoryProducts.length + ' products for selection.');
+        } catch(e) { 
+            console.error('AdminPI: Failed to parse inventory data', e); 
+        }
+    }
+
+    var catNoResults = document.getElementById('catNoSearchResults');
+    var prodNameResults = document.getElementById('productNameSearchResults');
+    
+    function showProducts(query, targetField) {
+        var isCatField = (targetField.id === 'modalCatNo');
+        var resultsDiv = isCatField ? catNoResults : prodNameResults;
+        var otherDiv = isCatField ? prodNameResults : catNoResults;
+        
+        otherDiv.classList.add('hidden');
+        
+        var q = (query || '').toLowerCase().trim();
+        var matches = q === '' 
+            ? inventoryProducts 
+            : inventoryProducts.filter(p => p.searchString.includes(q));
+            
+        matches = matches.slice(0, 30);
+
+        if (matches.length === 0) {
+            resultsDiv.classList.add('hidden');
+            return;
+        }
+
+        resultsDiv.innerHTML = '';
+        matches.forEach(product => {
+            var item = document.createElement('div');
+            item.className = 'px-3 py-2 hover:bg-primary-50 cursor-pointer rounded-lg transition-colors border-b last:border-0 border-slate-50 group';
+            
+            if (isCatField) {
+                // Show Category + Cat NO for the Cat NO field
+                item.innerHTML = `
+                    <div class="flex items-center justify-between pointer-events-none">
+                        <span class="text-sm font-bold text-slate-700 group-hover:text-primary-700">${escHtml(product.catNo)}</span>
+                        <span class="text-[10px] font-black uppercase text-slate-400 group-hover:text-primary-500">${escHtml(product.category)}</span>
+                    </div>
+                `;
+            } else {
+                // Show Product Name + Pack Size for the Product field
+                item.innerHTML = `
+                    <div class="flex items-center justify-between pointer-events-none">
+                        <span class="text-sm font-bold text-slate-700 group-hover:text-primary-700">${escHtml(product.name)}</span>
+                        <span class="text-[10px] font-medium text-slate-400 group-hover:text-primary-500">${escHtml(product.packSize)}</span>
+                    </div>
+                `;
+            }
+
+            item.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                mProdName.value = product.name;
+                mCatNo.value = product.catNo;
+                mPackSize.value = product.packSize;
+                mRate.value = product.rate;
+                mGst.value = product.gst;
+                selectedProductId = parseInt(product.id, 10) || 0;
+                selectedVariantId = parseInt(product.variantId, 10) || 0;
+                
+                resultsDiv.classList.add('hidden');
+                updateModalTotal();
+            });
+            resultsDiv.appendChild(item);
+        });
+
+        resultsDiv.classList.remove('hidden');
+    }
+
+    mProdName.addEventListener('focus', function() { showProducts(mProdName.value, mProdName); });
+    mProdName.addEventListener('input', function() {
+        selectedProductId = 0;
+        selectedVariantId = 0;
+        showProducts(mProdName.value, mProdName);
+    });
+    
+    mCatNo.addEventListener('focus', function() { showProducts(mCatNo.value, mCatNo); });
+    mCatNo.addEventListener('input', function() {
+        selectedProductId = 0;
+        selectedVariantId = 0;
+        showProducts(mCatNo.value, mCatNo);
+    });
+
+    // Close search results on outside click or blur
+    document.addEventListener('mousedown', function(e) {
+        if (!mProdName.contains(e.target) && !mCatNo.contains(e.target) && !catNoResults.contains(e.target) && !prodNameResults.contains(e.target)) {
+            catNoResults.classList.add('hidden');
+            prodNameResults.classList.add('hidden');
+        }
     });
 
     document.getElementById('addProductRow').addEventListener('click', openModal);
@@ -660,6 +803,8 @@
         setProductNameError(false);
 
         addRowToTable({
+            productId: selectedProductId,
+            variantId: selectedVariantId,
             catNo: catNo,
             productName: productName,
             packSize: packSize,
@@ -681,11 +826,13 @@
     }
 
     // Collect all product rows into JSON before submitting the form.
-    function collectAndSubmitForm(statusValue) {
+    function collectAndSubmitForm(statusValue, submitActionValue) {
         var rows = tableBody.querySelectorAll('.product-row');
         var items = [];
         rows.forEach(function(row) {
             items.push({
+                productId:   parseInt(row.getAttribute('data-product-id')) || 0,
+                variantId:   parseInt(row.getAttribute('data-variant-id')) || 0,
                 catNo:       row.cells[1].textContent.trim(),
                 productName: row.cells[2].textContent.trim(),
                 packSize:    row.cells[3].textContent.trim(),
@@ -704,30 +851,40 @@
         // Set the approval/rejection status.
         document.getElementById('hidden_status').value = statusValue;
 
+        // Set the requested next action for the backend flow.
+        document.getElementById('hidden_submit_action').value = submitActionValue || 'save';
+
         // Submit the PI form to the backend.
-        document.getElementById('piForm').submit();
+        if (typeof piForm.requestSubmit === 'function') {
+            piForm.requestSubmit();
+            return;
+        }
+
+        piForm.submit();
     }
 
-    document.getElementById('approvePiTopBtn')?.addEventListener('click', function() { collectAndSubmitForm('approved'); });
-    document.getElementById('rejectPiTopBtn')?.addEventListener('click', function() { collectAndSubmitForm('rejected'); });
+    document.getElementById('approvePiTopBtn')?.addEventListener('click', function() { collectAndSubmitForm('approved', 'save'); });
+    document.getElementById('rejectPiTopBtn')?.addEventListener('click', function() { collectAndSubmitForm('rejected', 'save'); });
 
     document.getElementById('sendEmailBtn')?.addEventListener('click', function () {
-        if (window.BiogenixToast) {
-            window.BiogenixToast.show('Email functionality coming soon!', 'info');
-        } else {
-            alert('Email functionality coming soon!');
+        var customerEmail = customerEmailInput.value.trim();
+        var currentStatus = document.getElementById('hidden_status').value || 'draft';
+
+        if (!customerEmail) {
+            showPiToast('Enter customer email before sending PI.', 'info');
+            customerEmailInput.focus();
+            return;
         }
+
+        collectAndSubmitForm(currentStatus, 'send_email');
     });
 
     document.getElementById('generatePdfBtn')?.addEventListener('click', function () {
-        if (window.BiogenixToast) {
-            window.BiogenixToast.show('PDF generation coming soon! All form data is captured.', 'info');
-        } else {
-            alert('PDF generation coming soon! All form data is captured.');
-        }
+        var currentStatus = document.getElementById('hidden_status').value || 'draft';
+
+        collectAndSubmitForm(currentStatus, 'download_pdf');
     });
 
-    // â”€â”€â”€ Show empty message initially â”€â”€â”€
     // Load existing product rows when editing an existing PI.
     if (typeof preloadedItems !== 'undefined' && preloadedItems.length > 0) {
         preloadedItems.forEach(function(item) { addRowToTable(item); });
@@ -743,5 +900,3 @@
 </form>
 
 @endsection
-
-

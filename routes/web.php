@@ -5,7 +5,7 @@ use App\Http\Controllers\BookMeeting\BookMeetingController;
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Checkout\CheckoutController;
 use App\Http\Controllers\ContactUs\ContactUsController;
-use App\Http\Controllers\AdminPanel\DashboardController as AdminDashboardController;
+use App\Http\Controllers\AdminPanel\AdminDashboardController;
 use App\Http\Controllers\Faq\FaqController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Authorization\RoleAndPermissionController;
