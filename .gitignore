@@ -73,3 +73,5 @@ Thumbs.db
 .vs/biogenix-website/v17/Browse.VC.db
 .vs/slnx.sqlite
 .vs/biogenix-website/v17/Browse.VC.db
+
+.env.railway
