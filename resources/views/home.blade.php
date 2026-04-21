@@ -733,9 +733,14 @@
         <!-- Highlighted Numbering Section -->
         <section class="bg-white/80 py-12 md:py-16 shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-slate-100 relative z-20 backdrop-blur-md">
             <div class="mx-auto max-w-[1400px] w-full px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-wrap justify-center gap-x-12 gap-y-12 md:gap-x-20 md:gap-y-16 lg:w-[900px] lg:mx-auto">
+
+                {{-- Mobile: horizontal scroll strip; md+: centred wrap --}}
+                <div class="flex gap-x-8 gap-y-12 overflow-x-auto scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+                            md:flex-wrap md:justify-center md:overflow-visible md:gap-x-20 md:gap-y-16 lg:w-[900px] lg:mx-auto
+                            pb-2 md:pb-0">
+
                     <!-- Item 1 -->
-                    <div class="flex flex-col items-center text-center w-full max-w-[200px]">
+                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
                         <div class="mb-5 text-primary-600">
                             <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
@@ -743,11 +748,11 @@
                             </svg>
                         </div>
                         <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">10,000 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Laboratories & Hospitals Served</p>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Laboratories &amp; Hospitals Served</p>
                     </div>
 
                     <!-- Item 2 -->
-                    <div class="flex flex-col items-center text-center w-full max-w-[200px]">
+                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
                         <div class="mb-5 text-primary-600">
                             <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
@@ -758,18 +763,18 @@
                     </div>
 
                     <!-- Item 3 -->
-                    <div class="flex flex-col items-center text-center w-full max-w-[200px]">
+                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
                         <div class="mb-5 text-primary-600">
                             <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.58 1.838-1.589-5.06-5.044 1.636 1.838-2.58-5.074-1.353 5.06-1.589-.016-.016c.4-.413.916-.704 1.488-.847L12.5 7.5m1.184 9.1l3.529-5.07 5.06 1.589-1.353-5.074 2.58-1.838-5.044 1.636-1.589-5.06-2.58 1.838-4.996-1.332m0 0a9.003 9.003 0 00-4.088 14.887M9.25 5L7 7" />
                             </svg>
                         </div>
                         <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">500 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Diagnostic Products & Instruments</p>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Diagnostic Products &amp; Instruments</p>
                     </div>
 
                     <!-- Item 4 -->
-                    <div class="flex flex-col items-center text-center w-full max-w-[200px]">
+                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
                         <div class="mb-5 text-primary-600">
                             <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -780,7 +785,7 @@
                     </div>
 
                     <!-- Item 5 -->
-                    <div class="flex flex-col items-center text-center w-full max-w-[200px]">
+                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
                         <div class="mb-5 text-primary-600">
                             <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
@@ -788,11 +793,11 @@
                             </svg>
                         </div>
                         <h4 class="text-[26px] font-bold text-slate-700 tracking-tight">150 <span class="text-xl">+</span></h4>
-                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Government & Institutional Clients</p>
+                        <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Government &amp; Institutional Clients</p>
                     </div>
 
                     <!-- Item 6 -->
-                    <div class="flex flex-col items-center text-center w-full max-w-[200px]">
+                    <div class="flex flex-col items-center text-center w-[160px] shrink-0 snap-start md:w-full md:max-w-[200px] md:shrink">
                         <div class="mb-5 text-primary-600">
                             <svg class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -802,11 +807,12 @@
                         <p class="mt-1 text-sm font-bold text-slate-500 leading-snug tracking-wide">Test Kits Produced Annually</p>
                     </div>
                 </div>
-                </div>
             </div>
         </section>
 
+
         <!-- Portfolio Section -->
+
         <section class="bg-white py-16 md:py-20 relative z-10 border-b border-slate-100">
             <div class="mx-auto max-w-[1300px] w-full px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center lg:items-center">
