@@ -176,7 +176,7 @@
     </div>
 
     {{-- ═╤═ Bottom: Terms & Totals ═╤═ --}}
-    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <div class="grid grid-cols-1 items-start gap-5 md:grid-cols-2">
 
         @php
             $defaultTerms = [
@@ -202,22 +202,66 @@
         @endphp
 
         {{-- Terms & Conditions --}}
-        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div class="mb-3 flex items-center gap-2.5">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 text-white">
-                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                </span>
-                <h2 class="text-lg font-bold tracking-tight text-slate-900">Terms & Conditions</h2>
+        <div class="self-start rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center gap-2.5">
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 text-white">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    </span>
+                    <div>
+                        <h2 class="text-lg font-bold tracking-tight text-slate-900">Terms & Conditions</h2>
+                        <p class="mt-0.5 text-xs font-medium text-slate-400">Add, edit, and save invoice terms before final submission.</p>
+                    </div>
+                </div>
+                <button id="saveTermsBtn" type="button"
+                    class="inline-flex h-9 items-center justify-center gap-2 self-start rounded-lg border border-slate-200 bg-white px-4 text-[11px] font-black uppercase tracking-widest text-slate-700 transition hover:bg-slate-50 hover:text-primary-800 cursor-pointer">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    Save Terms
+                </button>
             </div>
-            <ol id="termsList" class="space-y-2">
+
+            <ol id="termsList" class="space-y-2.5">
                 @foreach($termInputLines as $termIndex => $termInputLine)
-                <li class="flex items-baseline gap-2 text-sm text-slate-700">
-                    <span class="shrink-0 font-bold text-primary-600">{{ $termIndex + 1 }}.</span>
-                    <input type="text" value="{{ $termInputLine }}"
-                        class="w-full border-0 bg-transparent p-0 text-sm text-slate-700 outline-none">
+                <li data-term-item data-editing="false" class="group rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm transition">
+                    <div class="flex items-start gap-3">
+                        <span data-term-number class="mt-0.5 shrink-0 text-[13px] font-black text-primary-600">{{ $termIndex + 1 }}.</span>
+                        <div class="min-w-0 flex-1">
+                            <p data-term-text class="whitespace-normal break-words text-sm font-medium leading-6 text-slate-700">{{ $termInputLine }}</p>
+                            <textarea data-term-input rows="2"
+                                class="mt-2 hidden min-h-[72px] w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600">{{ $termInputLine }}</textarea>
+                        </div>
+                        <div class="flex shrink-0 items-start gap-1">
+                            <button type="button" class="term-edit-btn inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-primary-50 hover:text-primary-600 cursor-pointer" aria-label="Edit term">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </button>
+                            <button type="button" class="term-delete-btn hidden h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 cursor-pointer" aria-label="Delete term">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </div>
                 </li>
                 @endforeach
             </ol>
+
+            <button id="openTermComposerBtn" type="button"
+                class="mt-3 inline-flex items-center gap-2 rounded-lg px-1 py-1 text-sm font-semibold text-primary-700 transition hover:text-primary-800 cursor-pointer">
+                <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-primary-200 text-base leading-none text-primary-600">+</span>
+                <span>Add Term</span>
+            </button>
+
+            <div id="termComposerPanel" class="mt-3 hidden rounded-xl border border-slate-200 bg-slate-50 p-2">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <input id="newTermInput" type="text" placeholder="Add a new term or condition..."
+                        class="h-10 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
+                    <button id="addTermBtn" type="button"
+                        class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 text-[12px] font-bold text-white shadow-sm shadow-primary-600/20 transition hover:bg-primary-700 cursor-pointer">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/></svg>
+                        Add Term
+                    </button>
+                </div>
+            </div>
+
+            <p class="mt-3 text-xs font-medium text-slate-400">Click the pencil icon to edit a term. The delete option appears only while that term is being edited.</p>
         </div>
 
         {{-- Actions and Summary / Totals --}}
@@ -825,6 +869,314 @@
         else alert(msg);
     }
 
+    // Terms & Conditions manager
+    var termsList = document.getElementById('termsList');
+    var openTermComposerBtn = document.getElementById('openTermComposerBtn');
+    var termComposerPanel = document.getElementById('termComposerPanel');
+    var newTermInput = document.getElementById('newTermInput');
+    var addTermBtn = document.getElementById('addTermBtn');
+    var saveTermsBtn = document.getElementById('saveTermsBtn');
+    var hiddenTermsInput = document.getElementById('hidden_terms');
+    var defaultSaveTermsMarkup = saveTermsBtn ? saveTermsBtn.innerHTML : '';
+    var saveTermsFlashTimer = null;
+
+    function openTermComposer() {
+        if (!termComposerPanel) return;
+
+        termComposerPanel.classList.remove('hidden');
+        openTermComposerBtn?.classList.add('hidden');
+
+        if (newTermInput) {
+            requestAnimationFrame(function () {
+                newTermInput.focus();
+            });
+        }
+    }
+
+    function normalizeTermValue(value) {
+        return String(value || '')
+            .replace(/\r\n|\r|\n/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function autoResizeTermInput(termInput) {
+        if (!termInput) return;
+
+        termInput.style.height = 'auto';
+        termInput.style.height = Math.max(termInput.scrollHeight, 72) + 'px';
+    }
+
+    function refreshTermDisplay(termItem) {
+        if (!termItem) return '';
+
+        var termInput = termItem.querySelector('[data-term-input]');
+        var termText = termItem.querySelector('[data-term-text]');
+
+        if (!termInput || !termText) return '';
+
+        var normalizedValue = normalizeTermValue(termInput.value);
+        termInput.value = normalizedValue;
+        termText.textContent = normalizedValue || 'Add a term...';
+        termText.classList.toggle('italic', normalizedValue === '');
+        termText.classList.toggle('text-slate-400', normalizedValue === '');
+        termText.classList.toggle('font-medium', normalizedValue !== '');
+        termText.classList.toggle('text-slate-700', normalizedValue !== '');
+        autoResizeTermInput(termInput);
+
+        return normalizedValue;
+    }
+
+    function exitTermEditMode(termItem) {
+        if (!termItem) return;
+
+        var termText = termItem.querySelector('[data-term-text]');
+        var termInput = termItem.querySelector('[data-term-input]');
+        var deleteBtn = termItem.querySelector('.term-delete-btn');
+        var editBtn = termItem.querySelector('.term-edit-btn');
+
+        refreshTermDisplay(termItem);
+        termItem.dataset.editing = 'false';
+        termItem.classList.remove('border-primary-200', 'shadow-primary-100');
+        termText?.classList.remove('hidden');
+        termInput?.classList.add('hidden');
+        deleteBtn?.classList.add('hidden');
+        deleteBtn?.classList.remove('inline-flex');
+        editBtn?.classList.remove('bg-primary-50', 'text-primary-600');
+    }
+
+    function closeOtherTermEditors(activeTermItem) {
+        if (!termsList) return;
+
+        termsList.querySelectorAll('[data-term-item]').forEach(function (termItem) {
+            if (termItem !== activeTermItem && termItem.dataset.editing === 'true') {
+                exitTermEditMode(termItem);
+            }
+        });
+    }
+
+    function enterTermEditMode(termItem) {
+        if (!termItem) return;
+
+        var termText = termItem.querySelector('[data-term-text]');
+        var termInput = termItem.querySelector('[data-term-input]');
+        var deleteBtn = termItem.querySelector('.term-delete-btn');
+        var editBtn = termItem.querySelector('.term-edit-btn');
+
+        closeOtherTermEditors(termItem);
+        refreshTermDisplay(termItem);
+        termItem.dataset.editing = 'true';
+        termItem.classList.add('border-primary-200', 'shadow-primary-100');
+        termText?.classList.add('hidden');
+        termInput?.classList.remove('hidden');
+        deleteBtn?.classList.remove('hidden');
+        deleteBtn?.classList.add('inline-flex');
+        editBtn?.classList.add('bg-primary-50', 'text-primary-600');
+        autoResizeTermInput(termInput);
+
+        if (termInput) {
+            requestAnimationFrame(function () {
+                termInput.focus();
+                termInput.select();
+            });
+        }
+    }
+
+    function finalizeAllTermEdits() {
+        if (!termsList) return;
+
+        termsList.querySelectorAll('[data-term-item]').forEach(function (termItem) {
+            exitTermEditMode(termItem);
+        });
+    }
+
+    function renumberTerms() {
+        if (!termsList) return;
+
+        termsList.querySelectorAll('[data-term-item]').forEach(function (item, index) {
+            var numberEl = item.querySelector('[data-term-number]');
+            if (numberEl) {
+                numberEl.textContent = (index + 1) + '.';
+            }
+        });
+    }
+
+    function syncTermsHiddenField() {
+        if (!termsList || !hiddenTermsInput) return [];
+
+        var termValues = Array.from(termsList.querySelectorAll('[data-term-input]'))
+            .map(function(input) {
+                input.value = normalizeTermValue(input.value);
+                return input.value;
+            })
+            .filter(function(value) { return value !== ''; });
+
+        hiddenTermsInput.value = termValues.join('\n');
+        return termValues;
+    }
+
+    function flashTermsSavedState() {
+        if (!saveTermsBtn) return;
+
+        clearTimeout(saveTermsFlashTimer);
+        saveTermsBtn.innerHTML = '<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Saved';
+        saveTermsBtn.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+        saveTermsBtn.classList.add('border-emerald-600', 'bg-emerald-600', 'text-white');
+
+        saveTermsFlashTimer = setTimeout(function () {
+            saveTermsBtn.innerHTML = defaultSaveTermsMarkup;
+            saveTermsBtn.classList.remove('border-emerald-600', 'bg-emerald-600', 'text-white');
+            saveTermsBtn.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+        }, 1400);
+    }
+
+    function wireTermItem(termItem) {
+        if (!termItem) return;
+
+        termItem.dataset.editing = termItem.dataset.editing || 'false';
+
+        var input = termItem.querySelector('[data-term-input]');
+        var editBtn = termItem.querySelector('.term-edit-btn');
+        var deleteBtn = termItem.querySelector('.term-delete-btn');
+
+        refreshTermDisplay(termItem);
+
+        input?.addEventListener('input', function () {
+            autoResizeTermInput(input);
+            syncTermsHiddenField();
+        });
+
+        input?.addEventListener('blur', function () {
+            syncTermsHiddenField();
+        });
+
+        input?.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                exitTermEditMode(termItem);
+                syncTermsHiddenField();
+            }
+        });
+
+        editBtn?.addEventListener('click', function () {
+            if (termItem.dataset.editing === 'true') {
+                exitTermEditMode(termItem);
+            } else {
+                enterTermEditMode(termItem);
+            }
+
+            syncTermsHiddenField();
+        });
+
+        deleteBtn?.addEventListener('click', function () {
+            termItem.remove();
+            renumberTerms();
+            syncTermsHiddenField();
+        });
+    }
+
+    function createTermItem(termValue) {
+        var termItem = document.createElement('li');
+        termItem.setAttribute('data-term-item', '');
+        termItem.dataset.editing = 'false';
+        termItem.className = 'group rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm transition';
+
+        var row = document.createElement('div');
+        row.className = 'flex items-start gap-3';
+
+        var numberEl = document.createElement('span');
+        numberEl.setAttribute('data-term-number', '');
+        numberEl.className = 'mt-0.5 shrink-0 text-[13px] font-black text-primary-600';
+        numberEl.textContent = '0.';
+
+        var content = document.createElement('div');
+        content.className = 'min-w-0 flex-1';
+
+        var textEl = document.createElement('p');
+        textEl.setAttribute('data-term-text', '');
+        textEl.className = 'whitespace-normal break-words text-sm font-medium leading-6 text-slate-700';
+
+        var input = document.createElement('textarea');
+        input.setAttribute('data-term-input', '');
+        input.rows = 2;
+        input.value = termValue || '';
+        input.placeholder = 'Enter term or condition...';
+        input.className = 'mt-2 hidden min-h-[72px] w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-primary-600 focus:ring-1 focus:ring-primary-600';
+
+        var actions = document.createElement('div');
+        actions.className = 'flex shrink-0 items-start gap-1';
+
+        var editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'term-edit-btn inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-primary-50 hover:text-primary-600 cursor-pointer';
+        editBtn.setAttribute('aria-label', 'Edit term');
+        editBtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>';
+
+        var deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'term-delete-btn hidden h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-600 cursor-pointer';
+        deleteBtn.setAttribute('aria-label', 'Delete term');
+        deleteBtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>';
+
+        content.appendChild(textEl);
+        content.appendChild(input);
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+        row.appendChild(numberEl);
+        row.appendChild(content);
+        row.appendChild(actions);
+        termItem.appendChild(row);
+
+        wireTermItem(termItem);
+        return termItem;
+    }
+
+    function appendTermItem(termValue) {
+        if (!termsList) return null;
+
+        finalizeAllTermEdits();
+
+        var termItem = createTermItem(termValue);
+        termsList.appendChild(termItem);
+        renumberTerms();
+        syncTermsHiddenField();
+        return termItem;
+    }
+
+    openTermComposerBtn?.addEventListener('click', openTermComposer);
+
+    addTermBtn?.addEventListener('click', function () {
+        var draftTerm = newTermInput ? newTermInput.value.trim() : '';
+        if (!draftTerm) {
+            newTermInput?.focus();
+            return;
+        }
+
+        appendTermItem(draftTerm);
+
+        if (newTermInput) {
+            newTermInput.value = '';
+        }
+    });
+
+    newTermInput?.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter') return;
+
+        event.preventDefault();
+        addTermBtn?.click();
+    });
+
+    saveTermsBtn?.addEventListener('click', function () {
+        finalizeAllTermEdits();
+        syncTermsHiddenField();
+        flashTermsSavedState();
+        showPiToast('Terms saved successfully.', 'success');
+    });
+
+    termsList?.querySelectorAll('[data-term-item]').forEach(wireTermItem);
+    renumberTerms();
+    syncTermsHiddenField();
+
     // Collect all product rows into JSON before submitting the form.
     function collectAndSubmitForm(statusValue, submitActionValue) {
         var rows = tableBody.querySelectorAll('.product-row');
@@ -844,9 +1196,8 @@
         document.getElementById('hidden_items_json').value = JSON.stringify(items);
 
         // Collect terms from the editable term inputs.
-        var termInputs = document.querySelectorAll('#termsList input[type="text"]');
-        var termsText = Array.from(termInputs).map(function(i) { return i.value.trim(); }).join('\n');
-        document.getElementById('hidden_terms').value = termsText;
+        finalizeAllTermEdits();
+        syncTermsHiddenField();
 
         // Set the approval/rejection status.
         document.getElementById('hidden_status').value = statusValue;

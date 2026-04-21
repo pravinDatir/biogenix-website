@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('customer_minimal', 'minimal')
+
 @section('content')
 <div class="min-h-screen bg-[var(--ui-page-bg)] py-4 lg:py-8">
     <div class="mx-auto flex w-full max-w-[96rem] gap-0 lg:gap-8 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
