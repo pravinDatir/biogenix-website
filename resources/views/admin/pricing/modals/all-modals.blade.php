@@ -2,7 +2,7 @@
 <div id="mapPricingModal" class="fixed inset-0 z-[9999] hidden" data-pricing-modal-root>
     <div id="mapPricingBackdrop" class="absolute inset-0 bg-slate-950/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-300"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-        <div id="mapPricingDialog" class="pointer-events-auto relative w-full max-w-[560px] translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
+        <div id="mapPricingDialog" class="pointer-events-auto relative w-full max-w-xl translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
 
             <div class="flex items-start justify-between border-b border-slate-100 px-8 pb-6 pt-8">
                 <div>
@@ -10,7 +10,7 @@
                     <p class="text-[10px] text-slate-400 tracking-widest font-black uppercase">PRICING CONFIGURATION MATRIX</p>
                 </div>
                 <button onclick="window.PricingModals.close('mapPricingModal')" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
-                    <svg class="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
@@ -83,7 +83,7 @@
 <div id="editProductModal" class="fixed inset-0 z-[9999] hidden" data-pricing-modal-root>
     <div id="editProductBackdrop" class="absolute inset-0 bg-slate-950/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-300"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-        <div id="editProductDialog" class="pointer-events-auto relative w-full max-w-[620px] translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
+        <div id="editProductDialog" class="pointer-events-auto relative w-full max-w-2xl translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
 
             <div class="flex items-start justify-between border-b border-slate-100 px-8 pb-6 pt-8">
                 <div>
@@ -91,7 +91,7 @@
                     <p class="text-[10px] text-slate-400 tracking-widest font-black uppercase">PRICING SPECIFICATION ENGINE V4.2</p>
                 </div>
                 <button onclick="window.PricingModals.close('editProductModal')" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
-                    <svg class="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
@@ -169,7 +169,7 @@
 <div id="bulkPricingModal" class="fixed inset-0 z-[9999] hidden" data-pricing-modal-root>
     <div id="bulkPricingBackdrop" class="absolute inset-0 bg-slate-950/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-300"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-        <div id="bulkPricingDialog" class="pointer-events-auto relative w-full max-w-[500px] translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_26px_72px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
+        <div id="bulkPricingDialog" class="pointer-events-auto relative w-full max-w-lg translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_26px_72px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
 
             <div class="flex items-start justify-between border-b border-slate-100 px-6 pb-5 pt-6">
                 <div>
@@ -239,7 +239,7 @@
 <div id="companyPricingModal" class="fixed inset-0 z-[9999] hidden" data-pricing-modal-root>
     <div id="companyPricingBackdrop" class="absolute inset-0 bg-slate-950/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-300"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-        <div id="companyPricingDialog" class="pointer-events-auto relative w-full max-w-[620px] translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
+        <div id="companyPricingDialog" class="pointer-events-auto relative w-full max-w-2xl translate-y-2 scale-95 opacity-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[90vh] overflow-y-auto">
 
             <div class="flex items-start justify-between border-b border-slate-100 px-8 pb-6 pt-8">
                 <div>
@@ -247,7 +247,7 @@
                     <p class="text-[10px] text-slate-400 tracking-widest font-black uppercase">OVERRIDE CONFIGURATION ENGINE</p>
                 </div>
                 <button onclick="window.PricingModals.close('companyPricingModal')" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
-                    <svg class="w-[22px] h-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
@@ -282,7 +282,7 @@
                     </div>
                     <div class="relative flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-primary-600 focus-within:ring-1 focus-within:ring-primary-600">
                         <input type="text" placeholder="Search product or category..." class="w-full bg-transparent px-4 text-[13px] font-medium outline-none placeholder:text-slate-400">
-                        <span class="pr-4 text-slate-400"><svg class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></span>
+                        <span class="pr-4 text-slate-400"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></span>
                     </div>
                 </div>
 
@@ -310,7 +310,7 @@
                 <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-6">
                     <button type="button" onclick="window.PricingModals.close('companyPricingModal')" class="inline-flex h-11 items-center justify-center rounded-xl px-5 text-[13px] font-bold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900">Cancel</button>
                     <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-[13px] font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700">
-                        <svg class="w-[16px] h-[16px]" fill="currentColor" viewBox="0 0 20 20"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/></svg>
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/></svg>
                         Save Company Pricing
                     </button>
                 </div>
