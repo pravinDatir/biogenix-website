@@ -9,8 +9,8 @@
             <!-- Welcome Header -->
             <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Products</h1>
-                    <p class="text-sm text-slate-500 mt-1">Manage your biogenix inventory and product listings.</p>
+                    <h1 class="text-2xl font-extrabold text-[var(--ui-text)] tracking-tight">Products</h1>
+                    <p class="text-sm text-[var(--ui-text-muted)] mt-1">Manage your biogenix inventory and product listings.</p>
                 </div>
                 
                 <a href="{{ route('admin.products.create') }}" class="ajax-link bg-primary-600 hover:bg-primary-700 transition text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-primary-600/20 flex items-center gap-2 shrink-0 cursor-pointer">
@@ -22,7 +22,7 @@
             </div>
 
             <!-- Products Table -->
-            <div class="bg-white rounded-2xl shadow-[var(--ui-shadow-soft)] border border-slate-100 overflow-hidden flex flex-col relative">
+            <div class="bg-[var(--ui-surface)] rounded-2xl shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] overflow-hidden flex flex-col relative">
 
                 <!-- Filter Bar -->
                 <div class="px-5 lg:px-6 py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -38,12 +38,12 @@
                     </div>
 
                     <!-- Category Pills -->
-                    <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
-                        <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-600 text-white shadow-sm transition-all duration-200 active:scale-95">All Products</a>
-                        <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-violet-100 transition shadow-sm active:scale-95">Reagents</a>
-                        <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-primary-100 transition shadow-sm active:scale-95">Assay Kits</a>
-                        <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60 hover:bg-amber-100 transition shadow-sm active:scale-95">Lab Equipment</a>
-                        <a href="#" class="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition shadow-sm active:scale-95">Consumables</a>
+                    <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide" id="product-filter-pills">
+                        <button type="button" data-filter="all" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-600 text-white shadow-sm transition-all duration-200 active:scale-95">All Products</button>
+                        <button type="button" data-filter="reagent" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-primary-100 transition shadow-sm active:scale-95">Reagents</button>
+                        <button type="button" data-filter="assay" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-primary-50 text-primary-700 border border-primary-200/60 hover:bg-primary-100 transition shadow-sm active:scale-95">Assay Kits</button>
+                        <button type="button" data-filter="lab" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/60 hover:bg-amber-100 transition shadow-sm active:scale-95">Lab Equipment</button>
+                        <button type="button" data-filter="consumable" class="product-pill inline-flex items-center justify-center whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition shadow-sm active:scale-95">Consumables</button>
                     </div>
                 </div>
                 
@@ -139,29 +139,53 @@
                 </div>
             </div>
 
-            @push('scripts')
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const searchInput = document.getElementById('productSearchInput');
-                    const tableRows = document.querySelectorAll('tbody.divide-y > tr');
+<script>
+(function () {
+    function getRows() {
+        return document.querySelectorAll('tbody.divide-y > tr[data-product-category]');
+    }
 
-                    if (searchInput) {
-                        searchInput.addEventListener('input', function (e) {
-                            const searchTerm = e.target.value.toLowerCase();
+    var activeFilter = 'all';
+    var activeSearch = '';
 
-                            tableRows.forEach(row => {
-                                if (row.children.length > 1) {
-                                    const text = row.textContent.toLowerCase();
-                                    if (text.includes(searchTerm)) {
-                                        row.style.display = '';
-                                    } else {
-                                        row.style.display = 'none';
-                                    }
-                                }
-                            });
-                        });
-                    }
-                });
-            </script>
-            @endpush
+    function applyFilters() {
+        getRows().forEach(function (row) {
+            var category = (row.dataset.productCategory || '').toLowerCase();
+            var text     = row.textContent.toLowerCase();
+            var matchCat = activeFilter === 'all' || category.includes(activeFilter);
+            var matchSrc = !activeSearch || text.includes(activeSearch);
+            row.style.display = (matchCat && matchSrc) ? '' : 'none';
+        });
+    }
+
+    // ─── Search ───────────────────────────────────────────────────────────────
+    var searchInput = document.getElementById('productSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            activeSearch = this.value.toLowerCase();
+            applyFilters();
+        });
+    }
+
+    // ─── Category pills ───────────────────────────────────────────────────────
+    var pillContainer = document.getElementById('product-filter-pills');
+    if (pillContainer) {
+        pillContainer.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-filter]');
+            if (!btn) return;
+            activeFilter = btn.dataset.filter;
+
+            // Update pill active styles
+            pillContainer.querySelectorAll('.product-pill').forEach(function (p) {
+                p.classList.remove('bg-primary-600', 'text-white', 'border-0', 'shadow-sm');
+                p.classList.add('bg-[var(--ui-surface-subtle)]', 'text-slate-600', 'border', 'border-slate-200/60');
+            });
+            btn.classList.remove('bg-[var(--ui-surface-subtle)]', 'text-slate-600', 'border', 'border-slate-200/60');
+            btn.classList.add('bg-primary-600', 'text-white', 'border-0', 'shadow-sm');
+
+            applyFilters();
+        });
+    }
+})();
+</script>
 @endsection

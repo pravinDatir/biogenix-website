@@ -143,4 +143,74 @@
     </div>
 </div>
 
+
+<script>
+(function () {
+    // ─── Modal open / close ───────────────────────────────────────────────────
+    window.toggleModal = function (id, open) {
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        if (open) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                const content = document.getElementById(id + '-content');
+                if (content) {
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }
+            });
+            document.body.classList.add('overflow-hidden');
+        } else {
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            const content = document.getElementById(id + '-content');
+            if (content) {
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+            }
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.classList.remove('overflow-hidden');
+            }, 250);
+        }
+    };
+
+    // ─── data-modal-close buttons ─────────────────────────────────────────────
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-modal-close]');
+        if (btn) {
+            const id = btn.getAttribute('data-modal-close');
+            window.toggleModal(id, false);
+        }
+        // close on backdrop click
+        const modal = e.target.closest('.fixed.inset-0');
+        if (modal && e.target === modal) {
+            window.toggleModal(modal.id, false);
+        }
+    });
+
+    // ─── ESC key ─────────────────────────────────────────────────────────────
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            window.toggleModal('addCategoryModal', false);
+        }
+    });
+
+    // ─── Category search filter ───────────────────────────────────────────────
+    const searchInput = document.querySelector('input[placeholder="Search database..."]');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            const q = this.value.toLowerCase();
+            document.querySelectorAll('option').forEach(opt => {
+                opt.hidden = q ? !opt.textContent.toLowerCase().includes(q) : false;
+            });
+        });
+    }
+})();
+</script>
+
 @endsection

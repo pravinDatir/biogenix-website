@@ -80,7 +80,7 @@
 @endphp
 
 <div class="mx-auto max-w-[1320px] space-y-6">
-    <section class="overflow-hidden rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
+    <section class="overflow-hidden rounded-[28px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-6 shadow-[var(--ui-shadow-soft)] sm:p-8">
         <div class="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
             <div class="max-w-2xl">
                 <p class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-600">IAM CONTROL PLANE</p>
@@ -129,8 +129,8 @@
         </div>
     </section>
 
-    <section class="role-panel">
-        <div class="role-panel-header">
+    <section class="overflow-hidden rounded-[24px] bg-[var(--ui-surface)] border border-[var(--ui-border)] shadow-[var(--ui-shadow-soft)]">
+        <div class="px-8 py-6 border-b border-slate-50">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div class="flex items-center gap-4">
                     <div class="h-12 w-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600">
@@ -163,7 +163,7 @@
 
         <div class="grid gap-6 p-8 lg:grid-cols-2 xl:grid-cols-4">
             @foreach ($permissionGroups as $group)
-                <div class="rounded-2xl border border-slate-100 bg-white p-5 hover:border-primary-100 hover:shadow-lg hover:shadow-primary-600/5 transition-all">
+                <div class="rounded-2xl border border-slate-100 bg-[var(--ui-surface)] p-5 hover:border-primary-100 hover:shadow-lg hover:shadow-primary-600/5 transition-all">
                     <div class="flex items-center gap-3 mb-5 pb-5 border-b border-slate-50">
                         <div class="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -190,8 +190,8 @@
     </section>
 
     {{-- User Role Overrides (full-width, with Extra Permission column) --}}
-    <section class="role-panel">
-        <div class="role-panel-header flex items-center justify-between">
+    <section class="overflow-hidden rounded-[24px] bg-[var(--ui-surface)] border border-[var(--ui-border)] shadow-[var(--ui-shadow-soft)]">
+        <div class="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="h-10 w-10 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
@@ -207,27 +207,31 @@
             </button>
         </div>
         <div class="overflow-x-auto">
-            <table class="role-table">
+            <table class="w-full border-collapse">
                 <thead>
                     <tr>
-                        <th>User</th>
-                        <th>Role Assigned</th>
-                        <th>Extra Permission</th>
-                        <th>Status</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">User</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Role Assigned</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Extra Permission</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($overrides as $override)
                         <tr>
-                            <td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
                                 <div class="flex items-center gap-3">
                                     <div class="h-9 w-9 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-[12px] font-black">{{ $override['initials'] }}</div>
                                     <div class="text-[13px] font-bold text-slate-900">{{ $override['name'] }}</div>
                                 </div>
                             </td>
-                            <td><span class="role-tag">{{ $override['role'] }}</span></td>
-                            <td class="text-[13px] font-medium text-slate-700">{{ $override['permission'] }}</td>
-                            <td><span class="role-status-badge {{ $override['status'] === 'Active' ? 'role-status-active' : 'role-status-pending' }}">{{ $override['status'] }}</span></td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
+                                <span class="inline-flex px-3 py-1.5 rounded-lg bg-slate-100 text-[11px] font-extrabold uppercase text-slate-600">{{ $override['role'] }}</span>
+                            </td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[13px] font-medium text-slate-700">{{ $override['permission'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
+                                <span class="inline-flex px-3 py-1.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide {{ $override['status'] === 'Active' ? 'bg-[#f0faf4] text-primary-800' : 'bg-amber-50 text-amber-800' }}">{{ $override['status'] }}</span>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -236,8 +240,8 @@
     </section>
 
     {{-- Delegated Access Control (full-width, with Email + Actions) --}}
-    <section class="role-panel">
-        <div class="role-panel-header flex items-center justify-between">
+    <section class="overflow-hidden rounded-[24px] bg-[var(--ui-surface)] border border-[var(--ui-border)] shadow-[var(--ui-shadow-soft)]">
+        <div class="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="h-10 w-10 rounded-xl bg-secondary-50 flex items-center justify-center" style="color:#92400e">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
@@ -253,28 +257,28 @@
             </button>
         </div>
         <div class="overflow-x-auto">
-            <table class="role-table">
+            <table class="w-full border-collapse">
                 <thead>
                     <tr>
-                        <th>User</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Expiry</th>
-                        <th>Actions</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">User</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Email</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Role</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Expiry</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($delegates as $delegate)
                         <tr>
-                            <td class="text-[13px] font-bold text-slate-900">{{ $delegate['name'] }}</td>
-                            <td class="text-[12px] font-medium text-slate-500">{{ $delegate['email'] }}</td>
-                            <td class="text-[12px] font-semibold text-slate-700">{{ $delegate['role'] }}</td>
-                            <td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[13px] font-bold text-slate-900">{{ $delegate['name'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-medium text-slate-500">{{ $delegate['email'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-semibold text-slate-700">{{ $delegate['role'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
                                 <span class="text-[12px] font-bold {{ $delegate['status'] === 'Active' ? 'text-primary-600' : 'text-slate-600' }}">{{ $delegate['expiry'] }}</span>
                             </td>
-                            <td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
                                 <div class="flex items-center gap-2">
-                                    <span class="role-status-badge {{ $delegate['status'] === 'Active' ? 'role-status-active' : ($delegate['status'] === 'Expired' ? 'role-status-muted' : 'role-status-pending') }}">{{ $delegate['status'] }}</span>
+                                    <span class="inline-flex px-3 py-1.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide {{ $delegate['status'] === 'Active' ? 'bg-[#f0faf4] text-primary-800' : ($delegate['status'] === 'Expired' ? 'bg-slate-100 text-slate-600' : 'bg-amber-50 text-amber-800') }}">{{ $delegate['status'] }}</span>
                                     @if($delegate['status'] !== 'Expired')
                                         <button class="h-7 w-7 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:border-slate-400 transition">
                                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992V4.356M2.977 14.652H7.97v4.992m12.573-3.434A9 9 0 116.32 5.106l1.65 1.65" /></svg>
@@ -292,8 +296,8 @@
         </div>
     </section>
 
-    <section class="role-panel">
-        <div class="role-panel-header flex items-center justify-between">
+    <section class="overflow-hidden rounded-[24px] bg-[var(--ui-surface)] border border-[var(--ui-border)] shadow-[var(--ui-shadow-soft)]">
+        <div class="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -309,26 +313,28 @@
             </button>
         </div>
         <div class="overflow-x-auto">
-            <table class="role-table">
+            <table class="w-full border-collapse">
                 <thead>
                     <tr>
-                        <th>Initiator</th>
-                        <th>Target User</th>
-                        <th>Start Time</th>
-                        <th>Duration</th>
-                        <th>Action Type</th>
-                        <th>Status</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Initiator</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Target User</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Start Time</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Duration</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Action Type</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($impersonations as $imp)
                         <tr>
-                            <td class="text-[13px] font-bold text-slate-900">{{ $imp['initiator'] }}</td>
-                            <td class="text-[13px] font-semibold text-slate-600">{{ $imp['target'] }}</td>
-                            <td class="text-[12px] font-medium text-slate-500">{{ $imp['started'] }}</td>
-                            <td class="text-[12px] font-medium text-slate-500">{{ $imp['duration'] }}</td>
-                            <td class="text-[12px] font-semibold text-slate-700">{{ $imp['action'] }}</td>
-                            <td><span class="role-status-badge {{ $imp['status'] === 'Live' ? 'role-status-active' : 'role-status-muted' }}">{{ $imp['status'] }}</span></td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[13px] font-bold text-slate-900">{{ $imp['initiator'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[13px] font-semibold text-slate-600">{{ $imp['target'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-medium text-slate-500">{{ $imp['started'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-medium text-slate-500">{{ $imp['duration'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-semibold text-slate-700">{{ $imp['action'] }}</td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
+                                <span class="inline-flex px-3 py-1.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide {{ $imp['status'] === 'Live' ? 'bg-[#f0faf4] text-primary-800' : 'bg-slate-100 text-slate-600' }}">{{ $imp['status'] }}</span>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -417,58 +423,5 @@
     })();
 </script>
 
-<style>
-    .role-panel {
-        overflow: hidden;
-        border-radius: 24px;
-        background: #fff;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 10px 40px rgba(15, 23, 42, 0.03);
-    }
-    .role-panel-header {
-        padding: 1.5rem 2rem;
-        border-bottom: 1px solid #f8fafc;
-    }
-    .role-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .role-table th {
-        padding: 0.85rem 2rem;
-        font-size: 10px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        color: #94a3b8;
-        background: #fbfcfe;
-        text-align: left;
-    }
-    .role-table td {
-        padding: 1.15rem 2rem;
-        border-top: 1px solid #f8fafc;
-        vertical-align: middle;
-    }
-    .role-tag {
-        display: inline-flex;
-        padding: 0.4rem 0.75rem;
-        border-radius: 8px;
-        background: #f1f5f9;
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        color: #475569;
-    }
-    .role-status-badge {
-        display: inline-flex;
-        padding: 0.35rem 0.75rem;
-        border-radius: 6px;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    .role-status-active { background: #f0faf4; color: #1a4d2e; }
-    .role-status-pending { background: #fffbeb; color: #92400e; }
-    .role-status-muted { background: #f8fafc; color: #64748b; }
 </style>
 @endsection
