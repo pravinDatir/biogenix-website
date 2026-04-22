@@ -1,18 +1,11 @@
 <div id="addDelegationModal" class="fixed inset-0 z-[9999] hidden" data-role-modal-root aria-hidden="true">
     <div class="absolute inset-0 bg-[#07162f]/55 opacity-0 backdrop-blur-sm transition-opacity duration-300" data-modal-backdrop></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
-        <div class="pointer-events-auto relative w-full max-w-[600px] translate-y-4 scale-95 opacity-0 overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_32px_96px_rgba(15,23,42,0.18)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[92vh] overflow-y-auto role-modal-scroll" data-modal-dialog>
-            <div class="flex items-start justify-between border-b border-slate-50 px-8 pb-6 pt-9">
-                <div class="flex items-center gap-4">
-                    <div class="h-12 w-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-[19px] font-bold text-slate-900 tracking-tight leading-none mb-1.5 font-display">Add Delegated Role</h3>
-                        <p class="text-[10px] text-slate-400 tracking-widest font-black uppercase">TEMPORARY SESSION PROVISIONING</p>
-                    </div>
+        <div class="pointer-events-auto relative w-full max-w-xl translate-y-4 scale-95 opacity-0 overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_32px_96px_rgba(15,23,42,0.18)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-h-[92vh] overflow-y-auto role-modal-scroll" data-modal-dialog>
+            <div class="flex items-start justify-between border-b border-slate-100 px-8 pb-6 pt-8">
+                <div>
+                    <h3 class="text-[19px] font-bold text-slate-900 tracking-tight leading-none mb-1.5 font-display">Add Delegated Role</h3>
+                    <p class="text-[10px] text-slate-400 tracking-widest font-black uppercase">TEMPORARY SESSION PROVISIONING</p>
                 </div>
                 <button type="button" class="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" data-role-modal-close>
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -55,7 +48,7 @@
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">SELECT ROLE</label>
                         <div class="relative">
-                            <select class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none">
+                            <select class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none" style="-webkit-appearance: none; appearance: none;">
                                 <option value="">Choose role...</option>
                                 <option>Compliance Auditor</option>
                                 <option>External Reviewer</option>
