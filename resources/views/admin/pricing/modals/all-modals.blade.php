@@ -193,7 +193,7 @@
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-                <div class="grid grid-cols-[1fr,1fr,24px] gap-x-3 gap-y-2.5 items-center">
+                <div class="grid gap-x-3 gap-y-2.5 items-center" style="grid-template-columns: 1fr 1fr 24px;">
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase">PRICE (₹)</label>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase">MIN QUANTITY</label>
                     <span></span>
