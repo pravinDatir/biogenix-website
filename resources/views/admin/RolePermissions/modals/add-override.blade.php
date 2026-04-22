@@ -25,7 +25,8 @@
                 </button>
             </div>
 
-            <form class="flex min-h-0 flex-1 flex-col font-sans">
+            <form method="POST" action="{{ route('admin.role-permission.overrides.store') }}" class="flex min-h-0 flex-1 flex-col font-sans">
+                @csrf
                 <div class="role-modal-scroll flex-1 p-5 space-y-5 overflow-y-auto">
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
@@ -39,6 +40,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                         </div>
+                        <input type="hidden" name="override_user_id" value="">
 
                         <div class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -74,7 +76,7 @@
                             <p class="text-[11px] text-slate-500 font-medium leading-relaxed">Overrides take effect upon the next authentication session if toggled active.</p>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" checked class="sr-only peer">
+                            <input type="checkbox" name="commit_immediately" checked class="sr-only peer">
                             <div class="w-13 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                         </label>
                     </div>
@@ -84,7 +86,7 @@
                     <button type="button" class="text-[12px] font-bold text-rose-600 hover:text-rose-700 transition" data-role-modal-close>Discard Changes</button>
                     <div class="flex gap-2">
                         <button type="button" class="h-10 px-5 rounded-xl border border-slate-200 text-[12px] font-bold text-slate-600 hover:bg-slate-50 transition" data-role-modal-close>Cancel</button>
-                        <button type="button" class="h-10 px-6 rounded-xl bg-primary-600 text-white text-[12px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95">Save Override Policy</button>
+                        <button type="submit" class="h-10 px-6 rounded-xl bg-primary-600 text-white text-[12px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95">Save Override Policy</button>
                     </div>
                 </div>
             </form>

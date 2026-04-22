@@ -14,12 +14,13 @@
                 </button>
             </div>
 
-            <form class="p-8 space-y-5">
+            <form method="POST" action="{{ route('admin.role-permission.delegations.store') }}" class="p-8 space-y-5">
+                @csrf
                 {{-- Email Address --}}
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">EMAIL ADDRESS</label>
                     <div class="relative">
-                        <input type="email" data-role-modal-autofocus placeholder="researcher@biogenix.io" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
+                        <input type="email" name="delegate_email" data-role-modal-autofocus placeholder="researcher@biogenix.io" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition" required>
                         <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                         </svg>
@@ -30,7 +31,7 @@
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">PASSWORD</label>
                     <div class="relative">
-                        <input type="password" value="TempSecurePass01" data-role-password-input class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-12 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
+                        <input type="password" name="delegate_password" value="TempSecurePass01" data-role-password-input class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-12 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition" required>
                         <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                         </svg>
@@ -48,11 +49,11 @@
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">SELECT ROLE</label>
                         <div class="relative">
-                            <select class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none" style="-webkit-appearance: none; appearance: none;">
+                            <select name="role_id" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition cursor-pointer appearance-none" style="-webkit-appearance: none; appearance: none;" required>
                                 <option value="">Choose role...</option>
-                                <option>Compliance Auditor</option>
-                                <option>External Reviewer</option>
-                                <option>Temporary Partner</option>
+                                <option value="2">Compliance Auditor</option>
+                                <option value="5">External Reviewer</option>
+                                <option value="6">Temporary Partner</option>
                             </select>
                             <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -61,13 +62,13 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">EXPIRY DATE &amp; TIME</label>
-                        <input type="datetime-local" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
+                        <input type="datetime-local" name="expires_at" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition" required>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-50">
                     <button type="button" class="h-11 px-6 text-[13px] font-bold text-slate-500 hover:text-slate-900 transition" data-role-modal-close>Discard</button>
-                    <button type="button" class="h-11 px-8 rounded-xl bg-primary-600 text-white text-[13px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95">Save Delegate</button>
+                    <button type="submit" class="h-11 px-8 rounded-xl bg-primary-600 text-white text-[13px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95">Save Delegate</button>
                 </div>
             </form>
         </div>

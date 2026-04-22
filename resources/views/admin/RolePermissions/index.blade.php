@@ -17,9 +17,9 @@
             'subtitle' => 'Functional authorization layer',
             'iconPath' => 'M3.75 5.25h16.5v13.5H3.75zm4.5 3.75h7.5m-7.5 3h4.5',
             'permissions' => [
-                ['label' => 'Read Scientific Datasets', 'checked' => true],
-                ['label' => 'Write Scientific Datasets', 'checked' => true],
-                ['label' => 'Execute Batch Queries', 'checked' => false],
+                ['id' => 1, 'label' => 'Read Scientific Datasets', 'checked' => true],
+                ['id' => 2, 'label' => 'Write Scientific Datasets', 'checked' => true],
+                ['id' => 3, 'label' => 'Execute Batch Queries', 'checked' => false],
             ],
         ],
         [
@@ -27,9 +27,9 @@
             'subtitle' => 'Instrument and process access',
             'iconPath' => 'M6 4.5h12m-9 0v15m6-15v15M6 9h12M6 14h12',
             'permissions' => [
-                ['label' => 'Environmental Override', 'checked' => true],
-                ['label' => 'Instrument Calibration', 'checked' => false],
-                ['label' => 'Hazard Containment Log', 'checked' => true],
+                ['id' => 4, 'label' => 'Environmental Override', 'checked' => true],
+                ['id' => 5, 'label' => 'Instrument Calibration', 'checked' => false],
+                ['id' => 6, 'label' => 'Hazard Containment Log', 'checked' => true],
             ],
         ],
         [
@@ -37,9 +37,9 @@
             'subtitle' => 'Infrastructure operations',
             'iconPath' => 'M9.75 3v3m4.5-3v3M4.5 9h15M6.75 21h10.5A2.25 2.25 0 0019.5 18.75V8.25A2.25 2.25 0 0017.25 6H6.75A2.25 2.25 0 004.5 8.25v10.5A2.25 2.25 0 006.75 21Z',
             'permissions' => [
-                ['label' => 'Edit Audit Protocols', 'checked' => false],
-                ['label' => 'Flush Cache Layers', 'checked' => false],
-                ['label' => 'View System Logs', 'checked' => true],
+                ['id' => 7, 'label' => 'Edit Audit Protocols', 'checked' => false],
+                ['id' => 8, 'label' => 'Flush Cache Layers', 'checked' => false],
+                ['id' => 9, 'label' => 'View System Logs', 'checked' => true],
             ],
         ],
         [
@@ -47,9 +47,9 @@
             'subtitle' => 'Policy enforcement matrix',
             'iconPath' => 'M12 3.75 19.5 6v5.25c0 4.526-3.067 8.478-7.5 9.75-4.433-1.272-7.5-5.224-7.5-9.75V6L12 3.75Z',
             'permissions' => [
-                ['label' => '2FA Enforcement', 'checked' => true],
-                ['label' => 'API Token Rotation', 'checked' => true],
-                ['label' => 'IP Whitelisting', 'checked' => false],
+                ['id' => 10, 'label' => '2FA Enforcement', 'checked' => true],
+                ['id' => 11, 'label' => 'API Token Rotation', 'checked' => true],
+                ['id' => 12, 'label' => 'IP Whitelisting', 'checked' => false],
             ],
         ],
     ];
@@ -129,7 +129,8 @@
         </div>
     </section>
 
-    <section class="overflow-hidden rounded-[24px] bg-[var(--ui-surface)] border border-[var(--ui-border)] shadow-[var(--ui-shadow-soft)]">
+    <form method="POST" action="{{ route('admin.role-permission.matrix.save') }}" class="overflow-hidden rounded-[24px] bg-[var(--ui-surface)] border border-[var(--ui-border)] shadow-[var(--ui-shadow-soft)]">
+        @csrf
         <div class="px-8 py-6 border-b border-slate-50">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div class="flex items-center gap-4">
@@ -146,17 +147,18 @@
 
                 <div class="flex flex-col sm:flex-row items-center gap-3">
                     <div class="relative w-full sm:w-64">
-                        <select class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-700 outline-none focus:border-primary-600 appearance-none cursor-pointer">
-                            <option>Scientific Lead</option>
-                            <option>Facility Manager</option>
-                            <option>Compliance Auditor</option>
-                            <option>Support Lead</option>
+                        <select name="selected_role_id" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 pr-10 text-[13px] font-bold text-slate-700 outline-none focus:border-primary-600 appearance-none cursor-pointer" required>
+                            <option value="">Select a role...</option>
+                            <option value="1">Scientific Lead</option>
+                            <option value="2">Facility Manager</option>
+                            <option value="3">Compliance Auditor</option>
+                            <option value="4">Support Lead</option>
                         </select>
                         <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </div>
-                    <button class="h-11 w-full sm:w-auto px-6 rounded-xl bg-primary-600 text-white text-[13px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95">Save Changes</button>
+                    <button type="submit" class="h-11 w-full sm:w-auto px-6 rounded-xl bg-primary-600 text-white text-[13px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -179,7 +181,7 @@
                     <div class="space-y-3">
                         @foreach ($group['permissions'] as $permission)
                             <label class="flex items-start gap-3 cursor-pointer group">
-                                <input type="checkbox" {{ $permission['checked'] ? 'checked' : '' }} class="mt-1 h-4.5 w-4.5 rounded border-slate-300 text-primary-600 focus:ring-primary-600 transition">
+                                <input type="checkbox" name="permission_ids[]" value="{{ $permission['id'] }}" {{ $permission['checked'] ? 'checked' : '' }} class="mt-1 h-4.5 w-4.5 rounded border-slate-300 text-primary-600 focus:ring-primary-600 transition">
                                 <span class="text-[13px] font-bold text-slate-600 group-hover:text-slate-900 transition">{{ $permission['label'] }}</span>
                             </label>
                         @endforeach
@@ -187,7 +189,7 @@
                 </div>
             @endforeach
         </div>
-    </section>
+    </form>
 
     {{-- User Role Overrides (full-width, with Extra Permission column) --}}
     <section class="overflow-hidden rounded-[24px] bg-[var(--ui-surface)] border border-[var(--ui-border)] shadow-[var(--ui-shadow-soft)]">

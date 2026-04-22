@@ -14,23 +14,25 @@
                 </button>
             </div>
 
-            <form class="p-8 space-y-5">
+            <form method="POST" action="{{ route('admin.role-permission.impersonations.store') }}" class="p-8 space-y-5">
+                @csrf
                 {{-- User Selection (Required) --}}
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">USER SELECTION (REQUIRED)</label>
                     <div class="relative">
-                        <input type="text" data-role-modal-autofocus placeholder="Search by name or email..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
+                        <input type="text" name="impersonated_user_search" data-role-modal-autofocus placeholder="Search by name or email..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
                         <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                         </svg>
                     </div>
+                    <input type="hidden" name="impersonated_user_id" value="">
                 </div>
 
-                {{-- Impersonator Name (Required) -- ADDED TO MATCH MOCKUP --}}
+                {{-- Impersonator Name (Required) --}}
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">IMPERSONATOR NAME (REQUIRED)</label>
                     <div class="relative">
-                        <input type="text" value="Admin Root" placeholder="Enter your full name for auditing..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
+                        <input type="text" name="impersonator_name" value="Admin Root" placeholder="Enter your full name for auditing..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition" required>
                         <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
                         </svg>
@@ -40,7 +42,7 @@
                 {{-- Session Expiration --}}
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2">SESSION EXPIRATION</label>
-                    <input type="datetime-local" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition">
+                    <input type="datetime-local" name="ended_at" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-bold text-slate-800 outline-none focus:border-primary-600 transition" required>
                 </div>
 
                 {{-- Info box --}}
@@ -57,7 +59,7 @@
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-50">
                     <button type="button" class="h-11 px-6 text-[13px] font-bold text-slate-500 hover:text-slate-900 transition" data-role-modal-close>Discard</button>
-                    <button type="button" class="h-11 px-8 rounded-xl bg-primary-600 text-white text-[13px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95 flex items-center gap-2">
+                    <button type="submit" class="h-11 px-8 rounded-xl bg-primary-600 text-white text-[13px] font-bold shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition active:scale-95 flex items-center gap-2">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                         </svg>
