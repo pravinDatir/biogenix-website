@@ -2,7 +2,6 @@
 @section('title', 'Pricing Management')
 @section('admin_content')
 
-
 <div class="space-y-6 max-w-[1200px] mx-auto pb-10 mt-2">
 
     <!-- Header & Search -->
@@ -25,7 +24,7 @@
         <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
             <div>
                 <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Mapped Pricing</h2>
-                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Global price architecture for cobalt derivatives</p>
+                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Products with base, B2C and B2B pricing configured</p>
             </div>
             <div class="flex gap-2">
                 <button class="px-4 py-2 border border-slate-200 bg-white rounded-lg text-[13px] font-bold text-slate-700 flex items-center gap-2 hover:bg-slate-50 transition">
@@ -51,62 +50,32 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900">
-                            <div class="text-[10px] text-slate-400 font-extrabold tracking-widest mb-1 leading-none uppercase">CO-99.9-IND</div>
-                            <div class="text-[13px] text-slate-800 font-bold leading-none">Industrial Cobalt Sulfate</div>
-                        </td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹1,180.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹1,530.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹1,060.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900 text-right">
-                            <button type="button" data-pricing-modal-open="editProductModal" class="text-slate-400 hover:text-primary-600 transition p-1">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900">
-                            <div class="text-[10px] text-slate-400 font-extrabold tracking-widest mb-1 leading-none uppercase">CO-PH-99</div>
-                            <div class="text-[13px] text-slate-800 font-bold leading-none">Pharma-Grade Cobalt Chloride</div>
-                        </td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹1,865.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹2,400.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹1,590.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900 text-right">
-                            <button type="button" data-pricing-modal-open="editProductModal" class="text-slate-400 hover:text-primary-600 transition p-1">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900">
-                            <div class="text-[10px] text-slate-400 font-extrabold tracking-widest mb-1 leading-none uppercase">CO-MET-LOW</div>
-                            <div class="text-[13px] text-slate-800 font-bold leading-none">Low-Density Cobalt Metal</div>
-                        </td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹2,580.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹2,820.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">₹2,200.00/kg</td>
-                        <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900 text-right">
-                            <button type="button" data-pricing-modal-open="editProductModal" class="text-slate-400 hover:text-primary-600 transition p-1">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition border-b-0">
-                        <td class="py-5 text-[13px] font-semibold text-slate-900">
-                            <div class="text-[10px] text-slate-400 font-extrabold tracking-widest mb-1 leading-none uppercase">CO-BIO-ACC</div>
-                            <div class="text-[13px] text-slate-800 font-bold leading-none">Biogenic Accelerator Pack</div>
-                        </td>
-                        <td class="py-5 text-[13px] font-semibold text-slate-700">₹9,300.00/u</td>
-                        <td class="py-5 text-[13px] font-semibold text-slate-700">₹12,030.00/u</td>
-                        <td class="py-5 text-[13px] font-semibold text-slate-700">₹8,130.00/u</td>
-                        <td class="py-5 text-[13px] font-semibold text-slate-900 text-right">
-                            <button type="button" data-pricing-modal-open="editProductModal" class="text-slate-400 hover:text-primary-600 transition p-1">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            </button>
-                        </td>
-                    </tr>
+                    @forelse ($mappedProducts as $product)
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900">
+                                <div class="text-[10px] text-slate-400 font-extrabold tracking-widest mb-1 leading-none uppercase">{{ $product['sku'] }}</div>
+                                <div class="text-[13px] text-slate-800 font-bold leading-none">{{ $product['product_name'] }}</div>
+                            </td>
+                            <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">
+                                {{ $product['base_price'] !== null ? '₹' . number_format($product['base_price'], 2) : '—' }}
+                            </td>
+                            <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">
+                                {{ $product['b2c_price'] !== null ? '₹' . number_format($product['b2c_price'], 2) : '—' }}
+                            </td>
+                            <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-700">
+                                {{ $product['b2b_price'] !== null ? '₹' . number_format($product['b2b_price'], 2) : '—' }}
+                            </td>
+                            <td class="py-5 border-b border-slate-50 text-[13px] font-semibold text-slate-900 text-right">
+                                <button type="button" data-pricing-modal-open="editProductModal" class="text-slate-400 hover:text-primary-600 transition p-1">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-[13px] text-slate-400 font-medium">No products with mapped pricing yet.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -116,9 +85,13 @@
     <div class="bg-[var(--ui-surface)] rounded-[16px] shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] p-6 lg:p-8">
         <div class="flex items-center gap-3.5 mb-8">
             <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Unmapped Products</h2>
-            <span class="bg-red-50 text-[#e11d48] px-2.5 py-1 rounded-[4px] text-[9px] font-bold tracking-widest uppercase border border-red-100/50">4 Pending Configuration</span>
+            @if (count($unmappedProducts) > 0)
+                <span class="bg-red-50 text-[#e11d48] px-2.5 py-1 rounded-[4px] text-[9px] font-bold tracking-widest uppercase border border-red-100/50">
+                    {{ count($unmappedProducts) }} Pending Configuration
+                </span>
+            @endif
         </div>
-        
+
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[600px]">
                 <thead>
@@ -130,53 +103,35 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-semibold text-slate-800">Recycled Cobalt Slag</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">SLAG-D8293</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500">2023-10-24</td>
-                        <td class="py-4 text-right">
-                            <button type="button" data-pricing-modal-open="mapPricingModal" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-semibold text-slate-800">Isotope Sample Alpha</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">ISO-ALP-1</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500">2023-10-22</td>
-                        <td class="py-4 text-right">
-                            <button type="button" data-pricing-modal-open="mapPricingModal" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-semibold text-slate-800">Cobalt Acetate Liquid</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">LIQ-ACE-44</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500">2023-10-21</td>
-                        <td class="py-4 text-right">
-                            <button type="button" data-pricing-modal-open="mapPricingModal" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-semibold text-slate-800">Crude Ore Bulk</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">ORE-CRU-B</td>
-                        <td class="py-4 text-[12px] font-medium text-slate-500">2023-10-18</td>
-                        <td class="py-4 text-right">
-                            <button type="button" data-pricing-modal-open="mapPricingModal" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
-                        </td>
-                    </tr>
+                    @forelse ($unmappedProducts as $product)
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="py-4 text-[13px] font-semibold text-slate-800">{{ $product['product_name'] }}</td>
+                            <td class="py-4 text-[12px] font-medium text-slate-500 tracking-wide uppercase font-mono">{{ $product['catalog_number'] }}</td>
+                            <td class="py-4 text-[12px] font-medium text-slate-500">{{ $product['date_added'] }}</td>
+                            <td class="py-4 text-right">
+                                <button type="button" data-pricing-modal-open="mapPricingModal" class="text-[11px] font-extrabold text-primary-800 hover:text-primary-600 transition uppercase tracking-widest">MAP PRICING &rsaquo;</button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="py-8 text-center text-[13px] text-slate-400 font-medium">All products have pricing configured.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Discount Slabs Box -->
+    <!-- Bulk Pricing Box -->
     <div class="bg-[var(--ui-surface)] rounded-[16px] shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] p-6 lg:p-8">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
             <div>
-                <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Discount Slabs</h2>
-                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Volume-based tiering rules</p>
+                <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Bulk Pricing</h2>
+                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Volume-based tiering rules per product</p>
             </div>
             <button type="button" data-pricing-modal-open="bulkPricingModal" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-primary-800">
                 <svg class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                Add Discount Slab
+                Add Bulk Pricing
             </button>
         </div>
 
@@ -184,41 +139,37 @@
             <table class="w-full text-left min-w-[700px]">
                 <thead>
                     <tr class="border-b border-slate-100">
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PRODUCT RANGE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MIN QTY RATE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MID QTY RATE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MAX QTY RATE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400 text-right">STATUS</th>
+                        {{-- First column is always the product name --}}
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PRODUCT NAME</th>
+
+                        {{-- One column per distinct min_quantity slab --}}
+                        @foreach ($bulkPricingTable['slab_columns'] as $slabQty)
+                            <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">
+                                MIN {{ number_format($slabQty) }} QTY RATE
+                            </th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-semibold text-slate-800">Sulfate Series</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹450</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹1,000</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹1,500</td>
-                        <td class="py-4 text-right">
-                            <span class="inline-block px-2.5 py-1 bg-green-50/80 text-[#059669] text-[10px] font-black tracking-widest rounded-md border border-green-100 uppercase">ACTIVE</span>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-semibold text-slate-800">Metallic Base</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹250</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹650</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹1,200</td>
-                        <td class="py-4 text-right">
-                            <span class="inline-block px-2.5 py-1 bg-green-50/80 text-[#059669] text-[10px] font-black tracking-widest rounded-md border border-green-100 uppercase">ACTIVE</span>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-4 text-[13px] font-semibold text-slate-800">Accelerator Packs</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹850</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹1,700</td>
-                        <td class="py-4 text-[13px] font-medium text-slate-500">₹3,000</td>
-                        <td class="py-4 text-right">
-                            <span class="inline-block px-2.5 py-1 bg-amber-50/80 text-[#d97706] text-[10px] font-black tracking-widest rounded-md border border-amber-100 uppercase">REVIEW</span>
-                        </td>
-                    </tr>
+                    @forelse ($bulkPricingTable['rows'] as $row)
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="py-4 text-[13px] font-semibold text-slate-800">
+                                <div class="text-[10px] text-slate-400 font-extrabold tracking-widest mb-0.5 uppercase">{{ $row['sku'] }}</div>
+                                <div>{{ $row['product_name'] }}</div>
+                            </td>
+
+                            {{-- Price for each slab column — blank if this product has no price for that slab --}}
+                            @foreach ($bulkPricingTable['slab_columns'] as $slabQty)
+                                <td class="py-4 text-[13px] font-medium text-slate-500">
+                                    {{ isset($row['prices'][$slabQty]) ? '₹' . number_format($row['prices'][$slabQty], 2) : '—' }}
+                                </td>
+                            @endforeach
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10" class="py-8 text-center text-[13px] text-slate-400 font-medium">No bulk pricing configured yet. Click Add Bulk Pricing to get started.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -244,7 +195,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
-            
+
             <!-- Card 1 -->
             <div class="border border-slate-100 rounded-[12px] bg-[#fcfdfd] p-6 relative group hover:border-slate-200 transition duration-200 shadow-[0_2px_12px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
                 <div class="flex items-start justify-between mb-8">
@@ -261,7 +212,7 @@
                         <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                     </button>
                 </div>
-                
+
                 <div class="space-y-4 mb-8">
                     <div class="flex justify-between items-center text-[13px]">
                         <span class="text-slate-500 font-medium">Preferred B2B Rate</span>
@@ -295,7 +246,7 @@
                         <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                     </button>
                 </div>
-                
+
                 <div class="space-y-4 mb-8">
                     <div class="flex justify-between items-center text-[13px]">
                         <span class="text-slate-500 font-medium">Preferred B2B Rate</span>
@@ -322,4 +273,3 @@
 @include('admin.pricing.modals.all-modals')
 
 @endsection
-

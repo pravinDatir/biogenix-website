@@ -5,24 +5,23 @@
 @section('admin_content')
 
     @php
-        $customerName = request('name', 'Nova Scientific Group');
-        $customerEmail = request('email', 'contact@nova.com');
-        $customerCategory = strtoupper((string) request('category', 'B2B'));
-        $customerStatus = request('status', 'Active');
-        $customerDate = request('date', 'Oct 12, 2023');
-        $customerInitials = request('initials', 'NS');
+        $customerName = $customer->name ?? 'Unknown';
+        $customerEmail = $customer->email ?? 'Unknown';
+        $customerCategory = strtoupper($customer->user_type ?? 'B2C');
+        $customerStatus = ucfirst($customer->status ?? 'Active');
+        $customerDate = $customer->created_at ? $customer->created_at->format('M d, Y') : 'Unknown';
+        $customerInitials = strtoupper(substr($customer->name ?? 'User', 0, 2));
         $isB2bCustomer = $customerCategory === 'B2B';
-        $creditLimit = (string) request('credit_limit', $isB2bCustomer ? '25000' : '');
-        $creditDays = (string) request('credit_days', $isB2bCustomer ? '30' : '7');
-        $unlimitedCredit = filter_var(request('unlimited_credit', false), FILTER_VALIDATE_BOOL);
-        $customerPhone = request('phone', $isB2bCustomer ? '+91 98765 43210' : '+91 91234 56789');
+        $creditLimit = (string) $customer->credit_limit;
+        $creditDays = (string) $customer->credit_days;
+        $unlimitedCredit = (bool) $customer->unlimited_credit;
+        // The below properties do not exist in schema yet, keeping safe defaults
+        $customerPhone = $customer->phone ?? ($isB2bCustomer ? '+91 98765 43210' : '+91 91234 56789');
         $addressLines = $isB2bCustomer
-            ? ['Suite 402, Biotech Towers,', 'Sector 12, Gomti Nagar,', 'Lucknow, UP - 226010']
-            : ['22/18 Green Residency,', 'Aliganj,', 'Lucknow, UP - 226024'];
-        $customerNotes = $isB2bCustomer
-            ? 'Premium B2B account. Interested in high-volume pathology kits. Expedited shipping preferred for Lucknow local deliveries.'
-            : 'Retail customer with repeat orders. Prefers prepaid orders and standard delivery timelines.';
-        $customerId = $isB2bCustomer ? '#CUST-99021' : '#CUST-11284';
+            ? ['Suite 401, Head Office,', 'Sector 12,', 'Lucknow, UP']
+            : ['22/18 Green Street,', 'Aliganj,', 'Lucknow, UP'];
+        $customerNotes = $customer->internal_admin_notes ?? '';
+        $customerIdDisplay = '#CUST-' . str_pad($customer->id, 5, '0', STR_PAD_LEFT);
     @endphp
 
     <div class="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -34,18 +33,18 @@
             </a>
             <div>
                 <div class="mb-1 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                    <span>Customer Management</span>
+                    <span>User Management</span>
                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                     <span class="text-slate-600">Customer Details</span>
                 </div>
                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">{{ $customerName }}</h1>
-                <p class="mt-1 text-sm text-slate-500">ID: {{ $customerId }} &bull; Member since {{ $customerDate }}</p>
+                <p class="mt-1 text-sm text-slate-500">ID: {{ $customerIdDisplay }} &bull; Member since {{ $customerDate }}</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <button type="button" onclick="window.AdminToast ? window.AdminToast.show('All changes saved successfully', 'success') : alert('All changes saved successfully')" class="rounded-xl bg-primary-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700 cursor-pointer">
+            <button type="button" id="btn-save-details" onclick="saveCustomerDetails()" class="rounded-xl bg-primary-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-primary-600/20 transition hover:bg-primary-700 cursor-pointer">
                 Save Changes
             </button>
         </div>
@@ -106,7 +105,7 @@
                     <h2 class="text-base font-extrabold text-slate-900">Internal Admin Notes</h2>
                 </div>
                 <div class="p-6">
-                    <textarea rows="4" class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600" placeholder="Add confidential notes about this customer account for internal review...">{{ $customerNotes }}</textarea>
+                    <textarea id="customer-internal-notes" rows="4" class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600" placeholder="Add confidential notes about this customer account for internal review...">{{ $customerNotes }}</textarea>
                     <p class="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400">
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -249,7 +248,58 @@
                 });
 
                 applyStatusButtonState(button, status);
-                showToast('Status changed to ' + status, 'info');
+                statusContainer.dataset.initialStatus = status; // Keep sync for saving later
+                showToast('Status chosen: ' + status + '. Remember to save changes.', 'info');
+            };
+
+            window.saveCustomerDetails = function () {
+                const saveBtn = document.getElementById('btn-save-details');
+                const internalNotes = document.getElementById('customer-internal-notes')?.value || '';
+                const creditDaysValue = document.getElementById('customer-credit-days')?.value || null;
+                const activeStatus = statusContainer?.dataset?.initialStatus || 'Active';
+                const userType = categorySelect?.value || 'B2C';
+
+                const isUnlimited = unlimitedCreditCheckbox?.checked || false;
+                const creditLimitRaw = creditLimitInput?.value || null;
+
+                const payload = {
+                    internal_admin_notes: internalNotes,
+                    status: activeStatus,
+                    user_type: userType
+                };
+
+                if (userType === 'B2B') {
+                    payload.credit_limit = creditLimitRaw;
+                    payload.credit_days = creditDaysValue;
+                    payload.unlimited_credit = isUnlimited;
+                }
+
+                saveBtn.disabled = true;
+                saveBtn.innerText = 'Saving...';
+
+                fetch('{{ route('admin.customers.details.update', ['customerId' => $customer->id]) }}', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    saveBtn.disabled = false;
+                    saveBtn.innerText = 'Save Changes';
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                    } else {
+                        showToast(data.message || 'Error occurred updating details.', 'error');
+                    }
+                })
+                .catch(err => {
+                    saveBtn.disabled = false;
+                    saveBtn.innerText = 'Save Changes';
+                    showToast('Server error while saving.', 'error');
+                });
             };
 
             function syncCreditVisibility() {

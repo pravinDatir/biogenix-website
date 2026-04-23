@@ -16,8 +16,7 @@
     <section class="overflow-hidden rounded-[28px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-6 shadow-[var(--ui-shadow-soft)] sm:p-8">
         <div class="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
             <div class="max-w-2xl">
-                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-600">IAM CONTROL PLANE</p>
-                <h1 class="mt-2 text-[22px] font-extrabold tracking-tight text-slate-900 font-display">Roles & Permissions Management</h1>
+                <h1 class="text-[22px] font-extrabold tracking-tight text-slate-900 font-display">Roles & Permissions Management</h1>
                 <p class="mt-2 text-[14px] font-medium leading-6 text-slate-500">
                     Configure global access controls, role hierarchies, and identity-specific exceptions from one unified workspace.
                 </p>
@@ -42,23 +41,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            @foreach ($stats as $stat)
-                <div class="rounded-2xl border border-slate-50 bg-slate-50/30 p-5 group hover:bg-white hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-300">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ $stat['label'] }}</p>
-                            <p class="mt-3 text-[32px] font-extrabold tracking-tight text-slate-900 font-display">{{ $stat['value'] }}</p>
-                            <p class="mt-1 text-[11px] font-bold text-slate-500">{{ $stat['meta'] }}</p>
-                        </div>
-                        <span class="flex h-10 w-10 items-center justify-center rounded-xl text-[11px] font-black {{ $toneClasses[$stat['tone']] }}">
-                            {{ substr($stat['label'], 0, 2) }}
-                        </span>
-                    </div>
-                </div>
-            @endforeach
         </div>
     </section>
 
@@ -144,13 +126,13 @@
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
                 </div>
                 <div>
-                    <h2 class="text-[17px] font-bold text-slate-900 font-display leading-none">User Role Overrides</h2>
+                    <h2 class="text-[17px] font-bold text-slate-900 font-display leading-none">User Permission Overrides</h2>
                     <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">ACTIVE TEMPORARY ESCALATIONS</p>
                 </div>
             </div>
             <button type="button" data-role-modal-open="addOverrideModal" class="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg border border-slate-200 text-slate-700 text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                ADD USER ROLE OVERRIDE
+                ADD USER PERMISSION OVERRIDE
             </button>
         </div>
         <div class="overflow-x-auto">
@@ -267,8 +249,8 @@
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Target User</th>
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Start Time</th>
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Duration</th>
-                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Action Type</th>
                         <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Status</th>
+                        <th class="px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 bg-slate-50/50 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -278,9 +260,22 @@
                             <td class="px-8 py-5 border-t border-slate-50 align-middle text-[13px] font-semibold text-slate-600">{{ $imp['target'] }}</td>
                             <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-medium text-slate-500">{{ $imp['started'] }}</td>
                             <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-medium text-slate-500">{{ $imp['duration'] }}</td>
-                            <td class="px-8 py-5 border-t border-slate-50 align-middle text-[12px] font-semibold text-slate-700">{{ $imp['action'] }}</td>
                             <td class="px-8 py-5 border-t border-slate-50 align-middle">
                                 <span class="inline-flex px-3 py-1.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide {{ $imp['status'] === 'Live' ? 'bg-[#f0faf4] text-primary-800' : 'bg-slate-100 text-slate-600' }}">{{ $imp['status'] }}</span>
+                            </td>
+                            <td class="px-8 py-5 border-t border-slate-50 align-middle">
+                                @if ($imp['is_active'])
+                                    {{-- Show Stop button only for sessions that are still active --}}
+                                    <form method="POST" action="{{ route('admin.role-permission.impersonations.stop', $imp['session_id']) }}">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-lg border border-red-200 text-red-600 text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition active:scale-95">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            Stop
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-[11px] font-medium text-slate-300">Ended</span>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
