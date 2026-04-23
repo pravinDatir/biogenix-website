@@ -18,8 +18,8 @@
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (BASE PRICE)</label>
                     <div class="relative">
-                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
-                        <input type="text" placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rs.</span>
+                        <input type="text" placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
                     </div>
                 </div>
 
@@ -33,8 +33,8 @@
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2B PRICE (MANUAL)</label>
                         <div class="relative">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
-                            <input type="text" placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rs.</span>
+                            <input type="text" placeholder="0.00" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
                         </div>
                     </div>
                 </div>
@@ -100,8 +100,8 @@
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">GUEST PRICE (BASE PRICE)</label>
                         <div class="relative">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                            <input type="text" value="24,500" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">Rs.</span>
+                            <input type="text" value="24,500" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
                         </div>
                     </div>
                     <div>
@@ -117,7 +117,7 @@
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">B2B RATE CONFIGURATION</label>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="relative flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-primary-600 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary-600">
-                            <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">₹</span>
+                            <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">Rs.</span>
                             <input type="text" value="18,000" class="w-full bg-transparent pr-4 text-[14px] font-bold text-slate-800 outline-none">
                         </div>
                         <div class="relative flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-primary-600 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary-600">
@@ -193,32 +193,38 @@
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-                <div class="grid gap-x-3 gap-y-2.5 items-center" style="grid-template-columns: 1fr 1fr 24px;">
-                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase">PRICE (₹)</label>
-                    <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase">MIN QUANTITY</label>
-                    <span></span>
+                    <div class="grid gap-x-3 gap-y-2.5 items-center" style="grid-template-columns: 1fr 1fr 24px;">
+                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase">PRICE (INR)</label>
+                        <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase">MIN QUANTITY</label>
+                        <span></span>
 
-                    <div class="relative flex h-11 items-center rounded-xl border border-slate-200 bg-white">
-                        <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">₹</span>
-                        <input type="text" value="415.00" class="w-full bg-transparent pr-3 text-[12px] font-bold text-slate-800 outline-none">
+                        <div id="bulkPricingSlabRows" class="contents">
+                            <div class="contents" data-bulk-slab-row>
+                                <div class="relative flex h-11 items-center rounded-xl border border-slate-200 bg-white">
+                                    <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">INR</span>
+                                    <input type="text" value="415.00" class="w-full bg-transparent pr-3 text-[12px] font-bold text-slate-800 outline-none" data-bulk-slab-price>
+                                </div>
+                                <input type="text" value="100" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-[12px] font-bold text-slate-800 outline-none" data-bulk-slab-qty>
+                                <button type="button" class="text-slate-300 hover:text-red-500 transition" data-bulk-slab-remove aria-label="Remove slab">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
+
+                            <div class="contents" data-bulk-slab-row>
+                                <div class="relative flex h-11 items-center rounded-xl border border-slate-200 bg-white">
+                                    <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">INR</span>
+                                    <input type="text" value="385.50" class="w-full bg-transparent pr-3 text-[12px] font-bold text-slate-800 outline-none" data-bulk-slab-price>
+                                </div>
+                                <input type="text" value="500" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-[12px] font-bold text-slate-800 outline-none" data-bulk-slab-qty>
+                                <button type="button" class="text-slate-300 hover:text-red-500 transition" data-bulk-slab-remove aria-label="Remove slab">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <input type="text" value="100" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-[12px] font-bold text-slate-800 outline-none">
-                    <button type="button" class="text-slate-300 hover:text-red-500 transition">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
-
-                    <div class="relative flex h-11 items-center rounded-xl border border-slate-200 bg-white">
-                        <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">₹</span>
-                        <input type="text" value="385.50" class="w-full bg-transparent pr-3 text-[12px] font-bold text-slate-800 outline-none">
-                    </div>
-                    <input type="text" value="500" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-[12px] font-bold text-slate-800 outline-none">
-                    <button type="button" class="text-slate-300 hover:text-red-500 transition">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
-                </div>
                 </div>
 
-                <button type="button" class="flex w-full justify-center items-center gap-2 rounded-xl border-[1.5px] border-dashed border-slate-200 py-2.5 text-[10px] font-extrabold tracking-widest uppercase text-slate-500 transition hover:text-slate-700 hover:bg-slate-50 hover:border-slate-300">
+                <button type="button" class="flex w-full justify-center items-center gap-2 rounded-xl border-[1.5px] border-dashed border-slate-200 py-2.5 text-[10px] font-extrabold tracking-widest uppercase text-slate-500 transition hover:text-slate-700 hover:bg-slate-50 hover:border-slate-300" data-bulk-slab-add>
                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
                     ADD ANOTHER SLAB
                 </button>
@@ -254,15 +260,24 @@
             <form class="space-y-6 px-8 py-7">
                 <div>
                     <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">COMPANY NAME (TYPE-AHEAD)</label>
-                    <input type="text" placeholder="Start typing company name..." class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
-                    <div class="grid grid-cols-2 gap-4 mt-3">
+                    <input id="companyPricingName" type="text" placeholder="Start typing company name..." list="companyPricingSuggestions" autocomplete="off" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-[14px] font-bold text-slate-800 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                    <datalist id="companyPricingSuggestions">
+                        <option value="Global Bioceuticals Inc."></option>
+                        <option value="Nova Cobalt Corp"></option>
+                        <option value="BioTech Solutions"></option>
+                    </datalist>
+                    <div class="grid grid-cols-1 gap-4 mt-3 sm:grid-cols-2">
                         <div>
                             <label class="block text-[10px] font-medium text-slate-500 mb-1.5">Legal Business Name</label>
-                            <input type="text" placeholder="Legal name..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-600 font-medium outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                            <input id="companyPricingLegalName" type="text" placeholder="Legal name..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-600 font-medium outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
                         </div>
                         <div>
                             <label class="block text-[10px] font-medium text-slate-500 mb-1.5">Company Reg. Number</label>
-                            <input type="text" placeholder="CIN / Reg number..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-600 font-medium outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                            <input id="companyPricingRegNumber" type="text" placeholder="CIN / Reg number..." class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-600 font-medium outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-[10px] font-medium text-slate-500 mb-1.5">GST Number</label>
+                            <input id="companyPricingGstin" type="text" placeholder="GST number will auto-fill from company selection" readonly class="h-11 w-full rounded-xl border border-slate-200 bg-slate-100 px-3 text-[13px] text-slate-600 font-semibold outline-none read-only:cursor-not-allowed read-only:text-slate-500">
                         </div>
                     </div>
                 </div>
@@ -290,7 +305,7 @@
                     <div>
                         <label class="block text-[10px] font-black text-slate-500 tracking-widest uppercase mb-2.5">SPECIFIC B2B PRICE</label>
                         <div class="relative flex h-12 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-primary-600 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary-600">
-                            <span class="pl-4 pr-1 text-slate-400 font-bold">₹</span>
+                            <span class="pl-4 pr-1 text-slate-400 font-bold">INR</span>
                             <input type="text" placeholder="0.00" class="w-full bg-transparent pr-4 text-[14px] font-bold text-slate-800 outline-none">
                         </div>
                     </div>
@@ -321,20 +336,20 @@
 
 <script>
 window.PricingModals = {
-    _modals: ['mapPricingModal','editProductModal','bulkPricingModal','companyPricingModal'],
+    _modals: ['mapPricingModal', 'editProductModal', 'bulkPricingModal', 'companyPricingModal'],
     _isInitialised: false,
 
     init() {
         if (this._isInitialised) return;
         this._isInitialised = true;
 
-        // Move all modals to body so they survive AJAX content swaps
-        this._modals.forEach(id => {
+        this._modals.forEach((id) => {
             const el = document.getElementById(id);
             if (el && el.parentNode !== document.body) {
                 document.body.appendChild(el);
             }
         });
+
         document.addEventListener('click', (event) => {
             const openTrigger = event.target.closest('[data-pricing-modal-open]');
             if (openTrigger) {
@@ -358,12 +373,14 @@ window.PricingModals = {
                 }
             }
         });
-        // ESC key to close
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                this._modals.forEach(id => {
+                this._modals.forEach((id) => {
                     const el = document.getElementById(id);
-                    if (el && !el.classList.contains('hidden')) this.close(id);
+                    if (el && !el.classList.contains('hidden')) {
+                        this.close(id);
+                    }
                 });
             }
         });
@@ -372,8 +389,9 @@ window.PricingModals = {
     open(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
+
         const backdrop = modal.querySelector('[id$="Backdrop"]');
-        const dialog  = modal.querySelector('[id$="Dialog"]');
+        const dialog = modal.querySelector('[id$="Dialog"]');
 
         modal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
@@ -392,18 +410,20 @@ window.PricingModals = {
     close(modalId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
+
         const backdrop = modal.querySelector('[id$="Backdrop"]');
-        const dialog  = modal.querySelector('[id$="Dialog"]');
+        const dialog = modal.querySelector('[id$="Dialog"]');
 
         if (backdrop) backdrop.classList.replace('opacity-100', 'opacity-0');
         if (dialog) {
             dialog.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
             dialog.classList.add('opacity-0', 'scale-95', 'translate-y-2');
         }
+
         setTimeout(() => {
             modal.classList.add('hidden');
 
-            const hasOpenModal = this._modals.some(id => {
+            const hasOpenModal = this._modals.some((id) => {
                 const currentModal = document.getElementById(id);
                 return currentModal && !currentModal.classList.contains('hidden');
             });
@@ -424,24 +444,155 @@ window.PricingModals = {
         }
 
         this.close(modalId);
-    }
+    },
 };
 
-// Initialise — and re-initialise after any AJAX content swap
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => window.PricingModals.init(), { once: true });
-} else {
-    window.PricingModals.init();
-}
+(function () {
+    const companyDirectory = {
+        'Global Bioceuticals Inc.': {
+            legalName: 'Global Bioceuticals India Pvt Ltd',
+            regNumber: 'CIN: U74999MH2023PTC123456',
+            gstin: '27AAJCG1284M1ZV',
+        },
+        'Nova Cobalt Corp': {
+            legalName: 'Nova Cobalt Corporation Private Limited',
+            regNumber: 'CIN: U24299GJ2022PTC451208',
+            gstin: '24AABCN4512Q1ZH',
+        },
+        'BioTech Solutions': {
+            legalName: 'Biotech Solutions India Private Limited',
+            regNumber: 'CIN: U73100KA2021PTC778321',
+            gstin: '29AAICB7783L1ZK',
+        },
+    };
 
-// Expose a simple global so onclick="toggleModal('x')" still works during transition
-window.toggleModal = function(id) { window.PricingModals.toggle(id); };
+    function updateBulkSlabRemoveState() {
+        const rows = Array.from(document.querySelectorAll('[data-bulk-slab-row]'));
+
+        rows.forEach((row) => {
+            const removeButton = row.querySelector('[data-bulk-slab-remove]');
+            if (!removeButton) return;
+
+            const disable = rows.length <= 1;
+            removeButton.disabled = disable;
+            removeButton.classList.toggle('opacity-40', disable);
+            removeButton.classList.toggle('cursor-not-allowed', disable);
+        });
+    }
+
+    function createBulkSlabRow(priceValue = '', qtyValue = '') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'contents';
+        wrapper.setAttribute('data-bulk-slab-row', '');
+        wrapper.innerHTML = `
+            <div class="relative flex h-11 items-center rounded-xl border border-slate-200 bg-white">
+                <span class="pl-4 pr-1 py-3 text-slate-400 font-bold">INR</span>
+                <input type="text" value="${String(priceValue)}" class="w-full bg-transparent pr-3 text-[12px] font-bold text-slate-800 outline-none" data-bulk-slab-price>
+            </div>
+            <input type="text" value="${String(qtyValue)}" class="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-[12px] font-bold text-slate-800 outline-none" data-bulk-slab-qty>
+            <button type="button" class="text-slate-300 hover:text-red-500 transition" data-bulk-slab-remove aria-label="Remove slab">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+        `;
+
+        return wrapper;
+    }
+
+    function hydrateCompanyFields(companyName) {
+        const legalNameInput = document.getElementById('companyPricingLegalName');
+        const regNumberInput = document.getElementById('companyPricingRegNumber');
+        const gstinInput = document.getElementById('companyPricingGstin');
+        const normalizedName = String(companyName || '').trim();
+        const companyData = companyDirectory[normalizedName];
+
+        if (!legalNameInput || !regNumberInput || !gstinInput) {
+            return;
+        }
+
+        if (!companyData) {
+            legalNameInput.value = '';
+            regNumberInput.value = '';
+            gstinInput.value = '';
+            return;
+        }
+
+        legalNameInput.value = companyData.legalName;
+        regNumberInput.value = companyData.regNumber;
+        gstinInput.value = companyData.gstin;
+    }
+
+    function initPricingModalEnhancements() {
+        const slabContainer = document.getElementById('bulkPricingSlabRows');
+        const addSlabButton = document.querySelector('[data-bulk-slab-add]');
+        const companyNameInput = document.getElementById('companyPricingName');
+
+        if (slabContainer && !slabContainer.dataset.bound) {
+            slabContainer.dataset.bound = 'true';
+            slabContainer.addEventListener('click', (event) => {
+                const removeButton = event.target.closest('[data-bulk-slab-remove]');
+                if (!removeButton) return;
+
+                const row = removeButton.closest('[data-bulk-slab-row]');
+                if (!row || document.querySelectorAll('[data-bulk-slab-row]').length <= 1) {
+                    return;
+                }
+
+                row.remove();
+                updateBulkSlabRemoveState();
+            });
+        }
+
+        if (addSlabButton && !addSlabButton.dataset.bound) {
+            addSlabButton.dataset.bound = 'true';
+            addSlabButton.addEventListener('click', () => {
+                if (!slabContainer) return;
+
+                const newRow = createBulkSlabRow();
+                slabContainer.appendChild(newRow);
+
+                const slabRows = slabContainer.querySelectorAll('[data-bulk-slab-row]');
+                const latestPriceInput = slabRows.length
+                    ? slabRows[slabRows.length - 1].querySelector('[data-bulk-slab-price]')
+                    : null;
+                if (latestPriceInput) {
+                    latestPriceInput.focus();
+                }
+
+                updateBulkSlabRemoveState();
+            });
+        }
+
+        if (companyNameInput && !companyNameInput.dataset.bound) {
+            companyNameInput.dataset.bound = 'true';
+            const syncCompany = () => hydrateCompanyFields(companyNameInput.value);
+            companyNameInput.addEventListener('input', syncCompany);
+            companyNameInput.addEventListener('change', syncCompany);
+        }
+
+        updateBulkSlabRemoveState();
+        if (companyNameInput) {
+            hydrateCompanyFields(companyNameInput.value);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            window.PricingModals.init();
+            initPricingModalEnhancements();
+        }, { once: true });
+    } else {
+        window.PricingModals.init();
+        initPricingModalEnhancements();
+    }
+})();
+
+window.toggleModal = function (id) { window.PricingModals.toggle(id); };
 function toggleModal(id) { window.PricingModals.toggle(id); }
 </script>
 
 <style>
     @keyframes pricingFadeIn {
         from { opacity: 0; transform: translateY(8px) scale(0.98); }
-        to   { opacity: 1; transform: translateY(0) scale(1); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
 </style>

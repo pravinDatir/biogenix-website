@@ -188,7 +188,6 @@
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MIN QTY RATE</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MID QTY RATE</th>
                         <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">MAX QTY RATE</th>
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400 text-right">STATUS</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -197,27 +196,18 @@
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹450</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹1,000</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹1,500</td>
-                        <td class="py-4 text-right">
-                            <span class="inline-block px-2.5 py-1 bg-green-50/80 text-[#059669] text-[10px] font-black tracking-widest rounded-md border border-green-100 uppercase">ACTIVE</span>
-                        </td>
                     </tr>
                     <tr class="hover:bg-slate-50/50 transition">
                         <td class="py-4 text-[13px] font-semibold text-slate-800">Metallic Base</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹250</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹650</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹1,200</td>
-                        <td class="py-4 text-right">
-                            <span class="inline-block px-2.5 py-1 bg-green-50/80 text-[#059669] text-[10px] font-black tracking-widest rounded-md border border-green-100 uppercase">ACTIVE</span>
-                        </td>
                     </tr>
                     <tr class="hover:bg-slate-50/50 transition">
                         <td class="py-4 text-[13px] font-semibold text-slate-800">Accelerator Packs</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹850</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹1,700</td>
                         <td class="py-4 text-[13px] font-medium text-slate-500">₹3,000</td>
-                        <td class="py-4 text-right">
-                            <span class="inline-block px-2.5 py-1 bg-amber-50/80 text-[#d97706] text-[10px] font-black tracking-widest rounded-md border border-amber-100 uppercase">REVIEW</span>
-                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -322,4 +312,3 @@
 @include('admin.pricing.modals.all-modals')
 
 @endsection
-

@@ -1174,37 +1174,12 @@
 
 
 
-        <section class="bg-transparent py-12 text-white md:py-14">
-            <div class="mx-auto w-full max-w-none px-4 text-center sm:px-6 lg:px-8 xl:px-10">
-                <div class="home-cta home-reveal rounded-[var(--ui-radius-card)] px-6 py-10 sm:px-8 md:px-10 md:py-12">
-                    <h2 class="font-display text-2xl font-semibold text-white md:text-4xl">Make Smarter Procurement
-                        Decisions, Faster</h2>
-                    <p class="mx-auto mt-3 max-w-3xl text-sm text-primary-50/90 md:text-base leading-relaxed">
-                        Get instant access to compliant pricing, curated product recommendations, and procurement-ready
-                        solutions—built specifically for your diagnostic needs. No delays. No back-and-forth. Just clarity
-                        and speed.
-                    </p>
-                    <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:items-center sm:justify-center sm:gap-4">
-                        <x-ui.action-link :href="route('quotation.create')"
-                            class="h-12 w-full sm:w-auto px-8 bg-primary-600 hover:bg-primary-700 text-white shadow-xl shadow-primary-600/20 border-none text-[15px] font-bold">Generate
-                            Quote</x-ui.action-link>
-                        <x-ui.action-link :href="route('book-meeting')" variant="inverse"
-                            class="h-12 w-full sm:w-auto px-8 hover-lift text-[15px] font-bold">Book a
-                            Meeting</x-ui.action-link>
-                    </div>
-                    {{-- Micro-line --}}
-                    <p class="mt-6 text-[11px] font-bold uppercase tracking-[0.2em] text-white/40">
-                        Trusted by diagnostic labs, hospitals, and distributors across India
-                    </p>
-                </div>
-            </div>
-        </section>
     </div>
 
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                /* â”€â”€â”€ Hero Carousel â”€â”€â”€ */
+                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Hero Carousel Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
                 const track = document.getElementById('heroTrack');
                 const dots = Array.from(document.querySelectorAll('[data-hero-dot]'));
                 const nextBtn = document.getElementById('heroNext');
@@ -1251,7 +1226,7 @@
                 if (nextBtn) nextBtn.addEventListener('click', function () { moveTo(index + 1); startAuto(); });
                 if (prevBtn) prevBtn.addEventListener('click', function () { moveTo(index - 1); startAuto(); });
 
-                /* â”€â”€ Touch / Swipe support â”€â”€ */
+                /* Ã¢â€â‚¬Ã¢â€â‚¬ Touch / Swipe support Ã¢â€â‚¬Ã¢â€â‚¬ */
                 if (carousel) {
                     let touchStartX = 0;
                     let touchEndX = 0;
@@ -1314,7 +1289,7 @@
                 window.addEventListener('resize', queueRevealRefresh);
                 window.addEventListener('scroll', queueRevealRefresh, { passive: true });
 
-                /* â”€â”€â”€ Newsletter â”€â”€â”€ */
+                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Newsletter Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
                 const newsletterForm = document.getElementById('newsletterForm');
                 const newsletterBtn = document.getElementById('newsletterSubmitBtn');
                 const newsletterStatus = document.getElementById('newsletterStatus');
@@ -1345,7 +1320,7 @@
                     });
                 }
 
-                /* â”€â”€â”€ Category Carousel Auto Scroll â”€â”€â”€ */
+                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Category Carousel Auto Scroll Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
                 const catCarousel = document.getElementById('categoryCarousel');
                 let catScrollInterval;
 
@@ -1401,7 +1376,7 @@
                     }
                 }
 
-                /* â”€â”€â”€ Solutions Carousel Auto Scroll (Mobile Only) â”€â”€â”€ */
+                /* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Solutions Carousel Auto Scroll (Mobile Only) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
                 const solCarousel = document.getElementById('solutionsCarousel');
                 const solPrev = document.getElementById('solutionsPrev');
                 const solNext = document.getElementById('solutionsNext');

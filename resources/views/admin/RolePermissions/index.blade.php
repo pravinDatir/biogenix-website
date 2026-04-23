@@ -4,13 +4,6 @@
 
 @section('admin_content')
 @php
-    $stats = [
-        ['label' => 'Active Roles', 'value' => '24', 'meta' => '+3 this quarter', 'tone' => 'primary'],
-        ['label' => 'Mapped Permissions', 'value' => '186', 'meta' => 'Across 4 core domains', 'tone' => 'slate'],
-        ['label' => 'Live Delegates', 'value' => '08', 'meta' => '2 expiring in 24h', 'tone' => 'secondary'],
-        ['label' => 'Security Health', 'value' => '99.8%', 'meta' => 'Audit ready', 'tone' => 'primary'],
-    ];
-
     $permissionGroups = [
         [
             'title' => 'Data Operations',
@@ -71,20 +64,13 @@
         ['initiator' => 'Support Lead', 'target' => 'Marcus Thorne', 'started' => '12 Oct 2023 14:30', 'duration' => '20 mins', 'action' => 'Read Only View', 'status' => 'Archived'],
         ['initiator' => 'Compliance Head', 'target' => 'Sarah Connor', 'started' => '08 Oct 2023 11:05', 'duration' => '30 mins', 'action' => 'Audit Walkthrough', 'status' => 'Live'],
     ];
-
-    $toneClasses = [
-        'primary' => 'bg-primary-50 text-primary-600',
-        'slate' => 'bg-slate-100 text-slate-700',
-        'secondary' => 'bg-secondary-50 text-secondary-900',
-    ];
 @endphp
 
 <div class="mx-auto max-w-[1320px] space-y-6">
     <section class="overflow-hidden rounded-[28px] border border-[var(--ui-border)] bg-[var(--ui-surface)] p-6 shadow-[var(--ui-shadow-soft)] sm:p-8">
         <div class="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
             <div class="max-w-2xl">
-                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-600">IAM CONTROL PLANE</p>
-                <h1 class="mt-2 text-[22px] font-extrabold tracking-tight text-slate-900 font-display">Roles & Permissions Management</h1>
+                <h1 class="text-[22px] font-extrabold tracking-tight text-slate-900 font-display">Roles & Permissions Management</h1>
                 <p class="mt-2 text-[14px] font-medium leading-6 text-slate-500">
                     Configure global access controls, role hierarchies, and identity-specific exceptions from one unified workspace.
                 </p>
@@ -109,23 +95,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            @foreach ($stats as $stat)
-                <div class="rounded-2xl border border-slate-50 bg-slate-50/30 p-5 group hover:bg-white hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-300">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">{{ $stat['label'] }}</p>
-                            <p class="mt-3 text-[32px] font-extrabold tracking-tight text-slate-900 font-display">{{ $stat['value'] }}</p>
-                            <p class="mt-1 text-[11px] font-bold text-slate-500">{{ $stat['meta'] }}</p>
-                        </div>
-                        <span class="flex h-10 w-10 items-center justify-center rounded-xl text-[11px] font-black {{ $toneClasses[$stat['tone']] }}">
-                            {{ substr($stat['label'], 0, 2) }}
-                        </span>
-                    </div>
-                </div>
-            @endforeach
         </div>
     </section>
 
