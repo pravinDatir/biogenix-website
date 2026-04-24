@@ -59,7 +59,7 @@
                     <!-- Product Name -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Product Name <span class="text-rose-500">*</span></label>
-                        <input id="productName" name="name" type="text" required value="{{ $product->name }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productName" name="name" type="text" value="{{ old('name', $product->name) }}" required placeholder="e.g. Molecular Grade Reagent Kit" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                     
                     <!-- Brand (Hidden) -->
@@ -70,26 +70,26 @@
                     <!-- SKU -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">SKU <span class="text-rose-500">*</span></label>
-                        <input id="productSku" name="sku" type="text" required value="{{ $product->sku }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productSku" name="sku" type="text" value="{{ old('sku', $product->sku) }}" required placeholder="e.g. BGX-7700-01" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
 
                     <!-- Stock Qty -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Stock Qty <span class="text-rose-500">*</span></label>
-                        <input id="productStock" name="stock_quantity" type="number" required value="{{ $product->stock_quantity }}" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productStock" name="stock_quantity" type="number" value="{{ old('stock_quantity', $product->defaultVariant?->stock_quantity ?? 0) }}" required placeholder="100" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
 
                 <!-- Description -->
                 <div class="space-y-2">
                     <label class="block text-[13px] font-bold text-slate-700">Description <span class="text-rose-500">*</span></label>
-                    <textarea id="productDesc" name="description" rows="4" required class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y">{{ $product->description }}</textarea>
+                    <textarea id="productDesc" name="description" rows="4" required placeholder="Enter comprehensive product details, specifications, and use cases..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y">{{ old('description', $product->description) }}</textarea>
                 </div>
 
                 <!-- Specifics -> Product Overview -->
                 <div class="space-y-2">
                     <label class="block text-[13px] font-bold text-slate-700">Product Overview</label>
-                    <textarea name="product_overview" rows="2" placeholder="Provide a brief overview for quick summary..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y">{{ $product->product_overview }}</textarea>
+                    <textarea name="product_overview" rows="2" placeholder="Provide a brief overview for quick summary..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y">{{ old('product_overview', $product->product_overview) }}</textarea>
                 </div>
 
             </div>
@@ -107,11 +107,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Base Price (₹) <span class="text-rose-500">*</span></label>
-                        <input id="productPrice" name="base_price" type="number" step="0.01" value="{{ $product->base_price }}" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input id="productPrice" name="base_price" type="number" step="0.01" value="{{ old('base_price', $product->base_price) }}" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span class="text-slate-400 font-normal">(Optional)</span></label>
-                        <input name="gst_rate" type="number" value="{{ $product->gst_rate }}" placeholder="18" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
+                        <input name="gst_rate" type="number" value="{{ old('gst_rate', $product->gst_rate) }}" placeholder="18" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                     </div>
                 </div>
 
@@ -120,14 +120,14 @@
                         <label class="block text-[13px] font-bold text-slate-700">Visibility Scope <span class="text-rose-500">*</span></label>
                         <select name="visibility_scope" required
                             class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
-                            <option value="all" {{ $product->visibility_scope == 'all' ? 'selected' : '' }}>All Users</option>
-                            <option value="b2b" {{ $product->visibility_scope == 'b2b' ? 'selected' : '' }}>B2B</option>
-                            <option value="b2c" {{ $product->visibility_scope == 'b2c' ? 'selected' : '' }}>B2C</option>
+                            <option value="public" {{ old('visibility_scope', $product->visibility_scope) == 'public' ? 'selected' : '' }}>All Users</option>
+                            <option value="b2b" {{ old('visibility_scope', $product->visibility_scope) == 'b2b' ? 'selected' : '' }}>B2B</option>
+                            <option value="b2c" {{ old('visibility_scope', $product->visibility_scope) == 'b2c' ? 'selected' : '' }}>B2C</option>
                         </select>
                     </div>
                     <div class="flex items-center pt-8">
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="is_active" value="1" class="sr-only peer" {{ $product->is_active ? 'checked' : '' }}>
+                            <input type="checkbox" name="is_active" value="1" class="sr-only peer" {{ old('is_active', $product->is_active) ? 'checked' : '' }}>
                             <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                             <span class="ml-3 text-[13px] font-bold text-slate-700">Active Listing</span>
                         </label>
@@ -152,7 +152,7 @@
                             <select id="productCategory" name="category_id" required
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>

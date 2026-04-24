@@ -71,7 +71,7 @@
                         <div class="space-y-2">
                             <label class="block text-[13px] font-bold text-slate-700">Product Name <span
                                     class="text-rose-500">*</span></label>
-                            <input id="productName" name="name" type="text" required placeholder="e.g. Molecular Grade Reagent Kit"
+                            <input id="productName" name="name" type="text" required placeholder="e.g. Molecular Grade Reagent Kit" value="{{ old('name') }}"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
 
@@ -82,7 +82,7 @@
                         <div class="space-y-2">
                              <label class="block text-[13px] font-bold text-slate-700">SKU <span
                                      class="text-rose-500">*</span></label>
-                             <input id="productSku" name="sku" type="text" required placeholder="e.g. BGX-7700-01"
+                             <input id="productSku" name="sku" type="text" required placeholder="e.g. BGX-7700-01" value="{{ old('sku') }}"
                                  class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                          </div>
                     </div>
@@ -92,7 +92,7 @@
                         <div class="space-y-2">
                             <label class="block text-[13px] font-bold text-slate-700">Initial Stock <span
                                     class="text-rose-500">*</span></label>
-                            <input id="productStock" name="stock_quantity" type="number" required placeholder="100"
+                            <input id="productStock" name="stock_quantity" type="number" required placeholder="100" value="{{ old('stock_quantity') }}"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                     </div>
@@ -103,14 +103,14 @@
                                 class="text-rose-500">*</span></label>
                         <textarea id="productDesc" name="description" rows="4" required
                             placeholder="Enter comprehensive product details, specifications, and use cases..."
-                            class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y"></textarea>
+                            class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y">{{ old('description') }}</textarea>
                     </div>
 
                     <!-- Product Overview -->
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-700">Product Overview</label>
                         <textarea name="product_overview" rows="2" placeholder="Provide a brief overview for quick summary..."
-                            class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y"></textarea>
+                            class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium resize-y">{{ old('product_overview') }}</textarea>
                     </div>
 
                 </div>
@@ -132,13 +132,13 @@
                         <div class="space-y-2">
                             <label class="block text-[13px] font-bold text-slate-700">Base Price (₹) <span
                                     class="text-rose-500">*</span></label>
-                            <input id="productPrice" name="base_price" type="number" step="0.01" required placeholder="0.00"
+                            <input id="productPrice" name="base_price" type="number" step="0.01" required placeholder="0.00" value="{{ old('base_price') }}"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                         <div class="space-y-2">
                             <label class="block text-[13px] font-bold text-slate-700">GST Rate (%) <span
                                     class="text-slate-400 font-normal">(Optional)</span></label>
-                            <input name="gst_rate" type="number" placeholder="18"
+                            <input name="gst_rate" type="number" placeholder="18" value="{{ old('gst_rate') }}"
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 placeholder:text-slate-400 font-medium">
                         </div>
                     </div>
@@ -148,14 +148,14 @@
                             <label class="block text-[13px] font-bold text-slate-700">Visibility Scope <span class="text-rose-500">*</span></label>
                             <select name="visibility_scope" required
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
-                                <option value="all" selected>All Users</option>
-                                <option value="b2b">B2B</option>
-                                <option value="b2c">B2C</option>
+                                <option value="public" @if(old('visibility_scope') === 'public' || !old('visibility_scope')) selected @endif>All Users</option>
+                                <option value="b2b" @if(old('visibility_scope') === 'b2b') selected @endif>B2B</option>
+                                <option value="b2c" @if(old('visibility_scope') === 'b2c') selected @endif>B2C</option>
                             </select>
                         </div>
                         <div class="flex items-center pt-8">
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" name="is_active" value="1" class="sr-only peer" checked>
+                                <input type="checkbox" name="is_active" value="1" class="sr-only peer" @if(old('is_active', true)) checked @endif>
                                 <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                                 <span class="ml-3 text-[13px] font-bold text-slate-700">Active Listing</span>
                             </label>
@@ -183,7 +183,7 @@
                                 class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:bg-white focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition outline-none text-slate-800 font-medium cursor-pointer">
                                 <option value="" disabled selected>Select Primary Category</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" @if(old('category_id') == $category->id) selected @endif>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
