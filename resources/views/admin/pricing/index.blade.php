@@ -122,16 +122,16 @@
         </div>
     </div>
 
-    <!-- Bulk Pricing Box -->
+    <!-- Discount Slabs Box -->
     <div class="bg-[var(--ui-surface)] rounded-[16px] shadow-[var(--ui-shadow-soft)] border border-[var(--ui-border)] p-6 lg:p-8">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
             <div>
-                <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Bulk Pricing</h2>
-                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Volume-based tiering rules per product</p>
+                <h2 class="text-[19px] font-bold text-[var(--ui-text)] tracking-tight leading-none">Discount Slabs</h2>
+                <p class="text-[13px] text-slate-500 mt-1.5 align-middle">Volume-based tiering rules</p>
             </div>
-            <button type="button" data-pricing-modal-open="bulkPricingModal" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-primary-800">
-                <svg class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                Add Bulk Pricing
+            <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-4 py-2 text-[12px] font-bold text-slate-700 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition hover:bg-white hover:border-slate-300">
+                <svg class="w-3.5 h-3.5 text-[#1e293b]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+                Add Discount Slab
             </button>
         </div>
 
@@ -139,37 +139,31 @@
             <table class="w-full text-left min-w-[700px]">
                 <thead>
                     <tr class="border-b border-slate-100">
-                        {{-- First column is always the product name --}}
-                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PRODUCT NAME</th>
-
-                        {{-- One column per distinct min_quantity slab --}}
-                        @foreach ($bulkPricingTable['slab_columns'] as $slabQty)
-                            <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">
-                                MIN {{ number_format($slabQty) }} QTY RATE
-                            </th>
-                        @endforeach
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">PRODUCT RANGE</th>
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">UNIT RATE</th>
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">UNIT RATE</th>
+                        <th class="pb-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">UNIT RATE</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                    @forelse ($bulkPricingTable['rows'] as $row)
-                        <tr class="hover:bg-slate-50/50 transition">
-                            <td class="py-4 text-[13px] font-semibold text-slate-800">
-                                <div class="text-[10px] text-slate-400 font-extrabold tracking-widest mb-0.5 uppercase">{{ $row['sku'] }}</div>
-                                <div>{{ $row['product_name'] }}</div>
-                            </td>
-
-                            {{-- Price for each slab column — blank if this product has no price for that slab --}}
-                            @foreach ($bulkPricingTable['slab_columns'] as $slabQty)
-                                <td class="py-4 text-[13px] font-medium text-slate-500">
-                                    {{ isset($row['prices'][$slabQty]) ? '₹' . number_format($row['prices'][$slabQty], 2) : '—' }}
-                                </td>
-                            @endforeach
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="10" class="py-8 text-center text-[13px] text-slate-400 font-medium">No bulk pricing configured yet. Click Add Bulk Pricing to get started.</td>
-                        </tr>
-                    @endforelse
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-4 text-[13px] font-medium text-slate-700">Sulfate Series</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹450</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,000</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,500</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-4 text-[13px] font-medium text-slate-700">Metallic Base</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹250</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹650</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,200</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-4 text-[13px] font-medium text-slate-700">Accelerator Packs</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹850</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹1,700</td>
+                        <td class="py-4 text-[13px] font-medium text-slate-600">₹3,000</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

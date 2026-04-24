@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
+            <div class="rounded-2xl border border-slate-100 bg-white shadow-[var(--ui-shadow-soft)]">
                 <div class="border-b border-slate-100 px-6 py-4">
                     <h2 class="text-base font-extrabold text-slate-900">Classification & Credit</h2>
                 </div>
@@ -151,7 +151,7 @@
                             <label for="customer-credit-limit" class="mb-2.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500">Credit Limit (INR)</label>
                             <div class="relative">
                                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 font-bold text-slate-400">Rs.</div>
-                                <input id="customer-credit-limit" type="number" value="{{ $creditLimit }}" class="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm font-extrabold tracking-tight text-slate-900 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600">
+                                <input id="customer-credit-limit" type="number" value="{{ $creditLimit }}" class="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm font-extrabold tracking-tight text-slate-900 outline-none transition focus:border-primary-600 focus:bg-white focus:ring-1 focus:ring-primary-600 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">
                             </div>
                             <p class="mt-2 text-[10px] italic text-slate-400">Controls the maximum outstanding balance allowed for post-paid orders.</p>
                         </div>

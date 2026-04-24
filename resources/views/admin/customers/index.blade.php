@@ -35,7 +35,7 @@
                         d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
                 <span id="pending-count-label" class="text-sm font-bold text-amber-800">Pending User Verifications
-                    ({{ count($pendingApplicants) }})</span>
+                    ({{ count($pendingVerifications ?? []) }})</span>
             </div>
             <button type="button"
                 class="text-[12px] font-bold text-secondary-700 transition hover:text-amber-900 cursor-pointer">View All
@@ -299,11 +299,11 @@
         </div>
     </div>
 
-    <div id="verification-modal" class="fixed inset-0 z-[1000] hidden items-center justify-center" role="dialog"
+    <div id="verification-modal" class="fixed inset-0 z-[1000] hidden overflow-y-auto" role="dialog"
         aria-modal="true" aria-labelledby="verification-modal-title">
-        <div class="absolute inset-0 bg-slate-900/55 backdrop-blur-sm" onclick="closeVerificationModal()"></div>
-        <div class="relative z-10 w-full max-w-lg px-4 py-6">
-            <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-fade-in">
+        <div class="fixed inset-0 bg-slate-900/55 backdrop-blur-sm transition-opacity" onclick="closeVerificationModal()"></div>
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-fade-in">
                 <div class="mb-5 flex items-start justify-between gap-4">
                     <div>
                         <h3 id="verification-modal-title" class="text-lg font-extrabold text-slate-900">Approve Customer
@@ -488,7 +488,6 @@
             window.closeVerificationModal = function () {
                 if (!modal) return;
                 modal.classList.add('hidden');
-                modal.classList.remove('flex');
                 setBodyScrollLocked(false);
                 resetVerificationForm();
             };
@@ -523,7 +522,6 @@
 
                 updateUnlimitedCreditState();
                 modal.classList.remove('hidden');
-                modal.classList.add('flex');
                 setBodyScrollLocked(true);
             };
 
