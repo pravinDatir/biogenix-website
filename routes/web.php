@@ -108,6 +108,24 @@ Route::get('/meet-team/{id}', function ($id) {
     ]);
 })->name('meet-team.show');
 Route::view('/portfolio', 'information.portfolio')->name('portfolio');
+Route::get('/solutions/{solutionSlug}', function (string $solutionSlug) {
+    $displayName = str_replace('-', ' ', $solutionSlug);
+    $displayName = ucwords($displayName);
+
+    return view('information.solution-dummy', [
+        'solutionSlug' => $solutionSlug,
+        'solutionName' => $displayName,
+    ]);
+})->name('solutions.detail');
+Route::get('/product-categories/{categorySlug}', function (string $categorySlug) {
+    $displayName = str_replace('-', ' ', $categorySlug);
+    $displayName = ucwords($displayName);
+
+    return view('product.product-category-dummy', [
+        'categorySlug' => $categorySlug,
+        'categoryName' => $displayName,
+    ]);
+})->name('products.category.detail');
 Route::get('/contact', [ContactUsController::class, 'index'])->middleware('permission:contact')->name('contact');
 Route::post('/contact', [ContactUsController::class, 'store'])->middleware('permission:contact.store')->name('contact.store');
 Route::view('/privacy', 'information.privacy')->middleware('permission:privacy')->name('privacy');
@@ -190,4 +208,3 @@ Route::group(['prefix' => 'adminPanel', 'as' => 'admin.'], function () {
     Route::view('/role-permission/add-delegation', 'admin.RolePermissions.add-delegation')->name('role-permission.add-delegation');
     Route::view('/role-permission/grant-impersonation', 'admin.RolePermissions.grant-impersonation')->name('role-permission.grant-impersonation');
 });
-

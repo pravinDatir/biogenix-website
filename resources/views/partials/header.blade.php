@@ -126,7 +126,6 @@
                                 <div class="w-[220px] bg-white border-r border-slate-100 py-6" id="mm-level1-container">
                                     <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="solutions">Solutions</button>
                                     <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="products">Products</button>
-                                    <button class="mm-level1-btn w-full text-left px-6 py-3 font-bold text-sm text-[var(--ui-text)] hover:bg-slate-50 transition-colors" data-target="community">Community</button>
                                 </div>
                                 
                                 <!-- Middle Column (Level 2) -->
@@ -134,8 +133,8 @@
                                     <!-- Populated by JS -->
                                 </div>
                                 
-                                <!-- Right Column (Level 3 & Image) -->
-                                <div class="flex-1 bg-slate-50 flex" id="mm-level3-container">
+                                <!-- Right Column (Level 3) -->
+                                <div class="flex-1 bg-slate-50" id="mm-level3-container">
                                     <!-- Populated by JS -->
                                 </div>
                             </div>
@@ -664,51 +663,89 @@
             solutions: {
                 categories: [
                     {
-                        id: "sol-1",
+                        id: "sol-hospitalwide",
                         label: "Hospitalwide Solution",
-                        subcategories: ["For ER", "For ICU", "For CCU", "For OR", "M-Connect IT Solution", "View all"]
+                        href: "/solutions/hospitalwide-solution",
+                        subcategories: [
+                            { label: "For ER", href: "/solutions/hospitalwide-solution?segment=er" },
+                            { label: "For ICU", href: "/solutions/hospitalwide-solution?segment=icu" },
+                            { label: "For CCU", href: "/solutions/hospitalwide-solution?segment=ccu" }
+                        ]
                     },
                     {
-                        id: "sol-2",
+                        id: "sol-emergency",
                         label: "Emergency Care",
-                        subcategories: ["Pre-hospital", "Emergency Room", "View all"]
+                        href: "/solutions/emergency-care",
+                        subcategories: [
+                            { label: "Response Systems", href: "/solutions/emergency-care?segment=response" },
+                            { label: "Care Workflows", href: "/solutions/emergency-care?segment=workflow" }
+                        ]
                     },
-                    { id: "sol-3", label: "Critical Care", subcategories: [] },
-                    { id: "sol-4", label: "Perioperative Care", subcategories: [] },
-                    { id: "sol-5", label: "Minimally Invasive Surgery", subcategories: [] },
-                    { 
-                        id: "sol-6", 
-                        label: "Laboratory Diagnostics", 
-                        subcategories: ["Small-volume Laboratories", "Mid-volume Laboratories", "High-volume Laboratories", "View all"] 
+                    {
+                        id: "sol-critical",
+                        label: "Critical Care",
+                        href: "/solutions/critical-care",
+                        subcategories: [
+                            { label: "ICU Programs", href: "/solutions/critical-care?segment=icu" },
+                            { label: "Monitoring Solutions", href: "/solutions/critical-care?segment=monitoring" }
+                        ]
                     },
-                    { id: "sol-7", label: "Medical Imaging", subcategories: ["General Imaging", "Women's Healthcare", "Cardiology", "POC", "View all"] },
-                    { id: "sol-8", label: "Cybersecurity", subcategories: [] },
-                    { id: "sol-9", label: "View all", subcategories: [] }
+                    {
+                        id: "sol-perioperative",
+                        label: "Perioperative Care",
+                        href: "/solutions/perioperative-care",
+                        subcategories: [
+                            { label: "OT Readiness", href: "/solutions/perioperative-care?segment=ot-readiness" },
+                            { label: "Procedure Support", href: "/solutions/perioperative-care?segment=procedure-support" }
+                        ]
+                    },
+                    {
+                        id: "sol-mis",
+                        label: "Minimally Invasive Surgery",
+                        href: "/solutions/minimally-invasive-surgery",
+                        subcategories: [
+                            { label: "Procedure Suites", href: "/solutions/minimally-invasive-surgery?segment=suites" },
+                            { label: "Device Portfolio", href: "/solutions/minimally-invasive-surgery?segment=devices" }
+                        ]
+                    },
+                    {
+                        id: "sol-lab",
+                        label: "Laboratory Diagnostics",
+                        href: "/solutions/laboratory-diagnostics",
+                        subcategories: [
+                            { label: "Small-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=small" },
+                            { label: "Mid-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=mid" },
+                            { label: "High-volume Laboratories", href: "/solutions/laboratory-diagnostics?segment=high" }
+                        ]
+                    },
+                    {
+                        id: "sol-cyber",
+                        label: "Cybersecurity",
+                        href: "/solutions/cybersecurity",
+                        subcategories: [
+                            { label: "Endpoint Security", href: "/solutions/cybersecurity?segment=endpoint" },
+                            { label: "Network Protection", href: "/solutions/cybersecurity?segment=network" }
+                        ]
+                    }
                 ]
             },
             products: {
                 categories: [
-                    {
-                        id: "prod-1",
-                        label: "Patient Monitoring",
-                        subcategories: ["Continuous Patient Monitoring", "Transport Monitoring", "Wearable Monitoring", "Telemetry Monitoring", "Vital Signs Monitoring", "Centralized Monitoring", "Patient Monitoring Accessories", "Mobile Application", "View all"]
-                    },
-                    { id: "prod-2", label: "Anesthesia", subcategories: [] },
-                    { id: "prod-3", label: "Ventilators", subcategories: [] },
-                    { id: "prod-4", label: "Infusion System", subcategories: [] },
-                    { id: "prod-5", label: "Defibrillation System", subcategories: [] },
-                    { id: "prod-6", label: "Electrocardiograph (ECG)", subcategories: [] },
-                    { id: "prod-7", label: "Laboratory Diagnostics", subcategories: [] },
-                    { id: "prod-8", label: "Reagents", subcategories: [] },
-                    { id: "prod-9", label: "Ultrasound", subcategories: [] },
-                    { id: "prod-10", label: "Radiology", subcategories: [] }
-                ]
-            },
-            community: {
-                categories: [
-                    { id: "com-1", label: "Nuewa Club", subcategories: [] },
-                    { id: "com-2", label: "Global Clinical Institute", subcategories: [] },
-                    { id: "com-3", label: "U-Studio", subcategories: [] }
+                    { id: "prod-biochemistry", label: "Biochemistry", href: "/product-categories/biochemistry", subcategories: [] },
+                    { id: "prod-blood-culture-bottle", label: "Blood Culture Bottle", href: "/product-categories/blood-culture-bottle", subcategories: [] },
+                    { id: "prod-elisa-kits", label: "Elisa Kits", href: "/product-categories/elisa-kits", subcategories: [] },
+                    { id: "prod-haematology", label: "Haematology", href: "/product-categories/haematology", subcategories: [] },
+                    { id: "prod-instrument", label: "Instrument", href: "/product-categories/instrument", subcategories: [] },
+                    { id: "prod-poct", label: "POCT", href: "/product-categories/poct", subcategories: [] },
+                    { id: "prod-rapid", label: "Rapid", href: "/product-categories/rapid", subcategories: [] },
+                    { id: "prod-serology", label: "Serology", href: "/product-categories/serology", subcategories: [] },
+                    { id: "prod-urinalysis", label: "Urinalysis", href: "/product-categories/urinalysis", subcategories: [] },
+                    { id: "prod-special-chemistry", label: "Special Chemistry", href: "/product-categories/special-chemistry", subcategories: [] },
+                    { id: "prod-clia", label: "CLIA", href: "/product-categories/clia", subcategories: [] },
+                    { id: "prod-veterinary", label: "Veterinary", href: "/product-categories/veterinary", subcategories: [] },
+                    { id: "prod-molecular", label: "Molecular", href: "/product-categories/molecular", subcategories: [] },
+                    { id: "prod-microbiology", label: "Microbiology", href: "/product-categories/microbiology", subcategories: [] },
+                    { id: "prod-ivd-instruments", label: "IVD Instruments", href: "/product-categories/ivd-instruments", subcategories: [] }
                 ]
             }
         };
@@ -740,7 +777,7 @@
             categories.forEach(cat => {
                 const hasArrow = cat.subcategories && cat.subcategories.length > 0;
                 html += `
-                    <button class="mm-level2-btn w-full text-left px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-slate-600 hover:text-primary-700 transition-colors border-b border-transparent hover:border-slate-100" data-id="${cat.id}">
+                    <button class="mm-level2-btn w-full text-left px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-slate-600 hover:text-primary-700 transition-colors border-b border-transparent hover:border-slate-100" data-id="${cat.id}" data-href="${cat.href || '#'}">
                         <span>${cat.label}</span>
                         ${hasArrow ? `<svg class="w-3 h-3 text-slate-400 group-hover:text-primary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>` : ''}
                     </button>
@@ -753,6 +790,11 @@
             l2Btns.forEach(btn => {
                 btn.addEventListener('mouseenter', () => {
                     renderLevel3(targetId, btn.dataset.id);
+                });
+                btn.addEventListener('click', () => {
+                    if (btn.dataset.href) {
+                        window.location.href = btn.dataset.href;
+                    }
                 });
             });
 
@@ -790,31 +832,19 @@
                 }
             });
 
-            let html = '<div class="w-1/2 p-8 border-r border-slate-100/50 flex flex-col gap-2">';
+            let html = '<div class="w-full p-8 flex flex-col gap-2">';
             if (cat.subcategories && cat.subcategories.length > 0) {
                 cat.subcategories.forEach(sub => {
+                    const href = sub.href || cat.href || '#';
+                    const label = sub.label || '';
                     html += `
-                        <a href="#" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${sub}</a>
+                        <a href="${href}" class="px-2 py-2 text-[13px] font-medium text-slate-600 hover:text-primary-700 transition-colors border-b border-slate-100 last:border-0">${label}</a>
                     `;
                 });
             } else {
-                html += `<div class="text-sm text-slate-400 italic">No subcategories available.</div>`;
+                html += `<div class="text-sm text-slate-500">Browse category overview.</div>`;
             }
             html += '</div>';
-
-            // Image right side
-            html += `
-                <div class="w-1/2 p-8 relative flex flex-col items-center justify-center overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg">
-                    <div class="relative z-10 text-center">
-                        <h3 class="text-xl font-bold text-slate-800 mb-2">${cat.label}</h3>
-                        <a href="#" class="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-full transition-colors shadow-md">
-                            Explore
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        </a>
-                    </div>
-                </div>
-            `;
 
             level3Container.innerHTML = html;
         }

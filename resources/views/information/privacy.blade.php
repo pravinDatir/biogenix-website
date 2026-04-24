@@ -3,59 +3,37 @@
 @section('title', 'Privacy Policy')
 
 @section('content')
-{{-- Privacy Policy – accordion style matching Terms & Conditions design --}}
 <div class="min-h-screen bg-slate-50 pb-24">
-    {{-- Hero header --}}
     <section class="border-b border-slate-200 bg-white py-12 md:py-16">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Privacy Policy</h1>
-            <p class="mt-3 flex items-center gap-2 text-sm text-primary-600">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                Last updated: October 2023
-            </p>
+            <p class="mt-3 flex items-center gap-2 text-sm text-primary-600">Last Updated: 22/04/2026</p>
         </div>
     </section>
 
     <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-        {{-- Intro box --}}
         <div class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <p class="text-base leading-8 text-slate-700">Welcome to Biogenix. This privacy policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our biotechnological solutions and research platform. Please read this privacy policy carefully.</p>
+            <p class="text-base leading-8 text-slate-700">
+                Welcome to Biogenix Inc Pvt Ltd ("Company", "we", "our", "us"). We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner.
+                This Privacy Policy describes how we collect, use, disclose, and safeguard your information when you visit our website biogenix.in and use our services.
+            </p>
         </div>
 
-        {{-- Accordion sections --}}
         <div class="space-y-4">
             @php
                 $privacySections = [
-                    [
-                        'num' => 1,
-                        'title' => 'Information We Collect',
-                        'content' => '<p class="leading-relaxed text-slate-600">We collect information that you provide directly to us, including personal details during registration, quotation requests, support interactions, and account operations. This includes your name, email address, phone number, organization details, and any other information you choose to provide.</p><p class="mt-4 leading-relaxed text-slate-600">We also automatically collect certain information when you access our services, including your IP address, browser type, operating system, and usage patterns.</p>'
-                    ],
-                    [
-                        'num' => 2,
-                        'title' => 'How We Use Your Information',
-                        'content' => '<p class="leading-relaxed text-slate-600">We use the information we collect to provide, maintain, and improve our services, process transactions, send transactional messages, and provide customer support. We may also use the information to send you technical notices, updates, security alerts, and product announcements.</p>'
-                    ],
-                    [
-                        'num' => 3,
-                        'title' => 'Data Sharing & Disclosure',
-                        'content' => '<p class="leading-relaxed text-slate-600">We do not sell your personal data. We may share your information with trusted service providers who assist us in operating our platform, conducting business, or servicing you. These third parties are contractually obligated to keep your information confidential and use it only for the purposes for which we disclose it to them.</p>'
-                    ],
-                    [
-                        'num' => 4,
-                        'title' => 'Data Security',
-                        'content' => '<p class="leading-relaxed text-slate-600">We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. This includes encryption, secure authentication protocols, and regular security audits of our systems.</p>'
-                    ],
-                    [
-                        'num' => 5,
-                        'title' => 'Your Rights & Choices',
-                        'content' => '<p class="leading-relaxed text-slate-600">You have the right to access, correct, or delete your personal information. You can also opt out of receiving marketing communications from us at any time. To exercise any of these rights, please contact our Data Protection Officer at <a href="mailto:support@biogenix.com" class="font-semibold text-primary-700 underline decoration-primary-200 underline-offset-4 hover:decoration-primary-600">support@biogenix.com</a>.</p>'
-                    ],
-                    [
-                        'num' => 6,
-                        'title' => 'Cookies & Tracking',
-                        'content' => '<p class="leading-relaxed text-slate-600">We use cookies and similar tracking technologies to track the activity on our service and hold certain information. Cookies are files with a small amount of data which may include an anonymous unique identifier. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.</p>'
-                    ],
+                    ['num' => 1, 'title' => 'Information We Collect', 'content' => '<p class="leading-relaxed text-slate-600">We may collect the following types of information:</p><p class="mt-3 leading-relaxed text-slate-600"><strong>a) Personal Information</strong><br>When you interact with our website, we may collect: Full Name, Email Address, Phone Number, Billing and Shipping Address, and any other information you voluntarily provide.</p><p class="mt-3 leading-relaxed text-slate-600"><strong>b) Payment Information</strong><br>We do not store your payment details such as card numbers, CVV, or banking credentials. All payment transactions are securely processed through our payment gateway partner (Razorpay).</p><p class="mt-3 leading-relaxed text-slate-600"><strong>c) Technical & Usage Data</strong><br>We may automatically collect: IP Address, Browser type and version, Device information, Pages visited and time spent, Cookies and tracking technologies.</p>'],
+                    ['num' => 2, 'title' => 'How We Use Your Information', 'content' => '<p class="leading-relaxed text-slate-600">We use your information for the following purposes: to process transactions and provide services, to communicate with you (order updates, support, notifications), to improve our website and services, to prevent fraud and ensure security, and to comply with legal obligations.</p>'],
+                    ['num' => 3, 'title' => 'Payment Processing', 'content' => '<p class="leading-relaxed text-slate-600">All payments on our website are processed securely via third-party payment gateways such as Razorpay. Your financial information is encrypted and handled directly by Razorpay. We do not store or have access to your full payment details. Razorpay complies with PCI-DSS standards for secure transactions. You are advised to review Razorpay\'s privacy policy for more details on how they handle your data.</p>'],
+                    ['num' => 4, 'title' => 'Cookies & Tracking Technologies', 'content' => '<p class="leading-relaxed text-slate-600">We use cookies and similar tracking technologies to enhance user experience, understand user behavior, and store user preferences. You can disable cookies through your browser settings, though some website features may be affected.</p>'],
+                    ['num' => 5, 'title' => 'Data Sharing & Disclosure', 'content' => '<p class="leading-relaxed text-slate-600">We do not sell or rent your personal information. However, we may share your data with trusted service providers (payment gateways, hosting, analytics), legal authorities when required by law, and business partners when necessary to provide services. All third-party partners are obligated to keep your information secure.</p>'],
+                    ['num' => 6, 'title' => 'Data Retention', 'content' => '<p class="leading-relaxed text-slate-600">We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy and to comply with legal, accounting, or regulatory requirements. Once data is no longer required, it is securely deleted or anonymized.</p>'],
+                    ['num' => 7, 'title' => 'Data Security', 'content' => '<p class="leading-relaxed text-slate-600">We implement appropriate technical and organizational security measures to protect your data, including secure servers and encryption, restricted access to personal information, and regular monitoring for vulnerabilities. However, no online system is 100% secure, and we cannot guarantee absolute security.</p>'],
+                    ['num' => 8, 'title' => 'Your Rights', 'content' => '<p class="leading-relaxed text-slate-600">You have the following rights regarding your personal data: access your personal information, request correction of inaccurate data, request deletion of your data, and withdraw consent at any time. To exercise your rights, please contact us at the details provided below.</p>'],
+                    ['num' => 9, 'title' => 'Third-Party Links', 'content' => '<p class="leading-relaxed text-slate-600">Our website may contain links to third-party websites. We are not responsible for their privacy practices or content. We recommend reviewing their policies before sharing any information.</p>'],
+                    ['num' => 10, 'title' => 'Children\'s Privacy', 'content' => '<p class="leading-relaxed text-slate-600">Our services are not intended for individuals under the age of 18. We do not knowingly collect personal data from children.</p>'],
+                    ['num' => 11, 'title' => 'Changes to This Privacy Policy', 'content' => '<p class="leading-relaxed text-slate-600">We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date.</p>'],
+                    ['num' => 12, 'title' => 'Contact Us', 'content' => '<p class="leading-relaxed text-slate-600">If you have any questions or concerns about this Privacy Policy, you can contact us:</p><p class="mt-3 leading-relaxed text-slate-600">Company Name: Biogenix Inc Pvt Ltd<br>Email:<br>Phone:<br>Address:</p>'],
                 ];
             @endphp
 
@@ -80,35 +58,7 @@
                 </div>
             @endforeach
         </div>
-
-        {{-- Contact box --}}
-        <div class="mt-10 rounded-2xl border border-primary-100 bg-primary-50/60 p-6">
-            <h2 class="mb-2 flex items-center text-xl font-semibold text-slate-900">
-                <svg class="mr-2 h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                Contact for Privacy Requests
-            </h2>
-            <p class="text-slate-600">For any privacy-related queries, data deletion requests, or concerns, please contact our Data Protection Officer at <a href="mailto:support@biogenix.com" class="font-semibold text-primary-700 underline decoration-primary-100 underline-offset-4 transition hover:decoration-primary-600">support@biogenix.com</a>.</p>
-        </div>
     </section>
-
-    {{-- Footer bar --}}
-    <div class="border-t border-slate-200 bg-white py-6">
-        <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center gap-3">
-                <div class="relative h-9 w-9 rounded-xl bg-primary-600">
-                    <span class="absolute left-2 top-2 h-2 w-2 rounded-sm bg-white"></span>
-                    <span class="absolute bottom-2 right-2 h-2 w-2 rounded-sm bg-white"></span>
-                </div>
-                <span class="text-sm font-semibold text-slate-900">Biogenix Labs</span>
-            </div>
-            <p class="text-sm text-slate-500">&copy; 2023 Biogenix International. All rights reserved.</p>
-            <nav class="flex flex-wrap gap-6">
-                <a href="{{ route('terms') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Terms of Service</a>
-                <a href="{{ route('privacy') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Cookie Policy</a>
-                <a href="{{ route('contact') }}" class="text-sm font-medium text-slate-600 no-underline hover:text-primary-600">Compliance</a>
-            </nav>
-        </div>
-    </div>
 </div>
 
 @push('scripts')
