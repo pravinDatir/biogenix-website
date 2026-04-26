@@ -19,22 +19,21 @@
             $nextIdx = $idx < count($teamData) - 1 ? $idx + 1 : 0;
         @endphp
 
-        <div class="relative">
-            <!-- Prev Button -->
-            <a href="{{ route('meet-team.show', $prevIdx) }}" class="absolute top-[30%] md:top-1/2 -left-4 md:-left-10 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center text-primary-600 hover:text-primary-800 hover:bg-primary-50 transition-all z-10 hover:scale-110 group border border-slate-100">
-                <svg class="h-5 w-5 md:h-7 md:w-7 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-                </svg>
-            </a>
+        <!-- Prev Button (Fixed to left edge) -->
+        <a href="{{ route('meet-team.show', $prevIdx) }}" class="fixed top-1/2 left-2 md:left-6 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full shadow-md flex items-center justify-center text-primary-600 hover:bg-primary-50 hover:text-primary-800 transition-all z-50">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+        </a>
 
-            <!-- Next Button -->
-            <a href="{{ route('meet-team.show', $nextIdx) }}" class="absolute top-[30%] md:top-1/2 -right-4 md:-right-10 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center justify-center text-primary-600 hover:text-primary-800 hover:bg-primary-50 transition-all z-10 hover:scale-110 group border border-slate-100">
-                <svg class="h-5 w-5 md:h-7 md:w-7 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                </svg>
-            </a>
+        <!-- Next Button (Fixed to right edge) -->
+        <a href="{{ route('meet-team.show', $nextIdx) }}" class="fixed top-1/2 right-2 md:right-6 -translate-y-1/2 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full shadow-md flex items-center justify-center text-primary-600 hover:bg-primary-50 hover:text-primary-800 transition-all z-50">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
 
-            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
                 
                 <!-- Left Side: Image -->
                 <div class="w-full md:w-5/12 lg:w-[45%] aspect-[4/3] md:aspect-auto bg-slate-100 relative shrink-0">
@@ -53,7 +52,6 @@
                     </div>
                 </div>
 
-            </div>
         </div>
 
     </div>
